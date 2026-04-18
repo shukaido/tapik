@@ -14,376 +14,42 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 40px 20px;
   }
-  .container {
-    text-align: center;
-    max-width: 680px;
-    width: 100%;
-  }
-  .logo {
-    font-size: 48px;
-    font-weight: 800;
-    color: #fbbf24;
-    margin-bottom: 8px;
-    letter-spacing: -1px;
-  }
-  .subtitle {
-    font-size: 14px;
-    color: #94a3b8;
-    margin-bottom: 40px;
-    line-height: 1.6;
-  }
-  .section-label {
-    font-size: 11px;
-    color: #64748b;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-weight: 700;
-    margin-bottom: 16px;
-  }
-  .buttons {
-    display: flex;
-    gap: 16px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
+  .container { text-align: center; max-width: 520px; padding: 40px 24px; }
+  .logo { font-size: 52px; font-weight: 800; color: #fbbf24; margin-bottom: 8px; letter-spacing: -1px; }
+  .tagline { font-size: 13px; color: #94a3b8; margin-bottom: 48px; line-height: 1.6; }
+  .buttons { display: flex; gap: 20px; justify-content: center; }
   .btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 200px;
-    height: 120px;
-    background: #1e293b;
-    border: 2px solid #334155;
-    border-radius: 14px;
-    text-decoration: none;
-    color: #e2e8f0;
-    transition: all 0.2s ease;
-    cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    width: 210px; height: 130px; background: #1e293b; border: 2px solid #334155;
+    border-radius: 16px; text-decoration: none; color: #e2e8f0;
+    transition: all 0.2s ease; cursor: pointer;
   }
   .btn:hover {
-    border-color: #fbbf24;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(251, 191, 36, 0.1);
+    border-color: #fbbf24; transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(251, 191, 36, 0.12);
   }
-  .btn-icon { font-size: 36px; margin-bottom: 10px; }
-  .btn-text { font-size: 15px; font-weight: 600; color: #f8fafc; }
+  .btn-flag { font-size: 40px; margin-bottom: 12px; }
+  .btn-text { font-size: 16px; font-weight: 700; color: #f8fafc; }
   .btn-sub { font-size: 11px; color: #94a3b8; margin-top: 4px; }
-
-  .divider { margin: 36px 0; border: none; border-top: 1px solid #334155; }
-
-  /* APP CARDS */
-  .app-cards {
-    display: flex;
-    gap: 14px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 12px;
-  }
-  .app-card {
-    width: 190px;
-    background: #1e293b;
-    border: 2px solid #334155;
-    border-radius: 14px;
-    padding: 20px 16px;
-    text-decoration: none;
-    color: #e2e8f0;
-    transition: all 0.2s ease;
-    text-align: left;
-  }
-  .app-card:hover {
-    border-color: #38bdf8;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(56, 189, 248, 0.1);
-  }
-  .app-card-icon { font-size: 28px; margin-bottom: 10px; }
-  .app-card-name { font-size: 15px; font-weight: 700; color: #f8fafc; margin-bottom: 4px; }
-  .app-card-lines { font-size: 11px; color: #fbbf24; font-weight: 600; margin-bottom: 8px; }
-  .app-card-desc { font-size: 11px; color: #94a3b8; line-height: 1.5; }
-
-  /* GUIDE BANNER */
-  .guide-banner {
-    background: linear-gradient(135deg, #1e293b, #0f172a);
-    border: 2px solid #fbbf24;
-    border-radius: 14px;
-    padding: 24px;
-    margin: 24px 0;
-    text-decoration: none;
-    display: block;
-    transition: all 0.2s ease;
-  }
-  .guide-banner:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(251, 191, 36, 0.15);
-  }
-  .guide-banner-title {
-    font-size: 16px;
-    font-weight: 700;
-    color: #fbbf24;
-    margin-bottom: 8px;
-  }
-  .guide-banner-desc {
-    font-size: 13px;
-    color: #cbd5e1;
-    line-height: 1.6;
-  }
-  .guide-banner-hint {
-    font-size: 11px;
-    color: #94a3b8;
-    margin-top: 10px;
-  }
-
-  /* SETUP HINT */
-  .setup-hint {
-    background: #1e293b;
-    border: 1px solid #334155;
-    border-left: 4px solid #38bdf8;
-    border-radius: 10px;
-    padding: 16px 20px;
-    margin: 20px 0;
-    text-align: left;
-    font-size: 13px;
-    color: #cbd5e1;
-    line-height: 1.7;
-  }
-  .setup-hint strong { color: #38bdf8; }
-
-  /* SPEC TABLE */
-  .spec-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
-    margin: 16px 0;
-    text-align: left;
-  }
-  .spec-table th {
-    background: #1e293b;
-    color: #94a3b8;
-    font-weight: 600;
-    padding: 6px 12px;
-    border: 1px solid #334155;
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-  .spec-table td {
-    padding: 6px 12px;
-    border: 1px solid #334155;
-    color: #cbd5e1;
-  }
-
-  /* REFERENCE DOCS */
-  .ref-section { margin-top: 8px; }
-  .ref-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 14px;
-  }
-  .ref-item {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: #1e293b;
-    border: 1px solid #334155;
-    border-radius: 10px;
-    padding: 12px 16px;
-    text-decoration: none;
-    color: #e2e8f0;
-    transition: all 0.15s ease;
-  }
-  .ref-item:hover {
-    border-color: #64748b;
-    transform: translateX(4px);
-  }
-  .ref-icon { font-size: 20px; flex-shrink: 0; }
-  .ref-info { flex: 1; text-align: left; }
-  .ref-name { font-size: 13px; font-weight: 600; color: #f8fafc; }
-  .ref-desc { font-size: 11px; color: #94a3b8; margin-top: 2px; }
-  .ref-tag {
-    font-size: 9px; font-weight: 700; padding: 2px 8px;
-    border-radius: 20px; background: #334155; color: #94a3b8; flex-shrink: 0;
-  }
-
-  .footer {
-    margin-top: 40px;
-    font-size: 12px;
-    color: #475569;
-    line-height: 1.6;
-  }
 </style>
 </head>
 <body>
-
 <div class="container">
   <div class="logo">Tapik</div>
-  <div class="subtitle">
-    Tablet-Based Independent F&B Customer Retention Platform<br>
-    Assignment Submission v6 · 2026-04-18
-  </div>
-
-  <!-- SUBMISSION DOCS -->
-  <div class="section-label">Submission Document</div>
+  <div class="tagline">Tablet-Based Independent F&B Customer Retention Platform<br>Assignment Submission v6</div>
   <div class="buttons">
-    <a href="ko.html" class="btn">
-      <div class="btn-icon">🇰🇷</div>
+    <a href="home_ko.html" class="btn">
+      <div class="btn-flag">🇰🇷</div>
       <div class="btn-text">한국어</div>
-      <div class="btn-sub">Korean Version</div>
+      <div class="btn-sub">Korean</div>
     </a>
-    <a href="en.html" class="btn">
-      <div class="btn-icon">🇬🇧</div>
+    <a href="home_en.html" class="btn">
+      <div class="btn-flag">🇬🇧</div>
       <div class="btn-text">English</div>
-      <div class="btn-sub">English Version</div>
+      <div class="btn-sub">English</div>
     </a>
-  </div>
-
-  <hr class="divider">
-
-  <!-- TWO-TAB SETUP HINT -->
-  <div class="setup-hint">
-    <strong>⚠ Before launching the apps:</strong> Tapik's Consumer and Merchant apps sync in real time via BroadcastChannel. To experience the full order flow — place an order on the Consumer app and process it on the Merchant app — <strong>open both apps in the same browser and arrange them side by side</strong>.
-  </div>
-
-  <!-- APP CARDS -->
-  <div class="section-label">App Prototype</div>
-  <div class="app-cards">
-    <a href="consumer.html" target="_blank" class="app-card">
-      <div class="app-card-icon">📱</div>
-      <div class="app-card-name">Consumer</div>
-      <div class="app-card-lines">2,757 lines</div>
-      <div class="app-card-desc">Mobile-first ordering app. Google login → store browsing → pre-pay → order tracking → points. Room group ordering with real-time Firestore sync.</div>
-    </a>
-    <a href="merchant.html" target="_blank" class="app-card">
-      <div class="app-card-icon">🏪</div>
-      <div class="app-card-name">Merchant</div>
-      <div class="app-card-lines">1,013 lines</div>
-      <div class="app-card-desc">Tablet UI (Lenovo Tab M7 frame). Kanban order queue — accept, prepare, ready, QR pickup. Sales dashboard and customer segments.</div>
-    </a>
-    <a href="admin.html" target="_blank" class="app-card">
-      <div class="app-card-icon">⚙️</div>
-      <div class="app-card-name">Admin</div>
-      <div class="app-card-lines">1,398 lines</div>
-      <div class="app-card-desc">Operations dashboard. Platform KPIs, merchant health, consumer funnels, settlement, anomaly alerts. Reward mode control (live).</div>
-    </a>
-  </div>
-
-  <!-- GUIDE BANNER -->
-  <a href="guide.html" class="guide-banner">
-    <div class="guide-banner-title">📖 Interactive Demo Guide</div>
-    <div class="guide-banner-desc">
-      Step-by-step walkthrough of the full order flow — from consumer login to merchant pickup to points earned. Follow along with both apps open to see real-time sync in action.
-    </div>
-    <div class="guide-banner-hint">10 steps · Consumer-focused · Merchant & Admin overview included</div>
-  </a>
-
-  <!-- TECH SPEC TABLE -->
-  <table class="spec-table">
-    <tr>
-      <th>Stack</th>
-      <th>Details</th>
-    </tr>
-    <tr>
-      <td>Frontend</td>
-      <td>Single-file HTML + React 18 + Babel (no build step)</td>
-    </tr>
-    <tr>
-      <td>Backend</td>
-      <td>Firebase Firestore (serverless, real-time)</td>
-    </tr>
-    <tr>
-      <td>Auth</td>
-      <td>Firebase Google Sign-In</td>
-    </tr>
-    <tr>
-      <td>Cross-App Sync</td>
-      <td>BroadcastChannel API (browser-native, zero-latency)</td>
-    </tr>
-    <tr>
-      <td>i18n</td>
-      <td>601 keys · English + Korean · runtime switching</td>
-    </tr>
-    <tr>
-      <td>Total Code</td>
-      <td>5,168 lines across 3 apps</td>
-    </tr>
-  </table>
-
-  <hr class="divider">
-
-  <!-- REFERENCE DOCUMENTS -->
-  <div class="ref-section">
-    <div class="section-label">Process Documents (Reference)</div>
-    <p style="font-size:11px; color:#64748b; margin-bottom:14px; line-height:1.5;">과제 수행 과정에서 생성된 리서치·분석 원본 자료입니다. 제출물(V6)의 근거가 되는 의사결정 과정과 사고의 흐름을 확인하실 수 있습니다.</p>
-
-    <div class="ref-list">
-      <a href="shardlab_research.html" class="ref-item">
-        <div class="ref-icon">📋</div>
-        <div class="ref-info">
-          <div class="ref-name">종합 리서치 문서</div>
-          <div class="ref-desc">프로젝트 첫 단계부터 작성한 대규모 리서치. 시장 분석, 경쟁사, 규제, 기술 인프라 전반.</div>
-        </div>
-        <div class="ref-tag">199KB</div>
-      </a>
-      <a href="market_research.html" class="ref-item">
-        <div class="ref-icon">📊</div>
-        <div class="ref-info">
-          <div class="ref-name">마켓 리서치</div>
-          <div class="ref-desc">말레이시아 F&B 시장 조사 통합 문서. 에이전트 8대 병렬 발사 결과물.</div>
-        </div>
-        <div class="ref-tag">155KB</div>
-      </a>
-      <a href="coldstart_research.html" class="ref-item">
-        <div class="ref-icon">🚀</div>
-        <div class="ref-info">
-          <div class="ref-name">콜드스타트 리서치</div>
-          <div class="ref-desc">초기 사용자 확보 전략 리서치. TikTok/Telegram/Facebook/WhatsApp 4채널 분석.</div>
-        </div>
-        <div class="ref-tag">133KB</div>
-      </a>
-      <a href="tapik_network_model.html" class="ref-item">
-        <div class="ref-icon">💰</div>
-        <div class="ref-info">
-          <div class="ref-name">수익 모델 v3</div>
-          <div class="ref-desc">시간 절약 프리미엄 + 포인트 경제. 5% 서비스료 → 100% TP 환원 구조의 수학적 설계.</div>
-        </div>
-        <div class="ref-tag">40KB</div>
-      </a>
-      <a href="product_brief.html" class="ref-item">
-        <div class="ref-icon">📐</div>
-        <div class="ref-info">
-          <div class="ref-name">제품 기획서 (Product Brief)</div>
-          <div class="ref-desc">세그먼트 선정, 페르소나, UX 설계, 가치 명제. V6 Part 2~3의 근거 원본.</div>
-        </div>
-        <div class="ref-tag">132KB</div>
-      </a>
-      <a href="app_protocol.html" class="ref-item">
-        <div class="ref-icon">🏗️</div>
-        <div class="ref-info">
-          <div class="ref-name">앱 프로토콜 & 설계 문서</div>
-          <div class="ref-desc">3앱 아키텍처, Room 상태 머신, BroadcastChannel 설계, Firebase 스키마 원본.</div>
-        </div>
-        <div class="ref-tag">125KB</div>
-      </a>
-      <a href="reflection.html" class="ref-item">
-        <div class="ref-icon">🔍</div>
-        <div class="ref-info">
-          <div class="ref-name">과정 회고 (Raw)</div>
-          <div class="ref-desc">Submission v2 원재료. 전체 프로젝트 회고, 의사결정 기록, 캡틴 분석 원본.</div>
-        </div>
-        <div class="ref-tag">104KB</div>
-      </a>
-    </div>
-  </div>
-
-  <hr class="divider">
-
-  <div class="footer">
-    Process-Based Evaluation · 11 Pivots · 6 Revenue Model Iterations · 25 Assumption Validations<br>
-    Built with Multi-AI Stack: Claude Cowork (core) · Grok · Gemini · Perplexity · ChatGPT
   </div>
 </div>
-
 </body>
 </html>

@@ -693,6 +693,8 @@ const TAPIK = {
   GATEWAY_FIXED: 0.15,
   PTS_PER_SEN: 1,
   POINTS_SOLO: 0.05,      // Solo 기본 적립률
+  POINTS_JOINER: 0.06,    // Room Joiner 적립률
+  POINTS_CREATOR: 0.08,   // Room Creator 적립률
   ROOM_MIN: 3,             // 최소 3명부터
   ROOM_MAX: 8,
   ROOM_TIMEOUT: 30,
@@ -2729,8 +2731,9 @@ function ConsumerAppInner({user, onLogout}) {
       if (newStatus) {
         setLiveStatus(newStatus);
         setOrderHistory(prev => prev.map(o => o.id === orderId ? {...o, status: newStatus, reviewDone: false} : o));
-        // 픽업 완료 → 포인트 적립!
-        if (newStatus === 'PICKED_UP' && currentOrder) {
+        // 픽업 완료 → 포인트 적립 (중복 방지)
+        if (newStatus === 'PICKED_UP' && currentOrder && !creditedOrdersRef.current.has(orderId)) {
+          creditedOrdersRef.current.add(orderId);
           const pts = currentOrder.ptsEarn || 0;
           const sid = currentOrder.store?.id || currentOrder.storeId;
           if (pts > 0 && sid) creditPoints(pts, sid);
