@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tapik — 인터랙티브 데모 가이드</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    line-height: 1.75;
+    font-size: 14px;
+  }
+  .layout { display:flex; min-height:100vh; }
+
+  /* SIDEBAR */
+  aside {
+    position:fixed; left:0; top:0; width:240px; height:100vh;
+    background:#1e293b; border-right:1px solid #334155;
+    padding:24px 14px; overflow-y:auto; z-index:100;
+  }
+  aside h1 { font-size:14px; color:#fbbf24; margin-bottom:2px; font-weight:700; }
+  aside .meta { font-size:11px; color:#94a3b8; margin-bottom:18px; padding-bottom:12px; border-bottom:1px solid #334155; }
+  aside .section-label {
+    font-size:10px; color:#64748b; text-transform:uppercase;
+    font-weight:700; letter-spacing:0.08em; margin:16px 6px 6px;
+  }
+  aside nav a {
+    display:block; padding:5px 10px; color:#cbd5e1; text-decoration:none;
+    border-radius:6px; font-size:12px; margin-bottom:1px; transition:background 0.15s;
+  }
+  aside nav a:hover { background:#334155; color:#f8fafc; }
+  aside .back-link {
+    display:inline-block; margin-top:16px; padding:6px 12px; font-size:11px;
+    color:#94a3b8; border:1px solid #334155; border-radius:6px; text-decoration:none;
+  }
+  aside .back-link:hover { color:#f8fafc; border-color:#64748b; }
+
+  /* MAIN */
+  main { margin-left:240px; padding:40px 56px; max-width:900px; }
+  h1.page-title { font-size:28px; color:#f8fafc; margin-bottom:6px; }
+  .page-sub { color:#94a3b8; font-size:13px; margin-bottom:36px; padding-bottom:16px; border-bottom:1px solid #334155; }
+  h2 { font-size:20px; color:#fbbf24; margin:44px 0 16px; padding-bottom:8px; border-bottom:2px solid #334155; }
+  h3 { font-size:15px; color:#38bdf8; margin:24px 0 10px; }
+  h4 { font-size:13px; color:#a78bfa; margin:16px 0 8px; font-weight:600; }
+  p { margin:8px 0; }
+  a { color:#38bdf8; text-decoration:none; }
+  a:hover { text-decoration:underline; }
+  ul, ol { padding-left:20px; }
+  li { margin:5px 0; }
+
+  /* COMPONENTS */
+  .alert {
+    background:#1e293b; border:2px solid #fbbf24; border-radius:10px;
+    padding:16px 20px; margin:20px 0;
+  }
+  .alert-title { font-size:13px; font-weight:700; color:#fbbf24; margin-bottom:6px; }
+  .alert-blue { border-color:#38bdf8; }
+  .alert-blue .alert-title { color:#38bdf8; }
+  .alert-green { border-color:#4ade80; }
+  .alert-green .alert-title { color:#4ade80; }
+  .alert-purple { border-color:#a78bfa; }
+  .alert-purple .alert-title { color:#a78bfa; }
+  .alert-gray { border-color:#64748b; }
+  .alert-gray .alert-title { color:#94a3b8; }
+
+  .step {
+    background:#1e293b; border:1px solid #334155; border-radius:10px;
+    padding:16px 20px; margin:14px 0; border-left:4px solid #38bdf8;
+    transition:border-color 0.2s;
+  }
+  .step:hover { border-color:#475569; border-left-color:#fbbf24; }
+  .step-num {
+    display:inline-flex; align-items:center; justify-content:center;
+    width:24px; height:24px; border-radius:50%; background:#fbbf24;
+    color:#0f172a; font-size:12px; font-weight:800; margin-right:8px;
+  }
+  .step-title { font-size:14px; font-weight:700; color:#f8fafc; display:inline; }
+  .step p { font-size:13px; color:#cbd5e1; margin-top:8px; }
+
+  .tag {
+    display:inline-block; font-size:10px; font-weight:700;
+    padding:2px 8px; border-radius:20px; margin-right:4px;
+  }
+  .tag-live { background:#4ade8020; color:#4ade80; border:1px solid #4ade8040; }
+  .tag-mock { background:#94a3b820; color:#94a3b8; border:1px solid #94a3b840; }
+  .tag-sync { background:#38bdf820; color:#38bdf8; border:1px solid #38bdf840; }
+
+  table { border-collapse:collapse; width:100%; margin:14px 0; font-size:13px; }
+  th, td { border:1px solid #334155; padding:8px 12px; text-align:left; vertical-align:top; }
+  th { background:#1e293b; color:#f8fafc; font-weight:600; font-size:12px; }
+  td { color:#cbd5e1; }
+  tr:nth-child(even) td { background:#1e293b40; }
+
+  .fix { color:#4ade80; font-weight:600; }
+  .pain { color:#f87171; font-weight:600; }
+  .neutral { color:#fbbf24; font-weight:600; }
+
+  ::-webkit-scrollbar { width:8px; }
+  ::-webkit-scrollbar-track { background:#0f172a; }
+  ::-webkit-scrollbar-thumb { background:#334155; border-radius:4px; }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<aside>
+  <h1>Tapik 데모 가이드</h1>
+  <div class="meta">인터랙티브 워크스루</div>
+  <nav>
+    <div class="section-label">시작 전</div>
+    <a href="#before-you-start">시작하기 전에</a>
+    <a href="#two-tab-setup">두 탭 설정</a>
+
+    <div class="section-label">Consumer 앱</div>
+    <a href="#c-login">1. 로그인</a>
+    <a href="#c-home">2. 홈 화면</a>
+    <a href="#c-store">3. 매장 & 메뉴</a>
+    <a href="#c-cart">4. 장바구니 & 결제</a>
+    <a href="#c-order">5. 주문 추적</a>
+    <a href="#c-merchant-flow">6. 머천트 측 처리</a>
+    <a href="#c-pickup">7. 픽업 & 포인트</a>
+    <a href="#c-room">8. Room</a>
+    <a href="#c-rewards">9. 리워드</a>
+    <a href="#c-settings">10. 언어 & 설정</a>
+
+    <div class="section-label">Merchant 앱</div>
+    <a href="#m-overview">개요</a>
+    <a href="#m-features">기능 안내</a>
+
+    <div class="section-label">Admin 앱</div>
+    <a href="#a-overview">개요</a>
+    <a href="#a-features">기능 안내</a>
+  </nav>
+  <a href="home_ko.html" class="back-link">&larr; 홈으로 돌아가기</a>
+</aside>
+
+<main>
+
+<h1 class="page-title">Tapik 인터랙티브 데모 가이드</h1>
+<p class="page-sub">이 가이드를 따라가면서 Consumer와 Merchant 앱의 전체 주문 흐름을 실시간으로 체험해 보세요.</p>
+
+<!-- ===== BEFORE YOU START ===== -->
+<section id="before-you-start">
+  <h2>시작하기 전에</h2>
+
+  <div class="alert">
+    <div class="alert-title">⚠ 중요: 두 탭 설정 필수</div>
+    <p>Tapik의 Consumer와 Merchant 앱은 <strong>BroadcastChannel API</strong>를 통해 실시간으로 통신합니다. 주문이 머천트 측에 표시되고, 상태 변경이 소비자 측에 즉시 반영되는 전체 경험을 보려면 <strong>두 앱을 같은 브라우저에서 열어야</strong> 합니다.</p>
+  </div>
+
+  <div class="step" id="two-tab-setup">
+    <span class="step-num">1</span>
+    <div class="step-title">Consumer 앱 열기</div>
+    <p><a href="consumer.html" target="_blank">Consumer 앱</a>을 새 탭에서 여세요. 이것이 고객의 모바일 경험을 보여주는 메인 뷰입니다.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-num">2</span>
+    <div class="step-title">Merchant 앱 열기 (나란히 배치)</div>
+    <p><a href="merchant.html" target="_blank">Merchant 앱</a>을 다른 탭에서 여세요. 두 탭을 나란히 배치하세요 (Windows: <code>Win+←</code> / <code>Win+→</code>, Mac: 화면 가장자리로 드래그). Merchant 앱은 가맹점이 실제로 사용할 Lenovo Tab M7 태블릿의 가로 모드를 시뮬레이션합니다.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-num">3</span>
+    <div class="step-title">연결 확인</div>
+    <p>Merchant 앱의 상단 영역에 <span class="fix">초록색 인디케이터</span>가 "Consumer Online"으로 표시되는지 확인하세요. BroadcastChannel이 작동 중이고 두 앱이 통신 가능한 상태임을 의미합니다.</p>
+  </div>
+
+  <div class="alert alert-blue">
+    <div class="alert-title">💡 체험할 내용</div>
+    <p>Consumer 앱에서 주문하면 Merchant 앱의 주문 대기열에 즉시 나타납니다. 머천트가 수락, 준비, 완료를 누르면 — Consumer 앱이 실시간으로 업데이트됩니다. 페이지 새로고침 없이요. 이것이 Tapik의 핵심입니다: 고객과 주방을 직접 연결하는 것, 중간자 없이.</p>
+  </div>
+</section>
+
+<!-- ===== CONSUMER APP WALKTHROUGH ===== -->
+<section>
+  <h2>Consumer 앱 — 단계별 워크스루</h2>
+
+  <p>Consumer 앱은 폰 프레임 시뮬레이션 안에 모바일 퍼스트로 구현되어 있습니다. 로그인부터 주문 픽업까지 모든 핵심 플로우가 Firebase 백엔드와 완전히 연동됩니다.</p>
+
+  <!-- LOGIN -->
+  <h3 id="c-login">Step 1: Google 로그인</h3>
+  <div class="step">
+    <span class="step-num">1</span>
+    <div class="step-title">"Start with Google" 탭</div>
+    <p>Firebase Authentication + Google Sign-In을 사용합니다. 버튼을 탭하고 Google 계정을 선택하면 바로 로그인됩니다. 프로필(이름, 사진)은 Google 계정에서 자동으로 가져옵니다.</p>
+    <p><span class="tag tag-live">LIVE</span> Firebase Auth — 실제 인증. 계정이 Firestore에 생성됩니다.</p>
+  </div>
+
+  <!-- HOME -->
+  <h3 id="c-home">Step 2: 홈 화면 둘러보기</h3>
+  <div class="step">
+    <span class="step-num">2</span>
+    <div class="step-title">홈 탭 둘러보기</div>
+    <p>로그인 후 <strong>홈</strong> 탭에 도착합니다. 여기서 볼 수 있는 것:</p>
+    <p><strong>근처 매장</strong> — F&B 가맹점 목록. 각 카드에 매장명, 업종, 거리, 평점, <strong>실시간 대기열 상태</strong>(예: "3명 앞 · 약 9분")가 표시됩니다. 대기 인원은 Firestore의 실제 주문 데이터를 기반으로 실시간 계산됩니다.</p>
+    <p><strong>"Right Now" 카드</strong> — 실시간 딜을 보여주는 가로 캐러셀: 대기열 알림, 스팟 할인(비수기 2배 포인트), 핫딜(클리어런스 3배 포인트).</p>
+    <p><strong>친구 소식</strong> — 친구들이 어디서 먹고 있는지 표시. <span class="tag tag-mock">목 데이터</span></p>
+  </div>
+
+  <!-- STORE & MENU -->
+  <h3 id="c-store">Step 3: 매장 진입 & 메뉴 탐색</h3>
+  <div class="step">
+    <span class="step-num">3</span>
+    <div class="step-title">아무 매장 카드를 탭하세요 (예: "Feeka Coffee Roasters")</div>
+    <p>매장 상세 화면이 열리며 다음을 확인할 수 있습니다:</p>
+    <p><strong>매장 정보</strong> — 영업 상태(영업 중/마감), 평점, 거리, 현재 대기열. 커버 사진 영역에 찜/공유 버튼.</p>
+    <p><strong>메뉴 아이템</strong> — 각 아이템에 이름, 설명, 가격(RM), 추가(+) 버튼이 표시됩니다. 스크롤 가능한 단일 리스트로 구성.</p>
+    <p><strong>"Room" 버튼</strong> — Room 생성 플로우를 시작합니다 (Step 8에서 다룹니다).</p>
+    <p>👉 <strong>해보세요:</strong> 2~3개 아이템을 장바구니에 추가하세요. 하단에 아이템 수와 합계를 보여주는 플로팅 카트 바가 나타납니다.</p>
+  </div>
+
+  <!-- CART & CHECKOUT -->
+  <h3 id="c-cart">Step 4: 장바구니 & 결제</h3>
+  <div class="step">
+    <span class="step-num">4</span>
+    <div class="step-title">하단의 카트 바를 탭하세요</div>
+    <p>결제 화면에서 주문 요약을 확인합니다:</p>
+    <p><strong>아이템 목록</strong> — 각 아이템의 수량 조절(−/+)과 금액.</p>
+    <p><strong>소계</strong> — 메뉴 가격 기준 전체 합계.</p>
+    <p><strong>서비스료 (5%)</strong> — Tapik 수익 모델의 핵심. 소비자에게 5% 서비스료를 부과하고, 그 100%를 로열티 포인트(TP)로 환원합니다.</p>
+    <p><strong>적립 예정 포인트</strong> — 역할에 따라 동적 계산:
+      Solo 주문 = 5% 적립, Room Joiner = 6%, Room Creator = 8% (Hotspot 모드에서 최대 10%).</p>
+    <p><strong>결제 수단</strong> — Touch 'n Go eWallet이 표시됩니다. <span class="tag tag-mock">UI만 구현</span> 실제 결제 처리는 없습니다.</p>
+    <p>👉 <strong>해보세요:</strong> <strong>"결제 & 선주문"</strong>을 탭해서 주문을 넣어보세요.</p>
+  </div>
+
+  <!-- ORDER TRACKING -->
+  <h3 id="c-order">Step 5: 주문 추적 (선결제 상태)</h3>
+  <div class="step">
+    <span class="step-num">5</span>
+    <div class="step-title">주문이 접수되었습니다</div>
+    <p>결제 후 자동으로 <strong>주문</strong> 탭으로 이동합니다. 주문이 "선결제" 카드로 표시되며 두 가지 옵션이 있습니다:</p>
+    <p><strong>"지금 주문"</strong> — 주문을 머천트에게 즉시 전송합니다. 주문 상태가 ORDERED로 변경되고 Merchant 앱의 대기열에 나타납니다.</p>
+    <p><strong>"나중에 보내기"</strong> — 선결제 주문을 최대 24시간 보관합니다. 준비되면 전송할 수 있습니다 (예: 오전 11시에 결제, 낮 12시에 주방으로 전송).</p>
+    <p>👉 <strong>해보세요:</strong> <strong>"지금 주문"</strong>을 탭하고 즉시 Merchant 앱 탭을 확인하세요.</p>
+    <p><span class="tag tag-sync">실시간 동기화</span> 1~2초 내에 Merchant 앱의 "New" 칼럼에 주문이 나타나야 합니다.</p>
+  </div>
+
+  <!-- MERCHANT SIDE -->
+  <h3 id="c-merchant-flow">Step 6: Merchant 앱으로 전환 (주문 처리)</h3>
+  <div class="alert alert-green">
+    <div class="alert-title">🔄 이제 Merchant 앱 탭으로 전환하세요</div>
+    <p>여기서부터가 핵심입니다. 머천트 입장에서 주문을 처리하면서, Consumer 앱이 실시간으로 업데이트되는 것을 확인하세요.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-num">6a</span>
+    <div class="step-title">주문 수락 (Merchant 앱)</div>
+    <p>Merchant 앱의 <strong>Orders</strong> 탭에서 <strong>"New"</strong> 칼럼에 새 주문이 보입니다. <strong>"Accept"</strong>를 탭하세요. 주문이 <strong>"Preparing"</strong> 칼럼으로 이동하며 준비 체크리스트가 표시됩니다.</p>
+    <p>👉 <strong>Consumer 앱을 확인하세요:</strong> 주문 상태가 "ORDERED"에서 "PREPARING"으로 애니메이션과 함께 변경됩니다.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-num">6b</span>
+    <div class="step-title">준비 완료 (Merchant 앱)</div>
+    <p>"준비가 완료"되면 Merchant 앱에서 <strong>"Ready"</strong>를 탭하세요. 주문이 <strong>"Awaiting Pickup"</strong> 칼럼으로 이동합니다.</p>
+    <p>👉 <strong>Consumer 앱을 확인하세요:</strong> 상태가 "READY"로 변경되며 — 픽업 검증용 QR 코드 그리드가 나타납니다.</p>
+  </div>
+
+  <!-- PICKUP -->
+  <h3 id="c-pickup">Step 7: 픽업 & 포인트 적립</h3>
+  <div class="step">
+    <span class="step-num">7</span>
+    <div class="step-title">픽업 완료 (Merchant 앱)</div>
+    <p>Merchant 앱에서 <strong>"QR Pickup"</strong>을 탭하세요 (고객의 QR 코드 스캔을 시뮬레이션). 주문 상태가 <strong>PICKED_UP</strong>으로 변경됩니다.</p>
+    <p>👉 <strong>Consumer 앱을 확인하세요:</strong></p>
+    <p>• 주문이 <strong>"PICKED UP ✓"</strong>로 표시되며 축하 애니메이션이 재생됩니다.</p>
+    <p>• <strong>포인트(TP)가 자동으로 적립</strong>됩니다 — 리워드 탭에서 업데이트된 잔액을 확인하세요.</p>
+    <p>• 리뷰 프롬프트가 나타나며 — 별점과 코멘트를 남길 수 있습니다.</p>
+    <p><span class="tag tag-live">LIVE</span> 포인트가 Firestore에 실시간으로 기록됩니다. 주문부터 픽업, 포인트 적립까지 — 전체 플로우가 완전히 작동합니다.</p>
+  </div>
+
+  <div class="alert alert-blue">
+    <div class="alert-title">✅ Tapik의 전체 주문 사이클을 완료했습니다</div>
+    <p><strong>소비자 선결제 → 머천트 수신 → 준비 → 완료 → 픽업 → 포인트 적립.</strong> 모두 두 브라우저 탭에서 Firebase Firestore 기반으로 실시간 동기화됩니다. 페이지 새로고침 없이, 폴링 없이 — 순수한 실시간 아키텍처.</p>
+  </div>
+
+  <!-- ROOM -->
+  <h3 id="c-room">Step 8: Room — 그룹 주문</h3>
+  <div class="step">
+    <span class="step-num">8</span>
+    <div class="step-title">Room 생성 또는 참여</div>
+    <p>Consumer 앱의 <strong>Room</strong> 탭으로 이동하세요. Room은 Tapik의 소셜 주문 기능입니다 — 여러 사람이 같은 매장에서 함께 주문하고 모두 부스트된 포인트를 적립합니다.</p>
+    <p><strong>Room 생성:</strong></p>
+    <p>• 매장을 선택하고, Room 유형(공개 또는 비밀번호 비공개)과 멤버 제한(2~8명)을 설정합니다.</p>
+    <p>• 생성된 Room은 라이브 Room 목록에 표시됩니다. 다른 사용자가 공개 Room을 보고 참여할 수 있습니다.</p>
+    <p>• Creator로서 주문 시작("주문 활성화")을 제어하고 Room을 종료할 수 있습니다.</p>
+    <p><strong>Room 상태 머신:</strong></p>
+    <p>대기 중 → 준비 완료 (최소 인원 충족) → 주문 중 → 전원 결제 완료 → 종료 중 → 삭제됨</p>
+    <p><strong>포인트 부스트:</strong> Creator는 8% 적립 (Solo 5% 대비), Joiner는 6% 적립. Hotspot 모드에서 Creator는 최대 10%까지 적립 가능.</p>
+    <p><span class="tag tag-live">LIVE</span> 완전한 Firestore CRUD — Room의 생성, 참여, 종료가 실시간으로 동작합니다. 최소 인원 미달 시 30분 후 자동 만료.</p>
+  </div>
+
+  <!-- REWARDS -->
+  <h3 id="c-rewards">Step 9: 리워드 & 포인트</h3>
+  <div class="step">
+    <span class="step-num">9</span>
+    <div class="step-title">포인트 확인</div>
+    <p><strong>리워드</strong> 탭에서 확인할 수 있는 것:</p>
+    <p><strong>총 TP 잔액</strong> — 누적 로열티 포인트. TP Cap(100,000 TP = RM 1,000 상한)까지의 진행 바가 표시됩니다.</p>
+    <p><strong>레벨 시스템</strong> — L1 Newbie → L2 Regular (500+ TP) → L3 Local (5,000+ TP). 레벨에 따라 향후 기능 접근 권한이 결정됩니다.</p>
+    <p><strong>매장별 분류</strong> — 각 매장에서 적립한 포인트를 표시합니다. <span class="tag tag-live">LIVE</span></p>
+    <p><strong>퀘스트</strong> — 달성형 미션 (3개 매장 방문, 새 카페 시도, Room 참여 등). <span class="tag tag-mock">목 데이터</span></p>
+    <p><strong>리워드 샵</strong> — 교환 가능한 리워드 카탈로그 (무료 커피, 쿠폰, 카야 토스트). <span class="tag tag-mock">목 데이터</span></p>
+  </div>
+
+  <!-- SETTINGS -->
+  <h3 id="c-settings">Step 10: 언어 전환 & 설정</h3>
+  <div class="step">
+    <span class="step-num">10</span>
+    <div class="step-title">언어 전환</div>
+    <p><strong>내 정보</strong> 탭에서 언어 토글(EN/KO)을 탭하세요. 전체 앱이 영어와 한국어 사이를 즉시 전환합니다 — 500개 이상의 번역 키가 모든 UI 텍스트를 커버합니다.</p>
+    <p><span class="tag tag-sync">실시간 동기화</span> 언어 변경이 BroadcastChannel을 통해 Merchant, Admin 앱으로 전파됩니다 — 세 앱이 동시에 언어를 전환합니다.</p>
+  </div>
+</section>
+
+<!-- ===== MERCHANT APP ===== -->
+<section>
+  <h2 id="m-overview">Merchant 앱 — 개요</h2>
+
+  <div class="alert alert-purple">
+    <div class="alert-title">📋 Merchant 앱 참고 사항</div>
+    <p>Merchant 앱의 <strong>핵심 주문 관리 플로우는 완전히 작동합니다</strong> — 주문 수신, 수락, 준비, 완료 모두 Firebase와 BroadcastChannel로 동작합니다. 다만, 분석 대시보드, 고객 데이터, 비즈니스 설정은 현재 <strong>목/플레이스홀더 데이터</strong>를 표시하며, 향후 개발 단계에서 구현될 예정입니다. 아래 설명에서 라이브 vs 목 기능을 표시해 두었습니다.</p>
+  </div>
+
+  <p>Merchant 앱은 <strong>Lenovo Tab M7 태블릿 프레임</strong>(가로 모드, 1024×600px) 안에 렌더링됩니다 — 가맹점이 실제로 매장 내에서 사용할 기기를 시뮬레이션합니다.</p>
+
+  <h3 id="m-features">탭별 기능 안내</h3>
+
+  <table>
+    <tr>
+      <th>탭</th>
+      <th>목적</th>
+      <th>체험 내용</th>
+      <th>상태</th>
+    </tr>
+    <tr>
+      <td><strong>Orders</strong></td>
+      <td>칸반 방식 주문 대기열 — New / Preparing / Awaiting Pickup 칼럼</td>
+      <td>Consumer 앱에서 주문을 넣고 여기에 나타나는 것을 확인하세요. Accept → Prepare → Ready → QR Pickup. 각 액션이 Consumer 앱을 실시간으로 업데이트합니다.</td>
+      <td><span class="tag tag-live">LIVE</span></td>
+    </tr>
+    <tr>
+      <td><strong>Sales</strong></td>
+      <td>일일 KPI — GMV, Tapik 수수료(10%), 순 정산액, 평균 주문 금액. 메뉴 아이템별 판매 순위. 주간 정산 이력.</td>
+      <td>대시보드를 통해 가맹점의 수익 관점을 이해하세요. 참고: Tapik은 10% 수수료를 취하고 90%를 가맹점에 정산합니다.</td>
+      <td><span class="tag tag-mock">MOCK</span></td>
+    </tr>
+    <tr>
+      <td><strong>Menu</strong></td>
+      <td>메뉴 아이템 목록, 활성/비활성 토글, "오늘 판매량" 카운터.</td>
+      <td>아이템을 켜고/끄면서 가맹점이 일일 메뉴 가용성을 어떻게 관리하는지 확인하세요.</td>
+      <td><span class="tag tag-mock">MOCK</span></td>
+    </tr>
+    <tr>
+      <td><strong>Customers</strong></td>
+      <td>고객 세그먼트 — VIP, Growth, New, At Risk, Inactive. 방문 빈도, 즐겨찾기, 마지막 방문일.</td>
+      <td>세그먼트를 둘러보면서 CRM 비전을 이해하세요: 가맹점이 단골이 누구인지, 무엇을 주문하는지, 이탈 위험이 있는 고객이 누구인지 확인합니다.</td>
+      <td><span class="tag tag-mock">MOCK</span></td>
+    </tr>
+    <tr>
+      <td><strong>Ad Board</strong></td>
+      <td>"Right Now" 카드 관리 — Consumer 앱 홈 화면에 표시되는 광고 카드 생성/관리. 노출수, 탭 수, CTR, 전환율.</td>
+      <td>가맹점이 비수기 시간대 트래픽 유도를 위해 프로모션 카드(스팟 딜, 핫딜)를 어떻게 만드는지 확인하세요.</td>
+      <td><span class="tag tag-mock">MOCK</span></td>
+    </tr>
+    <tr>
+      <td><strong>Settings</strong></td>
+      <td>영업 시간, 직원 관리, 계정/결제 정보, 프로모션, 알림, 태블릿 정보, 오프라인 대기열 상태.</td>
+      <td>설정 카테고리를 둘러보세요 — 각각 가맹점을 위한 설정 옵션을 보여줍니다.</td>
+      <td><span class="tag tag-mock">MOCK</span></td>
+    </tr>
+  </table>
+</section>
+
+<!-- ===== ADMIN APP ===== -->
+<section>
+  <h2 id="a-overview">Admin 앱 — 개요</h2>
+
+  <div class="alert alert-purple">
+    <div class="alert-title">📋 Admin 앱 참고 사항</div>
+    <p>Admin 앱은 Tapik의 내부 운영 대시보드입니다. 주로 <strong>목/플레이스홀더 데이터</strong>로 구성되어 의도한 분석 및 관리 기능을 보여줍니다. <strong>라이브 주문 피드</strong>와 <strong>보상 모드 설정</strong>만 Firebase와 완전히 연동되는 기능입니다. 나머지 지표, 차트, 테이블은 대표적인 샘플 데이터를 표시합니다.</p>
+  </div>
+
+  <p>Admin 앱은 Tapik 운영팀을 위한 <strong>다크 테마</strong> 대시보드 레이아웃을 사용합니다.</p>
+
+  <h3 id="a-features">탭별 기능 안내</h3>
+
+  <table>
+    <tr>
+      <th>탭</th>
+      <th>목적</th>
+      <th>확인 사항</th>
+      <th>상태</th>
+    </tr>
+    <tr>
+      <td><strong>Overview</strong></td>
+      <td>플랫폼 전체 KPI (GMV, MRR, WAU, Room 전환율), 코호트 리텐션 히트맵, AI 인사이트, 라이브 주문 피드.</td>
+      <td><strong>Live Feed</strong> 섹션에서 실제 주문이 흐르는 것을 확인하세요 — Consumer에서 주문하면 여기에 나타납니다.</td>
+      <td><span class="tag tag-live">LIVE 피드</span> <span class="tag tag-mock">KPI MOCK</span></td>
+    </tr>
+    <tr>
+      <td><strong>Merchants</strong></td>
+      <td>가맹점 테이블 — 7개 샘플 매장, 건강도 점수(색상 코드), 수수료 티어(10~12%), 월간 GMV, 수락률, 준비 시간.</td>
+      <td>Tapik이 가맹점 성과를 어떻게 모니터링하고 위험 매장을 식별하는지 둘러보세요.</td>
+      <td><span class="tag tag-mock">MOCK</span></td>
+    </tr>
+    <tr>
+      <td><strong>Consumers</strong></td>
+      <td>전환 퍼널 (설치 → 가입 → 첫 주문 → 7일 재주문)과 시간×요일 주문 패턴 히트맵.</td>
+      <td>히트맵에서 점심(12~13시)과 아침(08~09시) 피크가 보입니다 — Tapik의 핵심 타이밍 가설을 검증합니다.</td>
+      <td><span class="tag tag-mock">MOCK</span></td>
+    </tr>
+    <tr>
+      <td><strong>Transactions</strong></td>
+      <td>주문 로그 + 상태 필터. 주문 ID, 고객, 매장, 금액, Room 배정, 타임스탬프.</td>
+      <td>상태(ORDERED / PREPARING / READY / PICKED_UP)별로 필터링해서 거래 모니터링 방식을 확인하세요.</td>
+      <td><span class="tag tag-mock">MOCK</span></td>
+    </tr>
+    <tr>
+      <td><strong>Room</strong></td>
+      <td>Room 분석 — 총 Room 수, 성공률, 평균 멤버, Room당 GMV. Room 이력 테이블.</td>
+      <td>Room 지표를 확인해서 그룹 주문 기능의 비즈니스 임팩트를 파악하세요.</td>
+      <td><span class="tag tag-mock">MOCK</span></td>
+    </tr>
+    <tr>
+      <td><strong>Settlement</strong></td>
+      <td>주간 정산 요약 — GMV, 수수료, 발행 포인트, 게이트웨이 수수료, 순 매출, 가맹점별 정산 내역.</td>
+      <td>Tapik의 3.5% 단위 경제학(10% 수수료 − 5% 포인트 − 1.5% 게이트웨이)이 실제 정산에 어떻게 반영되는지 확인하세요.</td>
+      <td><span class="tag tag-mock">MOCK</span></td>
+    </tr>
+    <tr>
+      <td><strong>Anomalies</strong></td>
+      <td>알림 시스템 — 주문 없음, 이탈 위험, 긴 준비 시간, 비정상 패턴 플래그.</td>
+      <td>알림 샘플을 확인해서 운영 모니터링 의도를 이해하세요.</td>
+      <td><span class="tag tag-mock">MOCK</span></td>
+    </tr>
+    <tr>
+      <td><strong>Settings</strong></td>
+      <td><strong>보상 모드 선택기</strong> — Default(5%), Spot Deal(2배 포인트, 비수기), Hotspot(3배 포인트, 한정 시간) 전환.</td>
+      <td>👉 <strong>해보세요:</strong> 여기서 보상 모드를 변경하고 Consumer 앱을 확인하세요 — 결제 화면의 포인트 계산이 실시간으로 새 모드를 반영합니다.</td>
+      <td><span class="tag tag-live">LIVE</span></td>
+    </tr>
+  </table>
+</section>
+
+<!-- ===== TECH SUMMARY ===== -->
+<section>
+  <h2>기술 요약</h2>
+
+  <table>
+    <tr>
+      <th>구성요소</th>
+      <th>기술</th>
+      <th>상세</th>
+    </tr>
+    <tr>
+      <td><strong>아키텍처</strong></td>
+      <td>단일 파일 HTML + React 18 + Babel</td>
+      <td>빌드 과정 없음. 각 앱이 하나의 .html 파일. 브라우저에서 열기 = 앱 실행.</td>
+    </tr>
+    <tr>
+      <td><strong>백엔드</strong></td>
+      <td>Firebase Firestore (서버리스)</td>
+      <td>실시간 NoSQL 데이터베이스. 모든 주문 데이터, 사용자 프로필, Room 상태, 보상 설정이 여기에 저장됩니다.</td>
+    </tr>
+    <tr>
+      <td><strong>인증</strong></td>
+      <td>Firebase Auth (Google Sign-In)</td>
+      <td>원탭 로그인. 첫 로그인 시 사용자 프로필이 Firestore에 동기화됩니다.</td>
+    </tr>
+    <tr>
+      <td><strong>앱 간 동기화</strong></td>
+      <td>BroadcastChannel API</td>
+      <td>브라우저 네이티브. Consumer ↔ Merchant ↔ Admin이 서버 왕복 없이 주문 이벤트와 언어 변경을 통신합니다.</td>
+    </tr>
+    <tr>
+      <td><strong>다국어</strong></td>
+      <td>커스텀 i18n (601개 키)</td>
+      <td>영어 + 한국어. 언어가 localStorage에 저장되고 모든 앱에서 동기화됩니다.</td>
+    </tr>
+    <tr>
+      <td><strong>코드량</strong></td>
+      <td>총 5,168줄</td>
+      <td>Consumer: 2,757 / Merchant: 1,013 / Admin: 1,398</td>
+    </tr>
+  </table>
+</section>
+
+</main>
+</div>
+</body>
+</html>
