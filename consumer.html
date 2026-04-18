@@ -1,0 +1,2913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tapik v5 · Consumer App (Firebase)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
+import { getFirestore, collection, doc, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, query, where, orderBy, serverTimestamp, getDoc, getDocs, arrayUnion, arrayRemove, increment } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAQNRuhwcTp89S63qKwbs3vLRx8JFv8V_w",
+  authDomain: "tapik-demo.firebaseapp.com",
+  projectId: "tapik-demo",
+  storageBucket: "tapik-demo.firebasestorage.app",
+  messagingSenderId: "503990315544",
+  appId: "1:503990315544:web:bd43a5a67b8d4a7064b16d",
+  measurementId: "G-8102LYKK0C"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();
+
+// Expose to global scope for Babel script
+window.FB = { auth, db, googleProvider, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, collection, doc, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, query, where, orderBy, serverTimestamp, getDoc, getDocs, arrayUnion, arrayRemove, increment };
+</script>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; background:#f3f4f6; }
+  .tabular { font-variant-numeric: tabular-nums; }
+  @keyframes popIn { 0%{transform:scale(0.5);opacity:0} 60%{transform:scale(1.1);opacity:1} 100%{transform:scale(1)} }
+  .animate-pop { animation: popIn 0.5s ease-out; }
+  @keyframes slideUp { from{transform:translateY(16px);opacity:0} to{transform:translateY(0);opacity:1} }
+  .animate-slide-up { animation: slideUp 0.4s ease-out both; }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  .animate-fade { animation: fadeIn 0.3s ease-out both; }
+  @keyframes pulseRing { 0%{box-shadow:0 0 0 0 rgba(251,146,60,0.5)} 70%{box-shadow:0 0 0 12px rgba(251,146,60,0)} 100%{box-shadow:0 0 0 0 rgba(251,146,60,0)} }
+  .animate-pulse-ring { animation: pulseRing 1.5s ease-out infinite; }
+  @keyframes scanLine { 0%{top:10%} 50%{top:85%} 100%{top:10%} }
+  .scan-line { animation: scanLine 1.6s ease-in-out infinite; }
+  .phone-frame { position:relative; background:#1a1a1a; border-radius:24px; padding:8px; box-shadow:0 20px 40px -10px rgba(0,0,0,0.25),0 0 0 2px #333; width:380px; margin:0 auto; }
+  .phone-frame::before { content:''; position:absolute; top:16px; left:50%; transform:translateX(-50%); width:10px; height:10px; background:#222; border-radius:50%; z-index:50; border:2px solid #333; }
+  .phone-screen { background:#f9fafb; border-radius:18px; overflow:hidden; height:820px; min-height:820px; max-height:820px; position:relative; }
+  .android-nav { display:flex; justify-content:center; align-items:center; gap:32px; height:28px; background:#1a1a1a; padding:4px 0; }
+  .android-nav-pill { width:36px; height:4px; background:#666; border-radius:4px; }
+  .hide-scroll::-webkit-scrollbar { display:none; }
+  .hide-scroll { -ms-overflow-style:none; scrollbar-width:none; }
+  .photo-gradient { background: linear-gradient(135deg, #fde68a, #fb923c, #f59e0b); }
+  .photo-gradient-2 { background: linear-gradient(135deg, #fca5a5, #f87171, #dc2626); }
+  .photo-gradient-3 { background: linear-gradient(135deg, #86efac, #4ade80, #16a34a); }
+  .photo-gradient-4 { background: linear-gradient(135deg, #93c5fd, #60a5fa, #2563eb); }
+  .photo-gradient-5 { background: linear-gradient(135deg, #d8b4fe, #c084fc, #9333ea); }
+  .photo-gradient-6 { background: linear-gradient(135deg, #fdba74, #fb923c, #ea580c); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useMemo, useEffect, useRef, useCallback } = React;
+
+// ================= Cross-App BroadcastChannel =================
+const tapikChannel = new BroadcastChannel('tapik-orders');
+
+// ================= i18n =================
+const LANG = {
+  ko: {
+    'app.greeting.morning': '좋은 아침,',
+    'app.greeting.afternoon': '점심 맛있게,',
+    'app.greeting.evening': '저녁이야,',
+    'tab.home': '홈',
+    'tab.order': '주문',
+    'tab.room': '룸',
+    'tab.rewards': '리워드',
+    'tab.me': '내 정보',
+    'home.nearby': '근처 매장',
+    'home.rightnow': 'Right Now',
+    'home.friends': '친구 소식',
+    'home.room_invite': '이 Room에 참여할까?',
+    'store.menu': '메뉴',
+    'store.reviews': '리뷰',
+    'store.open': '영업 중',
+    'store.closed': '마감',
+    'store.queue': '앞 {n}명',
+    'store.wait': '약 {min}분',
+    'store.fav': '찜',
+    'store.share': '공유',
+    'store.room': 'Room 열기',
+    'cart.items': '{n}개 메뉴',
+    'cart.go': '주문하러 가기',
+    'checkout.title': '주문 확인',
+    'checkout.subtotal': '소계',
+    'checkout.service': '서비스료 (5%)',
+    'checkout.points_use': '포인트 사용',
+    'checkout.total': '합계',
+    'checkout.points_earn': '적립 예정',
+    'checkout.solo': '혼자 주문',
+    'checkout.room_create': 'Room 만들기',
+    'checkout.room_join': '기존 Room 참여',
+    'checkout.pay': 'RM {total} 결제하기',
+    'checkout.room_type': 'Room 유형',
+    'checkout.public': '🌐 Public',
+    'checkout.private': '🔒 Private',
+    'prepaid.title': '선결제 완료',
+    'prepaid.place': '지금 주문 넣기',
+    'prepaid.cancel': '취소',
+    'prepaid.valid': '24시간 내 주문 전송 가능',
+    'prepaid.desc': '결제만 완료된 상태야. 주문을 보내야 매장에서 준비 시작해.',
+    'order.ordered': '매장에서 확인 중...',
+    'order.preparing': '준비 중! 약 {eta}분',
+    'order.ready': '준비 완료! QR을 보여줘',
+    'order.pickedup': '픽업 완료!',
+    'order.points': '+{pts} TP 적립!',
+    'order.review': '리뷰 남기기',
+    'order.active': '진행 중',
+    'order.history': '히스토리',
+    'order.reorder': '다시 주문',
+    'room.public': '🌐 Public',
+    'room.private': '🔒 Private',
+    'room.active': '활성 Room',
+    'room.find': '근처 Room',
+    'room.friend_rooms': '친구 Room',
+    'room.history': '히스토리',
+    'room.join': '참여하기',
+    'room.create': 'Room 만들기',
+    'room.waiting': '대기 중',
+    'room.locked': '확정',
+    'room.members': '{n}/{max}명',
+    'room.timeleft': '{min}분 남음',
+    'room.expired': '만료',
+    'rewards.total': '총 포인트',
+    'rewards.level': '레벨',
+    'rewards.by_store': '매장별 포인트',
+    'rewards.quests': '퀘스트',
+    'rewards.shop': '리워드 샵',
+    'rewards.claim': '보상 받기',
+    'me.profile': '프로필',
+    'me.payment': '결제수단',
+    'me.prepaid': '선결제 내역',
+    'me.friends': '친구',
+    'me.notifications': '알림 설정',
+    'me.language': '언어',
+    'me.help': '고객센터',
+    'me.logout': '로그아웃',
+    'points.solo': 'Solo 5%',
+    'points.joiner': 'Joiner 6%',
+    'points.creator': 'Creator 8%',
+    'onboarding.welcome': 'Tap · Pick · Go',
+    'onboarding.slide1': '선결제하고 줄 안 서',
+    'onboarding.slide2': '포인트로 다 돌려받아',
+    'onboarding.slide3': 'Room으로 같이 가면 더 많이',
+    'onboarding.start': '시작하기',
+    'onboarding.skip': '건너뛰기',
+    'status.ordered': '확인 대기',
+    'status.preparing': '준비 중',
+    'status.ready': '픽업 가능',
+    'status.picked_up': '픽업 완료',
+    'room.status.waiting': '모집 중',
+    'room.status.ready': '준비 완료',
+    'room.status.ordering': '주문 중',
+    'room.status.all_paid': '전원 결제',
+    'room.status.closing': '마감 중',
+    'filter.closest': '가까운순',
+    'filter.popular': '인기순',
+    'filter.rooms': 'Room 있는 곳',
+    'filter.discount': '할인중',
+    'time.today': '오늘',
+    'time.yesterday': '어제',
+    'time.ago.1h': '1시간 전',
+    'time.ago.2d': '2일 전',
+    'time.ago.5d': '5일 전',
+    'time.now': '방금',
+    'menu.coffee_specialty': '스페셜티 에스프레소 2샷 + 차가운 스팀 우유',
+    'menu.salmon_bagel': '훈제 연어 + 크림치즈 + 딜',
+    'menu.matcha': '교토산 세레모니얼 말차 + 귀리 우유',
+    'menu.avocado': '아보카도 스매시 + 사워도우',
+    'menu.croissant': '버터 크로와상 + 햄 + 체다',
+    'menu.kaya': '숯불 토스트 + 반숙란 2개 + 코피C',
+    'menu.kopi': '로부스타 원두 블랙커피',
+    'menu.chicken_rice': '하이난식 기름밥 + 삶은 치킨',
+    'menu.wonton': '간장 소스 국수 + 완탕 5개',
+    'menu.cortado': '진한 에스프레소 + 살짝의 스팀 우유',
+    'review.aiden': '매주 2~3번 오는 단골. Flat White 퀄리티 일관.',
+    'review.sarah': 'Salmon Bagel 여기가 TTDI 최고.',
+    'review.uncle': '매일 아침 7시 10분 도착. 10년째.',
+    'ad.wait_ahead': '지금 앞 {n}명',
+    'ad.walk_time': '도보 5분',
+    'ad.offpeak': '오후 3시까지 · 모든 메뉴',
+    'ad.clearance': '1 hour before close',
+    'ad.kaya_remaining': 'Kaya Toast x4 left',
+    'quest.visit_stores': '이번 주 3 가게 방문',
+    'quest.new_cafe': '새 카페 1곳 도전',
+    'quest.room_join': 'Room 1회 참여',
+    'reward.free_coffee': '무료 Iced Flat White',
+    'reward.all_stores': '전 매장',
+    'reward.discount': '10% 할인 쿠폰',
+    'reward.free_kaya': '무료 Kaya Toast Set',
+    'action.immediate': '바로 가능',
+    'action.immediate_order': '바로 주문 가능!',
+    'action.no_wait': '대기 없음',
+    'action.cancel': '취소',
+    'action.next': '다음',
+    'action.start': '시작하기',
+    'action.skip': '건너뛰기',
+    'action.leave_room': '나가기',
+    'action.close_room': 'Room 취소',
+    'action.creating': '생성 중...',
+    'action.reorder': '재주문 →',
+    'msg.confirm_wait': '매장에서 주문을 확인하면 다음 단계로 넘어가',
+    'msg.preparing': '매장에서 주문을 준비하고 있어',
+    'msg.show_qr': '매장에서 QR 코드를 보여줘',
+    'msg.enjoy': '맛있게 먹어 🎉',
+    'msg.no_paid_orders': '선결제 대기 중인 주문이 없어',
+    'msg.no_active_orders': '진행 중인 주문이 없어',
+    'msg.no_orders': '주문 내역이 없어',
+    'msg.wrong_password': '비밀번호가 틀렸어!',
+    'msg.min_members': '최소인원 충족!',
+    'msg.no_location': '위치 허용 필요',
+    'msg.reorder_prompt': '지난번에 시킨 거 또 시킬래?',
+    'msg.select_lang': '한국어',
+    'phrase.no_queue': '줄 서는 시간 없이 바로 픽업',
+    'phrase.earn_points': '매번 결제할 때마다 Tapik 포인트 적립',
+    'phrase.room_bonus': 'Room으로 친구랑 같이 주문하면 포인트 UP',
+    'phrase.signing_in': 'Google로 시작하기',
+    'phrase.signing_in_progress': '로그인 중...',
+    'phrase.store': '매장',
+    'phrase.permissions': '앱 권한 설정',
+    'phrase.permissions_desc': '더 좋은 경험을 위해 허용해줘',
+    'phrase.location': '📍 위치 정보',
+    'phrase.location_desc': 'Public Room 검색 · 근처 매장',
+    'phrase.contact': '📱 연락처',
+    'phrase.contact_desc': 'Private Room 친구 찾기',
+    'phrase.notifications': '🔔 푸시 알림',
+    'phrase.notifications_desc': '주문 상태 · Room 초대',
+    'phrase.resend': '다시 보내기',
+    'phrase.save_later': '🕐 나중에 주문 (24시간 유효)',
+    'phrase.refund': '결제 취소 · 즉시 환불',
+    'phrase.qr_please': 'QR 보여주세요!',
+    'phrase.activate_order': '주문 활성화 하러가기 →',
+    'phrase.view_room': 'Room 보기 →',
+    'phrase.view_detail': '상세 보기 →',
+    'phrase.now_members': '{n}/{max}명',
+    'phrase.creator_joiner': '{role}',
+  },
+  en: {
+    'app.greeting.morning': 'Good morning,',
+    'app.greeting.afternoon': 'Enjoy your lunch,',
+    'app.greeting.evening': 'Good evening,',
+    'tab.home': 'Home',
+    'tab.order': 'Order',
+    'tab.room': 'Room',
+    'tab.rewards': 'Rewards',
+    'tab.me': 'Me',
+    'home.nearby': 'Nearby Stores',
+    'home.rightnow': 'Right Now',
+    'home.friends': 'Friends',
+    'home.room_invite': 'Want to join this Room?',
+    'store.menu': 'Menu',
+    'store.reviews': 'Reviews',
+    'store.open': 'Open',
+    'store.closed': 'Closed',
+    'store.queue': '{n} ahead',
+    'store.wait': 'About {min} min',
+    'store.fav': 'Save',
+    'store.share': 'Share',
+    'store.room': 'Open Room',
+    'cart.items': '{n} items',
+    'cart.go': 'Go to checkout',
+    'checkout.title': 'Order Review',
+    'checkout.subtotal': 'Subtotal',
+    'checkout.service': 'Service fee (5%)',
+    'checkout.points_use': 'Use points',
+    'checkout.total': 'Total',
+    'checkout.points_earn': 'Points earned',
+    'checkout.solo': 'Order solo',
+    'checkout.room_create': 'Create Room',
+    'checkout.room_join': 'Join existing Room',
+    'checkout.pay': 'Pay RM {total}',
+    'checkout.room_type': 'Room type',
+    'checkout.public': '🌐 Public',
+    'checkout.private': '🔒 Private',
+    'prepaid.title': 'Pre-paid',
+    'prepaid.place': 'Submit order now',
+    'prepaid.cancel': 'Cancel',
+    'prepaid.valid': 'Can submit order within 24 hours',
+    'prepaid.desc': 'Payment is confirmed. You can submit your order whenever ready.',
+    'order.ordered': 'Confirming with store...',
+    'order.preparing': 'Being prepared! About {eta} min',
+    'order.ready': 'Ready! Show QR code',
+    'order.pickedup': 'Picked up!',
+    'order.points': '+{pts} TP earned!',
+    'order.review': 'Leave review',
+    'order.active': 'Active',
+    'order.history': 'History',
+    'order.reorder': 'Order again',
+    'room.public': '🌐 Public',
+    'room.private': '🔒 Private',
+    'room.active': 'Active Room',
+    'room.find': 'Nearby Rooms',
+    'room.friend_rooms': 'Friends\' Rooms',
+    'room.history': 'History',
+    'room.join': 'Join',
+    'room.create': 'Create Room',
+    'room.waiting': 'Waiting',
+    'room.locked': 'Locked',
+    'room.members': '{n}/{max} people',
+    'room.timeleft': '{min} min left',
+    'room.expired': 'Expired',
+    'rewards.total': 'Total Points',
+    'rewards.level': 'Level',
+    'rewards.by_store': 'Points by store',
+    'rewards.quests': 'Quests',
+    'rewards.shop': 'Rewards shop',
+    'rewards.claim': 'Claim reward',
+    'me.profile': 'Profile',
+    'me.payment': 'Payment',
+    'me.prepaid': 'Pre-paid history',
+    'me.friends': 'Friends',
+    'me.notifications': 'Notifications',
+    'me.language': 'Language',
+    'me.help': 'Help',
+    'me.logout': 'Logout',
+    'points.solo': 'Solo 5%',
+    'points.joiner': 'Joiner 6%',
+    'points.creator': 'Creator 8%',
+    'onboarding.welcome': 'Tap · Pick · Go',
+    'onboarding.slide1': 'Pre-pay and skip the queue',
+    'onboarding.slide2': 'Get all your money back in points',
+    'onboarding.slide3': 'Earn more with Room',
+    'onboarding.start': 'Get started',
+    'onboarding.skip': 'Skip',
+    'status.ordered': 'Confirming',
+    'status.preparing': 'Preparing',
+    'status.ready': 'Ready for pickup',
+    'status.picked_up': 'Picked up',
+    'label.order_status': 'Order Status',
+    'label.order_number': 'Order #',
+    'status.prepaid': 'Pre-paid',
+    'status.completed': 'Completed',
+    'room.status.waiting': 'Recruiting',
+    'room.status.ready': 'Ready',
+    'room.status.ordering': 'Ordering',
+    'room.status.all_paid': 'All paid',
+    'room.status.closing': 'Closing',
+    'filter.closest': 'Closest',
+    'filter.popular': 'Popular',
+    'filter.rooms': 'Has Rooms',
+    'filter.discount': 'On sale',
+    'time.today': 'Today',
+    'time.yesterday': 'Yesterday',
+    'time.ago.1h': '1 hour ago',
+    'time.ago.2d': '2 days ago',
+    'time.ago.5d': '5 days ago',
+    'time.now': 'Just now',
+    'menu.coffee_specialty': 'Double shot specialty espresso + cold steamed milk',
+    'menu.salmon_bagel': 'Smoked salmon + cream cheese + dill',
+    'menu.matcha': 'Kyoto ceremonial matcha + oat milk',
+    'menu.avocado': 'Smashed avocado + sourdough',
+    'menu.croissant': 'Butter croissant + ham + cheddar',
+    'menu.kaya': 'Charcoal toast + soft-boiled eggs (2) + coffee C',
+    'menu.kopi': 'Robusta black coffee',
+    'menu.chicken_rice': 'Hainanese chicken rice',
+    'menu.wonton': 'Soy sauce noodles + wonton (5)',
+    'menu.cortado': 'Rich espresso + light steamed milk',
+    'review.aiden': 'Regular who comes 2-3x weekly. Consistent Flat White quality.',
+    'review.sarah': 'Best Salmon Bagel in TTDI.',
+    'review.uncle': 'Every morning at 7:10. 10 years running.',
+    'ad.wait_ahead': '{n} ahead now',
+    'ad.walk_time': '5 min walk',
+    'ad.offpeak': 'Until 3 PM · All items',
+    'ad.clearance': '1 hour before close',
+    'quest.visit_stores': 'Visit 3 stores this week',
+    'quest.new_cafe': 'Try 1 new cafe',
+    'quest.room_join': 'Join a Room once',
+    'reward.free_coffee': 'Free Iced Flat White',
+    'reward.all_stores': 'All stores',
+    'reward.discount': '10% discount coupon',
+    'reward.free_kaya': 'Free Kaya Toast Set',
+    'action.immediate': 'Available now',
+    'action.immediate_order': 'Order available now!',
+    'action.no_wait': 'No wait',
+    'action.cancel': 'Cancel',
+    'action.next': 'Next',
+    'action.start': 'Start',
+    'action.skip': 'Skip',
+    'action.leave_room': 'Leave',
+    'action.close_room': 'Close Room',
+    'action.creating': 'Creating...',
+    'action.reorder': 'Order again →',
+    'msg.confirm_wait': 'Store will confirm and move to next step',
+    'msg.preparing': 'Store is preparing your order',
+    'msg.show_qr': 'Show QR code to store',
+    'msg.enjoy': 'Enjoy! 🎉',
+    'msg.no_paid_orders': 'No pre-paid orders pending',
+    'msg.no_active_orders': 'No active orders',
+    'msg.no_orders': 'No order history',
+    'msg.wrong_password': 'Wrong password!',
+    'msg.min_members': 'Minimum reached!',
+    'msg.no_location': 'Location permission required',
+    'msg.reorder_prompt': 'Want to order the same thing again?',
+    'msg.select_lang': 'English',
+    'phrase.no_queue': 'Skip the queue and pick up instantly',
+    'phrase.earn_points': 'Earn Tapik Points with every order',
+    'phrase.room_bonus': 'Earn more points by ordering with friends in a Room',
+    'phrase.signing_in': 'Start with Google',
+    'phrase.signing_in_progress': 'Signing in...',
+    'phrase.store': 'Store',
+    'phrase.permissions': 'App permissions',
+    'phrase.permissions_desc': 'Enable these for a better experience',
+    'phrase.location': '📍 Location',
+    'phrase.location_desc': 'Find Public Rooms · Nearby stores',
+    'phrase.contact': '📱 Contacts',
+    'phrase.contact_desc': 'Find friends for Private Rooms',
+    'phrase.notifications': '🔔 Push notifications',
+    'phrase.notifications_desc': 'Order updates · Room invites',
+    'phrase.resend': 'Resend',
+    'phrase.save_later': '🕐 Order later (valid 24h)',
+    'phrase.refund': 'Cancel payment · Instant refund',
+    'phrase.qr_please': 'Show QR code!',
+    'phrase.activate_order': 'Activate order →',
+    'phrase.view_room': 'View Room →',
+    'phrase.view_detail': 'View details →',
+    'phrase.now_members': '{n}/{max} people',
+    'phrase.creator_joiner': '{role}',
+    'item.and_more': 'and {n} more',
+    'reward.mode.default': 'Default',
+    'reward.mode.default.desc': '3-tier system - always active',
+    'reward.mode.spot': 'Spot Event',
+    'reward.mode.spot.desc': '6-level boost - earn extra points',
+    'reward.mode.hotspot': 'Hot Spot Event',
+    'reward.mode.hotspot.desc': 'Big promotion - up to 10% bonus',
+    'room.members_count': '{n}/{max} people (min)',
+    'room.time_left': '{min} min left',
+    'room.min_met': 'Minimum reached!',
+    'room.reward_rate': 'Points rate: {mode}',
+    'room.activate_order': '✅ Activate ordering (members can order)',
+    'room.go_order': 'Go to order →',
+    'room.paid_wait': '✅ Paid — waiting for others',
+    'room.all_paid': '🎉 All paid! Order sent to store',
+    'room.destroy': '💥 Close Room (finish + earn points)',
+    'room.min_recruit': '🔒 Recruiting {min} people...',
+    'room.wait_activate': '⏳ Waiting for Creator to activate',
+    'room.create_title': 'Create new Room',
+    'room.select_store': 'Select store',
+    'room.select_type': 'Room type',
+    'room.password_label': 'Password',
+    'room.password_input': 'Enter Room password',
+    'room.max_members': 'Max people: {max} (min {min})',
+    'room.btn_cancel': 'Cancel',
+    'room.btn_create': 'Create Room',
+    'room.btn_creating': 'Creating...',
+    'room.password_title': '🔒 Private Room password',
+    'room.password_input_modal': 'Enter password',
+    'room.btn_join': 'Join',
+    'room.current_rate': 'Current point rate',
+    'room.rate_mode': '{mode} mode active',
+    'room.no_public': 'No open Public Rooms',
+    'room.create_new': 'Create one with the button above!',
+    'room.no_private': 'No Private Rooms',
+    'rewards.rate_earned': '{pct}% earned',
+    'rewards.max_rm': 'Max RM {max}',
+    'rewards.cap_reached': '⚡ Cap reached! Use points to earn more!',
+    'rewards.level_next': '→ {next} in {needed} TP',
+    'rewards.no_history': 'No earning history yet',
+    'onboarding.tagline': 'Pre-pay · QR pickup · Earn points',
+    'onboarding.skip_all': '⚡ Skip all (test)',
+    'onboarding.phone_title': 'Phone verification',
+    'onboarding.phone_desc': 'Enter Malaysia number',
+    'onboarding.send_code': 'Send code',
+    'onboarding.code_sent': '✓ Sent to +60{phone}',
+    'onboarding.verify_code': 'Verify code',
+    'onboarding.resend': 'Resend',
+    'onboarding.profile_title': 'Create profile',
+    'onboarding.name_label': 'Name',
+    'onboarding.name_input': 'Enter name',
+    'onboarding.phone_label': 'Phone number',
+    'onboarding.next': 'Next',
+    'onboarding.skip_perm': '⚡ Skip',
+    'onboarding.terms_title': 'Key disclaimers',
+    'onboarding.terms_location': 'Location: Used for Public Room matching. Not shared.',
+    'onboarding.terms_contact': 'Contacts: Only for Private Room friends. Not stored.',
+    'onboarding.terms_payment': 'Payment: Auto-refund if not ordered within 24h.',
+    'onboarding.terms_points': 'Points: TP non-transferable. Expire after 12 months.',
+    'onboarding.terms_cancel': 'Cancel: Not after ORDERED. Only in PAID state.',
+    'onboarding.terms_room': 'Room: Auto-close after 30min if under 2 people.',
+    'onboarding.terms_privacy': 'Privacy: Data handled per Tapik Privacy Policy.',
+    'onboarding.agree_all': 'I agree to all terms',
+    'onboarding.start_app': 'Start Tapik 🎉',
+    'login.tagline': 'Pre-pay and skip the queue, earn points',
+    'login.whatsapp': 'WhatsApp (coming soon)',
+    'login.tiktok': 'TikTok (coming soon)',
+    'login.facebook': 'Facebook (coming soon)',
+    'login.terms': 'Signing in means you agree to <span class="underline">Terms</span> and <span class="underline">Privacy</span>.',
+    'msg.loading': 'Loading...',
+    'msg.password_wrong': 'Wrong password!',
+    'order.date_today': 'Today 09:15',
+    'order.date_yesterday': 'Yesterday 12:30',
+    'msg.myself': 'Me',
+    'msg.just_now': 'Just now',
+    'msg.just_paid': 'Just paid',
+  }
+};
+
+// Add Korean translations for reward modes
+LANG.ko['reward.mode.default'] = '디폴트';
+LANG.ko['reward.mode.default.desc'] = '3단계 티어 — 상시 적용';
+LANG.ko['reward.mode.spot'] = '스팟 이벤트';
+LANG.ko['reward.mode.spot.desc'] = '6단계 연속 — 적립률 업그레이드';
+LANG.ko['reward.mode.hotspot'] = '핫스팟 이벤트';
+LANG.ko['reward.mode.hotspot.desc'] = '대규모 프로모션 — Creator 최대 10%';
+LANG.ko['item.and_more'] = '외 {n}개';
+LANG.ko['ad.kaya_remaining'] = 'Kaya Toast 4개 남음';
+LANG.ko['label.order_status'] = '주문 상태';
+LANG.ko['label.order_number'] = '주문번호';
+LANG.ko['status.prepaid'] = '선결제';
+LANG.ko['status.completed'] = '완료';
+LANG.ko['room.members_count'] = '{n}/{max}명(min)';
+LANG.ko['room.time_left'] = '{min}분 남음';
+LANG.ko['room.min_met'] = '최소인원 충족!';
+LANG.ko['room.reward_rate'] = '적립률: {mode}';
+LANG.ko['room.activate_order'] = '✅ 주문 활성화 (멤버들 주문 가능하게)';
+LANG.ko['room.go_order'] = '주문하러 가기 →';
+LANG.ko['room.paid_wait'] = '✅ 결제 완료 — 다른 멤버 결제 대기 중';
+LANG.ko['room.all_paid'] = '🎉 전원 결제 완료! 주문이 매장에 전송됨';
+LANG.ko['room.destroy'] = '💥 방폭 (Room 종료 + 적립 받기)';
+LANG.ko['room.min_recruit'] = '🔒 최소인원({min}명) 모집 중...';
+LANG.ko['room.wait_activate'] = '⏳ Creator가 주문 활성화할 때까지 대기';
+LANG.ko['room.create_title'] = '새 Room 만들기';
+LANG.ko['room.select_store'] = '매장 선택';
+LANG.ko['room.select_type'] = 'Room 유형';
+LANG.ko['room.password_label'] = '비밀번호';
+LANG.ko['room.password_input'] = 'Room 비밀번호 입력';
+LANG.ko['room.max_members'] = '최대 인원: {max}명 (최소 {min}명)';
+LANG.ko['room.btn_cancel'] = '취소';
+LANG.ko['room.btn_create'] = 'Room 만들기';
+LANG.ko['room.btn_creating'] = '생성 중...';
+LANG.ko['room.password_title'] = '🔒 Private Room 비밀번호';
+LANG.ko['room.password_input_modal'] = '비밀번호 입력';
+LANG.ko['room.btn_join'] = '참여';
+LANG.ko['room.current_rate'] = '현재 적립률';
+LANG.ko['room.rate_mode'] = '{mode} 모드 적용 중';
+LANG.ko['room.no_public'] = '열린 Public Room이 없어';
+LANG.ko['room.create_new'] = '위 버튼으로 새 Room을 만들어봐!';
+LANG.ko['room.no_private'] = 'Private Room이 없어';
+// Additional translations for hardcoded Korean strings
+LANG.ko['msg.paid_order_info'] = '💡 결제 완료된 주문이야. 24시간 안에 매장에 전송해야 해. 안 하면 자동 환불돼.';
+LANG.ko['msg.needs_review'] = '⭐ 리뷰 안 쓴 주문이 {count}건 있어';
+LANG.ko['action.send_paid_order'] = '📤 지금 매장에 주문 전송';
+LANG.ko['status.review_done'] = '리뷰 완료';
+LANG.ko['label.rating_and_review'] = '별점 · 한줄 리뷰';
+LANG.ko['placeholder.one_line_review'] = '한줄 리뷰 (선택)';
+LANG.ko['action.complete_button'] = '완료';
+LANG.ko['action.cancel_button'] = '취소';
+LANG.ko['action.write_review'] = '⭐ 리뷰 쓰기';
+// Terms section labels
+LANG.ko['label.terms_location'] = '위치 정보';
+LANG.ko['label.terms_contact'] = '연락처';
+LANG.ko['label.terms_payment'] = '결제';
+LANG.ko['label.terms_points'] = '포인트';
+LANG.ko['label.terms_cancel'] = '취소';
+LANG.ko['label.terms_privacy'] = '개인정보';
+LANG.ko['order.paid_pending'] = '💳 선결제 대기';
+LANG.ko['rewards.rate_earned'] = '{pct}% 적립';
+LANG.ko['rewards.max_rm'] = '최대 RM {max}';
+LANG.ko['rewards.cap_reached'] = '⚡ 한도 도달! 포인트 사용하면 더 모을 수 있어!';
+LANG.ko['rewards.level_next'] = '→ {next}까지 {needed} TP';
+LANG.ko['rewards.no_history'] = '아직 적립 내역이 없어';
+LANG.ko['onboarding.tagline'] = '선결제 · QR 픽업 · 포인트 적립';
+LANG.ko['onboarding.skip_all'] = '⚡ 전체 건너뛰기 (테스트용)';
+LANG.ko['onboarding.phone_title'] = '전화번호 인증';
+LANG.ko['onboarding.phone_desc'] = 'Malaysia 번호를 입력해줘';
+LANG.ko['onboarding.send_code'] = '인증번호 보내기';
+LANG.ko['onboarding.code_sent'] = '✓ +60{phone}으로 전송됨';
+LANG.ko['onboarding.verify_code'] = '인증 확인';
+LANG.ko['onboarding.resend'] = '다시 보내기';
+LANG.ko['onboarding.profile_title'] = '프로필 설정';
+LANG.ko['onboarding.name_label'] = '이름';
+LANG.ko['onboarding.name_input'] = '이름 입력';
+LANG.ko['onboarding.phone_label'] = '전화번호';
+LANG.ko['onboarding.next'] = '다음';
+LANG.ko['onboarding.skip_perm'] = '⚡ 건너뛰기';
+LANG.ko['onboarding.terms_title'] = '주요 면책 조항';
+LANG.ko['onboarding.terms_location'] = '위치 정보: Public Room 매칭에 사용. 제3자 미공유.';
+LANG.ko['onboarding.terms_contact'] = '연락처: Private Room 친구 매칭에만 사용. 서버 미저장.';
+LANG.ko['onboarding.terms_payment'] = '결제: 선결제 후 24시간 내 미주문 시 자동 환불.';
+LANG.ko['onboarding.terms_points'] = '포인트: Tapik 포인트(TP)는 현금 전환 불가. 12개월 미사용 시 소멸.';
+LANG.ko['onboarding.terms_cancel'] = '취소: ORDERED 이후 취소 불가. PAID 상태에서만 취소 가능.';
+LANG.ko['onboarding.terms_room'] = 'Room: 최소 2명 미달 시 30분 후 자동 해산. 개인 주문으로 전환.';
+LANG.ko['onboarding.terms_privacy'] = '개인정보: Tapik Privacy Policy에 따라 데이터 처리.';
+LANG.ko['onboarding.agree_all'] = '전체 약관에 동의합니다';
+LANG.ko['onboarding.start_app'] = 'Tapik 시작하기 🎉';
+LANG.ko['login.tagline'] = '선결제하고 줄 안 서고, 포인트로 돌려받는 F&B 슈퍼앱';
+LANG.ko['login.whatsapp'] = 'WhatsApp (준비 중)';
+LANG.ko['login.tiktok'] = 'TikTok (준비 중)';
+LANG.ko['login.facebook'] = 'Facebook (준비 중)';
+LANG.ko['login.terms'] = '로그인하면 <span class="underline">이용약관</span>과 <span class="underline">개인정보처리방침</span>에 동의합니다.';
+LANG.ko['msg.loading'] = '로딩 중...';
+LANG.ko['msg.password_wrong'] = '비밀번호가 틀렸어!';
+LANG.ko['order.date_today'] = '오늘 09:15';
+LANG.ko['order.date_yesterday'] = '어제 12:30';
+LANG.ko['msg.myself'] = '나';
+LANG.ko['msg.just_now'] = '방금';
+LANG.ko['msg.just_paid'] = '방금 결제';
+
+// Language state — default EN for ShardLab evaluators
+let _currentLang = localStorage.getItem('tapik_lang') || 'en';
+const t = (key, params = {}) => {
+  let str = LANG[_currentLang]?.[key] || LANG['en'][key] || key;
+  Object.entries(params).forEach(([k, v]) => { str = str.replace(`{${k}}`, v); });
+  return str;
+};
+const setLang = (lang) => {
+  _currentLang = lang;
+  localStorage.setItem('tapik_lang', lang);
+  // Broadcast to other apps
+  tapikChannel.postMessage({ type: 'LANG_CHANGE', lang });
+};
+
+// Listen for cross-app language changes
+tapikChannel.addEventListener('message', (e) => {
+  if (e.data.type === 'LANG_CHANGE') {
+    _currentLang = e.data.lang;
+    localStorage.setItem('tapik_lang', e.data.lang);
+    // Trigger re-render by dispatching a custom event
+    window.dispatchEvent(new CustomEvent('tapikLangChange', { detail: { lang: e.data.lang } }));
+  }
+});
+
+// ================= SVG Icons =================
+const Ic = ({ d, s=20, sw=2, c="" }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round" className={c}>{d}</svg>
+);
+const I = {
+  Home: (p) => <Ic {...p} d={<><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></>}/>,
+  Store: (p) => <Ic {...p} d={<><path d="M3 9l1-5h16l1 5"/><path d="M3 9v11h18V9"/><path d="M9 22v-6h6v6"/></>}/>,
+  Clock: (p) => <Ic {...p} d={<><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></>}/>,
+  MapPin: (p) => <Ic {...p} d={<><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></>}/>,
+  Star: (p) => <Ic {...p} d={<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>}/>,
+  Check: (p) => <Ic {...p} d={<polyline points="20 6 9 17 4 12"/>}/>,
+  ChevronLeft: (p) => <Ic {...p} d={<polyline points="15 18 9 12 15 6"/>}/>,
+  ChevronRight: (p) => <Ic {...p} d={<polyline points="9 18 15 12 9 6"/>}/>,
+  Gift: (p) => <Ic {...p} d={<><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></>}/>,
+  Bell: (p) => <Ic {...p} d={<><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></>}/>,
+  Users: (p) => <Ic {...p} d={<><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></>}/>,
+  Package: (p) => <Ic {...p} d={<><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></>}/>,
+  Wallet: (p) => <Ic {...p} d={<><path d="M20 12V8H4a2 2 0 0 1 0-4h14v4"/><path d="M4 6v14a2 2 0 0 0 2 2h14v-4"/><circle cx="18" cy="14" r="2"/></>}/>,
+  Settings: (p) => <Ic {...p} d={<><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></>}/>,
+  Qr: (p) => <Ic {...p} d={<><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3z"/><path d="M21 14v3"/><path d="M14 21h7"/></>}/>,
+  Heart: (p) => <Ic {...p} d={<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>}/>,
+  Share: (p) => <Ic {...p} d={<><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></>}/>,
+  Plus: (p) => <Ic {...p} d={<><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></>}/>,
+  Minus: (p) => <Ic {...p} d={<line x1="5" y1="12" x2="19" y2="12"/>}/>,
+  X: (p) => <Ic {...p} d={<><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>}/>,
+  Search: (p) => <Ic {...p} d={<><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></>}/>,
+  Flame: (p) => <Ic {...p} d={<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>}/>,
+  Crown: (p) => <Ic {...p} d={<path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/>}/>,
+  Trophy: (p) => <Ic {...p} d={<><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></>}/>,
+  Door: (p) => <Ic {...p} d={<><path d="M18 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/><path d="M12 11h.01"/></>}/>,
+  User: (p) => <Ic {...p} d={<><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></>}/>,
+  CreditCard: (p) => <Ic {...p} d={<><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></>}/>,
+  Globe: (p) => <Ic {...p} d={<><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></>}/>,
+  Lock: (p) => <Ic {...p} d={<><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></>}/>,
+};
+
+// ================= Logo =================
+const TapikLogo = ({ size=28 }) => (
+  <div className="flex items-center gap-2">
+    <div className="relative" style={{width:size, height:size}}>
+      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+        <svg width={size*0.55} height={size*0.55} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z"/>
+        </svg>
+      </div>
+    </div>
+    <div>
+      <div className="font-bold text-gray-900 leading-none" style={{fontSize:size*0.55}}>Tapik</div>
+      <div className="text-[9px] text-gray-500 tracking-wider uppercase mt-0.5">Tap · Pick · Go</div>
+    </div>
+  </div>
+);
+
+// ================= v5 Revenue Model Engine (동적 적립률) =================
+const TAPIK = {
+  MARKUP: 0.05,
+  MERCHANT_COMM: 0.10,
+  GATEWAY_PCT: 0.012,
+  GATEWAY_FIXED: 0.15,
+  PTS_PER_SEN: 1,
+  POINTS_SOLO: 0.05,      // Solo 기본 적립률
+  ROOM_MIN: 3,             // 최소 3명부터
+  ROOM_MAX: 8,
+  ROOM_TIMEOUT: 30,
+  TP_CAP: 100000,          // 최대 적립 한도 100,000 TP = RM 1,000
+};
+
+// Reward modes - names are displayed dynamically with t()
+const REWARD_MODES = {
+  default: {
+    nameKey: 'reward.mode.default', descKey: 'reward.mode.default.desc',
+    getRate(n) {
+      if (n <= 4) return { joiner: 5.50, creator: 6.00 };
+      if (n <= 6) return { joiner: 5.75, creator: 6.50 };
+      return { joiner: 6.00, creator: 7.00 };
+    }
+  },
+  spot: {
+    nameKey: 'reward.mode.spot', descKey: 'reward.mode.spot.desc',
+    getRate(n) {
+      const j = 5.5 + (Math.min(n,8) - 3) * 0.2;
+      const c = 6.0 + (Math.min(n,8) - 3) * 0.4;
+      return { joiner: Math.round(j*100)/100, creator: Math.round(c*100)/100 };
+    }
+  },
+  hotspot: {
+    nameKey: 'reward.mode.hotspot', descKey: 'reward.mode.hotspot.desc',
+    getRate(n) {
+      const BASE = 3.5, SOLO = 5.0;
+      const target_net = 8.5 + (Math.min(n,8) - 3) * 0.3;
+      const bonus_needed = n * BASE - target_net;
+      let jb = bonus_needed / (n + 1);
+      let cb = 2 * jb;
+      if (cb + SOLO > 10.0) { cb = 5.0; jb = (bonus_needed - cb) / (n - 1); }
+      return { joiner: Math.round((SOLO + jb)*100)/100, creator: Math.round((SOLO + cb)*100)/100 };
+    }
+  },
+};
+
+// 전역 적립률 모드 상태 (Firestore에서 읽어옴)
+let _activeRewardMode = 'default';
+
+// Firestore에서 적립률 모드 실시간 구독
+function subscribeRewardMode(onUpdate) {
+  return FB.onSnapshot(FB.doc(FB.db, 'settings', 'rewardMode'), (snap) => {
+    if (snap.exists()) {
+      const data = snap.data();
+      if (data.mode && REWARD_MODES[data.mode]) {
+        _activeRewardMode = data.mode;
+        if (onUpdate) onUpdate(data.mode);
+      }
+    }
+  });
+}
+
+// 현재 적립률 가져오기
+function getActiveRate(roomMemberCount) {
+  const mode = REWARD_MODES[_activeRewardMode] || REWARD_MODES.default;
+  return mode.getRate(roomMemberCount || 3);
+}
+
+function calcOrder(basePrice, qty = 1, roomRole = 'solo', roomMemberCount = 1) {
+  const base = basePrice * qty;
+  const serviceFee = Math.round(base * TAPIK.MARKUP * 100) / 100;
+  const total = Math.round((base + serviceFee) * 100) / 100;
+  let pointsRate = TAPIK.POINTS_SOLO;
+  if (roomRole === 'joiner' || roomRole === 'creator') {
+    const rates = getActiveRate(roomMemberCount);
+    pointsRate = roomRole === 'creator' ? rates.creator / 100 : rates.joiner / 100;
+  }
+  const pointsRM = Math.round(base * pointsRate * 100) / 100;
+  const pointsTP = Math.round(pointsRM * 100);
+  const merchantComm = Math.round(total * TAPIK.MERCHANT_COMM * 100) / 100;
+  const merchantNet = Math.round((total - merchantComm) * 100) / 100;
+  const gatewayFee = Math.round((total * TAPIK.GATEWAY_PCT + TAPIK.GATEWAY_FIXED) * 100) / 100;
+  const tapikNet = Math.round((merchantComm - pointsRM - gatewayFee) * 100) / 100;
+  return { base, serviceFee, total, pointsRM, pointsTP, merchantComm, merchantNet, gatewayFee, tapikNet, pointsRate };
+}
+
+// ================= Mock Data =================
+const STORES = [
+  {
+    id:'feeka', name:'Feeka Coffee Roasters', area:'TTDI Plaza', category:'Modern Cafe · 35석',
+    rating:4.7, reviewCount:1284, distance:300, openNow:true, closeAt:'22:00',
+    queueAhead:4, waitMin:[12,18], photos:['photo-gradient','photo-gradient-2','photo-gradient-4'],
+    address:'TTDI Plaza, Lot 52, Jalan Tun Mohd Fuad 3',
+    hours:{weekday:'08:00 - 22:00', weekend:'09:00 - 23:00'},
+    activeRooms: 1,
+    menu:[
+      {id:'iflat', name:'Iced Flat White', basePrice:14, photo:'photo-gradient', popular:true, descKey:'menu.coffee_specialty'},
+      {id:'bagel', name:'Smoked Salmon Bagel', basePrice:24, photo:'photo-gradient-2', popular:true, descKey:'menu.salmon_bagel'},
+      {id:'matcha', name:'Matcha Latte', basePrice:16, photo:'photo-gradient-3', descKey:'menu.matcha'},
+      {id:'avoc', name:'Avocado Toast', basePrice:22, photo:'photo-gradient-3', descKey:'menu.avocado'},
+      {id:'ham', name:'Ham & Cheese Croissant', basePrice:18, photo:'photo-gradient-4', descKey:'menu.croissant'},
+    ],
+    reviews:[
+      {user:'Aiden K.', rating:5, textKey:'review.aiden', dateKey:'time.ago.2d'},
+      {user:'Sarah L.', rating:5, textKey:'review.sarah', dateKey:'time.ago.5d'},
+    ],
+  },
+  {
+    id:'auntieSiew', name:'Lim Kopitiam', area:'PJ SS2', category:'Kopitiam · 30석 · 3대 27년',
+    rating:4.9, reviewCount:847, distance:1200, openNow:true, closeAt:'18:00',
+    queueAhead:6, waitMin:[15,25], photos:['photo-gradient-6','photo-gradient-2'],
+    address:'Jalan SS2/24, SS 2, 47300 PJ',
+    hours:{weekday:'07:00 - 18:00', weekend:'07:00 - 18:00'},
+    activeRooms: 0,
+    menu:[
+      {id:'kaya', name:'Kaya Toast Set', basePrice:8, photo:'photo-gradient', popular:true, descKey:'menu.kaya'},
+      {id:'kopi', name:'Kopi O', basePrice:3, photo:'photo-gradient-6', popular:true, descKey:'menu.kopi'},
+      {id:'chx', name:'Chicken Rice', basePrice:10, photo:'photo-gradient-3', popular:true, descKey:'menu.chicken_rice'},
+      {id:'wonton', name:'Wonton Mee', basePrice:9, photo:'photo-gradient-4', descKey:'menu.wonton'},
+    ],
+    reviews:[
+      {user:'Uncle Tan', rating:5, textKey:'review.uncle', dateKey:'time.today'},
+    ],
+  },
+  {
+    id:'hub', name:'The Hub Coffee', area:'Bangsar Telawi', category:'Modern Cafe',
+    rating:4.5, reviewCount:512, distance:2100, openNow:true, closeAt:'21:00',
+    queueAhead:8, waitMin:[25,35], photos:['photo-gradient-4','photo-gradient-5'],
+    address:'Jalan Telawi 2, Bangsar Baru',
+    hours:{weekday:'09:00 - 21:00', weekend:'09:00 - 22:00'},
+    activeRooms: 2,
+    menu:[
+      {id:'cort', name:'Cortado', basePrice:12, photo:'photo-gradient-6', descKey:'menu.cortado'},
+    ],
+    reviews:[],
+  },
+];
+
+const CONSUMER = {
+  name:'Wei Ming', avatar:'WM', level:'L2', levelName:'Regular',
+  totalPoints:248, pointsByStore:{feeka:190, auntieSiew:58, hub:0},
+  friends:[
+    {name:'Aiden K.', avatar:'AK', lastStore:'Feeka', lastAtKey:'time.ago.1h'},
+    {name:'Sarah L.', avatar:'SL', lastStore:'Lim Kopitiam', lastAtKey:'time.yesterday'},
+    {name:'Nur F.', avatar:'NF', lastStore:'Feeka', lastAtKey:'time.ago.2d'},
+  ],
+};
+
+const AD_CARDS = [
+  {id:'ab1', storeId:'feeka', type:'wait', titleKey:'ad.wait_ahead', subtitleKey:'ad.walk_time', icon:'clock'},
+  {id:'ab2', storeId:'hub', type:'offpeak', title:'15% OFF', subtitleKey:'ad.offpeak', icon:'flame'},
+  {id:'ab3', storeId:'auntieSiew', type:'clearance', titleKey:'ad.kaya_remaining', subtitleKey:'ad.clearance', icon:'gift'},
+];
+
+const PUBLIC_ROOMS = [
+  {id:'PR-001', storeId:'feeka', storeName:'Feeka', creator:'Jason T.', members:1, max:4, minutesLeft:22, type:'public'},
+  {id:'PR-002', storeId:'hub', storeName:'The Hub', creator:'Mei Y.', members:2, max:6, minutesLeft:15, type:'public'},
+];
+
+const FRIEND_ROOMS = [
+  {id:'FR-001', storeId:'auntieSiew', storeName:'Lim Kopitiam', creator:'Aiden K.', members:1, max:3, minutesLeft:18, type:'private'},
+];
+
+const QUESTS = [
+  {id:'q1', titleKey:'quest.visit_stores', progress:1, total:3, reward:50},
+  {id:'q2', titleKey:'quest.new_cafe', progress:0, total:1, reward:30},
+  {id:'q3', titleKey:'quest.room_join', progress:0, total:1, reward:100},
+];
+
+const REWARDS_CATALOG = [
+  {id:'r1', nameKey:'reward.free_coffee', store:'Feeka', cost:150, type:'drink'},
+  {id:'r2', nameKey:'reward.discount', storeKey:'reward.all_stores', cost:50, type:'discount'},
+  {id:'r3', nameKey:'reward.free_kaya', store:'Lim Kopitiam', cost:80, type:'food'},
+];
+
+// ================= Components =================
+
+// Level badge
+const LevelBadge = ({level}) => {
+  const colors = {L1:'border-gray-300 text-gray-500', L2:'border-amber-400 text-amber-600', L3:'border-yellow-500 text-yellow-700'};
+  const names = {L1:'Newbie', L2:'Regular', L3:'Local'};
+  return <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full border ${colors[level]||colors.L1}`}>{names[level]||level}</span>;
+};
+
+// Store card
+const StoreCard = ({store, onClick, isMerchantLinked, queue}) => (
+  <div onClick={onClick} className={`bg-white rounded-xl shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition ${isMerchantLinked ? 'border-2 border-green-400 ring-2 ring-green-100' : 'border border-gray-100'}`}>
+    <div className={`h-28 ${store.photos[0]} relative`}>
+      {isMerchantLinked && <div className="absolute top-2 left-2 bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full animate-blink">📲 Merchant Linked</div>}
+      {store.activeRooms > 0 && <div className="absolute top-2 right-2 bg-purple-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">🚪 Room {store.activeRooms}</div>}
+      {store.openNow && <div className="absolute bottom-2 left-2 bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{t('store.open')}</div>}
+    </div>
+    <div className="p-3">
+      <div className="font-bold text-sm text-gray-900">{store.name}</div>
+      <div className="text-xs text-gray-500 mt-0.5">{store.area} · {store.distance < 1000 ? `${store.distance}m` : `${(store.distance/1000).toFixed(1)}km`}</div>
+      <div className="flex items-center gap-2 mt-1.5">
+        <div className="flex items-center gap-0.5 text-amber-500"><I.Star s={12}/><span className="text-xs font-bold text-gray-700">{store.rating}</span></div>
+        <span className="text-[10px] text-gray-400">({store.reviewCount})</span>
+        <span className="text-[10px] text-gray-400">·</span>
+        <span className="text-[10px] text-gray-500">{t('store.queue',{n: queue?.ahead ?? store.queueAhead})} · {queue?.ahead > 0 ? t('store.wait',{min:`${queue.waitMin[0]}~${queue.waitMin[1]}`}) : t('action.immediate')}</span>
+      </div>
+    </div>
+  </div>
+);
+
+// Room card
+const RoomCard = ({room, onJoin}) => (
+  <div className="bg-white rounded-xl border border-gray-100 p-3 shadow-sm">
+    <div className="flex items-center justify-between">
+      <div>
+        <div className="flex items-center gap-1.5">
+          <span className="text-xs">{room.type === 'public' ? '🌐' : '🔒'}</span>
+          <span className="font-bold text-sm text-gray-900">{room.storeName}</span>
+        </div>
+        <div className="text-xs text-gray-500 mt-0.5">by {room.creator} · {t('room.members',{n:room.members, max:room.max})} · {t('room.timeleft',{min:room.minutesLeft})}</div>
+      </div>
+      <button onClick={onJoin} className="bg-amber-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-amber-600 transition">{t('room.join')}</button>
+    </div>
+  </div>
+);
+
+// Bottom tab bar
+const TabBar = ({tab, setTab}) => {
+  const tabs = [
+    {id:'home', icon:I.Home, label:t('tab.home')},
+    {id:'order', icon:I.Package, label:t('tab.order')},
+    {id:'room', icon:I.Door, label:t('tab.room')},
+    {id:'rewards', icon:I.Gift, label:t('tab.rewards')},
+    {id:'me', icon:I.User, label:t('tab.me')},
+  ];
+  return (
+    <div className="sticky bottom-0 bg-white border-t border-gray-200 flex justify-around py-2 px-1 z-40">
+      {tabs.map(tb => (
+        <button key={tb.id} onClick={()=>setTab(tb.id)} className={`flex flex-col items-center gap-0.5 px-3 py-1 ${tab===tb.id ? 'text-amber-600' : 'text-gray-400'}`}>
+          <tb.icon s={20} sw={tab===tb.id ? 2.5 : 1.5}/>
+          <span className="text-[10px] font-medium">{tb.label}</span>
+        </button>
+      ))}
+    </div>
+  );
+};
+
+// ================= Screens =================
+
+// HOME
+const HomeScreen = ({onStoreClick, onRoomJoin, merchantOnline, user, userPoints, storeQueues, joinedRoom, orderHistory, liveOrder, onOrderClick, onReorder}) => {
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? t('app.greeting.morning') : hour < 17 ? t('app.greeting.afternoon') : t('app.greeting.evening');
+  const displayName = user?.displayName?.split(' ')[0] || CONSUMER.name;
+  return (
+    <div className="pb-4">
+      {/* Header */}
+      <div className="bg-white px-4 pt-12 pb-3 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          {user?.photoURL ? (
+            <img src={user.photoURL} className="w-10 h-10 rounded-full object-cover" referrerPolicy="no-referrer"/>
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white font-bold text-sm">{CONSUMER.avatar}</div>
+          )}
+          <div>
+            <div className="text-sm text-gray-500">{greeting}</div>
+            <div className="font-bold text-gray-900">{displayName} <LevelBadge level={userPoints?.total >= 5000 ? 'L3' : userPoints?.total >= 500 ? 'L2' : 'L1'}/></div>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="bg-amber-50 text-amber-700 text-xs font-bold px-2.5 py-1 rounded-full">{(userPoints?.total || 0).toLocaleString()} TP</div>
+          <button onClick={()=>{setLang(_currentLang === 'ko' ? 'en' : 'ko'); window.location.reload();}} className="flex items-center gap-1 text-xs font-bold text-gray-600 hover:text-amber-600 transition">
+            <I.Globe s={18}/>
+            <span>{_currentLang === 'ko' ? 'KO' : 'EN'}</span>
+          </button>
+          <div className="relative">
+            <I.Bell s={20} c="text-gray-500"/>
+            <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-white text-[9px] flex items-center justify-center font-bold">3</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Search bar */}
+      <div className="mx-4 mt-3">
+        <div className="flex items-center gap-2 bg-gray-100 rounded-xl px-3 py-2.5">
+          <I.Search s={16} c="text-gray-400"/>
+          <input placeholder={_currentLang === 'ko' ? '매장 · 메뉴 · 지역 검색' : 'Search stores · menu · area'} className="bg-transparent flex-1 outline-none text-sm text-gray-700 placeholder-gray-400"/>
+        </div>
+      </div>
+
+      {/* ===== 나의 현황: 주문 + Room + 재주문 ===== */}
+      {(() => {
+        const hasOrder = liveOrder && liveOrder.order;
+        const hasRoom = joinedRoom && joinedRoom.id;
+        const both = hasOrder && hasRoom;
+        // 둘 다 없으면 → 최근 주문 재주문 카드
+        const lastOrder = !hasOrder && !hasRoom && orderHistory?.find(o => o.status === 'PICKED_UP' && o.store);
+
+        if (!hasOrder && !hasRoom && !lastOrder) return null;
+
+        const orderStatusMap = {
+          ORDERED: { icon: '🔵', textKey: 'status.ordered', color: 'from-blue-500 to-blue-600' },
+          PREPARING: { icon: '🍳', textKey: 'status.preparing', color: 'from-amber-500 to-orange-500' },
+          READY: { icon: '✅', textKey: 'status.ready', color: 'from-green-500 to-emerald-600' },
+        };
+        const roomStatusMap = {
+          waiting: { icon: '⏳', textKey: 'room.status.waiting', color: 'from-purple-400 to-purple-600' },
+          ready: { icon: '✅', textKey: 'room.status.ready', color: 'from-purple-500 to-indigo-600' },
+          ordering: { icon: '🛒', textKey: 'room.status.ordering', color: 'from-indigo-500 to-blue-600' },
+          all_paid: { icon: '🎉', textKey: 'room.status.all_paid', color: 'from-green-500 to-teal-600' },
+          closing: { icon: '💥', textKey: 'room.status.closing', color: 'from-red-400 to-red-600' },
+        };
+
+        // 주문 카드 렌더
+        const OrderMini = ({full}) => {
+          if (!hasOrder) return null;
+          const s = orderStatusMap[liveOrder.status] || orderStatusMap.ORDERED;
+          const storeName = liveOrder.order.store?.name || liveOrder.order.storeName || '';
+          const itemName = (liveOrder.order.items || [])[0]?.name || '';
+          return (
+            <div onClick={onOrderClick} className={`cursor-pointer ${full ? '' : 'flex-1 min-w-0'}`}>
+              <div className={`bg-gradient-to-br ${s.color} rounded-xl ${full ? 'p-4' : 'p-3'} shadow-md h-full`}>
+                <div className="flex items-center gap-1.5">
+                  <span className={full ? 'text-lg' : 'text-base'}>{s.icon}</span>
+                  <span className="text-white font-bold text-xs">{t(s.textKey)}</span>
+                </div>
+                <div className="text-white font-bold text-sm mt-1.5 truncate">{storeName}</div>
+                <div className="text-white/70 text-[10px] mt-0.5 truncate">{itemName}{(liveOrder.order.items||[]).length > 1 ? ` ${t('item.and_more', {n: (liveOrder.order.items||[]).length - 1})}` : ''}</div>
+                {full && liveOrder.status === 'READY' && (
+                  <div className="mt-2 bg-white/20 rounded-lg px-2 py-1 text-center">
+                    <div className="text-white text-[10px] font-bold">{t('phrase.qr_please')}</div>
+                  </div>
+                )}
+                {!full && <div className="text-white/50 text-[9px] mt-1.5">{t('phrase.view_detail')}</div>}
+              </div>
+            </div>
+          );
+        };
+
+        // Room 카드 렌더
+        const RoomMini = ({full}) => {
+          if (!hasRoom) return null;
+          const rs = roomStatusMap[joinedRoom.status] || roomStatusMap.waiting;
+          const isCreator = joinedRoom.creatorUid === user?.uid;
+          return (
+            <div onClick={()=>onRoomJoin(joinedRoom)} className={`cursor-pointer ${full ? '' : 'flex-1 min-w-0'}`}>
+              <div className={`bg-gradient-to-br ${rs.color} rounded-xl ${full ? 'p-4' : 'p-3'} shadow-md h-full`}>
+                <div className="flex items-center gap-1.5">
+                  <span className={full ? 'text-lg' : 'text-base'}>{rs.icon}</span>
+                  <span className="text-white font-bold text-xs">{t(rs.textKey)}</span>
+                </div>
+                <div className="text-white font-bold text-sm mt-1.5 truncate">{joinedRoom.storeName}</div>
+                <div className="text-white/70 text-[10px] mt-0.5">
+                  {isCreator ? 'Creator' : 'Joiner'} · {t('phrase.now_members', {n: joinedRoom.memberCount || joinedRoom.members?.length || 1, max: joinedRoom.minMembers || 3})}
+                </div>
+                {full && joinedRoom.status === 'ready' && isCreator && (
+                  <div className="mt-2 bg-white/20 rounded-lg px-2 py-1 text-center">
+                    <div className="text-white text-[10px] font-bold">{t('phrase.activate_order')}</div>
+                  </div>
+                )}
+                {!full && <div className="text-white/50 text-[9px] mt-1.5">{t('phrase.view_room')}</div>}
+              </div>
+            </div>
+          );
+        };
+
+        // 재주문 카드
+        const ReorderCard = () => {
+          if (!lastOrder) return null;
+          const storeName = lastOrder.store?.name || lastOrder.storeName || '';
+          const itemName = (lastOrder.items || [])[0]?.name || '';
+          const store = STORES.find(s => s.id === (lastOrder.store?.id || lastOrder.storeId));
+          return (
+            <div onClick={()=>{ if(store && onReorder) onReorder(store); }} className="cursor-pointer">
+              <div className="bg-white border-2 border-dashed border-amber-300 rounded-xl p-4 flex items-center gap-3 hover:bg-amber-50 transition">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white text-lg flex-shrink-0">🔄</div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-xs text-gray-500">{t('msg.reorder_prompt')}</div>
+                  <div className="font-bold text-sm text-gray-900 truncate">{itemName}{(lastOrder.items||[]).length > 1 ? ` ${t('item.and_more', {n: (lastOrder.items||[]).length - 1})}` : ''}</div>
+                  <div className="text-[10px] text-gray-400">{storeName}</div>
+                </div>
+                <div className="text-amber-500 font-bold text-xs flex-shrink-0">{t('action.reorder')}</div>
+              </div>
+            </div>
+          );
+        };
+
+        return (
+          <div className="mx-4 mt-3 animate-slide-up">
+            {both ? (
+              /* 주문 + Room 나란히 */
+              <div className="flex gap-2">
+                <OrderMini/>
+                <RoomMini/>
+              </div>
+            ) : hasOrder ? (
+              <OrderMini full/>
+            ) : hasRoom ? (
+              <RoomMini full/>
+            ) : lastOrder ? (
+              <ReorderCard/>
+            ) : null}
+          </div>
+        );
+      })()}
+
+      {/* Right Now carousel — 대기열 실시간 반영 */}
+      <div className="mt-4 px-4">
+        <div className="text-sm font-bold text-gray-900 mb-2">{t('home.rightnow')}</div>
+        <div className="flex gap-3 overflow-x-auto hide-scroll pb-2">
+          {AD_CARDS.map(card => {
+            const store = STORES.find(s => s.id === card.storeId);
+            const bgColors = {wait:'from-blue-500 to-blue-600', offpeak:'from-orange-500 to-red-500', clearance:'from-green-500 to-emerald-600'};
+            const icons = {clock:<I.Clock s={16} c="text-white"/>, flame:<I.Flame s={16} c="text-white"/>, gift:<I.Gift s={16} c="text-white"/>};
+            // wait type cards are replaced with realtime queue data
+            let title = card.title || (card.titleKey ? t(card.titleKey) : '');
+            let subtitle = card.subtitle || (card.subtitleKey ? t(card.subtitleKey) : '');
+            if (card.type === 'wait' && storeQueues?.[card.storeId]) {
+              const q = storeQueues[card.storeId];
+              title = q.ahead > 0 ? t('ad.wait_ahead', {n: q.ahead}) : t('action.immediate_order');
+              subtitle = q.ahead > 0 ? `~${q.waitMin[0]}-${q.waitMin[1]}min` : t('action.no_wait');
+            }
+            return (
+              <div key={card.id} onClick={()=>onStoreClick(store)} className={`flex-shrink-0 w-44 bg-gradient-to-br ${bgColors[card.type]} rounded-xl p-3 cursor-pointer hover:scale-105 transition-transform`}>
+                <div className="flex items-center gap-1.5 mb-2">{icons[card.icon]}<span className="text-white text-[10px] font-bold">{store?.name}</span></div>
+                <div className="text-white font-bold text-lg leading-tight">{title}</div>
+                <div className="text-white/80 text-[10px] mt-1">{subtitle}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Nearby stores */}
+      <div className="mt-5 px-4">
+        <div className="text-sm font-bold text-gray-900 mb-2">{t('home.nearby')}</div>
+        <div className="flex gap-2 mb-3 overflow-x-auto hide-scroll">
+          {[{key:'filter.closest'},{key:'filter.popular'},{key:'filter.rooms'},{key:'filter.discount'}].map(f => (
+            <button key={f.key} className="flex-shrink-0 text-[10px] font-medium px-3 py-1.5 rounded-full bg-gray-100 text-gray-600 hover:bg-amber-100 hover:text-amber-700 transition">{t(f.key)}</button>
+          ))}
+        </div>
+        <div className="space-y-3">
+          {STORES.map(store => <StoreCard key={store.id} store={store} onClick={()=>onStoreClick(store)} isMerchantLinked={merchantOnline && store.name === merchantOnline} queue={storeQueues?.[store.id]}/>)}
+        </div>
+      </div>
+
+      {/* Friend feed */}
+      <div className="mt-5 px-4">
+        <div className="text-sm font-bold text-gray-900 mb-2">{t('home.friends')}</div>
+        <div className="space-y-2">
+          {CONSUMER.friends.map((f,i) => (
+            <div key={i} className="flex items-center gap-3 bg-white rounded-lg p-2.5 border border-gray-100">
+              <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600">{f.avatar}</div>
+              <div className="flex-1">
+                <div className="text-xs"><span className="font-bold text-gray-900">{f.name}</span> <span className="text-gray-500">@ {f.lastStore}</span></div>
+                <div className="text-[10px] text-gray-400">{t(f.lastAtKey)}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// STORE DETAIL
+const StoreDetail = ({store, onBack, onCheckout, joinedRoom, queue}) => {
+  const [cart, setCart] = useState({});
+  const [fav, setFav] = useState(false);
+  const cartItems = Object.entries(cart).filter(([,q]) => q > 0);
+  const cartTotal = cartItems.reduce((sum, [id, qty]) => {
+    const item = store.menu.find(m => m.id === id);
+    return sum + (item ? item.basePrice * qty : 0);
+  }, 0);
+  const cartCount = cartItems.reduce((sum, [,q]) => sum + q, 0);
+
+  return (
+    <div className="pb-20 relative">
+      {/* Header photo */}
+      <div className={`h-48 ${store.photos[0]} relative`}>
+        <button onClick={onBack} className="absolute top-12 left-4 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center shadow"><I.ChevronLeft s={18}/></button>
+      </div>
+      {/* Info */}
+      <div className="bg-white px-4 py-3 -mt-4 rounded-t-2xl relative z-10">
+        {joinedRoom && joinedRoom.storeId === store.id && (
+          <div className="bg-purple-100 text-purple-800 text-[10px] font-bold px-3 py-1.5 rounded-lg mb-2 flex items-center gap-1.5">
+            <span>{joinedRoom.type === 'public' ? '🌐' : '🔒'}</span>
+            <span>Room 참여 중 — by {joinedRoom.creator} · Joiner 6% 적립!</span>
+          </div>
+        )}
+        <div className="font-bold text-lg text-gray-900">{store.name}</div>
+        <div className="text-xs text-gray-500 mt-0.5">{store.category} · {store.area}</div>
+        <div className="flex items-center gap-3 mt-2">
+          <div className="flex items-center gap-1 text-amber-500"><I.Star s={14}/><span className="text-sm font-bold text-gray-800">{store.rating}</span><span className="text-xs text-gray-400">({store.reviewCount})</span></div>
+          <span className="text-xs text-gray-400">·</span>
+          <span className="text-xs text-gray-500">{t('store.queue',{n: queue?.ahead ?? store.queueAhead})} · {(queue?.ahead ?? store.queueAhead) > 0 ? t('store.wait',{min:`${queue?.waitMin?.[0] ?? store.waitMin[0]}~${queue?.waitMin?.[1] ?? store.waitMin[1]}`}) : '바로 가능'}</span>
+        </div>
+        {/* Action buttons */}
+        <div className="flex gap-3 mt-3">
+          <button onClick={()=>setFav(!fav)} className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium border ${fav ? 'border-red-200 bg-red-50 text-red-600' : 'border-gray-200 text-gray-600'}`}>
+            <I.Heart s={14}/> {t('store.fav')}
+          </button>
+          <button className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium border border-gray-200 text-gray-600">
+            <I.Share s={14}/> {t('store.share')}
+          </button>
+          <button className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium border border-purple-200 bg-purple-50 text-purple-700">
+            <I.Door s={14}/> {t('store.room')}
+          </button>
+        </div>
+      </div>
+
+      {/* Menu */}
+      <div className="px-4 mt-4">
+        <div className="text-sm font-bold text-gray-900 mb-3">{t('store.menu')}</div>
+        <div className="space-y-3">
+          {store.menu.map(item => {
+            const qty = cart[item.id] || 0;
+            return (
+              <div key={item.id} className="bg-white rounded-xl border border-gray-100 p-3 flex gap-3">
+                <div className={`w-20 h-20 rounded-lg ${item.photo} flex-shrink-0`}>
+                  {item.popular && <div className="bg-amber-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-tl-lg rounded-br-lg">인기</div>}
+                </div>
+                <div className="flex-1">
+                  <div className="font-bold text-sm text-gray-900">{item.name}</div>
+                  <div className="text-[10px] text-gray-500 mt-0.5 line-clamp-2">{item.descKey ? t(item.descKey) : item.desc}</div>
+                  <div className="flex items-center justify-between mt-2">
+                    <div className="font-bold text-sm text-gray-900">RM {item.basePrice.toFixed(2)}</div>
+                    {qty === 0 ? (
+                      <button onClick={()=>setCart({...cart, [item.id]:1})} className="w-8 h-8 bg-amber-500 text-white rounded-full flex items-center justify-center hover:bg-amber-600"><I.Plus s={16}/></button>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <button onClick={()=>setCart({...cart, [item.id]:Math.max(0, qty-1)})} className="w-7 h-7 bg-gray-200 rounded-full flex items-center justify-center"><I.Minus s={14}/></button>
+                        <span className="text-sm font-bold w-4 text-center">{qty}</span>
+                        <button onClick={()=>setCart({...cart, [item.id]:qty+1})} className="w-7 h-7 bg-amber-500 text-white rounded-full flex items-center justify-center"><I.Plus s={14}/></button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Reviews */}
+      {store.reviews.length > 0 && (
+        <div className="px-4 mt-5">
+          <div className="text-sm font-bold text-gray-900 mb-3">{t('store.reviews')}</div>
+          {store.reviews.map((r,i) => (
+            <div key={i} className="bg-white rounded-xl border border-gray-100 p-3 mb-2">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center text-[10px] font-bold text-gray-600">{r.user[0]}</div>
+                <div className="flex-1">
+                  <div className="text-xs font-bold text-gray-900">{r.user}</div>
+                  <div className="flex items-center gap-0.5">{[...Array(r.rating)].map((_,j) => <I.Star key={j} s={10} c="text-amber-500"/>)}</div>
+                </div>
+                <div className="text-[10px] text-gray-400">{r.dateKey ? t(r.dateKey) : r.date}</div>
+              </div>
+              <div className="text-xs text-gray-600 mt-2">{r.textKey ? t(r.textKey) : r.text}</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Cart bar */}
+      {cartCount > 0 && (
+        <div className="sticky bottom-0 left-0 right-0 z-50">
+          <div className="w-full px-4 pb-4">
+            <button onClick={()=>onCheckout(store, cart)} className="w-full bg-amber-500 text-white font-bold py-3.5 rounded-xl shadow-lg hover:bg-amber-600 transition flex items-center justify-center gap-2">
+              <I.Package s={18} c="text-white"/>
+              {t('cart.items',{n:cartCount})} · RM {(cartTotal * 1.05).toFixed(2)} · {t('cart.go')}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// CHECKOUT
+const CheckoutScreen = ({store, cart, onBack, onPay, joinedRoom}) => {
+  const [roomMode, setRoomMode] = useState(joinedRoom && joinedRoom.storeId === store.id ? 'join' : 'solo');
+  const [roomType, setRoomType] = useState('public');
+  const [pointsUse, setPointsUse] = useState(0);
+
+  const items = Object.entries(cart).filter(([,q])=>q>0).map(([id,qty]) => {
+    const m = store.menu.find(x=>x.id===id);
+    return {id, name:m.name, basePrice:m.basePrice, qty};
+  });
+  const base = items.reduce((s,i)=>s+i.basePrice*i.qty, 0);
+  const serviceFee = Math.round(base * TAPIK.MARKUP * 100) / 100;
+  const total = Math.round((base + serviceFee - pointsUse/100) * 100) / 100;
+  const role = roomMode === 'solo' ? 'solo' : roomMode === 'create' ? 'creator' : roomMode === 'join' ? 'joiner' : 'solo';
+  const ptsRate = role === 'creator' ? TAPIK.POINTS_CREATOR : role === 'joiner' ? TAPIK.POINTS_JOINER : TAPIK.POINTS_SOLO;
+  const ptsEarn = Math.round(base * ptsRate * 100);
+  const ptsLabel = role === 'creator' ? t('points.creator') : role === 'joiner' ? t('points.joiner') : t('points.solo');
+
+  return (
+    <div className="bg-white min-h-full">
+      <div className="sticky top-0 bg-white border-b border-gray-100 px-4 pt-12 pb-3 flex items-center gap-3 z-10">
+        <button onClick={onBack} className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center"><I.ChevronLeft s={18}/></button>
+        <div className="font-bold text-gray-900">{t('checkout.title')}</div>
+      </div>
+
+      <div className="px-4 py-4 space-y-4">
+        {/* Store */}
+        <div className="flex items-center gap-3 bg-gray-50 rounded-xl p-3">
+          <div className={`w-12 h-12 rounded-lg ${store.photos[0]}`}/>
+          <div>
+            <div className="font-bold text-sm text-gray-900">{store.name}</div>
+            <div className="text-xs text-gray-500">{store.area}</div>
+          </div>
+        </div>
+
+        {/* Items */}
+        <div>
+          {items.map(item => (
+            <div key={item.id} className="flex justify-between py-2 border-b border-gray-50">
+              <div className="text-sm text-gray-700">{item.name} × {item.qty}</div>
+              <div className="text-sm font-medium text-gray-900">RM {(item.basePrice * item.qty).toFixed(2)}</div>
+            </div>
+          ))}
+          <div className="flex justify-between py-2 border-b border-gray-50">
+            <div className="text-sm text-gray-500">{t('checkout.subtotal')}</div>
+            <div className="text-sm text-gray-700">RM {base.toFixed(2)}</div>
+          </div>
+          <div className="flex justify-between py-2 border-b border-gray-50">
+            <div className="text-sm text-gray-500">{t('checkout.service')}</div>
+            <div className="text-sm text-gray-700">RM {serviceFee.toFixed(2)}</div>
+          </div>
+          {pointsUse > 0 && (
+            <div className="flex justify-between py-2 border-b border-gray-50">
+              <div className="text-sm text-green-600">{t('checkout.points_use')}</div>
+              <div className="text-sm text-green-600">-RM {(pointsUse/100).toFixed(2)}</div>
+            </div>
+          )}
+          <div className="flex justify-between py-3">
+            <div className="font-bold text-gray-900">{t('checkout.total')}</div>
+            <div className="font-bold text-lg text-gray-900">RM {total.toFixed(2)}</div>
+          </div>
+        </div>
+
+        {/* Room option */}
+        <div className="bg-purple-50 rounded-xl p-3">
+          <div className="text-xs font-bold text-purple-800 mb-2">Room 옵션</div>
+          <div className="flex gap-2">
+            {[{id:'solo', label:t('checkout.solo'), sub:t('points.solo')},
+              {id:'join', label:t('checkout.room_join'), sub:t('points.joiner')},
+              {id:'create', label:t('checkout.room_create'), sub:t('points.creator')},
+            ].map(opt => (
+              <button key={opt.id} onClick={()=>setRoomMode(opt.id)}
+                className={`flex-1 p-2.5 rounded-lg border-2 text-center transition ${roomMode===opt.id ? 'border-purple-500 bg-white' : 'border-transparent bg-white/50'}`}>
+                <div className="text-xs font-bold text-gray-900">{opt.label}</div>
+                <div className="text-[10px] text-purple-600 mt-0.5">{opt.sub}</div>
+              </button>
+            ))}
+          </div>
+          {roomMode === 'create' && (
+            <div className="mt-3 flex gap-2">
+              <button onClick={()=>setRoomType('public')} className={`flex-1 p-2 rounded-lg text-xs font-bold text-center ${roomType==='public' ? 'bg-purple-600 text-white' : 'bg-white text-gray-600 border border-gray-200'}`}>{t('checkout.public')}</button>
+              <button onClick={()=>setRoomType('private')} className={`flex-1 p-2 rounded-lg text-xs font-bold text-center ${roomType==='private' ? 'bg-purple-600 text-white' : 'bg-white text-gray-600 border border-gray-200'}`}>{t('checkout.private')}</button>
+            </div>
+          )}
+        </div>
+
+        {/* Points earn */}
+        <div className="bg-amber-50 rounded-xl p-3 flex items-center justify-between">
+          <div className="text-xs text-gray-700">{t('checkout.points_earn')}</div>
+          <div className="text-sm font-bold text-amber-700">+{ptsEarn} TP <span className="text-[10px] font-normal text-amber-500">({ptsLabel})</span></div>
+        </div>
+
+        {/* Payment method */}
+        <div className="bg-white rounded-xl border border-gray-200 p-3">
+          <div className="text-xs font-bold text-gray-700 mb-2">결제 수단</div>
+          <div className="flex items-center gap-3 p-2 bg-blue-50 rounded-lg border border-blue-200">
+            <I.CreditCard s={18} c="text-blue-600"/>
+            <div className="text-sm font-medium text-gray-900">Touch 'n Go eWallet</div>
+            <I.Check s={16} c="text-blue-600 ml-auto"/>
+          </div>
+        </div>
+
+        {/* Pay button */}
+        <button onClick={()=>onPay({store, items, base, serviceFee, total, role, roomType, ptsEarn})} className="w-full bg-amber-500 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-amber-600 transition text-base">
+          {t('checkout.pay',{total:total.toFixed(2)})}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// PREPAID CONFIRMATION (PAID state — 선결제 완료, 주문 전송 대기)
+const PrepaidScreen = ({order, onPlaceOrder, onSaveLater, onCancel}) => (
+  <div className="bg-white min-h-full flex flex-col items-center justify-center px-6">
+    <div className="animate-pop">
+      <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-4 mx-auto">
+        <I.Check s={40} c="text-green-600" sw={3}/>
+      </div>
+      <div className="text-center">
+        <div className="text-lg font-bold text-gray-900">{t('prepaid.title')} ✓</div>
+        <div className="text-sm text-gray-500 mt-1">{order.store.name}</div>
+        <div className="text-2xl font-bold text-gray-900 mt-2">RM {order.total.toFixed(2)}</div>
+        {order.role !== 'solo' && (
+          <div className="mt-2 bg-purple-50 text-purple-700 text-xs font-bold px-3 py-1.5 rounded-full inline-block">
+            🚪 {order.role === 'creator' ? 'Room Creator' : 'Room Joiner'} · {order.roomType === 'public' ? '🌐 Public' : '🔒 Private'}
+          </div>
+        )}
+        <div className="text-xs text-amber-600 font-medium mt-3 bg-amber-50 px-3 py-1.5 rounded-lg">{t('prepaid.desc')}</div>
+        <div className="text-[10px] text-gray-400 mt-2">{t('prepaid.valid')}</div>
+      </div>
+    </div>
+    {/* 결제 내역 */}
+    <div className="w-full mt-6 bg-gray-50 rounded-xl p-4">
+      {order.items.map(item => (
+        <div key={item.id} className="flex justify-between text-sm py-1">
+          <span className="text-gray-600">{item.name} × {item.qty}</span>
+          <span className="text-gray-900">RM {(item.basePrice * item.qty).toFixed(2)}</span>
+        </div>
+      ))}
+      <div className="border-t border-gray-100 mt-2 pt-2 space-y-1">
+        <div className="flex justify-between text-xs text-gray-500">
+          <span>소계</span><span>RM {order.base.toFixed(2)}</span>
+        </div>
+        <div className="flex justify-between text-xs text-gray-500">
+          <span>서비스 이용료 (5%)</span><span>RM {order.serviceFee.toFixed(2)}</span>
+        </div>
+      </div>
+      <div className="border-t border-gray-200 mt-2 pt-2 flex justify-between text-sm font-bold">
+        <span>결제 금액</span><span>RM {order.total.toFixed(2)}</span>
+      </div>
+    </div>
+    <div className="w-full mt-6 space-y-3">
+      <button onClick={onPlaceOrder} className="w-full bg-amber-500 text-white font-bold py-3.5 rounded-xl shadow hover:bg-amber-600 transition animate-pulse-ring">
+        {t('prepaid.place')}
+      </button>
+      <button onClick={onSaveLater} className="w-full bg-gray-100 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-200 transition">
+        {t('phrase.save_later')}
+      </button>
+      <button onClick={onCancel} className="w-full text-red-400 text-xs py-2">{t('phrase.refund')}</button>
+    </div>
+  </div>
+);
+
+// ORDER STATUS
+const OrderStatusScreen = ({order, onBack, onHome, liveStatus, orderId}) => {
+  const [status, setStatus] = useState('ORDERED');
+  const qrPattern = useMemo(() => [...Array(36)].map(() => Math.random() > 0.4), []);
+
+  // 머천트 BroadcastChannel 이벤트만으로 상태 변경 (자동 진행 없음)
+  useEffect(() => {
+    if (liveStatus && liveStatus !== status) {
+      setStatus(liveStatus);
+    }
+  }, [liveStatus]);
+
+  const statusConfig = {
+    ORDERED: { color:'bg-blue-500', badgeKey:'status.ordered', textKey:'status.ordered', descKey:'msg.confirm_wait', icon:<I.Clock s={32} c="text-blue-500"/> },
+    PREPARING: { color:'bg-amber-500', badgeKey:'status.preparing', textKey:'status.preparing', descKey:'msg.preparing', icon:<I.Flame s={32} c="text-amber-500"/> },
+    READY: { color:'bg-green-500', badgeKey:'status.ready', textKey:'status.ready', descKey:'msg.show_qr', icon:<I.Qr s={32} c="text-green-600"/> },
+    PICKED_UP: { color:'bg-purple-500', badgeKey:'status.picked_up', textKey:'status.picked_up', descKey:'msg.enjoy', icon:<I.Check s={32} c="text-purple-600" sw={3}/> },
+  };
+  const cfg = statusConfig[status];
+  const displayId = orderId || order.id || '—';
+
+  return (
+    <div className="bg-white min-h-full">
+      {/* Header with order ID */}
+      <div className={`sticky top-0 border-b px-4 pt-12 pb-3 flex items-center justify-between z-10 ${order.role && order.role !== 'solo' ? 'bg-purple-50 border-purple-200' : 'bg-white border-gray-100'}`}>
+        <div className="flex items-center gap-3">
+          <button onClick={onBack} className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center"><I.ChevronLeft s={18}/></button>
+          <div>
+            <div className="font-bold text-gray-900 text-sm flex items-center gap-2">
+              {t('label.order_status')}
+              {order.role && order.role !== 'solo' && <span className="bg-purple-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">🚪 Room</span>}
+            </div>
+            <div className="text-[10px] text-gray-400 font-mono">{displayId}</div>
+          </div>
+        </div>
+        <div className="text-right">
+          <div className="text-xs font-bold text-gray-700">{order.store?.name || order.storeName}</div>
+          <div className="text-[10px] text-gray-400">RM {order.total.toFixed(2)}</div>
+        </div>
+      </div>
+
+      <div className="flex flex-col items-center px-6 pt-8">
+        {/* Order number card */}
+        <div className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 mb-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-[10px] text-gray-400">{t('label.order_number')}</div>
+              <div className="text-xl font-bold text-gray-900 font-mono tracking-wide">{displayId}</div>
+            </div>
+            <div className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap ${status === 'ORDERED' ? 'bg-blue-100 text-blue-700' : status === 'PREPARING' ? 'bg-amber-100 text-amber-700' : status === 'READY' ? 'bg-green-100 text-green-700' : 'bg-purple-100 text-purple-700'}`}>
+              {t(cfg.badgeKey)}
+            </div>
+          </div>
+          {/* Room info inside order number card */}
+          {order.role && order.role !== 'solo' && (
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-slate-200">
+              <span className="bg-purple-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                🚪 {order.role === 'creator' ? 'Creator' : 'Joiner'}
+              </span>
+              <span className="text-[10px] text-purple-600 font-bold">
+                👥 {order.roomMembers || 1}/min {TAPIK.ROOM_MIN}
+              </span>
+              <span className="text-[10px] text-purple-500">
+                {order.roomType === 'public' ? '🌐 Public' : '🔒 Private'}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Status animation */}
+        <div className={`w-20 h-20 rounded-full ${status === 'PICKED_UP' ? 'bg-purple-100' : status === 'READY' ? 'bg-green-100' : status === 'PREPARING' ? 'bg-amber-100' : 'bg-blue-100'} flex items-center justify-center animate-pop`}>
+          {cfg.icon}
+        </div>
+        <div className="text-base font-bold text-gray-900 mt-3">{t(cfg.textKey)}</div>
+        <div className="text-xs text-gray-500 mt-1">{t(cfg.descKey)}</div>
+
+        {/* Progress bar */}
+        <div className="w-full mt-5 flex items-center gap-1">
+          {['ORDERED','PREPARING','READY','PICKED_UP'].map((s,i) => {
+            const idx = ['ORDERED','PREPARING','READY','PICKED_UP'].indexOf(status);
+            return <div key={s} className={`flex-1 h-1.5 rounded-full transition-all duration-500 ${i <= idx ? cfg.color : 'bg-gray-200'}`}/>;
+          })}
+        </div>
+        <div className="w-full flex justify-between mt-1.5">
+          {['주문전송','준비중','완료','픽업'].map((l,i) => <span key={i} className="text-[9px] text-gray-400">{l}</span>)}
+        </div>
+
+        {/* Waiting indicator (ORDERED state) */}
+        {status === 'ORDERED' && (
+          <div className="mt-6 bg-blue-50 border border-blue-200 rounded-xl p-4 w-full text-center">
+            <div className="text-xs text-blue-700">📡 매장에서 주문을 확인할 때까지 대기 중...</div>
+            <div className="text-[10px] text-blue-500 mt-1">Merchant 탭에서 수락 버튼을 눌러봐</div>
+          </div>
+        )}
+
+        {/* QR Code (READY state) */}
+        {status === 'READY' && (
+          <div className="mt-6 animate-slide-up w-full">
+            <div className="bg-white border-2 border-green-500 rounded-2xl p-5 shadow-lg">
+              <div className="text-center mb-3">
+                <div className="text-xs text-gray-500">주문번호</div>
+                <div className="text-lg font-bold font-mono text-gray-900">{displayId}</div>
+              </div>
+              <div className="w-44 h-44 bg-gray-900 rounded-xl mx-auto flex items-center justify-center relative">
+                <div className="grid grid-cols-6 gap-1 p-3">
+                  {qrPattern.map((filled,i) => <div key={i} className={`w-4 h-4 rounded-sm ${filled?'bg-white':'bg-transparent'}`}/>)}
+                </div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><path d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z"/></svg>
+                  </div>
+                </div>
+              </div>
+              <div className="text-center mt-3">
+                <div className="text-xs font-bold text-green-700">매장 직원에게 이 QR을 보여줘</div>
+                <div className="text-[10px] text-gray-400 mt-1">{order.store?.name || order.storeName} · {order.items.map(i=>i.name).join(', ')}</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Picked up */}
+        {status === 'PICKED_UP' && (
+          <div className="mt-6 animate-slide-up text-center w-full">
+            <div className="bg-amber-50 rounded-xl p-4 mb-4">
+              <div className="text-2xl font-bold text-amber-600 animate-pop">+{order.ptsEarn} TP</div>
+              <div className="text-xs text-amber-700 mt-1">{t('order.points',{pts:order.ptsEarn})}</div>
+              {order.role !== 'solo' && <div className="text-[10px] text-purple-600 mt-1">Room 보너스! {order.role === 'creator' ? 'Creator 8%' : 'Joiner 6%'}</div>}
+            </div>
+            <div className="flex gap-3">
+              <button className="flex-1 bg-amber-500 text-white font-bold py-3 rounded-xl text-sm">{t('order.review')}</button>
+              <button onClick={onHome} className="flex-1 bg-gray-100 text-gray-700 font-bold py-3 rounded-xl text-sm">홈으로</button>
+            </div>
+          </div>
+        )}
+
+        {/* Order details */}
+        {(() => {
+          const subtotal = order.items.reduce((s,i) => s + (i.basePrice * i.qty), 0);
+          const serviceFee = Math.round(subtotal * 0.05 * 100) / 100;
+          return (
+            <div className="w-full mt-6 bg-gray-50 rounded-xl p-4 mb-8">
+              <div className="flex items-center justify-between mb-2">
+                <div className="text-xs font-bold text-gray-700">주문 내역</div>
+                <div className="text-[10px] text-gray-400 font-mono">{displayId}</div>
+              </div>
+              {order.items.map(item => (
+                <div key={item.id} className="flex justify-between text-sm py-1">
+                  <span className="text-gray-600">{item.name} × {item.qty}</span>
+                  <span className="text-gray-900">RM {(item.basePrice * item.qty).toFixed(2)}</span>
+                </div>
+              ))}
+              <div className="border-t border-gray-100 mt-2 pt-2 space-y-1">
+                <div className="flex justify-between text-xs text-gray-500">
+                  <span>소계</span><span>RM {subtotal.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-xs text-gray-500">
+                  <span>서비스 이용료 (5%)</span><span>RM {serviceFee.toFixed(2)}</span>
+                </div>
+              </div>
+              <div className="border-t border-gray-200 mt-2 pt-2 flex justify-between text-sm font-bold">
+                <span>합계</span><span>RM {order.total.toFixed(2)}</span>
+              </div>
+            </div>
+          );
+        })()}
+      </div>
+    </div>
+  );
+};
+
+// ORDER TAB
+const OrderTab = ({orders, onOrderClick, onSendPaidOrder, onReview, initialSeg='active'}) => {
+  const [seg, setSeg] = useState(initialSeg);
+  const [reviewingId, setReviewingId] = useState(null);
+  const [reviewStars, setReviewStars] = useState(0);
+  const [reviewText, setReviewText] = useState('');
+  const paid = orders.filter(o => o.status === 'PAID');
+  const active = orders.filter(o => ['ORDERED','PREPARING','READY'].includes(o.status));
+  const history = orders.filter(o => ['PICKED_UP','CANCELLED'].includes(o.status));
+  const needsReview = history.filter(o => o.status === 'PICKED_UP' && !o.reviewDone);
+  const statusColors = {PAID:'bg-green-100 text-green-700', ORDERED:'bg-blue-100 text-blue-700', PREPARING:'bg-amber-100 text-amber-700', READY:'bg-green-100 text-green-700', PICKED_UP:'bg-gray-100 text-gray-500', CANCELLED:'bg-red-100 text-red-600'};
+  const list = seg === 'paid' ? paid : seg === 'active' ? active : history;
+  return (
+    <div className="pt-12 pb-4 px-4">
+      <div className="font-bold text-lg text-gray-900 mb-3">{t('tab.order')}</div>
+      <div className="flex gap-2 mb-4 overflow-x-auto hide-scroll">
+        <button onClick={()=>setSeg('paid')} className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap flex items-center gap-1 ${seg==='paid' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-600'}`}>
+          {t('order.paid_pending')} {paid.length > 0 && <span className="bg-white/30 text-[10px] px-1.5 rounded-full">{paid.length}</span>}
+        </button>
+        <button onClick={()=>setSeg('active')} className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap ${seg==='active' ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-600'}`}>{t('order.active')} ({active.length})</button>
+        <button onClick={()=>setSeg('history')} className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap ${seg==='history' ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-600'}`}>{t('order.history')}</button>
+      </div>
+
+      {/* Payment status info */}
+      {seg === 'paid' && paid.length > 0 && (
+        <div className="bg-green-50 border border-green-200 rounded-xl p-3 mb-3 text-xs text-green-700">
+          {t('msg.paid_order_info')}
+        </div>
+      )}
+
+      {/* Needs review notice */}
+      {seg === 'history' && needsReview.length > 0 && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-3 text-xs text-amber-700">
+          {t('msg.needs_review', {count: needsReview.length})}
+        </div>
+      )}
+
+      {list.length === 0 ? (
+        <div className="text-center text-gray-400 text-sm mt-12">
+          {seg === 'paid' ? t('msg.no_paid_orders') : seg === 'active' ? t('msg.no_active_orders') : t('msg.no_orders')}
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {list.map((o,i) => (
+            <div key={o.id||i} className={`rounded-xl p-3 hover:shadow-sm transition ${o.role && o.role !== 'solo' ? 'bg-purple-50 border-2 border-purple-200' : 'bg-white border border-gray-100'}`}>
+              <div onClick={()=> o.status !== 'PAID' && o.status !== 'PICKED_UP' && onOrderClick(o)} className={!['PAID','PICKED_UP'].includes(o.status) ? 'cursor-pointer' : ''}>
+                <div className="flex items-center justify-between">
+                  <div className="font-bold text-sm text-gray-900">{o.store?.name || o.storeName}</div>
+                  <div className="flex items-center gap-1.5">
+                    {o.id && <span className="text-[9px] text-gray-400 font-mono">{o.id}</span>}
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${statusColors[o.status]}`}>{o.status === 'PAID' ? t('status.prepaid') : o.status === 'PICKED_UP' ? t('status.completed') : o.status}</span>
+                  </div>
+                </div>
+                {/* Room badge */}
+                {o.role && o.role !== 'solo' && (
+                  <div className="flex items-center gap-2 mt-1.5">
+                    <span className="bg-purple-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                      🚪 {o.role === 'creator' ? 'Creator' : 'Joiner'}
+                    </span>
+                    <span className="text-[10px] text-purple-600 font-bold">
+                      👥 {o.roomMembers || 1}/min {TAPIK.ROOM_MIN}
+                    </span>
+                    <span className="text-[10px] text-purple-500">
+                      {o.roomType === 'public' ? '🌐 Public' : '🔒 Private'}
+                    </span>
+                  </div>
+                )}
+                <div className="text-xs text-gray-500 mt-1">{o.items.map(i => i.name).join(', ')}</div>
+                <div className="flex items-center justify-between mt-1">
+                  <div className="text-xs font-bold text-gray-700">RM {o.total.toFixed(2)}</div>
+                  <div className="flex items-center gap-2">
+                    {o.ptsEarn > 0 && <span className="text-[10px] text-amber-600 font-bold">+{o.ptsEarn} TP</span>}
+                    {o.date && <span className="text-[10px] text-gray-400">{o.date}</span>}
+                  </div>
+                </div>
+              </div>
+
+              {/* Send paid order to merchant button */}
+              {o.status === 'PAID' && onSendPaidOrder && (
+                <button onClick={()=>onSendPaidOrder(o)} className="w-full mt-2 bg-amber-500 text-white font-bold py-2.5 rounded-lg text-xs hover:bg-amber-600 transition">
+                  {t('action.send_paid_order')}
+                </button>
+              )}
+
+              {/* Review status when picked up */}
+              {o.status === 'PICKED_UP' && o.reviewDone && (
+                <div className="mt-2 flex items-center gap-1 text-[10px] text-gray-500">
+                  <span className="text-amber-400">{'★'.repeat(o.reviewStars||5)}{'☆'.repeat(5-(o.reviewStars||5))}</span>
+                  <span>{t('status.review_done')}</span>
+                </div>
+              )}
+              {o.status === 'PICKED_UP' && !o.reviewDone && (
+                reviewingId === o.id ? (
+                  <div className="mt-2 bg-gray-50 rounded-lg p-3">
+                    <div className="text-xs font-bold text-gray-700 mb-2">{t('label.rating_and_review')}</div>
+                    <div className="flex gap-1 mb-2">
+                      {[1,2,3,4,5].map(s => (
+                        <button key={s} onClick={()=>setReviewStars(s)} className={`text-xl ${s <= reviewStars ? 'text-amber-400' : 'text-gray-300'}`}>★</button>
+                      ))}
+                    </div>
+                    <input value={reviewText} onChange={e=>setReviewText(e.target.value)} placeholder={t('placeholder.one_line_review')} className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs outline-none focus:border-amber-400 mb-2"/>
+                    <div className="flex gap-2">
+                      <button onClick={()=>{
+                        if (reviewStars > 0 && onReview) onReview(o.id, reviewStars, reviewText);
+                        setReviewingId(null); setReviewStars(0); setReviewText('');
+                      }} className={`flex-1 py-2 rounded-lg text-xs font-bold ${reviewStars > 0 ? 'bg-amber-500 text-white' : 'bg-gray-200 text-gray-400'}`}>
+                        {t('action.complete_button')}
+                      </button>
+                      <button onClick={()=>{setReviewingId(null); setReviewStars(0); setReviewText('');}} className="px-3 py-2 rounded-lg text-xs text-gray-400">{t('action.cancel_button')}</button>
+                    </div>
+                  </div>
+                ) : (
+                  <button onClick={()=>setReviewingId(o.id)} className="w-full mt-2 bg-amber-50 text-amber-700 font-bold py-2 rounded-lg text-xs border border-amber-200 hover:bg-amber-100 transition">
+                    {t('action.write_review')}
+                  </button>
+                )
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ================= FIRESTORE ROOM SYSTEM (상태 머신) =================
+// 상태 흐름: waiting → ready → ordering → all_paid → closing → deleted
+// waiting: 인원 모집 중
+// ready: 최소인원 충족, Creator "주문 활성화" 대기
+// ordering: 각 멤버 개별 주문+결제 가능
+// all_paid: 전원 결제 완료, 머천트에게 주문 전송됨
+// closing: Joiner 모두 픽업완료+퇴장, Creator만 남음
+// deleted: 방폭 완료
+
+// Room 생성
+async function createRoom(user, storeId, storeName, roomType, maxMembers, password) {
+  const roomData = {
+    storeId,
+    storeName,
+    type: roomType, // 'public' or 'private'
+    creatorUid: user.uid,
+    creatorName: user.displayName || 'Anonymous',
+    members: [{uid: user.uid, name: user.displayName || 'Anonymous', photoURL: user.photoURL || null, role: 'creator'}],
+    memberCount: 1,
+    maxMembers: maxMembers || TAPIK.ROOM_MAX,
+    minMembers: TAPIK.ROOM_MIN,
+    status: 'waiting',
+    paidMembers: [],       // 결제 완료한 멤버 uid 배열
+    rewardMode: _activeRewardMode, // 생성 시점 적립률 모드 기록
+    createdAt: FB.serverTimestamp(),
+    expiresAt: new Date(Date.now() + TAPIK.ROOM_TIMEOUT * 60 * 1000),
+  };
+  if (roomType === 'private' && password) {
+    roomData.password = password;
+  }
+  const roomRef = await FB.addDoc(FB.collection(FB.db, 'rooms'), roomData);
+  return roomRef.id;
+}
+
+// Room 참여
+async function joinRoom(user, roomId) {
+  const roomRef = FB.doc(FB.db, 'rooms', roomId);
+  const snap = await FB.getDoc(roomRef);
+  if (!snap.exists()) return;
+  const data = snap.data();
+  // 이미 참여 중이면 무시
+  if (data.members?.some(m => m.uid === user.uid)) return;
+  const newMembers = [...(data.members || []), {uid: user.uid, name: user.displayName || 'Anonymous', photoURL: user.photoURL || null, role: 'joiner'}];
+  const newCount = newMembers.length;
+  const update = { members: newMembers, memberCount: newCount };
+  // 최소인원 충족 시 자동으로 ready 전환
+  if (data.status === 'waiting' && newCount >= (data.minMembers || TAPIK.ROOM_MIN)) {
+    update.status = 'ready';
+  }
+  await FB.updateDoc(roomRef, update);
+}
+
+// Room 나가기 (Joiner만 — Creator는 방폭으로만 퇴장)
+async function leaveRoom(user, roomId) {
+  const roomRef = FB.doc(FB.db, 'rooms', roomId);
+  const snap = await FB.getDoc(roomRef);
+  if (!snap.exists()) return;
+  const data = snap.data();
+  // Creator는 일반 나가기 불가 (방폭만 가능)
+  if (data.creatorUid === user.uid && data.status !== 'waiting') return;
+  const newMembers = data.members.filter(m => m.uid !== user.uid);
+  const newCount = Math.max(0, newMembers.length);
+  const update = { members: newMembers, memberCount: newCount };
+  // Creator가 waiting 상태에서 나가면 (Room 취소) → 삭제
+  if (data.creatorUid === user.uid) {
+    await FB.deleteDoc(roomRef);
+    return;
+  }
+  // 인원이 최소인원 밑으로 떨어지면 ready → waiting
+  if (newCount < (data.minMembers || TAPIK.ROOM_MIN) && data.status === 'ready') {
+    update.status = 'waiting';
+  }
+  // all_paid 이후 Joiner가 나가면 (픽업 완료 후) → Creator만 남으면 closing
+  if (['all_paid', 'closing'].includes(data.status)) {
+    const remainingJoiners = newMembers.filter(m => m.uid !== data.creatorUid);
+    if (remainingJoiners.length === 0) {
+      update.status = 'closing';
+    }
+  }
+  await FB.updateDoc(roomRef, update);
+}
+
+// Creator: 주문 활성화 (ready → ordering)
+async function activateOrdering(roomId) {
+  const roomRef = FB.doc(FB.db, 'rooms', roomId);
+  await FB.updateDoc(roomRef, { status: 'ordering' });
+}
+
+// 결제 완료 기록
+async function markMemberPaid(roomId, userUid) {
+  const roomRef = FB.doc(FB.db, 'rooms', roomId);
+  const snap = await FB.getDoc(roomRef);
+  if (!snap.exists()) return;
+  const data = snap.data();
+  const newPaid = [...(data.paidMembers || [])];
+  if (!newPaid.includes(userUid)) newPaid.push(userUid);
+  const update = { paidMembers: newPaid };
+  // 전원 결제 완료 체크
+  if (newPaid.length >= (data.memberCount || data.members?.length || 0)) {
+    update.status = 'all_paid';
+  }
+  await FB.updateDoc(roomRef, update);
+}
+
+// Creator 방폭 (closing → deleted)
+async function destroyRoom(roomId) {
+  const roomRef = FB.doc(FB.db, 'rooms', roomId);
+  await FB.updateDoc(roomRef, { status: 'deleted' });
+  // 잠시 후 실제 삭제 (UI에서 보이지 않도록)
+  setTimeout(async () => { try { await FB.deleteDoc(roomRef); } catch(e) {} }, 2000);
+}
+
+// ROOM TAB — Firestore 실시간 + 상태 머신
+const RoomTab = ({onJoin, joinedRoom, user, onCreateRoom, onLeaveRoom}) => {
+  const [subTab, setSubTab] = useState('public');
+  const [rooms, setRooms] = useState([]);
+  const [showCreate, setShowCreate] = useState(false);
+  const [createStore, setCreateStore] = useState(STORES[0]);
+  const [createType, setCreateType] = useState('public');
+  const [createMax, setCreateMax] = useState(TAPIK.ROOM_MAX);
+  const [createPassword, setCreatePassword] = useState('');
+  const [creating, setCreating] = useState(false);
+  const [passwordInput, setPasswordInput] = useState('');
+  const [passwordRoomId, setPasswordRoomId] = useState(null);
+  const [rewardMode, setRewardMode] = useState(_activeRewardMode);
+
+  // Firestore 실시간 리스너 — 활성 Room 목록 (모든 활성 상태)
+  useEffect(() => {
+    const q = FB.query(
+      FB.collection(FB.db, 'rooms'),
+      FB.where('status', 'in', ['waiting', 'ready', 'ordering', 'all_paid', 'closing'])
+    );
+    const unsub = FB.onSnapshot(q, (snap) => {
+      const list = [];
+      snap.forEach(d => {
+        const data = d.data();
+        const expiresAt = data.expiresAt?.toDate ? data.expiresAt.toDate() : new Date(data.expiresAt);
+        const minutesLeft = Math.max(0, Math.round((expiresAt - Date.now()) / 60000));
+        list.push({ id: d.id, ...data, minutesLeft });
+      });
+      setRooms(list);
+    });
+    return unsub;
+  }, []);
+
+  // 적립률 모드 실시간 구독
+  useEffect(() => {
+    const unsub = subscribeRewardMode((mode) => setRewardMode(mode));
+    return unsub;
+  }, []);
+
+  // 만료 체크 — 30분 지나면 expired 처리
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      for (const room of rooms) {
+        if (room.minutesLeft <= 0 && ['waiting','ready'].includes(room.status)) {
+          try { await FB.updateDoc(FB.doc(FB.db, 'rooms', room.id), { status: 'expired' }); } catch(e) {}
+        }
+      }
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [rooms]);
+
+  const publicRooms = rooms.filter(r => r.type === 'public');
+  const privateRooms = rooms.filter(r => r.type === 'private');
+  const myRoom = rooms.find(r => r.members?.some(m => m.uid === user?.uid));
+
+  const handleCreate = async () => {
+    if (!user) return;
+    setCreating(true);
+    try {
+      const pw = createType === 'private' ? createPassword : null;
+      const roomId = await createRoom(user, createStore.id, createStore.name, createType, createMax, pw);
+      setShowCreate(false);
+      setCreatePassword('');
+      if (onCreateRoom) onCreateRoom({id: roomId, storeId: createStore.id, storeName: createStore.name, type: createType, creator: user.displayName, members: 1, max: createMax});
+    } catch(e) { console.error('Room create error:', e); }
+    setCreating(false);
+  };
+
+  const handleJoinRoom = async (room) => {
+    if (!user) return;
+    // Private Room → 비밀번호 확인
+    if (room.type === 'private' && room.password) {
+      setPasswordRoomId(room.id);
+      setPasswordInput('');
+      return;
+    }
+    try {
+      await joinRoom(user, room.id);
+      if (onJoin) onJoin({...room, storeId: room.storeId, storeName: room.storeName});
+    } catch(e) { console.error('Room join error:', e); }
+  };
+
+  const handlePasswordJoin = async () => {
+    const room = rooms.find(r => r.id === passwordRoomId);
+    if (!room) return;
+    if (passwordInput !== room.password) {
+      alert(t('msg.password_wrong'));
+      return;
+    }
+    try {
+      await joinRoom(user, room.id);
+      if (onJoin) onJoin({...room, storeId: room.storeId, storeName: room.storeName});
+    } catch(e) { console.error('Room join error:', e); }
+    setPasswordRoomId(null);
+    setPasswordInput('');
+  };
+
+  const handleLeave = async () => {
+    if (!user || !myRoom) return;
+    try {
+      await leaveRoom(user, myRoom.id);
+      if (onLeaveRoom) onLeaveRoom();
+    } catch(e) { console.error('Room leave error:', e); }
+  };
+
+  // Creator: 주문 활성화
+  const handleActivateOrdering = async () => {
+    if (!myRoom) return;
+    try { await activateOrdering(myRoom.id); } catch(e) { console.error('Activate error:', e); }
+  };
+
+  // Creator: 방폭
+  const handleDestroyRoom = async () => {
+    if (!myRoom) return;
+    try {
+      await destroyRoom(myRoom.id);
+      if (onLeaveRoom) onLeaveRoom();
+    } catch(e) { console.error('Destroy error:', e); }
+  };
+
+  // 상태 뱃지 색상
+  const statusBadge = (status) => {
+    const map = {
+      waiting: { bg: 'bg-yellow-100 text-yellow-700', textKey: 'room.status.waiting' },
+      ready: { bg: 'bg-green-100 text-green-700', textKey: 'room.status.ready' },
+      ordering: { bg: 'bg-blue-100 text-blue-700', textKey: 'room.status.ordering' },
+      all_paid: { bg: 'bg-purple-100 text-purple-700', textKey: 'room.status.all_paid' },
+      closing: { bg: 'bg-red-100 text-red-700', textKey: 'room.status.closing' },
+    };
+    const s = map[status] || map.waiting;
+    return <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${s.bg}`}>{t(s.textKey)}</span>;
+  };
+
+  const FireRoomCard = ({room}) => {
+    const isMine = room.members?.some(m => m.uid === user?.uid);
+    const isCreator = room.creatorUid === user?.uid;
+    const isPaid = (room.paidMembers || []).includes(user?.uid);
+    const canOrder = room.status === 'ordering' && isMine && !isPaid;
+    const canJoin = ['waiting', 'ready'].includes(room.status) && !isMine && room.memberCount < room.maxMembers;
+    // Creator 나가기: waiting 상태에서만 가능 (Room 취소). 그 외에는 방폭만.
+    const canLeave = isMine && !isCreator && ['waiting','ready'].includes(room.status);
+    const canCancelRoom = isMine && isCreator && room.status === 'waiting';
+
+    return (
+      <div>
+        <div className={`rounded-xl border p-3 shadow-sm ${isMine ? 'bg-purple-50 border-purple-300' : 'bg-white border-gray-100'}`}>
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="text-xs">{room.type === 'public' ? '🌐' : '🔒'}</span>
+                <span className="font-bold text-sm text-gray-900">{room.storeName}</span>
+                {isMine && <span className="bg-purple-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">{isCreator ? 'Creator' : 'Joiner'}</span>}
+                {statusBadge(room.status)}
+              </div>
+              <div className="text-xs text-gray-500 mt-0.5">by {room.creatorName} · <span className="font-bold text-purple-600">{t('room.members_count', {n: room.memberCount || room.members?.length || 0, max: room.minMembers})}</span> · {t('room.time_left', {min: room.minutesLeft})}</div>
+              {/* Member avatars + payment check */}
+              <div className="flex items-center gap-1 mt-1.5">
+                {(room.members || []).map((m, i) => {
+                  const paid = (room.paidMembers || []).includes(m.uid);
+                  return (
+                    <div key={i} className="relative">
+                      {m.photoURL ? (
+                        <img src={m.photoURL} className={`w-6 h-6 rounded-full object-cover border-2 ${paid ? 'border-green-400' : 'border-white'}`} referrerPolicy="no-referrer" title={m.name}/>
+                      ) : (
+                        <div className={`w-6 h-6 rounded-full bg-purple-200 text-purple-700 flex items-center justify-center text-[9px] font-bold border-2 ${paid ? 'border-green-400' : 'border-white'}`} title={m.name}>{m.name?.[0]}</div>
+                      )}
+                      {paid && <span className="absolute -bottom-0.5 -right-0.5 text-[8px]">✅</span>}
+                    </div>
+                  );
+                })}
+                {room.memberCount >= room.minMembers && room.status === 'waiting' && <span className="text-[9px] text-green-600 font-bold ml-1">{t('room.min_met')}</span>}
+              </div>
+              {/* Show reward rate mode */}
+              {isMine && <div className="text-[9px] text-gray-400 mt-1">{t('room.reward_rate', {mode: REWARD_MODES[rewardMode]?.name || t('reward.mode.default')})}</div>}
+            </div>
+            <div className="flex flex-col gap-1 items-end">
+              {canJoin && (
+                <button onClick={()=>handleJoinRoom(room)} className="bg-amber-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-amber-600 transition">{t('room.join')}</button>
+              )}
+              {(canLeave || canCancelRoom) && (
+                <button onClick={handleLeave} className="bg-gray-200 text-gray-600 text-xs font-bold px-3 py-1.5 rounded-lg">{canCancelRoom ? t('action.close_room') : t('action.leave_room')}</button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Creator: activate ordering button (ready status only) */}
+        {isMine && isCreator && room.status === 'ready' && (
+          <button onClick={handleActivateOrdering} className="w-full mt-1 bg-gradient-to-r from-green-500 to-green-700 text-white font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition animate-pulse-ring">
+            {t('room.activate_order')}
+          </button>
+        )}
+
+        {/* Go to order - only active when in ordering status + not paid */}
+        {isMine && room.status === 'ordering' && !isPaid && (
+          <button onClick={()=>{
+            const store = STORES.find(s => s.id === room.storeId);
+            if (store && onJoin) onJoin({...room, storeId: room.storeId, storeName: room.storeName});
+          }} className="w-full mt-1 bg-gradient-to-r from-purple-500 to-purple-700 text-white font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition">
+            {t('room.go_order')}
+          </button>
+        )}
+
+        {/* Show payment complete status */}
+        {isMine && isPaid && room.status === 'ordering' && (
+          <div className="w-full mt-1 bg-green-50 border border-green-300 text-green-700 font-bold py-2.5 rounded-xl text-sm text-center">
+            {t('room.paid_wait')}
+          </div>
+        )}
+
+        {/* All members paid notification */}
+        {isMine && room.status === 'all_paid' && (
+          <div className="w-full mt-1 bg-purple-50 border border-purple-300 text-purple-700 font-bold py-2.5 rounded-xl text-sm text-center">
+            {t('room.all_paid')}
+          </div>
+        )}
+
+        {/* Creator room destroy button (closing status) */}
+        {isMine && isCreator && room.status === 'closing' && (
+          <button onClick={handleDestroyRoom} className="w-full mt-1 bg-gradient-to-r from-red-500 to-red-700 text-white font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition">
+            {t('room.destroy')}
+          </button>
+        )}
+
+        {/* Inactive order button in waiting status */}
+        {isMine && room.status === 'waiting' && (
+          <div className="w-full mt-1 bg-gray-100 border border-gray-200 text-gray-400 font-bold py-2.5 rounded-xl text-sm text-center">
+            {t('room.min_recruit', {min: room.minMembers})}
+          </div>
+        )}
+
+        {/* Joiner waits in ready status */}
+        {isMine && !isCreator && room.status === 'ready' && (
+          <div className="w-full mt-1 bg-yellow-50 border border-yellow-300 text-yellow-700 font-bold py-2.5 rounded-xl text-sm text-center">
+            {t('room.wait_activate')}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <div className="pt-12 pb-4 px-4">
+      <div className="flex items-center justify-between mb-3">
+        <div className="font-bold text-lg text-gray-900">{t('tab.room')}</div>
+        <button onClick={()=>setShowCreate(true)} className="bg-purple-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1"><I.Plus s={14}/> {t('room.create')}</button>
+      </div>
+
+      {/* Create room modal */}
+      {showCreate && (
+        <div className="bg-purple-50 border-2 border-purple-300 rounded-xl p-4 mb-4 animate-slide-up">
+          <div className="text-sm font-bold text-purple-800 mb-3">{t('room.create_title')}</div>
+          <div className="text-xs font-bold text-gray-700 mb-1.5">{t('room.select_store')}</div>
+          <div className="flex gap-2 mb-3 overflow-x-auto hide-scroll">
+            {STORES.map(s => (
+              <button key={s.id} onClick={()=>setCreateStore(s)} className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold border-2 transition ${createStore.id === s.id ? 'border-purple-500 bg-white text-purple-700' : 'border-gray-200 bg-white text-gray-600'}`}>{s.name}</button>
+            ))}
+          </div>
+          <div className="text-xs font-bold text-gray-700 mb-1.5">{t('room.select_type')}</div>
+          <div className="flex gap-2 mb-3">
+            <button onClick={()=>{setCreateType('public'); setCreatePassword('');}} className={`flex-1 p-2 rounded-lg text-xs font-bold text-center ${createType==='public' ? 'bg-purple-600 text-white' : 'bg-white text-gray-600 border border-gray-200'}`}>🌐 Public</button>
+            <button onClick={()=>setCreateType('private')} className={`flex-1 p-2 rounded-lg text-xs font-bold text-center ${createType==='private' ? 'bg-purple-600 text-white' : 'bg-white text-gray-600 border border-gray-200'}`}>🔒 Private</button>
+          </div>
+          {createType === 'private' && (
+            <div className="mb-3">
+              <div className="text-xs font-bold text-gray-700 mb-1.5">{t('room.password_label')}</div>
+              <input type="text" value={createPassword} onChange={e=>setCreatePassword(e.target.value)} placeholder={t('room.password_input')} className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs outline-none focus:border-purple-400"/>
+            </div>
+          )}
+          <div className="text-xs font-bold text-gray-700 mb-1.5">{t('room.max_members', {max: createMax, min: TAPIK.ROOM_MIN})}</div>
+          <input type="range" min={TAPIK.ROOM_MIN} max={TAPIK.ROOM_MAX} value={createMax} onChange={e=>setCreateMax(Number(e.target.value))} className="w-full mb-3"/>
+          <div className="flex gap-2">
+            <button onClick={()=>setShowCreate(false)} className="flex-1 bg-gray-200 text-gray-700 font-bold py-2.5 rounded-xl text-sm">{t('room.btn_cancel')}</button>
+            <button onClick={handleCreate} disabled={creating} className="flex-1 bg-purple-600 text-white font-bold py-2.5 rounded-xl text-sm disabled:opacity-50">{creating ? t('room.btn_creating') : t('room.btn_create')}</button>
+          </div>
+        </div>
+      )}
+
+      {/* Password modal */}
+      {passwordRoomId && (
+        <div className="bg-yellow-50 border-2 border-yellow-300 rounded-xl p-4 mb-4 animate-slide-up">
+          <div className="text-sm font-bold text-yellow-800 mb-2">{t('room.password_title')}</div>
+          <input type="text" value={passwordInput} onChange={e=>setPasswordInput(e.target.value)} placeholder={t('room.password_input_modal')} className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-yellow-400 mb-3"/>
+          <div className="flex gap-2">
+            <button onClick={()=>{setPasswordRoomId(null); setPasswordInput('');}} className="flex-1 bg-gray-200 text-gray-700 font-bold py-2 rounded-xl text-sm">{t('room.btn_cancel')}</button>
+            <button onClick={handlePasswordJoin} className="flex-1 bg-yellow-500 text-white font-bold py-2 rounded-xl text-sm">{t('room.btn_join')}</button>
+          </div>
+        </div>
+      )}
+
+      {/* Display current reward rate mode */}
+      <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg px-3 py-2 mb-3 flex items-center justify-between">
+        <span className="text-[10px] text-amber-700">{t('room.current_rate')}</span>
+        <span className="text-[10px] font-bold text-amber-800">{t('room.rate_mode', {mode: REWARD_MODES[rewardMode]?.name || t('reward.mode.default')})}</span>
+      </div>
+
+      {/* Sub tabs */}
+      <div className="flex gap-0 bg-gray-100 rounded-xl p-1 mb-4">
+        <button onClick={()=>setSubTab('public')} className={`flex-1 py-2 rounded-lg text-xs font-bold text-center transition ${subTab==='public' ? 'bg-white text-purple-700 shadow-sm' : 'text-gray-500'}`}>🌐 Public ({publicRooms.length})</button>
+        <button onClick={()=>setSubTab('private')} className={`flex-1 py-2 rounded-lg text-xs font-bold text-center transition ${subTab==='private' ? 'bg-white text-purple-700 shadow-sm' : 'text-gray-500'}`}>🔒 Private ({privateRooms.length})</button>
+      </div>
+
+      {subTab === 'public' ? (
+        <div>
+          <div className="text-xs font-bold text-gray-700 mb-2">{t('room.find')}</div>
+          {publicRooms.length === 0 ? (
+            <div className="text-center text-gray-400 text-sm mt-8 py-8">
+              <div className="text-3xl mb-2">🚪</div>
+              <div>{t('room.no_public')}</div>
+              <div className="text-[10px] mt-1">{t('room.create_new')}</div>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {publicRooms.map(r => <FireRoomCard key={r.id} room={r}/>)}
+            </div>
+          )}
+        </div>
+      ) : (
+        <div>
+          <div className="text-xs font-bold text-gray-700 mb-2">{t('room.friend_rooms')}</div>
+          {privateRooms.length === 0 ? (
+            <div className="text-center text-gray-400 text-sm mt-8 py-8">
+              <div className="text-3xl mb-2">🔒</div>
+              <div>{t('room.no_private')}</div>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {privateRooms.map(r => <FireRoomCard key={r.id} room={r}/>)}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// REWARDS TAB (TP Cap 포함 — Firestore 연동)
+const RewardsTab = ({userPoints}) => {
+  const tp = userPoints?.total || 0;
+  const byStore = userPoints?.byStore || {};
+  // 레벨 자동 계산: 총 적립 기준
+  const level = tp >= 5000 ? 'L3' : tp >= 500 ? 'L2' : 'L1';
+  const levels = {L1:{name:'Newbie',color:'gray',next:'L2',needed:500 - tp}, L2:{name:'Regular',color:'amber',next:'L3',needed:5000 - tp}, L3:{name:'Local',color:'yellow',next:null,needed:0}};
+  const lv = levels[level];
+  const tpPercent = Math.min(100, (tp / TAPIK.TP_CAP) * 100);
+  const tpCapReached = tp >= TAPIK.TP_CAP;
+  return (
+    <div className="pt-12 pb-4 px-4">
+      <div className="font-bold text-lg text-gray-900 mb-3">{t('tab.rewards')}</div>
+
+      {/* Points header + TP Cap */}
+      <div className="bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl p-5 text-white mb-4">
+        <div className="text-sm opacity-80">{t('rewards.total')}</div>
+        <div className="text-4xl font-bold mt-1">{tp.toLocaleString()} <span className="text-lg font-normal">/ {TAPIK.TP_CAP.toLocaleString()} TP</span></div>
+        {/* TP Cap progress bar */}
+        <div className="mt-2 w-full bg-white/20 rounded-full h-2">
+          <div className="bg-white h-2 rounded-full transition-all" style={{width:`${tpPercent}%`}}/>
+        </div>
+        <div className="flex items-center justify-between mt-1">
+          <span className="text-[10px] opacity-70">{t('rewards.rate_earned', {pct: tpPercent.toFixed(1)})}</span>
+          <span className="text-[10px] opacity-70">{t('rewards.max_rm', {max: (TAPIK.TP_CAP/100).toLocaleString()})}</span>
+        </div>
+        {tpCapReached && (
+          <div className="mt-2 bg-white/20 rounded-lg px-3 py-1.5 text-[11px] font-bold text-center">
+            {t('rewards.cap_reached')}
+          </div>
+        )}
+        <div className="flex items-center gap-2 mt-3">
+          <LevelBadge level={level}/>
+          <span className="text-xs opacity-80">{lv.name}</span>
+          {lv.next && lv.needed > 0 && <span className="text-[10px] opacity-60">{t('rewards.level_next', {next: lv.next, needed: lv.needed})}</span>}
+        </div>
+      </div>
+
+      {/* By store */}
+      <div className="bg-white rounded-xl border border-gray-100 p-3 mb-4">
+        <div className="text-xs font-bold text-gray-700 mb-2">{t('rewards.by_store')}</div>
+        {Object.entries(byStore).length === 0 && <div className="text-xs text-gray-400 py-2">{t('rewards.no_history')}</div>}
+        {Object.entries(byStore).map(([storeId, pts]) => {
+          const store = STORES.find(s=>s.id===storeId);
+          return store ? (
+            <div key={storeId} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
+              <div className="text-sm text-gray-700">{store.name}</div>
+              <div className="text-sm font-bold text-amber-600">{pts} TP</div>
+            </div>
+          ) : null;
+        })}
+      </div>
+
+      {/* Quests */}
+      <div className="bg-white rounded-xl border border-gray-100 p-3 mb-4">
+        <div className="text-xs font-bold text-gray-700 mb-2">{t('rewards.quests')}</div>
+        {QUESTS.map(q => (
+          <div key={q.id} className="py-2 border-b border-gray-50 last:border-0">
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-gray-700">{q.titleKey ? t(q.titleKey) : q.title}</div>
+              <div className="text-[10px] font-bold text-amber-600">+{q.reward} TP</div>
+            </div>
+            <div className="mt-1.5 w-full bg-gray-100 rounded-full h-1.5">
+              <div className="bg-amber-500 h-1.5 rounded-full transition-all" style={{width:`${q.progress/q.total*100}%`}}/>
+            </div>
+            <div className="text-[10px] text-gray-400 mt-0.5">{q.progress}/{q.total}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Reward shop */}
+      <div className="bg-white rounded-xl border border-gray-100 p-3">
+        <div className="text-xs font-bold text-gray-700 mb-2">{t('rewards.shop')}</div>
+        {REWARDS_CATALOG.map(r => (
+          <div key={r.id} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
+            <div>
+              <div className="text-sm text-gray-700">{r.nameKey ? t(r.nameKey) : r.name}</div>
+              <div className="text-[10px] text-gray-400">{r.storeKey ? t(r.storeKey) : r.store}</div>
+            </div>
+            <button className={`text-xs font-bold px-3 py-1 rounded-full ${tp >= r.cost ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-400'}`}>
+              {r.cost} TP
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ME TAB
+const MeTab = ({user, onLogout, userPoints}) => {
+  const items = [
+    {icon:I.CreditCard, label:t('me.payment')},
+    {icon:I.Wallet, label:t('me.prepaid')},
+    {icon:I.Users, label:t('me.friends'), badge:CONSUMER.friends.length},
+    {icon:I.Bell, label:t('me.notifications')},
+    {icon:I.Globe, label:t('me.language'), sub:_currentLang === 'ko' ? 'Korean' : 'English', onClick:()=>{setLang(_currentLang === 'ko' ? 'en' : 'ko'); window.location.reload();}},
+    {icon:I.Settings, label:t('me.help')},
+  ];
+  const displayName = user?.displayName || CONSUMER.name;
+  const initials = displayName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  return (
+    <div className="pt-12 pb-4 px-4">
+      {/* Profile — Firebase user */}
+      <div className="bg-white rounded-2xl border border-gray-100 p-4 mb-4 flex items-center gap-4">
+        {user?.photoURL ? (
+          <img src={user.photoURL} className="w-16 h-16 rounded-full object-cover" referrerPolicy="no-referrer"/>
+        ) : (
+          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white font-bold text-xl">{initials}</div>
+        )}
+        <div>
+          <div className="font-bold text-lg text-gray-900">{displayName}</div>
+          <div className="text-xs text-gray-500">{user?.email}</div>
+          <div className="flex items-center gap-2 mt-1"><LevelBadge level={userPoints?.total >= 5000 ? 'L3' : userPoints?.total >= 500 ? 'L2' : 'L1'}/><span className="text-xs text-gray-500">{(userPoints?.total || 0).toLocaleString()} TP</span></div>
+        </div>
+        <I.ChevronRight s={18} c="text-gray-300 ml-auto"/>
+      </div>
+
+      {/* Menu items */}
+      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden mb-4">
+        {items.map((item, i) => (
+          <button key={i} className="w-full flex items-center gap-3 px-4 py-3.5 border-b border-gray-50 last:border-0 hover:bg-gray-50 transition">
+            <item.icon s={18} c="text-gray-500"/>
+            <span className="text-sm text-gray-700 flex-1 text-left">{item.label}</span>
+            {item.badge && <span className="text-[10px] bg-gray-100 text-gray-600 font-bold px-2 py-0.5 rounded-full">{item.badge}</span>}
+            {item.sub && <span className="text-xs text-gray-400">{item.sub}</span>}
+            <I.ChevronRight s={16} c="text-gray-300"/>
+          </button>
+        ))}
+      </div>
+
+      <button onClick={onLogout} className="w-full text-center text-red-500 text-sm font-medium py-3">{t('me.logout')}</button>
+    </div>
+  );
+};
+
+// ONBOARDING — 7단계: Splash → 3 Value Slides → Phone OTP → Profile → Permissions → Terms → Home
+const OnboardingScreen = ({onComplete}) => {
+  const [step, setStep] = useState(0); // 0=splash, 1-3=value, 4=phone, 5=profile, 6=perms, 7=terms
+  const [phone, setPhone] = useState('');
+  const [otp, setOtp] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
+  const [name, setName] = useState('');
+  const [perms, setPerms] = useState({location:false, contacts:false, push:false});
+  const [termsOk, setTermsOk] = useState(false);
+
+  // Step 0: Splash
+  if (step === 0) return (
+    <div className="min-h-full bg-gradient-to-br from-amber-400 to-orange-500 flex flex-col items-center justify-center px-8">
+      <div className="animate-pop"><TapikLogo size={56}/></div>
+      <div className="text-white text-xl font-bold mt-6 animate-fade">{t('onboarding.welcome')}</div>
+      <div className="text-white/70 text-sm mt-2 text-center">{t('onboarding.tagline')}</div>
+      <button onClick={()=>setStep(1)} className="w-full bg-white text-gray-900 font-bold py-3.5 rounded-xl shadow mt-12">{t('onboarding.start')}</button>
+      <button onClick={onComplete} className="w-full text-white/60 text-xs py-3 mt-2">{t('onboarding.skip_all')}</button>
+    </div>
+  );
+
+  // Steps 1-3: Value slides
+  if (step >= 1 && step <= 3) {
+    const idx = step - 1;
+    const slides = [t('onboarding.slide1'), t('onboarding.slide2'), t('onboarding.slide3')];
+    const descs = [t('phrase.no_queue'), t('phrase.earn_points'), t('phrase.room_bonus')];
+    const colors = ['from-amber-400 to-orange-500', 'from-green-400 to-emerald-500', 'from-purple-400 to-indigo-500'];
+    const icons = [I.Clock, I.Gift, I.Users];
+    const Ico = icons[idx];
+    return (
+      <div className={`min-h-full bg-gradient-to-br ${colors[idx]} flex flex-col items-center justify-center px-8 text-white`}>
+        <div className="animate-pop">
+          <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mb-6 mx-auto"><Ico s={48} c="text-white" sw={1.5}/></div>
+          <div className="text-2xl font-bold text-center">{slides[idx]}</div>
+          <div className="text-sm text-white/70 text-center mt-3">{descs[idx]}</div>
+        </div>
+        <div className="flex gap-2 mt-8">
+          {[0,1,2].map(i => <div key={i} className={`w-2 h-2 rounded-full ${i===idx?'bg-white':'bg-white/40'}`}/>)}
+        </div>
+        <div className="mt-12 w-full space-y-3">
+          <button onClick={()=>setStep(step+1)} className="w-full bg-white text-gray-900 font-bold py-3.5 rounded-xl shadow">
+            {step < 3 ? t('onboarding.next') : t('onboarding.start')}
+          </button>
+          <button onClick={()=>setStep(4)} className="w-full text-white/70 text-sm py-2">{t('onboarding.skip')}</button>
+        </div>
+      </div>
+    );
+  }
+
+  // Step 4: Phone OTP
+  if (step === 4) return (
+    <div className="min-h-full bg-white px-6 pt-16">
+      <div className="text-center mb-8">
+        <div className="text-2xl font-bold text-gray-900">{t('onboarding.phone_title')}</div>
+        <div className="text-sm text-gray-500 mt-2">{t('onboarding.phone_desc')}</div>
+      </div>
+      <div className="flex items-center gap-2 bg-gray-100 rounded-xl p-3 mb-3">
+        <span className="text-sm font-bold text-gray-600">🇲🇾 +60</span>
+        <input value={phone} onChange={e=>setPhone(e.target.value.replace(/\D/g,''))} placeholder="12-345 6789" className="bg-transparent flex-1 outline-none text-sm text-gray-900" maxLength={11}/>
+      </div>
+      {!otpSent ? (
+        <button onClick={()=>{ if(phone.length>=9) setOtpSent(true); }} className={`w-full py-3.5 rounded-xl font-bold text-sm ${phone.length>=9 ? 'bg-amber-500 text-white' : 'bg-gray-200 text-gray-400'}`}>
+          {t('onboarding.send_code')}
+        </button>
+      ) : (
+        <div className="space-y-3">
+          <div className="text-center text-xs text-green-600 font-bold animate-fade">{t('onboarding.code_sent', {phone})}</div>
+          <div className="flex gap-2 justify-center">
+            {[0,1,2,3,4,5].map(i => (
+              <input key={i} value={otp[i]||''} onChange={e => {
+                const v = e.target.value.replace(/\D/g,'');
+                if (v) { const newOtp = otp.slice(0,i) + v[0] + otp.slice(i+1); setOtp(newOtp); if(i<5) e.target.nextSibling?.focus(); }
+              }} className="w-10 h-12 text-center text-lg font-bold border-2 border-gray-200 rounded-lg focus:border-amber-500 outline-none" maxLength={1}/>
+            ))}
+          </div>
+          <button onClick={()=>{ if(otp.length>=6) setStep(5); }} className={`w-full py-3.5 rounded-xl font-bold text-sm ${otp.length>=6 ? 'bg-amber-500 text-white' : 'bg-gray-200 text-gray-400'}`}>
+            {t('onboarding.verify_code')}
+          </button>
+          <button onClick={()=>{setOtp(''); setOtpSent(false);}} className="w-full text-gray-400 text-xs py-2">{t('onboarding.resend')}</button>
+        </div>
+      )}
+      <button onClick={onComplete} className="text-gray-300 text-[10px] mt-8">{t('onboarding.skip_perm')}</button>
+    </div>
+  );
+
+  // Step 5: Profile
+  if (step === 5) return (
+    <div className="min-h-full bg-white px-6 pt-16">
+      <div className="text-center mb-8">
+        <div className="w-20 h-20 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+          <I.User s={36} c="text-white"/>
+        </div>
+        <div className="text-2xl font-bold text-gray-900">{t('onboarding.profile_title')}</div>
+      </div>
+      <div className="space-y-3">
+        <div>
+          <label className="text-xs font-bold text-gray-600 block mb-1">{t('onboarding.name_label')}</label>
+          <input value={name} onChange={e=>setName(e.target.value)} placeholder={t('onboarding.name_input')} className="w-full bg-gray-100 rounded-xl p-3 outline-none text-sm focus:ring-2 ring-amber-300"/>
+        </div>
+        <div className="bg-gray-50 rounded-xl p-3">
+          <div className="text-xs text-gray-500">{t('onboarding.phone_label')}</div>
+          <div className="text-sm font-bold text-gray-900 mt-0.5">+60 {phone}</div>
+        </div>
+      </div>
+      <button onClick={()=>{ if(name.trim()) setStep(6); }} className={`w-full py-3.5 rounded-xl font-bold text-sm mt-8 ${name.trim() ? 'bg-amber-500 text-white' : 'bg-gray-200 text-gray-400'}`}>
+        {t('onboarding.next')}
+      </button>
+      <button onClick={onComplete} className="w-full text-gray-300 text-[10px] mt-3">{t('onboarding.skip_perm')}</button>
+    </div>
+  );
+
+  // Step 6: Permissions
+  if (step === 6) return (
+    <div className="min-h-full bg-white px-6 pt-16">
+      <div className="text-center mb-6">
+        <div className="text-2xl font-bold text-gray-900">{t('phrase.permissions')}</div>
+        <div className="text-sm text-gray-500 mt-2">{t('phrase.permissions_desc')}</div>
+      </div>
+      <div className="space-y-3">
+        {[
+          {key:'location', icon:I.MapPin, labelKey:'phrase.location', descKey:'phrase.location_desc', required:true},
+          {key:'contacts', icon:I.Users, labelKey:'phrase.contact', descKey:'phrase.contact_desc', required:false},
+          {key:'push', icon:I.Bell, labelKey:'phrase.notifications', descKey:'phrase.notifications_desc', required:false},
+        ].map(p => (
+          <div key={p.key} className={`flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition ${perms[p.key] ? 'border-amber-400 bg-amber-50' : 'border-gray-200'}`} onClick={()=>setPerms({...perms, [p.key]:!perms[p.key]})}>
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${perms[p.key] ? 'bg-amber-500' : 'bg-gray-200'}`}>
+              <p.icon s={18} c={perms[p.key] ? 'text-white' : 'text-gray-500'}/>
+            </div>
+            <div className="flex-1">
+              <div className="text-sm font-bold text-gray-900">{t(p.labelKey)} {p.required && <span className="text-red-500 text-[10px]">Required</span>}</div>
+              <div className="text-[10px] text-gray-500 mt-0.5">{t(p.descKey)}</div>
+            </div>
+            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${perms[p.key] ? 'border-amber-500 bg-amber-500' : 'border-gray-300'}`}>
+              {perms[p.key] && <I.Check s={12} c="text-white"/>}
+            </div>
+          </div>
+        ))}
+      </div>
+      <button onClick={()=>setStep(7)} className={`w-full py-3.5 rounded-xl font-bold text-sm mt-8 ${perms.location ? 'bg-amber-500 text-white' : 'bg-gray-200 text-gray-400'}`}>
+        {perms.location ? t('action.next') : t('msg.no_location')}
+      </button>
+      <button onClick={()=>{setPerms({location:true,contacts:false,push:false}); setStep(7);}} className="w-full text-gray-400 text-xs py-2">Skip with minimum permissions</button>
+      <button onClick={onComplete} className="w-full text-gray-300 text-[10px] mt-1">⚡ {t('action.skip')}</button>
+    </div>
+  );
+
+  // Step 7: Terms & Privacy
+  if (step === 7) return (
+    <div className="min-h-full bg-white px-6 pt-16">
+      <div className="text-center mb-6">
+        <div className="text-2xl font-bold text-gray-900">Terms & Privacy</div>
+      </div>
+      <div className="space-y-2 text-xs text-gray-600 bg-gray-50 rounded-xl p-4 max-h-60 overflow-y-auto hide-scroll">
+        <div className="font-bold text-gray-900 mb-2">{t('onboarding.terms_title')}</div>
+        <div>• <b>{t('label.terms_location')}:</b> {t('onboarding.terms_location')}</div>
+        <div>• <b>{t('label.terms_contact')}:</b> {t('onboarding.terms_contact')}</div>
+        <div>• <b>{t('label.terms_payment')}:</b> {t('onboarding.terms_payment')}</div>
+        <div>• <b>{t('label.terms_points')}:</b> {t('onboarding.terms_points')}</div>
+        <div>• <b>{t('label.terms_cancel')}:</b> {t('onboarding.terms_cancel')}</div>
+        <div>• <b>Room:</b> {t('onboarding.terms_room')}</div>
+        <div>• <b>{t('label.terms_privacy')}:</b> {t('onboarding.terms_privacy')}</div>
+      </div>
+      <div className={`flex items-center gap-3 mt-4 p-3 rounded-xl border-2 cursor-pointer transition ${termsOk ? 'border-amber-400 bg-amber-50' : 'border-gray-200'}`} onClick={()=>setTermsOk(!termsOk)}>
+        <div className={`w-5 h-5 rounded flex items-center justify-center border-2 ${termsOk ? 'border-amber-500 bg-amber-500' : 'border-gray-300'}`}>
+          {termsOk && <I.Check s={12} c="text-white"/>}
+        </div>
+        <div className="text-sm text-gray-700">{t('onboarding.agree_all')}</div>
+      </div>
+      <button onClick={()=>{ if(termsOk) onComplete(); }} className={`w-full py-3.5 rounded-xl font-bold text-sm mt-6 ${termsOk ? 'bg-amber-500 text-white' : 'bg-gray-200 text-gray-400'}`}>
+        {t('onboarding.start_app')}
+      </button>
+      <button onClick={onComplete} className="w-full text-gray-300 text-[10px] mt-2">{t('onboarding.skip_perm')}</button>
+    </div>
+  );
+
+  return null;
+};
+
+// ================= Main App =================
+// ================= LOGIN SCREEN =================
+const LoginScreen = ({onLogin}) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await FB.signInWithPopup(FB.auth, FB.googleProvider);
+      // Save user to Firestore
+      const userRef = FB.doc(FB.db, 'users', result.user.uid);
+      await FB.setDoc(userRef, {
+        displayName: result.user.displayName,
+        email: result.user.email,
+        photoURL: result.user.photoURL,
+        lastLogin: FB.serverTimestamp(),
+      }, { merge: true });
+      onLogin(result.user);
+    } catch (err) {
+      console.error('Login error:', err);
+      setError(err.message);
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-100 flex items-start justify-center py-6">
+      <div className="phone-frame">
+        <div className="phone-screen hide-scroll" style={{display:'flex', flexDirection:'column', justifyContent:'center'}}>
+          <div className="px-8 text-center">
+            <TapikLogo size={48}/>
+            <div className="mt-6 mb-2 text-xl font-bold text-gray-900">Tap · Pick · Go</div>
+            <div className="text-sm text-gray-500 mb-8">{t('login.tagline')}</div>
+
+            {error && <div className="bg-red-50 border border-red-200 text-red-700 text-xs rounded-lg p-3 mb-4">{error}</div>}
+
+            {/* Google Login - actual implementation */}
+            <button onClick={handleGoogleLogin} disabled={loading}
+              className="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-200 rounded-xl py-3.5 px-4 font-bold text-sm text-gray-700 hover:border-blue-400 hover:bg-blue-50 transition shadow-sm disabled:opacity-50">
+              <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+              {loading ? t('phrase.signing_in_progress') : t('phrase.signing_in')}
+            </button>
+
+            {/* Other login options - UI only */}
+            <div className="mt-3 space-y-2">
+              <button className="w-full flex items-center justify-center gap-3 bg-[#25D366] text-white rounded-xl py-3 px-4 font-bold text-sm opacity-60 cursor-not-allowed">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492l4.624-1.213A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75c-2.16 0-4.16-.688-5.794-1.856l-.416-.312-2.742.72.732-2.672-.343-.432A9.72 9.72 0 012.25 12C2.25 6.624 6.624 2.25 12 2.25S21.75 6.624 21.75 12 17.376 21.75 12 21.75z"/></svg>
+                {t('login.whatsapp')}
+              </button>
+              <button className="w-full flex items-center justify-center gap-3 bg-black text-white rounded-xl py-3 px-4 font-bold text-sm opacity-60 cursor-not-allowed">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.12V9.01a6.27 6.27 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V8.86a8.21 8.21 0 004.76 1.52V6.93a4.84 4.84 0 01-1-.24z"/></svg>
+                {t('login.tiktok')}
+              </button>
+              <button className="w-full flex items-center justify-center gap-3 bg-[#1877F2] text-white rounded-xl py-3 px-4 font-bold text-sm opacity-60 cursor-not-allowed">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                {t('login.facebook')}
+              </button>
+            </div>
+
+            <div className="mt-6 text-[10px] text-gray-400">{t('login.terms')}</div>
+          </div>
+        </div>
+        <div className="android-nav"><div className="android-nav-pill"/></div>
+      </div>
+    </div>
+  );
+};
+
+// ================= MAIN APP =================
+function ConsumerApp() {
+  const [firebaseUser, setFirebaseUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  // Firebase Auth 상태 감시
+  useEffect(() => {
+    const unsub = FB.onAuthStateChanged(FB.auth, (user) => {
+      setFirebaseUser(user);
+      setAuthLoading(false);
+    });
+    return unsub;
+  }, []);
+
+  // 로그아웃
+  const handleLogout = () => FB.signOut(FB.auth);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <TapikLogo size={40}/>
+          <div className="mt-4 text-sm text-gray-500">{t('msg.loading')}</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!firebaseUser) {
+    return <LoginScreen onLogin={(u) => setFirebaseUser(u)}/>;
+  }
+
+  return <ConsumerAppInner user={firebaseUser} onLogout={handleLogout}/>;
+}
+
+function ConsumerAppInner({user, onLogout}) {
+  const [screen, setScreen] = useState('onboarding'); // onboarding, home, store, checkout, prepaid, status
+  const [tab, setTab] = useState('home');
+  const [selectedStore, setSelectedStore] = useState(null);
+  const [merchantOnline, setMerchantOnline] = useState(null); // 연동된 머천트 매장명
+
+  // ===== 포인트 시스템 (Firestore 연동) =====
+  const [userPoints, setUserPoints] = useState({ total: 0, byStore: {} });
+  const [pointsLoaded, setPointsLoaded] = useState(false);
+
+  // Firestore에서 유저 포인트 로드
+  useEffect(() => {
+    if (!user?.uid) return;
+    const unsub = FB.onSnapshot(FB.doc(FB.db, 'users', user.uid), (snap) => {
+      if (snap.exists()) {
+        const data = snap.data();
+        setUserPoints({
+          total: data.totalPoints || 0,
+          byStore: data.pointsByStore || {},
+        });
+      }
+      setPointsLoaded(true);
+    });
+    return unsub;
+  }, [user?.uid]);
+
+  // 포인트 적립 함수 — PICKED_UP 시 호출
+  const creditPoints = async (ptsTP, storeId) => {
+    if (!user?.uid || !ptsTP || ptsTP <= 0) return;
+    // 로컬 상태 즉시 업데이트
+    setUserPoints(prev => ({
+      total: prev.total + ptsTP,
+      byStore: { ...prev.byStore, [storeId]: (prev.byStore[storeId] || 0) + ptsTP },
+    }));
+    // Firestore에 저장
+    try {
+      const userRef = FB.doc(FB.db, 'users', user.uid);
+      const snap = await FB.getDoc(userRef);
+      if (snap.exists()) {
+        const data = snap.data();
+        const newTotal = (data.totalPoints || 0) + ptsTP;
+        const newByStore = { ...(data.pointsByStore || {}), [storeId]: ((data.pointsByStore || {})[storeId] || 0) + ptsTP };
+        await FB.updateDoc(userRef, { totalPoints: newTotal, pointsByStore: newByStore, lastEarnedAt: FB.serverTimestamp() });
+      } else {
+        await FB.setDoc(userRef, {
+          uid: user.uid,
+          name: user.displayName || '',
+          email: user.email || '',
+          totalPoints: ptsTP,
+          pointsByStore: { [storeId]: ptsTP },
+          createdAt: FB.serverTimestamp(),
+          lastEarnedAt: FB.serverTimestamp(),
+        });
+      }
+    } catch(e) { console.error('Credit points error:', e); }
+  };
+
+  // ===== 매장별 실시간 대기열 (Firestore 주문 기반) =====
+  const [storeQueues, setStoreQueues] = useState({}); // { storeId: { ahead: n, waitMin: [lo, hi] } }
+  const PREP_TIME_MIN = 10; // 1인당 최소 처리시간(분)
+  const PREP_TIME_MAX = 12; // 1인당 최대 처리시간(분)
+  const PARALLEL_CAPACITY = 3; // 동시 처리 가능 주문 수 (30석 기준)
+
+  useEffect(() => {
+    // 활성 주문(ORDERED + PREPARING)을 실시간 구독
+    const q = FB.query(
+      FB.collection(FB.db, 'orders'),
+      FB.where('status', 'in', ['ORDERED', 'PREPARING'])
+    );
+    const unsub = FB.onSnapshot(q, (snap) => {
+      const counts = {};
+      snap.forEach(d => {
+        const data = d.data();
+        const sid = data.storeId || data.store?.id;
+        if (sid) counts[sid] = (counts[sid] || 0) + 1;
+      });
+      // 대기 시간 계산: ceil(대기인원 / 동시처리) × 처리시간
+      const queues = {};
+      STORES.forEach(s => {
+        const ahead = counts[s.id] || 0;
+        const batches = Math.ceil(ahead / PARALLEL_CAPACITY) || 0;
+        queues[s.id] = {
+          ahead,
+          waitMin: ahead === 0 ? [0, 0] : [batches * PREP_TIME_MIN, batches * PREP_TIME_MAX],
+        };
+      });
+      setStoreQueues(queues);
+    });
+    return unsub;
+  }, []);
+
+  // BroadcastChannel: Merchant 연동 상태 감지
+  useEffect(() => {
+    tapikChannel.postMessage({ type: 'consumer.online' });
+    const handler = (e) => {
+      if (e.data.type === 'merchant.online') {
+        setMerchantOnline(e.data.storeName || t('phrase.store'));
+      }
+    };
+    tapikChannel.addEventListener('message', handler);
+    return () => tapikChannel.removeEventListener('message', handler);
+  }, []);
+  const [cartData, setCartData] = useState(null);
+  const [currentOrder, setCurrentOrder] = useState(null);
+  const [joinedRoom, setJoinedRoom] = useState(null);
+
+  // Firestore: 내가 참여 중인 Room 실시간 감지
+  useEffect(() => {
+    if (!user?.uid) return;
+    const q = FB.query(
+      FB.collection(FB.db, 'rooms'),
+      FB.where('status', 'in', ['waiting', 'ready', 'ordering', 'all_paid', 'closing'])
+    );
+    const unsub = FB.onSnapshot(q, (snap) => {
+      let found = null;
+      snap.forEach(d => {
+        const data = d.data();
+        if (data.members?.some(m => m.uid === user.uid)) {
+          found = { id: d.id, ...data };
+        }
+      });
+      setJoinedRoom(found);
+    });
+    return unsub;
+  }, [user?.uid]);
+  const [orderHistory, setOrderHistory] = useState([
+    {store:STORES[0], items:[{id:'iflat',name:'Iced Flat White',basePrice:14,qty:1}], total:14.70, status:'PICKED_UP', ptsEarn:70, role:'solo', date:t('order.date_today'), reviewDone:true, reviewStars:5, id:'ORD-H001'},
+    {store:STORES[1], items:[{id:'kaya',name:'Kaya Toast Set',basePrice:8,qty:1}], total:8.40, status:'PICKED_UP', ptsEarn:48, role:'solo', date:t('order.date_yesterday'), reviewDone:false, id:'ORD-H002'},
+  ]);
+  const [activeOrderId, setActiveOrderId] = useState(null);
+  const [liveStatus, setLiveStatus] = useState(null);
+
+  // BroadcastChannel: 머천트에서 오는 상태 변경 수신
+  useEffect(() => {
+    const handler = (e) => {
+      const { type, orderId } = e.data;
+      if (!orderId || orderId !== activeOrderId) return;
+      let newStatus = null;
+      if (type === 'order.accepted') newStatus = 'PREPARING';
+      else if (type === 'order.ready') newStatus = 'READY';
+      else if (type === 'order.pickedUp') newStatus = 'PICKED_UP';
+      if (newStatus) {
+        setLiveStatus(newStatus);
+        setOrderHistory(prev => prev.map(o => o.id === orderId ? {...o, status: newStatus, reviewDone: false} : o));
+        // 픽업 완료 → 포인트 적립!
+        if (newStatus === 'PICKED_UP' && currentOrder) {
+          const pts = currentOrder.ptsEarn || 0;
+          const sid = currentOrder.store?.id || currentOrder.storeId;
+          if (pts > 0 && sid) creditPoints(pts, sid);
+        }
+      }
+    };
+    tapikChannel.addEventListener('message', handler);
+    return () => tapikChannel.removeEventListener('message', handler);
+  }, [activeOrderId, currentOrder]);
+
+  // Firestore: 주문 상태 실시간 감시 + 픽업 자동 퇴장 + 포인트 적립
+  const creditedOrdersRef = useRef(new Set());
+  useEffect(() => {
+    if (!activeOrderId) return;
+    const unsub = FB.onSnapshot(FB.doc(FB.db, 'orders', activeOrderId), async (snap) => {
+      if (snap.exists()) {
+        const data = snap.data();
+        if (data.status && data.status !== liveStatus) {
+          setLiveStatus(data.status);
+          setOrderHistory(prev => prev.map(o => o.id === activeOrderId ? {...o, status: data.status, reviewDone: false} : o));
+          // 픽업 완료 → 포인트 적립 + 자동 Room 퇴장
+          if (data.status === 'PICKED_UP') {
+            // 포인트 적립 (중복 방지)
+            if (!creditedOrdersRef.current.has(activeOrderId) && currentOrder) {
+              creditedOrdersRef.current.add(activeOrderId);
+              const pts = currentOrder.ptsEarn || 0;
+              const sid = currentOrder.store?.id || currentOrder.storeId;
+              if (pts > 0 && sid) creditPoints(pts, sid);
+            }
+            // 자동 Room 퇴장 (Joiner만)
+            if (joinedRoom && joinedRoom.id) {
+              const isCreator = joinedRoom.creatorUid === user?.uid;
+              if (!isCreator) {
+                try {
+                  await leaveRoom(user, joinedRoom.id);
+                  setJoinedRoom(null);
+                } catch(e) { console.error('Auto-leave error:', e); }
+              }
+            }
+          }
+        }
+      }
+    });
+    return unsub;
+  }, [activeOrderId, joinedRoom, currentOrder]);
+
+  const handleStoreClick = (store) => { setSelectedStore(store); setScreen('store'); };
+  const handleCheckout = (store, cart) => { setCartData({store, cart}); setScreen('checkout'); };
+  const handlePay = (order) => { setCurrentOrder(order); setScreen('prepaid'); };
+  const handlePlaceOrder = async () => {
+    if (currentOrder) {
+      const oid = 'ORD-' + String(Date.now()).slice(-6);
+      setActiveOrderId(oid);
+      setLiveStatus('ORDERED');
+      const customerName = user?.displayName || t('msg.myself');
+      // Room 정보 포함
+      const roomInfo = joinedRoom ? {
+        roomId: joinedRoom.id,
+        role: joinedRoom.creatorUid === user?.uid ? 'creator' : 'joiner',
+        memberCount: joinedRoom.memberCount || joinedRoom.members?.length || 1,
+        rewardMode: _activeRewardMode,
+      } : null;
+      const orderData = {
+        ...currentOrder,
+        id: oid,
+        status: 'ORDERED',
+        date: t('msg.just_now'),
+        customerName,
+        customerUid: user?.uid,
+        customerPhoto: user?.photoURL || null,
+        storeName: currentOrder.store.name,
+        storeId: currentOrder.store.id,
+        roomInfo,
+      };
+      // Firestore에 주문 저장
+      try {
+        await FB.setDoc(FB.doc(FB.db, 'orders', oid), {
+          ...orderData,
+          store: {id: currentOrder.store.id, name: currentOrder.store.name},
+          items: currentOrder.items,
+          roomInfo,
+          createdAt: FB.serverTimestamp(),
+        });
+      } catch(e) { console.error('Order save error:', e); }
+      // Room 결제 완료 기록
+      if (joinedRoom && joinedRoom.id) {
+        try { await markMemberPaid(joinedRoom.id, user.uid); } catch(e) { console.error('markPaid error:', e); }
+      }
+      // BroadcastChannel도 유지 (같은 브라우저 fallback)
+      tapikChannel.postMessage({ type: 'order.placed', order: orderData });
+      setOrderHistory(prev => [orderData, ...prev]);
+    }
+    setScreen('status');
+  };
+  // 선결제 후 "나중에 주문" — PAID 상태로 주문 탭에 저장
+  const [orderTabSeg, setOrderTabSeg] = useState('active');
+  const handleSaveLater = () => {
+    if (currentOrder) {
+      setOrderHistory(prev => [{...currentOrder, status:'PAID', date:t('msg.just_paid'), id:'PAY-'+Date.now()}, ...prev]);
+    }
+    setOrderTabSeg('paid');
+    setScreen('home'); setTab('order'); setCurrentOrder(null);
+  };
+  // 주문 탭에서 PAID 주문을 매장에 전송
+  const handleSendPaidOrder = async (paidOrder) => {
+    const oid = 'ORD-' + String(Date.now()).slice(-6);
+    setActiveOrderId(oid);
+    setLiveStatus('ORDERED');
+    const customerName = user?.displayName || '나';
+    const orderData = {
+      ...paidOrder,
+      id: oid,
+      status: 'ORDERED',
+      date: '방금',
+      customerName,
+      customerUid: user?.uid,
+      customerPhoto: user?.photoURL || null,
+      storeName: paidOrder.store.name,
+      storeId: paidOrder.store.id,
+    };
+    try {
+      await FB.setDoc(FB.doc(FB.db, 'orders', oid), {
+        ...orderData,
+        store: {id: paidOrder.store.id, name: paidOrder.store.name},
+        items: paidOrder.items,
+        createdAt: FB.serverTimestamp(),
+      });
+    } catch(e) { console.error('Order save error:', e); }
+    tapikChannel.postMessage({ type: 'order.placed', order: orderData });
+    setOrderHistory(prev => prev.map(o => o.id === paidOrder.id ? orderData : o));
+    setCurrentOrder(paidOrder);
+    setScreen('status');
+  };
+  // 리뷰 작성 완료
+  const handleReview = (orderId, stars, text) => {
+    setOrderHistory(prev => prev.map(o => o.id === orderId ? {...o, reviewDone:true, reviewStars:stars, reviewText:text} : o));
+  };
+  const handleHome = () => { setScreen('home'); setTab('home'); setCurrentOrder(null); };
+  const handleBack = () => {
+    if (screen === 'checkout') setScreen('store');
+    else if (screen === 'store') { setScreen('home'); setSelectedStore(null); }
+    else handleHome();
+  };
+  const handleRoomJoin = (room) => {
+    setJoinedRoom(room);
+    const store = STORES.find(s => s.id === room.storeId);
+    if (store) { setSelectedStore(store); setScreen('store'); }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-100 flex items-start justify-center py-6">
+      <div className="phone-frame">
+        <div className="phone-screen hide-scroll" style={{display:'flex', flexDirection:'column'}}>
+          <div style={{flex:1, overflowY:'auto', overflowX:'hidden'}} className="hide-scroll">
+            {screen === 'onboarding' && <OnboardingScreen onComplete={()=>setScreen('home')}/>}
+
+            {screen === 'home' && tab === 'home' && <HomeScreen onStoreClick={handleStoreClick} onRoomJoin={handleRoomJoin} merchantOnline={merchantOnline} user={user} userPoints={userPoints} storeQueues={storeQueues} joinedRoom={joinedRoom} orderHistory={orderHistory} liveOrder={activeOrderId && liveStatus && !['PICKED_UP','CANCELLED'].includes(liveStatus) ? {id: activeOrderId, status: liveStatus, order: currentOrder} : null} onOrderClick={()=>{ if(currentOrder) setScreen('status'); }} onReorder={(store)=>{ setSelectedStore(store); setScreen('store'); }}/>}
+            {screen === 'home' && tab === 'order' && <OrderTab orders={orderHistory} onOrderClick={(o)=>{ setCurrentOrder(o); setScreen('status'); }} onSendPaidOrder={handleSendPaidOrder} onReview={handleReview} initialSeg={orderTabSeg}/>}
+            {screen === 'home' && tab === 'room' && <RoomTab onJoin={handleRoomJoin} joinedRoom={joinedRoom} user={user} onCreateRoom={(r)=>setJoinedRoom(r)} onLeaveRoom={()=>setJoinedRoom(null)}/>}
+            {screen === 'home' && tab === 'rewards' && <RewardsTab userPoints={userPoints}/>}
+            {screen === 'home' && tab === 'me' && <MeTab user={user} onLogout={onLogout} userPoints={userPoints}/>}
+
+            {screen === 'store' && selectedStore && <StoreDetail store={selectedStore} onBack={handleBack} onCheckout={handleCheckout} joinedRoom={joinedRoom} queue={storeQueues?.[selectedStore.id]}/>}
+            {screen === 'checkout' && cartData && <CheckoutScreen store={cartData.store} cart={cartData.cart} onBack={handleBack} onPay={handlePay} joinedRoom={joinedRoom}/>}
+            {screen === 'prepaid' && currentOrder && <PrepaidScreen order={currentOrder} onPlaceOrder={handlePlaceOrder} onSaveLater={handleSaveLater} onCancel={handleHome}/>}
+            {screen === 'status' && currentOrder && <OrderStatusScreen order={currentOrder} onBack={()=>{ setScreen('home'); setTab('order'); }} onHome={handleHome} liveStatus={liveStatus} orderId={activeOrderId}/>}
+          </div>
+
+          {screen === 'home' && <TabBar tab={tab} setTab={setTab}/>}
+        </div>
+        <div className="android-nav"><div className="android-nav-pill"/></div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<ConsumerApp/>);
+</script>
+</body>
+</html>

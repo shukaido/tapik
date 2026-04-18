@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tapik v5 · Merchant Tablet (Firebase)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+import { getFirestore, collection, doc, updateDoc, onSnapshot, query, where, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAQNRuhwcTp89S63qKwbs3vLRx8JFv8V_w",
+  authDomain: "tapik-demo.firebaseapp.com",
+  projectId: "tapik-demo",
+  storageBucket: "tapik-demo.firebasestorage.app",
+  messagingSenderId: "503990315544",
+  appId: "1:503990315544:web:bd43a5a67b8d4a7064b16d",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+window.MFB = { db, collection, doc, updateDoc, onSnapshot, query, where, orderBy, serverTimestamp };
+</script>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; background:#1a1a2e; }
+  .tabular { font-variant-numeric: tabular-nums; }
+  @keyframes popIn { 0%{transform:scale(0.8);opacity:0} 100%{transform:scale(1);opacity:1} }
+  .animate-pop { animation: popIn 0.3s ease-out; }
+  @keyframes slideIn { from{transform:translateX(40px);opacity:0} to{transform:translateX(0);opacity:1} }
+  .animate-slide-in { animation: slideIn 0.4s ease-out both; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  ._no-blink { animation: pulse 1.2s ease-in-out infinite; }
+  @keyframes bellShake { 0%{transform:rotate(0)} 15%{transform:rotate(15deg)} 30%{transform:rotate(-15deg)} 45%{transform:rotate(10deg)} 60%{transform:rotate(-10deg)} 75%{transform:rotate(5deg)} 100%{transform:rotate(0)} }
+  .bell-ring { animation: bellShake 0.6s ease-in-out; }
+  .hide-scroll::-webkit-scrollbar { display:none; }
+  .hide-scroll { -ms-overflow-style:none; scrollbar-width:none; }
+  /* Tablet frame — Lenovo Tab M7 landscape aspect ratio */
+  .tablet-frame { background:#222; border-radius:18px; padding:10px; box-shadow:0 20px 50px -12px rgba(0,0,0,0.5),0 0 0 2px #444; width:1024px; margin:0 auto; }
+  .tablet-screen { background:#f1f5f9; border-radius:10px; overflow:hidden; height:600px; min-height:600px; max-height:600px; position:relative; display:flex; flex-direction:column; }
+  .tablet-cam { position:absolute; top:50%; right:3px; transform:translateY(-50%); width:8px; height:8px; background:#333; border-radius:50%; border:1.5px solid #555; z-index:50; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useMemo, useEffect, useRef, useCallback } = React;
+
+// ================= Cross-App BroadcastChannel =================
+const tapikChannel = new BroadcastChannel('tapik-orders');
+
+// ================= i18n Infrastructure =================
+const LANG = {
+  ko: {
+    // Order Queue & Status
+    'badge.liveOrder': '📲 실주문',
+    'badge.firstVisit': '🆕 첫 방문',
+    'badge.room': '🚪',
+    'time.minutesAgo': '{m}분 전',
+    'btn.reject': '거절',
+    'btn.accept': '수락',
+    'btn.ready': '준비 완료',
+    'btn.manualCheck': '수동 확인',
+    'btn.qrScan': 'QR 스캔',
+    'status.overdue': '⚠ ETA 초과',
+    'col.new': '신규',
+    'col.preparing': '준비 중',
+    'col.waiting': '픽업 대기',
+
+    // Sales Tab
+    'period.today': '오늘',
+    'period.week': '이번 주',
+    'period.month': '이번 달',
+    'kpi.totalGMV': '총 매출 (GMV)',
+    'kpi.commission': '수수료 (10%)',
+    'kpi.netPayout': '실수령',
+    'kpi.orders': '주문 건수',
+    'kpi.avgOrder': '평균 주문액',
+    'kpi.pointsIssued': '포인트 발급',
+    'section.settlements': '정산 내역 (매주 월요일)',
+    'section.menuRanking': '메뉴별 판매 (오늘)',
+
+    // Settlement details
+    'settlement.gmv': 'GMV',
+    'settlement.commission': '수수료',
+    'settlement.refunds': '환불',
+    'text.units': '개',
+
+    // Menu Tab
+    'section.menuManagement': '메뉴 관리',
+    'btn.addMenu': '+ 메뉴 추가',
+    'text.soldToday': '오늘 {count}개 판매',
+
+    // Customers Tab
+    'filter.all': '전체',
+    'segment.vip': 'VIP',
+    'segment.growth': '성장',
+    'segment.new': '신규',
+    'segment.atRisk': '이탈위험',
+    'segment.inactive': '휴면',
+    'customer.visits': '{count}회 방문',
+    'customer.favorite': '단골: {fav}',
+    'customer.lastVisit': '최근: {visit}',
+    'customer.avgOrder': '평균 RM {amt}',
+
+    // Ad Board Tab
+    'section.adBoard': 'Ad Board — Right Now 카드',
+    'btn.createCard': '+ 카드 만들기',
+    'toggle.autoQueue': '자동 대기열 카드',
+    'toggle.autoQueueDesc': '현재 준비 중 주문 수 기반 "지금 앞 N명" 자동 생성',
+    'adcard.type.queue': '대기열',
+    'adcard.type.discount': '마감할인',
+    'adcard.status.active': '활성',
+    'metric.impressions': '노출',
+    'metric.taps': '탭',
+    'metric.ctr': 'CTR',
+    'metric.conversions': '전환',
+
+    // Settings Tab
+    'section.settings': '설정',
+    'settings.hours': '영업시간 관리',
+    'settings.hoursDesc': '평일 08:00-22:00 · 주말 09:00-23:00',
+    'settings.staff': '직원 관리',
+    'settings.staffDesc': '2명 등록 · PIN 설정',
+    'settings.account': '정산 계좌',
+    'settings.accountDesc': 'Maybank ****4821',
+    'settings.promo': '프로모션 관리',
+    'settings.promoDesc': '활성 프로모 0개',
+    'settings.notifications': '알림 설정',
+    'settings.notificationsDesc': '소리 ON · 진동 ON',
+    'settings.tablet': '태블릿 정보',
+    'settings.tabletDesc': 'Lenovo Tab M7 · v4.0.1 · 연결됨',
+    'settings.offlineQueue': '오프라인 큐',
+    'settings.offlineQueueDesc': '미전송 0건',
+
+    // Top Bar
+    'topbar.today': '오늘',
+    'topbar.accepting': '주문 받기',
+    'topbar.paused': '일시 중단',
+    'topbar.commission': '수수료',
+
+    // Toast Messages
+    'toast.accepted': '✅ #{id} 수락 — 준비 시작',
+    'toast.rejected': '❌ #{id} 거절 — 환불 처리',
+    'toast.ready': '🟢 #{id} 준비 완료 — QR 대기',
+    'toast.pickedUp': '✅ #{id} 픽업 완료 — 포인트 적립',
+    'toast.liveOrder': '📲 실주문 도착! #{id}',
+    'toast.firestoreOrder': '🔥 Firestore 주문! #{id}',
+    'toast.simOrder': '🔔 시뮬 주문 #{id} · {name}',
+
+    // Connection Status
+    'status.consumerConnected': 'Consumer 연동',
+    'status.consumerWaiting': 'Consumer 대기',
+    'sim.on': '🤖 시뮬 ON',
+    'sim.off': '🤖 시뮬 OFF',
+
+    // Tabs
+    'tab.orders': '주문큐',
+    'tab.sales': '매출/정산',
+    'tab.menu': '메뉴',
+    'tab.customers': '고객',
+    'tab.adboard': 'Ad Board',
+    'tab.settings': '설정',
+
+    // Date labels
+    'date.today': '오늘',
+    'date.daysAgo': '{d}일 전',
+
+    // Validation & filter messages
+    'filter.differentStore': '다른 매장 주문은 무시',
+  },
+  en: {
+    // Order Queue & Status
+    'badge.liveOrder': '📲 Live Order',
+    'badge.firstVisit': '🆕 First Visit',
+    'badge.room': '🚪',
+    'time.minutesAgo': '{m} min ago',
+    'btn.reject': 'Reject',
+    'btn.accept': 'Accept',
+    'btn.ready': 'Ready',
+    'btn.manualCheck': 'Manual Check',
+    'btn.qrScan': 'QR Scan',
+    'status.overdue': '⚠ ETA Exceeded',
+    'col.new': 'New',
+    'col.preparing': 'Preparing',
+    'col.waiting': 'Awaiting Pickup',
+
+    // Sales Tab
+    'period.today': 'Today',
+    'period.week': 'This Week',
+    'period.month': 'This Month',
+    'kpi.totalGMV': 'Total GMV',
+    'kpi.commission': 'Commission (10%)',
+    'kpi.netPayout': 'Net Payout',
+    'kpi.orders': 'Orders',
+    'kpi.avgOrder': 'Avg Order',
+    'kpi.pointsIssued': 'Points Issued',
+    'section.settlements': 'Settlement History (Weekly Mon)',
+    'section.menuRanking': 'Menu Sales (Today)',
+
+    // Settlement details
+    'settlement.gmv': 'GMV',
+    'settlement.commission': 'Commission',
+    'settlement.refunds': 'Refunds',
+    'text.units': 'units',
+
+    // Menu Tab
+    'section.menuManagement': 'Menu Management',
+    'btn.addMenu': '+ Add Menu',
+    'text.soldToday': '{count} sold today',
+
+    // Customers Tab
+    'filter.all': 'All',
+    'segment.vip': 'VIP',
+    'segment.growth': 'Growth',
+    'segment.new': 'New',
+    'segment.atRisk': 'At Risk',
+    'segment.inactive': 'Inactive',
+    'customer.visits': '{count} visits',
+    'customer.favorite': 'Favorite: {fav}',
+    'customer.lastVisit': 'Last: {visit}',
+    'customer.avgOrder': 'Avg RM {amt}',
+
+    // Ad Board Tab
+    'section.adBoard': 'Ad Board — Right Now Cards',
+    'btn.createCard': '+ Create Card',
+    'toggle.autoQueue': 'Auto Queue Card',
+    'toggle.autoQueueDesc': 'Auto-generate "N ahead" based on preparing orders',
+    'adcard.type.queue': 'Queue',
+    'adcard.type.discount': 'Limited Time',
+    'adcard.status.active': 'Active',
+    'metric.impressions': 'Impressions',
+    'metric.taps': 'Taps',
+    'metric.ctr': 'CTR',
+    'metric.conversions': 'Conversions',
+
+    // Settings Tab
+    'section.settings': 'Settings',
+    'settings.hours': 'Business Hours',
+    'settings.hoursDesc': 'Weekday 08:00-22:00 · Weekend 09:00-23:00',
+    'settings.staff': 'Staff Management',
+    'settings.staffDesc': '2 registered · PIN set',
+    'settings.account': 'Settlement Account',
+    'settings.accountDesc': 'Maybank ****4821',
+    'settings.promo': 'Promotions',
+    'settings.promoDesc': '0 active promotions',
+    'settings.notifications': 'Notifications',
+    'settings.notificationsDesc': 'Sound ON · Vibration ON',
+    'settings.tablet': 'Tablet Info',
+    'settings.tabletDesc': 'Lenovo Tab M7 · v4.0.1 · Connected',
+    'settings.offlineQueue': 'Offline Queue',
+    'settings.offlineQueueDesc': '0 pending',
+
+    // Top Bar
+    'topbar.today': 'Today',
+    'topbar.accepting': 'Accepting Orders',
+    'topbar.paused': 'Paused',
+    'topbar.commission': 'Commission',
+
+    // Toast Messages
+    'toast.accepted': '✅ #{id} Accepted — Starting prep',
+    'toast.rejected': '❌ #{id} Rejected — Refund issued',
+    'toast.ready': '🟢 #{id} Ready — Awaiting QR',
+    'toast.pickedUp': '✅ #{id} Picked Up — Points earned',
+    'toast.liveOrder': '📲 Live order! #{id}',
+    'toast.firestoreOrder': '🔥 Firestore order! #{id}',
+    'toast.simOrder': '🔔 Sim order #{id} · {name}',
+
+    // Connection Status
+    'status.consumerConnected': 'Consumer Connected',
+    'status.consumerWaiting': 'Consumer Waiting',
+    'sim.on': '🤖 Sim ON',
+    'sim.off': '🤖 Sim OFF',
+
+    // Tabs
+    'tab.orders': 'Orders',
+    'tab.sales': 'Sales/Settlement',
+    'tab.menu': 'Menu',
+    'tab.customers': 'Customers',
+    'tab.adboard': 'Ad Board',
+    'tab.settings': 'Settings',
+
+    // Date labels
+    'date.today': 'Today',
+    'date.daysAgo': '{d} days ago',
+
+    // Validation & filter messages
+    'filter.differentStore': 'Ignore orders from other stores',
+  }
+};
+
+let _currentLang = localStorage.getItem('tapik_lang') || 'en';
+const t = (key, params = {}) => {
+  let str = LANG[_currentLang]?.[key] || LANG['en'][key] || key;
+  Object.entries(params).forEach(([k, v]) => { str = str.replace(`{${k}}`, v); });
+  return str;
+};
+const setLang = (lang) => {
+  _currentLang = lang;
+  localStorage.setItem('tapik_lang', lang);
+  try { tapikChannel.postMessage({ type: 'LANG_CHANGE', lang }); } catch(e) {}
+};
+
+// BroadcastChannel listener for LANG_CHANGE from other apps
+tapikChannel.addEventListener('message', (e) => {
+  if (e.data.type === 'LANG_CHANGE') {
+    _currentLang = e.data.lang;
+    localStorage.setItem('tapik_lang', e.data.lang);
+    window.location.reload();
+  }
+});
+
+// ================= v4 Revenue Model Engine (동일 상수) =================
+const TAPIK = {
+  MARKUP: 0.05,
+  MERCHANT_COMM: 0.10,
+  GATEWAY_PCT: 0.012,
+  GATEWAY_FIXED: 0.15,
+  PTS_PER_SEN: 1,
+  POINTS_SOLO: 0.05,
+  POINTS_JOINER: 0.06,
+  POINTS_CREATOR: 0.08,
+  ROOM_MIN: 2,
+  ROOM_MAX: 8,
+  ROOM_TIMEOUT: 30,
+};
+
+// ================= SVG Icons =================
+const Ic = ({ d, s=20, sw=2, c="" }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round" className={c}>{d}</svg>
+);
+const I = {
+  Check: (p) => <Ic {...p} d={<polyline points="20 6 9 17 4 12"/>}/>,
+  X: (p) => <Ic {...p} d={<><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>}/>,
+  Clock: (p) => <Ic {...p} d={<><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></>}/>,
+  Bell: (p) => <Ic {...p} d={<><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></>}/>,
+  Users: (p) => <Ic {...p} d={<><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></>}/>,
+  Package: (p) => <Ic {...p} d={<><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></>}/>,
+  Wallet: (p) => <Ic {...p} d={<><path d="M20 12V8H4a2 2 0 0 1 0-4h14v4"/><path d="M4 6v14a2 2 0 0 0 2 2h14v-4"/><circle cx="18" cy="14" r="2"/></>}/>,
+  Settings: (p) => <Ic {...p} d={<><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></>}/>,
+  Qr: (p) => <Ic {...p} d={<><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3z"/><path d="M21 14v3"/><path d="M14 21h7"/></>}/>,
+  Menu: (p) => <Ic {...p} d={<><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></>}/>,
+  ChevronRight: (p) => <Ic {...p} d={<polyline points="9 18 15 12 9 6"/>}/>,
+  TrendUp: (p) => <Ic {...p} d={<><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></>}/>,
+  Star: (p) => <Ic {...p} d={<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>}/>,
+  Camera: (p) => <Ic {...p} d={<><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></>}/>,
+  Power: (p) => <Ic {...p} d={<><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></>}/>,
+  Volume: (p) => <Ic {...p} d={<><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></>}/>,
+  DollarSign: (p) => <Ic {...p} d={<><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></>}/>,
+  BarChart: (p) => <Ic {...p} d={<><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></>}/>,
+  Megaphone: (p) => <Ic {...p} d={<><path d="M3 11l18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></>}/>,
+  Door: (p) => <Ic {...p} d={<><path d="M18 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/><path d="M12 11h.01"/></>}/>,
+};
+
+// ================= Logo =================
+const TapikLogo = ({ size=24 }) => (
+  <div className="flex items-center gap-1.5">
+    <div className="relative" style={{width:size, height:size}}>
+      <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+        <svg width={size*0.55} height={size*0.55} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z"/>
+        </svg>
+      </div>
+    </div>
+    <span className="font-bold text-white leading-none" style={{fontSize:size*0.6}}>Tapik</span>
+    <span className="text-[9px] text-white/50 font-medium">MERCHANT</span>
+  </div>
+);
+
+// ================= Mock Data =================
+const STORE = {
+  id:'feeka', name:'Feeka Coffee Roasters', area:'TTDI Plaza',
+  commRate: TAPIK.MERCHANT_COMM,
+  todayOrders: 23, todayGMV: 487.20, todayNet: 438.48,
+  isAccepting: true,
+};
+
+const now = () => {
+  const d = new Date();
+  return `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
+};
+
+const INITIAL_ORDERS = [
+  {id:'TO-0047', customer:'Wei Ming', isNew:false, items:[{name:'Iced Flat White', qty:1, price:14},{name:'Smoked Salmon Bagel', qty:1, price:24}], total:39.90, status:'ORDERED', time:'12:38', elapsed:3, room:null, role:'solo'},
+  {id:'TO-0048', customer:'Aiden K.', isNew:true, items:[{name:'Matcha Latte', qty:2, price:16}], total:33.60, status:'ORDERED', time:'12:41', elapsed:1, room:'RM-012', role:'creator'},
+  {id:'TO-0049', customer:'Sarah L.', isNew:false, items:[{name:'Iced Flat White', qty:1, price:14},{name:'Avocado Toast', qty:1, price:22}], total:37.80, status:'PREPARING', time:'12:35', elapsed:8, eta:12, room:null, role:'solo', checklist:[true,false]},
+  {id:'TO-0050', customer:'Nur F.', isNew:false, items:[{name:'Ham & Cheese Croissant', qty:1, price:18}], total:18.90, status:'PREPARING', time:'12:30', elapsed:13, eta:10, room:'RM-012', role:'joiner', checklist:[true]},
+  {id:'TO-0051', customer:'Uncle Tan', isNew:false, items:[{name:'Kaya Toast Set', qty:1, price:8},{name:'Kopi O', qty:2, price:3}], total:14.70, status:'READY', time:'12:22', elapsed:21, room:null, role:'solo'},
+];
+
+const MENU_ITEMS = [
+  {id:'iflat', name:'Iced Flat White', price:14, category:'Coffee', active:true, soldToday:18},
+  {id:'bagel', name:'Smoked Salmon Bagel', price:24, category:'Food', active:true, soldToday:8},
+  {id:'matcha', name:'Matcha Latte', price:16, category:'Coffee', active:true, soldToday:12},
+  {id:'avoc', name:'Avocado Toast', price:22, category:'Food', active:true, soldToday:5},
+  {id:'ham', name:'Ham & Cheese Croissant', price:18, category:'Food', active:true, soldToday:9},
+  {id:'cort', name:'Cortado', price:12, category:'Coffee', active:false, soldToday:0},
+];
+
+const CUSTOMERS = [
+  {name:'Wei Ming', segment:'VIP', visits:42, totalSpent:892.40, avgOrder:21.24, lastVisit:'today', fav:'Iced Flat White'},
+  {name:'Aiden K.', segment:'Growth', visits:8, totalSpent:156.80, avgOrder:19.60, lastVisit:'today', fav:'Matcha Latte'},
+  {name:'Sarah L.', segment:'VIP', visits:31, totalSpent:714.20, avgOrder:23.04, lastVisit:'today', fav:'Avocado Toast'},
+  {name:'Nur F.', segment:'Growth', visits:5, totalSpent:87.50, avgOrder:17.50, lastVisit:'today', fav:'Croissant'},
+  {name:'Uncle Tan', segment:'VIP', visits:156, totalSpent:1248.00, avgOrder:8.00, lastVisit:'today', fav:'Kaya Toast Set'},
+  {name:'James W.', segment:'At Risk', visits:12, totalSpent:198.00, avgOrder:16.50, lastVisit:'18 days ago', fav:'Flat White'},
+  {name:'Cindy T.', segment:'Inactive', visits:3, totalSpent:42.00, avgOrder:14.00, lastVisit:'45 days ago', fav:'Bagel'},
+];
+
+const SETTLEMENTS = [
+  {week:'W15', period:'4/7 - 4/13', gmv:3248.60, commission:324.86, refunds:37.80, net:2885.94, status:'Completed', date:'4/14'},
+  {week:'W14', period:'3/31 - 4/6', gmv:2987.40, commission:298.74, refunds:0, net:2688.66, status:'Completed', date:'4/7'},
+  {week:'W13', period:'3/24 - 3/30', gmv:3102.00, commission:310.20, refunds:18.90, net:2772.90, status:'Completed', date:'3/31'},
+];
+
+// ================= Order Queue (Kanban) =================
+const OrderCard = ({order, onAccept, onReject, onReady, onPickup, onManualPickup}) => {
+  const statusColors = {
+    ORDERED: 'border-l-blue-500 bg-blue-50',
+    PREPARING: 'border-l-amber-500 bg-amber-50',
+    READY: 'border-l-green-500 bg-green-50',
+  };
+  const isOverdue = order.status === 'PREPARING' && order.elapsed > (order.eta || 10);
+
+  return (
+    <div className={`border-l-4 ${statusColors[order.status]} rounded-lg p-3 mb-2 animate-pop shadow-sm`}>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <span className="font-mono font-bold text-base text-gray-900">#{order.id}</span>
+          {order.isLive && <span className="bg-green-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">{t('badge.liveOrder')}</span>}
+          {order.isNew && !order.isLive && <span className="bg-blue-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">{t('badge.firstVisit')}</span>}
+          {order.room && <span className="bg-purple-100 text-purple-700 text-[9px] font-bold px-1.5 py-0.5 rounded">{t('badge.room')} {order.room}</span>}
+        </div>
+        <span className="text-xs text-gray-400 tabular">{order.time} · {t('time.minutesAgo', {m: order.elapsed})}</span>
+      </div>
+
+      {/* Customer */}
+      <div className="text-sm font-medium text-gray-700 mb-1.5">{order.customer}</div>
+
+      {/* Items */}
+      <div className="space-y-0.5 mb-2">
+        {order.items.map((item, i) => (
+          <div key={i} className="flex items-center justify-between text-sm">
+            <div className="flex items-center gap-2">
+              {order.status === 'PREPARING' && (
+                <input type="checkbox" defaultChecked={order.checklist?.[i]} className="w-4 h-4 rounded border-gray-300 text-amber-500 focus:ring-amber-400"/>
+              )}
+              <span className="text-gray-600">{item.name} × {item.qty}</span>
+            </div>
+            <span className="text-gray-500 tabular">RM {(item.price * item.qty).toFixed(2)}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Total */}
+      <div className="flex items-center justify-between border-t border-gray-200 pt-2">
+        <span className="font-bold text-gray-900 tabular">RM {order.total.toFixed(2)}</span>
+
+        {/* Action buttons */}
+        {order.status === 'ORDERED' && (
+          <div className="flex gap-2">
+            <button onClick={()=>onReject(order.id)} className="px-3 py-1.5 bg-red-100 text-red-600 text-xs font-bold rounded-lg hover:bg-red-200 transition">{t('btn.reject')}</button>
+            <button onClick={()=>onAccept(order.id)} className="px-4 py-1.5 bg-green-500 text-white text-sm font-bold rounded-lg hover:bg-green-600 transition shadow-sm">{t('btn.accept')}</button>
+          </div>
+        )}
+        {order.status === 'PREPARING' && (
+          <div className="flex items-center gap-2">
+            {isOverdue && <span className="text-[10px] text-red-500 font-bold">{t('status.overdue')}</span>}
+            <button onClick={()=>onReady(order.id)} className="px-4 py-1.5 bg-amber-500 text-white text-sm font-bold rounded-lg hover:bg-amber-600 transition shadow-sm">{t('btn.ready')}</button>
+          </div>
+        )}
+        {order.status === 'READY' && (
+          <div className="flex gap-2">
+            <button onClick={()=>onManualPickup(order.id)} className="px-3 py-1.5 bg-gray-200 text-gray-600 text-xs font-bold rounded-lg hover:bg-gray-300 transition">{t('btn.manualCheck')}</button>
+            <button onClick={()=>onPickup(order.id)} className="px-4 py-1.5 bg-green-600 text-white text-sm font-bold rounded-lg hover:bg-green-700 transition shadow-sm flex items-center gap-1"><I.Qr s={16} c="text-white"/> {t('btn.qrScan')}</button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const OrderQueue = ({orders, onAccept, onReject, onReady, onPickup, onManualPickup}) => {
+  const ordered = orders.filter(o => o.status === 'ORDERED').sort((a,b) => (b.elapsed||0) - (a.elapsed||0));
+  const preparing = orders.filter(o => o.status === 'PREPARING').sort((a,b) => (b.elapsed||0) - (a.elapsed||0));
+  const ready = orders.filter(o => o.status === 'READY').sort((a,b) => (b.elapsed||0) - (a.elapsed||0));
+
+  const Column = ({title, color, icon, items, count}) => (
+    <div className="flex-1 min-w-0">
+      <div className={`flex items-center gap-2 mb-3 px-1`}>
+        <div className={`w-3 h-3 rounded-full ${color}`}/>
+        <span className="font-bold text-sm text-gray-700">{title}</span>
+        <span className="bg-gray-200 text-gray-600 text-xs font-bold px-1.5 py-0.5 rounded-full ml-auto">{count}</span>
+      </div>
+      <div className="space-y-2 overflow-y-auto hide-scroll" style={{maxHeight:'440px'}}>
+        {items.length === 0 ? (
+          <div className="text-center text-gray-300 text-sm py-8">—</div>
+        ) : (
+          items.map(o => <OrderCard key={o.id} order={o} onAccept={onAccept} onReject={onReject} onReady={onReady} onPickup={onPickup} onManualPickup={onManualPickup}/>)
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="flex gap-4 h-full p-4">
+      <Column title={t('col.new')} color="bg-blue-500" items={ordered} count={ordered.length}/>
+      <Column title={t('col.preparing')} color="bg-amber-500" items={preparing} count={preparing.length}/>
+      <Column title={t('col.waiting')} color="bg-green-500" items={ready} count={ready.length}/>
+    </div>
+  );
+};
+
+// ================= Sales Tab =================
+const SalesTab = () => {
+  const [period, setPeriod] = useState('today');
+  return (
+    <div className="p-4 overflow-y-auto hide-scroll" style={{maxHeight:'520px'}}>
+      {/* Period selector */}
+      <div className="flex gap-2 mb-4">
+        {[{id:'today',label:t('period.today')},{id:'week',label:t('period.week')},{id:'month',label:t('period.month')}].map(p => (
+          <button key={p.id} onClick={()=>setPeriod(p.id)} className={`px-4 py-1.5 rounded-lg text-xs font-bold ${period===p.id ? 'bg-amber-500 text-white' : 'bg-white text-gray-600 border border-gray-200'}`}>{p.label}</button>
+        ))}
+      </div>
+
+      {/* KPI Cards */}
+      <div className="grid grid-cols-3 gap-3 mb-4">
+        {[
+          {label:t('kpi.totalGMV'), value:'RM 487.20', color:'text-gray-900', bg:'bg-white'},
+          {label:t('kpi.commission'), value:'RM 48.72', color:'text-red-600', bg:'bg-red-50'},
+          {label:t('kpi.netPayout'), value:'RM 438.48', color:'text-green-700', bg:'bg-green-50'},
+          {label:t('kpi.orders'), value:'23', color:'text-blue-700', bg:'bg-blue-50'},
+          {label:t('kpi.avgOrder'), value:'RM 21.18', color:'text-purple-700', bg:'bg-purple-50'},
+          {label:t('kpi.pointsIssued'), value:'2,340 TP', color:'text-amber-700', bg:'bg-amber-50'},
+        ].map((kpi,i) => (
+          <div key={i} className={`${kpi.bg} rounded-xl p-3 border border-gray-100`}>
+            <div className="text-[10px] text-gray-500 mb-1">{kpi.label}</div>
+            <div className={`text-lg font-bold ${kpi.color} tabular`}>{kpi.value}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Settlement history */}
+      <div className="bg-white rounded-xl border border-gray-100 p-3 mb-4">
+        <div className="text-xs font-bold text-gray-700 mb-2">{t('section.settlements')}</div>
+        <div className="space-y-2">
+          {SETTLEMENTS.map(s => (
+            <div key={s.week} className="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg">
+              <div>
+                <div className="text-sm font-bold text-gray-900">{s.week} · {s.period}</div>
+                <div className="text-[10px] text-gray-500 mt-0.5">{t('settlement.gmv')} RM {s.gmv.toFixed(2)} - {t('settlement.commission')} RM {s.commission.toFixed(2)} - {t('settlement.refunds')} RM {s.refunds.toFixed(2)}</div>
+              </div>
+              <div className="text-right">
+                <div className="text-sm font-bold text-green-700 tabular">RM {s.net.toFixed(2)}</div>
+                <div className="text-[10px] text-green-600">{s.status} · {s.date}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Menu ranking */}
+      <div className="bg-white rounded-xl border border-gray-100 p-3">
+        <div className="text-xs font-bold text-gray-700 mb-2">{t('section.menuRanking')}</div>
+        {MENU_ITEMS.filter(m=>m.active).sort((a,b)=>b.soldToday-a.soldToday).map((m,i) => (
+          <div key={m.id} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-400 font-bold w-4">{i+1}</span>
+              <span className="text-sm text-gray-700">{m.name}</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-gray-500 tabular">{m.soldToday} {t('text.units')}</span>
+              <span className="text-sm font-bold text-gray-700 tabular">RM {(m.soldToday * m.price).toFixed(2)}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ================= Menu Tab =================
+const MenuTab = () => {
+  const [items, setItems] = useState(MENU_ITEMS);
+  const toggleActive = (id) => {
+    setItems(prev => prev.map(m => m.id === id ? {...m, active:!m.active} : m));
+  };
+  return (
+    <div className="p-4 overflow-y-auto hide-scroll" style={{maxHeight:'520px'}}>
+      <div className="flex items-center justify-between mb-4">
+        <div className="text-sm font-bold text-gray-900">{t('section.menuManagement')}</div>
+        <button className="bg-amber-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg">{t('btn.addMenu')}</button>
+      </div>
+      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+        {items.map(m => (
+          <div key={m.id} className={`flex items-center justify-between px-4 py-3 border-b border-gray-50 last:border-0 ${!m.active ? 'opacity-50' : ''}`}>
+            <div className="flex items-center gap-3">
+              <div className={`w-10 h-10 rounded-lg ${m.category==='Coffee' ? 'bg-amber-100' : 'bg-green-100'} flex items-center justify-center text-lg`}>
+                {m.category === 'Coffee' ? '☕' : '🍽'}
+              </div>
+              <div>
+                <div className="text-sm font-bold text-gray-900">{m.name}</div>
+                <div className="text-xs text-gray-500">{m.category} · {t('text.soldToday', {count: m.soldToday})}</div>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <span className="text-sm font-bold text-gray-700 tabular">RM {m.price.toFixed(2)}</span>
+              <button onClick={()=>toggleActive(m.id)} className={`w-12 h-6 rounded-full flex items-center px-0.5 transition-colors ${m.active ? 'bg-green-500' : 'bg-gray-300'}`}>
+                <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${m.active ? 'translate-x-6' : 'translate-x-0'}`}/>
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ================= Customers Tab =================
+const CustomersTab = () => {
+  const segColors = {VIP:'bg-purple-100 text-purple-700', 'Growth':'bg-green-100 text-green-700', 'New':'bg-blue-100 text-blue-700', 'At Risk':'bg-amber-100 text-amber-700', 'Inactive':'bg-red-100 text-red-600'};
+  const [filter, setFilter] = useState('All');
+  const segments = ['All','VIP','Growth','New','At Risk','Inactive'];
+  const filtered = filter === 'All' ? CUSTOMERS : CUSTOMERS.filter(c => c.segment === filter);
+
+  return (
+    <div className="p-4 overflow-y-auto hide-scroll" style={{maxHeight:'520px'}}>
+      {/* Segment filter */}
+      <div className="flex gap-2 mb-4 overflow-x-auto hide-scroll">
+        {segments.map(s => (
+          <button key={s} onClick={()=>setFilter(s)} className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold ${filter===s ? 'bg-amber-500 text-white' : 'bg-white text-gray-600 border border-gray-200'}`}>
+            {s} {s!=='All' && <span className="ml-1">({CUSTOMERS.filter(c => s==='All' || c.segment===s).length})</span>}
+          </button>
+        ))}
+      </div>
+
+      {/* Customer list */}
+      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+        {filtered.map((c,i) => (
+          <div key={i} className="flex items-center justify-between px-4 py-3 border-b border-gray-50 last:border-0 hover:bg-gray-50 cursor-pointer">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600">{c.name.split(' ').map(n=>n[0]).join('')}</div>
+              <div>
+                <div className="text-sm font-bold text-gray-900">{c.name}</div>
+                <div className="text-[10px] text-gray-500">{t('customer.visits', {count: c.visits})} · {t('customer.favorite', {fav: c.fav})} · {t('customer.lastVisit', {visit: c.lastVisit})}</div>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${segColors[c.segment]}`}>{c.segment}</span>
+              <div className="text-right">
+                <div className="text-sm font-bold text-gray-700 tabular">RM {c.totalSpent.toFixed(2)}</div>
+                <div className="text-[10px] text-gray-400">{t('customer.avgOrder', {amt: c.avgOrder.toFixed(2)})}</div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ================= Ad Board Tab =================
+const AdBoardTab = () => {
+  const [autoQueue, setAutoQueue] = useState(true);
+  const cards = [
+    {id:'ab1', type:t('adcard.type.queue'), title:'2 ahead now', subtitle:'5 min walk', status:t('adcard.status.active'), impressions:342, taps:28, ctr:'8.2%', conversions:6},
+    {id:'ab2', type:t('adcard.type.discount'), title:'Kaya Toast 4 left', subtitle:'30% OFF', status:t('adcard.status.active'), impressions:156, taps:14, ctr:'9.0%', conversions:3},
+  ];
+  return (
+    <div className="p-4 overflow-y-auto hide-scroll" style={{maxHeight:'520px'}}>
+      <div className="flex items-center justify-between mb-4">
+        <div className="text-sm font-bold text-gray-900">{t('section.adBoard')}</div>
+        <button className="bg-amber-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg">{t('btn.createCard')}</button>
+      </div>
+
+      {/* Auto queue toggle */}
+      <div className="bg-blue-50 rounded-xl p-3 mb-4 flex items-center justify-between">
+        <div>
+          <div className="text-xs font-bold text-blue-800">{t('toggle.autoQueue')}</div>
+          <div className="text-[10px] text-blue-600 mt-0.5">{t('toggle.autoQueueDesc')}</div>
+        </div>
+        <button onClick={()=>setAutoQueue(!autoQueue)} className={`w-12 h-6 rounded-full flex items-center px-0.5 transition-colors ${autoQueue ? 'bg-blue-500' : 'bg-gray-300'}`}>
+          <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${autoQueue ? 'translate-x-6' : 'translate-x-0'}`}/>
+        </button>
+      </div>
+
+      {/* Cards with metrics */}
+      <div className="space-y-3">
+        {cards.map(card => (
+          <div key={card.id} className="bg-white rounded-xl border border-gray-100 p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <span className="text-[10px] font-bold text-gray-400 mr-2">{card.type}</span>
+                <span className="text-sm font-bold text-gray-900">{card.title}</span>
+                <span className="text-xs text-gray-500 ml-2">{card.subtitle}</span>
+              </div>
+              <span className="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full">{card.status}</span>
+            </div>
+            <div className="grid grid-cols-4 gap-3">
+              {[
+                {label:t('metric.impressions'), value:card.impressions},
+                {label:t('metric.taps'), value:card.taps},
+                {label:t('metric.ctr'), value:card.ctr},
+                {label:t('metric.conversions'), value:card.conversions},
+              ].map((m,i) => (
+                <div key={i} className="bg-gray-50 rounded-lg p-2 text-center">
+                  <div className="text-[10px] text-gray-500">{m.label}</div>
+                  <div className="text-sm font-bold text-gray-900 tabular">{m.value}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ================= Settings Tab =================
+const SettingsTab = () => {
+  const items = [
+    {icon:'🕐', label:t('settings.hours'), desc:t('settings.hoursDesc')},
+    {icon:'👥', label:t('settings.staff'), desc:t('settings.staffDesc')},
+    {icon:'🏦', label:t('settings.account'), desc:t('settings.accountDesc')},
+    {icon:'🏷', label:t('settings.promo'), desc:t('settings.promoDesc')},
+    {icon:'🔔', label:t('settings.notifications'), desc:t('settings.notificationsDesc')},
+    {icon:'📱', label:t('settings.tablet'), desc:t('settings.tabletDesc')},
+    {icon:'📡', label:t('settings.offlineQueue'), desc:t('settings.offlineQueueDesc')},
+  ];
+  return (
+    <div className="p-4 overflow-y-auto hide-scroll" style={{maxHeight:'520px'}}>
+      <div className="text-sm font-bold text-gray-900 mb-4">{t('section.settings')}</div>
+      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+        {items.map((item, i) => (
+          <button key={i} className="w-full flex items-center gap-3 px-4 py-3.5 border-b border-gray-50 last:border-0 hover:bg-gray-50 transition text-left">
+            <span className="text-lg">{item.icon}</span>
+            <div className="flex-1">
+              <div className="text-sm font-medium text-gray-900">{item.label}</div>
+              <div className="text-[10px] text-gray-500 mt-0.5">{item.desc}</div>
+            </div>
+            <I.ChevronRight s={16} c="text-gray-300"/>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ================= Notification Toast =================
+const Toast = ({message, type, onClose}) => {
+  useEffect(() => { const t = setTimeout(onClose, 3000); return ()=>clearTimeout(t); }, []);
+  const bg = type === 'new' ? 'bg-blue-600' : type === 'success' ? 'bg-green-600' : 'bg-amber-600';
+  return (
+    <div className={`fixed top-4 right-4 ${bg} text-white px-4 py-2.5 rounded-xl shadow-lg animate-slide-in z-50 flex items-center gap-2`}>
+      <I.Bell s={16} c="text-white"/>
+      <span className="text-sm font-medium">{message}</span>
+    </div>
+  );
+};
+
+// ================= Main App =================
+function MerchantApp() {
+  const [tab, setTab] = useState('orders');
+  const [orders, setOrders] = useState(INITIAL_ORDERS);
+  const [isAccepting, setIsAccepting] = useState(true);
+  const [toast, setToast] = useState(null);
+  const [completedToday, setCompletedToday] = useState(23);
+  const [todayGMV, setTodayGMV] = useState(487.20);
+
+  // BroadcastChannel 연동 상태
+  const [channelConnected, setChannelConnected] = useState(false);
+
+  // BroadcastChannel: Consumer 앱에서 들어오는 실제 주문 수신
+  useEffect(() => {
+    // 연결 확인용 ping
+    tapikChannel.postMessage({ type: 'merchant.online', storeId: STORE.id, storeName: STORE.name });
+
+    const handler = (e) => {
+      if (e.data.type === 'order.placed') {
+        setChannelConnected(true);
+        const o = e.data.order;
+        // Production: Receive only orders for this store (storeId or storeName matching)
+        const isMyStore = (o.storeId === STORE.id) || (o.storeName === STORE.name);
+        if (!isMyStore) return; // Filter: Ignore orders from other stores
+        const newOrder = {
+          id: o.id,
+          customer: o.customerName || 'Consumer',
+          isNew: true,
+          items: o.items.map(i => ({name:i.name, qty:i.qty, price:i.basePrice})),
+          total: o.total,
+          status: 'ORDERED',
+          time: now(),
+          elapsed: 0,
+          room: o.role !== 'solo' ? `RM-${Math.floor(Math.random()*100).toString().padStart(3,'0')}` : null,
+          role: o.role || 'solo',
+          isLive: true,
+        };
+        setOrders(prev => [newOrder, ...prev]);
+        setToast({message:t('toast.liveOrder', {id: o.id}), type:'new'});
+      }
+      // Consumer가 보내는 ping 응답
+      if (e.data.type === 'consumer.online') {
+        setChannelConnected(true);
+      }
+    };
+    tapikChannel.addEventListener('message', handler);
+    return () => tapikChannel.removeEventListener('message', handler);
+  }, []);
+
+  // Firestore: 실시간 주문 수신 (ORDERED 상태인 이 매장 주문)
+  useEffect(() => {
+    if (!window.MFB) return;
+    const q = MFB.query(MFB.collection(MFB.db, 'orders'), MFB.where('storeId', '==', STORE.id), MFB.where('status', '==', 'ORDERED'));
+    const unsub = MFB.onSnapshot(q, (snap) => {
+      snap.docChanges().forEach(change => {
+        if (change.type === 'added') {
+          const o = change.doc.data();
+          // 이미 있으면 무시
+          setOrders(prev => {
+            if (prev.some(p => p.id === o.id)) return prev;
+            const newOrder = {
+              id: o.id,
+              customer: o.customerName || 'Consumer',
+              customerPhoto: o.customerPhoto || null,
+              isNew: true,
+              items: (o.items || []).map(i => ({name:i.name, qty:i.qty, price:i.basePrice || i.price})),
+              total: o.total,
+              status: 'ORDERED',
+              time: now(),
+              elapsed: 0,
+              room: o.role !== 'solo' ? `RM-${Math.floor(Math.random()*100).toString().padStart(3,'0')}` : null,
+              role: o.role || 'solo',
+              isLive: true,
+            };
+            setToast({message:t('toast.firestoreOrder', {id: o.id}), type:'new'});
+            return [newOrder, ...prev];
+          });
+        }
+      });
+    });
+    return unsub;
+  }, []);
+
+  // 시뮬: 목업 주문 자동 생성 (토글 가능, 기본 OFF)
+  const [simEnabled, setSimEnabled] = useState(false);
+  const orderCounter = useRef(52);
+  useEffect(() => {
+    if (!isAccepting || !simEnabled) return;
+    const names = ['Min J.','David C.','Aisyah R.','Tommy L.','Priya S.'];
+    const menus = [
+      [{name:'Iced Flat White', qty:1, price:14}],
+      [{name:'Matcha Latte', qty:1, price:16},{name:'Avocado Toast', qty:1, price:22}],
+      [{name:'Kaya Toast Set', qty:2, price:8}],
+      [{name:'Smoked Salmon Bagel', qty:1, price:24}],
+    ];
+    const interval = setInterval(() => {
+      const name = names[Math.floor(Math.random()*names.length)];
+      const items = menus[Math.floor(Math.random()*menus.length)];
+      const base = items.reduce((s,i)=>s+i.price*i.qty, 0);
+      const total = Math.round(base * 1.05 * 100) / 100;
+      const hasRoom = Math.random() > 0.7;
+      const newOrder = {
+        id:`TO-${String(orderCounter.current++).padStart(4,'0')}`,
+        customer: name,
+        isNew: Math.random() > 0.8,
+        items, total,
+        status:'ORDERED',
+        time: now(),
+        elapsed: 0,
+        room: hasRoom ? `RM-${Math.floor(Math.random()*100).toString().padStart(3,'0')}` : null,
+        role: hasRoom ? (Math.random()>0.5?'creator':'joiner') : 'solo',
+      };
+      setOrders(prev => [newOrder, ...prev]);
+      setToast({message:t('toast.simOrder', {id: newOrder.id, name}), type:'new'});
+    }, 15000);
+    return () => clearInterval(interval);
+  }, [isAccepting, simEnabled]);
+
+  // 경과 시간 업데이트
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setOrders(prev => prev.map(o =>
+        ['ORDERED','PREPARING','READY'].includes(o.status) ? {...o, elapsed: o.elapsed + 1} : o
+      ));
+    }, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleAccept = async (id) => {
+    setOrders(prev => prev.map(o => o.id === id ? {...o, status:'PREPARING', eta:10, elapsed:0, checklist:o.items.map(()=>false)} : o));
+    setToast({message:t('toast.accepted', {id}), type:'success'});
+    tapikChannel.postMessage({ type:'order.accepted', orderId:id });
+    // Firestore 상태 업데이트
+    try { if(window.MFB) await MFB.updateDoc(MFB.doc(MFB.db, 'orders', id), { status: 'PREPARING' }); } catch(e) { console.error('Firestore update error:', e); }
+  };
+  const handleReject = async (id) => {
+    setOrders(prev => prev.filter(o => o.id !== id));
+    setToast({message:t('toast.rejected', {id}), type:'warn'});
+    tapikChannel.postMessage({ type:'order.rejected', orderId:id });
+    try { if(window.MFB) await MFB.updateDoc(MFB.doc(MFB.db, 'orders', id), { status: 'REJECTED' }); } catch(e) {}
+  };
+  const handleReady = async (id) => {
+    setOrders(prev => prev.map(o => o.id === id ? {...o, status:'READY', elapsed:0} : o));
+    setToast({message:t('toast.ready', {id}), type:'success'});
+    tapikChannel.postMessage({ type:'order.ready', orderId:id });
+    try { if(window.MFB) await MFB.updateDoc(MFB.doc(MFB.db, 'orders', id), { status: 'READY' }); } catch(e) {}
+  };
+  const handlePickup = async (id) => {
+    const order = orders.find(o => o.id === id);
+    setOrders(prev => prev.filter(o => o.id !== id));
+    if (order) {
+      setCompletedToday(c => c + 1);
+      setTodayGMV(g => Math.round((g + order.total) * 100) / 100);
+    }
+    setToast({message:t('toast.pickedUp', {id}), type:'success'});
+    tapikChannel.postMessage({ type:'order.pickedUp', orderId:id, total: order?.total });
+    try { if(window.MFB) await MFB.updateDoc(MFB.doc(MFB.db, 'orders', id), { status: 'PICKED_UP' }); } catch(e) {}
+  };
+
+  const tabs = [
+    {id:'orders', icon:I.Package, label:t('tab.orders')},
+    {id:'sales', icon:I.BarChart, label:t('tab.sales')},
+    {id:'menu', icon:I.Menu, label:t('tab.menu')},
+    {id:'customers', icon:I.Users, label:t('tab.customers')},
+    {id:'adboard', icon:I.Megaphone, label:t('tab.adboard')},
+    {id:'settings', icon:I.Settings, label:t('tab.settings')},
+  ];
+
+  const activeOrders = orders.filter(o => ['ORDERED','PREPARING','READY'].includes(o.status));
+  const newCount = orders.filter(o => o.status === 'ORDERED').length;
+
+  return (
+    <div className="min-h-screen flex items-center justify-center py-6">
+      <div className="tablet-frame">
+        <div className="tablet-cam"/>
+        <div className="tablet-screen">
+          {/* Top bar */}
+          <div className="bg-slate-800 text-white px-4 py-2 flex items-center justify-between flex-shrink-0">
+            <div className="flex items-center gap-3">
+              <TapikLogo size={22}/>
+              <div className="border-l border-slate-600 pl-3">
+                <div className="text-sm font-bold text-white leading-tight">{STORE.name}</div>
+                <div className="text-[10px] text-slate-400">{STORE.area} · {t('topbar.commission')} {(STORE.commRate*100).toFixed(0)}%</div>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="text-xs text-white/70">{t('topbar.today')} <span className="text-white font-bold">{completedToday}</span> · <span className="text-green-400 font-bold tabular">RM {todayGMV.toFixed(2)}</span></div>
+              <div className="flex items-center gap-2">
+                <button onClick={()=>setIsAccepting(!isAccepting)} className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition ${isAccepting ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
+                  <I.Power s={12} c="text-white"/>{isAccepting ? t('topbar.accepting') : t('topbar.paused')}
+                </button>
+                <button onClick={()=>setLang(_currentLang === 'en' ? 'ko' : 'en')} className="px-2.5 py-1 bg-slate-600 hover:bg-slate-500 text-white text-xs font-bold rounded-full transition">
+                  {_currentLang === 'en' ? 'EN' : 'KO'}
+                </button>
+                <div className="relative">
+                  <I.Bell s={18} c="text-white/70"/>
+                  {newCount > 0 && <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[9px] flex items-center justify-center font-bold">{newCount}</div>}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Content area */}
+          <div className="flex flex-1 overflow-hidden">
+            {/* Left sidebar tabs */}
+            <div className="w-16 bg-slate-700 flex flex-col items-center py-2 flex-shrink-0">
+              {tabs.map(tb => (
+                <button key={tb.id} onClick={()=>setTab(tb.id)}
+                  className={`w-full flex flex-col items-center gap-0.5 py-2.5 transition relative ${tab===tb.id ? 'text-amber-400' : 'text-slate-400 hover:text-slate-200'}`}>
+                  {tab===tb.id && <div className="absolute left-0 top-1 bottom-1 w-0.5 bg-amber-400 rounded-r"/>}
+                  <tb.icon s={18} sw={tab===tb.id ? 2.5 : 1.5}/>
+                  <span className="text-[9px] font-medium">{tb.label}</span>
+                  {tb.id === 'orders' && newCount > 0 && (
+                    <div className="absolute top-1 right-2 w-4 h-4 bg-red-500 rounded-full text-[8px] text-white flex items-center justify-center font-bold">{newCount}</div>
+                  )}
+                </button>
+              ))}
+            </div>
+
+            {/* Main content */}
+            <div className="flex-1 overflow-hidden bg-gray-50">
+              {tab === 'orders' && <OrderQueue orders={activeOrders} onAccept={handleAccept} onReject={handleReject} onReady={handleReady} onPickup={handlePickup} onManualPickup={handlePickup}/>}
+              {tab === 'sales' && <SalesTab/>}
+              {tab === 'menu' && <MenuTab/>}
+              {tab === 'customers' && <CustomersTab/>}
+              {tab === 'adboard' && <AdBoardTab/>}
+              {tab === 'settings' && <SettingsTab/>}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Connection status + Sim toggle */}
+      <div className="fixed bottom-4 left-4 flex items-center gap-3 bg-slate-800/90 text-white text-[10px] px-3 py-1.5 rounded-full backdrop-blur">
+        <div className="flex items-center gap-1.5">
+          <div className={`w-2 h-2 rounded-full ${channelConnected ? 'bg-green-400' : 'bg-yellow-400'}`}/>
+          {channelConnected ? t('status.consumerConnected') : t('status.consumerWaiting')}
+        </div>
+        <div className="w-px h-3 bg-slate-600"/>
+        <button onClick={()=>setSimEnabled(!simEnabled)} className={`px-2 py-0.5 rounded text-[9px] font-bold ${simEnabled ? 'bg-amber-500 text-white' : 'bg-slate-600 text-slate-300'}`}>
+          {simEnabled ? t('sim.on') : t('sim.off')}
+        </button>
+      </div>
+
+      {/* Toast notification */}
+      {toast && <Toast message={toast.message} type={toast.type} onClose={()=>setToast(null)}/>}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<MerchantApp/>);
+</script>
+</body>
+</html>

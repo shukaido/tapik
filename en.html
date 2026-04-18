@@ -1,0 +1,2359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tapik Submission v6 — Tablet-Based Independent F&B Customer Retention Platform</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior:smooth; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+    background:#0f172a;
+    color:#e2e8f0;
+    line-height:1.75;
+    font-size:14px;
+  }
+
+  .layout { display:flex; min-height:100vh; }
+
+  /* ===== SIDEBAR ===== */
+  aside {
+    position:fixed;
+    left:0;
+    top:0;
+    width:260px;
+    height:100vh;
+    background:#1e293b;
+    border-right:1px solid #334155;
+    padding:24px 16px;
+    overflow-y:auto;
+    flex-shrink:0;
+    z-index:100;
+  }
+
+  aside h1 {
+    font-size:14px;
+    color:#f8fafc;
+    margin-bottom:2px;
+    font-weight:700;
+  }
+
+  aside .meta {
+    font-size:11px;
+    color:#94a3b8;
+    margin-bottom:18px;
+    padding-bottom:12px;
+    border-bottom:1px solid #334155;
+  }
+
+  aside .section-label {
+    font-size:10px;
+    color:#64748b;
+    text-transform:uppercase;
+    font-weight:700;
+    letter-spacing:0.08em;
+    margin:16px 8px 6px;
+    padding:0;
+  }
+
+  aside nav a {
+    display:block;
+    padding:6px 10px;
+    color:#cbd5e1;
+    text-decoration:none;
+    border-radius:6px;
+    font-size:12px;
+    margin-bottom:1px;
+    transition:background 0.15s, color 0.15s;
+  }
+
+  aside nav a:hover {
+    background:#334155;
+    color:#f8fafc;
+  }
+
+  /* ===== MAIN ===== */
+  main {
+    margin-left:260px;
+    padding:48px 60px;
+    max-width:960px;
+  }
+
+  h1.doc-title {
+    font-size:32px;
+    color:#f8fafc;
+    margin-bottom:6px;
+    font-weight:700;
+  }
+
+  p.doc-subtitle {
+    color:#94a3b8;
+    font-size:14px;
+    margin-bottom:36px;
+    border-bottom:1px solid #334155;
+    padding-bottom:16px;
+  }
+
+  h2 {
+    font-size:22px;
+    color:#fbbf24;
+    margin:48px 0 18px;
+    padding-bottom:10px;
+    border-bottom:2px solid #334155;
+  }
+
+  h3 {
+    font-size:16px;
+    color:#38bdf8;
+    margin:28px 0 12px;
+  }
+
+  h4 {
+    font-size:14px;
+    color:#a78bfa;
+    margin:18px 0 8px;
+    font-weight:600;
+  }
+
+  p { margin:8px 0; }
+  a { color:#38bdf8; text-decoration:none; }
+  a:hover { text-decoration:underline; }
+
+  /* ===== CARDS ===== */
+  .card {
+    background:#1e293b;
+    border:1px solid #334155;
+    border-radius:10px;
+    padding:18px 20px;
+    margin:14px 0;
+    transition:border-color 0.2s;
+  }
+
+  .card:hover { border-color:#475569; }
+
+  .card-green { border-left:4px solid #10b981; }
+  .card-red { border-left:4px solid #ef4444; }
+  .card-blue { border-left:4px solid #3b82f6; }
+  .card-amber { border-left:4px solid #f59e0b; }
+  .card-purple { border-left:4px solid #8b5cf6; }
+
+  .card-title {
+    font-size:13px;
+    font-weight:700;
+    color:#f8fafc;
+    margin-bottom:8px;
+  }
+
+  /* ===== QUOTE ===== */
+  .quote {
+    background:#1a1a2e;
+    border-left:3px solid #fbbf24;
+    padding:12px 16px;
+    border-radius:0 8px 8px 0;
+    margin:12px 0;
+    font-size:13px;
+    color:#cbd5e1;
+  }
+
+  .quote .speaker {
+    font-weight:700;
+    color:#fbbf24;
+    font-size:11px;
+    letter-spacing:0.04em;
+    margin-bottom:4px;
+  }
+
+  /* ===== TABLE ===== */
+  table {
+    border-collapse:collapse;
+    width:100%;
+    margin:14px 0;
+    font-size:13px;
+  }
+
+  th, td {
+    border:1px solid #334155;
+    padding:8px 12px;
+    text-align:left;
+    vertical-align:top;
+  }
+
+  th {
+    background:#1e293b;
+    color:#f8fafc;
+    font-weight:600;
+    font-size:12px;
+  }
+
+  td { color:#cbd5e1; }
+
+  tr:nth-child(even) td { background:#1e293b40; }
+
+  /* ===== STAT GRID ===== */
+  .stat-grid {
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:12px;
+    margin:16px 0;
+  }
+
+  .stat-box {
+    background:#1e293b;
+    border:1px solid #334155;
+    border-radius:8px;
+    padding:14px;
+    text-align:center;
+  }
+
+  .stat-num {
+    font-size:28px;
+    font-weight:800;
+    color:#fbbf24;
+  }
+
+  .stat-label {
+    font-size:11px;
+    color:#94a3b8;
+    margin-top:4px;
+  }
+
+  /* ===== TAGS ===== */
+  .tag {
+    display:inline-block;
+    font-size:10px;
+    font-weight:700;
+    padding:2px 8px;
+    border-radius:20px;
+    margin-right:4px;
+  }
+
+  .tag-sharp { background:#f59e0b20; color:#fbbf24; border:1px solid #f59e0b40; }
+  .tag-pivot { background:#ef444420; color:#f87171; border:1px solid #ef444440; }
+  .tag-logic { background:#3b82f620; color:#60a5fa; border:1px solid #3b82f640; }
+  .tag-trust { background:#10b98120; color:#34d399; border:1px solid #10b98140; }
+  .tag-trade { background:#8b5cf620; color:#c4b5fd; border:1px solid #8b5cf640; }
+  .tag-ai { background:#ec489920; color:#f472b6; border:1px solid #ec489940; }
+
+  /* ===== HIGHLIGHT ===== */
+  .highlight {
+    background:linear-gradient(135deg, #1e293b, #0f172a);
+    border:2px solid #fbbf24;
+    border-radius:12px;
+    padding:20px;
+    margin:20px 0;
+  }
+
+  /* ===== BAR CHART ===== */
+  .bar-chart { margin:14px 0; }
+
+  .bar-row {
+    display:flex;
+    align-items:center;
+    margin-bottom:8px;
+  }
+
+  .bar-label {
+    width:110px;
+    font-size:12px;
+    color:#94a3b8;
+    flex-shrink:0;
+  }
+
+  .bar-track {
+    flex:1;
+    height:20px;
+    background:#0f172a;
+    border-radius:4px;
+    overflow:hidden;
+  }
+
+  .bar-fill {
+    height:100%;
+    border-radius:4px;
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    padding-right:6px;
+    font-size:10px;
+    font-weight:700;
+    color:#fff;
+    min-width:30px;
+  }
+
+  .bar-amber { background:linear-gradient(90deg, #d97706, #f59e0b); }
+  .bar-green { background:linear-gradient(90deg, #059669, #34d399); }
+  .bar-red { background:linear-gradient(90deg, #dc2626, #f87171); }
+  .bar-blue { background:linear-gradient(90deg, #2563eb, #60a5fa); }
+  .bar-purple { background:linear-gradient(90deg, #7c3aed, #a78bfa); }
+
+  /* ===== FLOW DIAGRAM ===== */
+  .flow-row {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+    margin:12px 0;
+  }
+
+  .flow-step {
+    background:#334155;
+    padding:8px 14px;
+    border-radius:8px;
+    font-size:13px;
+    color:#e2e8f0;
+    white-space:nowrap;
+  }
+
+  .flow-arrow { color:#64748b; font-size:16px; }
+
+  /* ===== TIMELINE ===== */
+  .timeline {
+    position:relative;
+    padding-left:28px;
+    margin:16px 0;
+  }
+
+  .timeline::before {
+    content:'';
+    position:absolute;
+    left:8px;
+    top:0;
+    bottom:0;
+    width:2px;
+    background:#334155;
+  }
+
+  .tl-item {
+    position:relative;
+    margin-bottom:16px;
+  }
+
+  .tl-item::before {
+    content:'';
+    position:absolute;
+    left:-24px;
+    top:6px;
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:#fbbf24;
+    border:2px solid #0f172a;
+  }
+
+  .tl-date {
+    font-size:11px;
+    color:#64748b;
+    font-family:monospace;
+  }
+
+  .tl-content {
+    font-size:13px;
+    color:#e2e8f0;
+    margin-top:2px;
+  }
+
+  /* ===== PERSONA ===== */
+  .persona {
+    background:#1e293b;
+    border:1px solid #334155;
+    border-radius:10px;
+    padding:16px;
+    margin:12px 0;
+  }
+
+  .persona-avatar {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    background:#334155;
+    color:#f8fafc;
+    font-weight:700;
+    font-size:20px;
+    margin-right:12px;
+    float:left;
+  }
+
+  .persona-name {
+    font-size:15px;
+    font-weight:700;
+    color:#f8fafc;
+  }
+
+  .persona-meta {
+    font-size:12px;
+    color:#94a3b8;
+  }
+
+  /* ===== VS LAYOUT ===== */
+  .vs-row {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin:16px 0;
+  }
+
+  .vs-col {
+    background:#1e293b;
+    border:1px solid #334155;
+    border-radius:10px;
+    padding:16px;
+  }
+
+  .vs-col h4 {
+    color:#e2e8f0;
+    margin-top:0;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    margin-left:260px;
+    padding:40px 60px;
+    border-top:1px solid #334155;
+    color:#64748b;
+    font-size:13px;
+    text-align:center;
+  }
+
+  /* ===== UTILITIES ===== */
+  ul, ol { padding-left:20px; }
+  li { margin:5px 0; }
+  .pain { color:#f87171; font-weight:600; }
+  .fix { color:#4ade80; font-weight:600; }
+  .neutral { color:#fbbf24; font-weight:600; }
+
+  /* ===== FOOTNOTES ===== */
+  .fn {
+    vertical-align:super;
+    font-size:10px;
+    color:#fbbf24;
+    cursor:pointer;
+    text-decoration:none;
+    font-weight:700;
+  }
+  .fn:hover { text-decoration:underline; }
+
+  .footnotes-section {
+    margin-left:260px;
+    padding:30px 60px;
+    border-top:1px solid #334155;
+    font-size:12px;
+    color:#94a3b8;
+    line-height:1.8;
+  }
+
+  .footnotes-section h3 {
+    color:#64748b;
+    font-size:14px;
+    margin-bottom:12px;
+  }
+
+  .footnotes-section ol {
+    padding-left:20px;
+  }
+
+  .footnotes-section li {
+    margin-bottom:6px;
+  }
+
+  .footnotes-section a {
+    color:#38bdf8;
+    font-size:11px;
+    word-break:break-all;
+  }
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar { width:8px; }
+  ::-webkit-scrollbar-track { background:#0f172a; }
+  ::-webkit-scrollbar-thumb { background:#334155; border-radius:4px; }
+  ::-webkit-scrollbar-thumb:hover { background:#475569; }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+<!-- ===== SIDEBAR NAVIGATION ===== -->
+<aside>
+  <h1>Tapik</h1>
+  <div class="meta">Assignment Submission v6<br>2026-04-18</div>
+
+  <nav>
+    <div class="section-label">Overview</div>
+    <a href="#executive">Executive Summary</a>
+
+    <div class="section-label">Part 1: Opportunity</div>
+    <a href="#painpoints">Pain Point Analysis</a>
+    <a href="#market-gaps">Market Gaps & Competition</a>
+    <a href="#pos-partnership">POS Partnership & e-Invoice</a>
+    <a href="#why-now">Why Now</a>
+
+    <div class="section-label">Part 2: Target & Problem</div>
+    <a href="#segments">Segment Selection</a>
+    <a href="#personas">Personas</a>
+    <a href="#value-prop">Value Proposition</a>
+
+    <div class="section-label">Part 3: Product Strategy</div>
+    <a href="#product-concept">Product Concept</a>
+    <a href="#revenue-evolution">Revenue Model Evolution</a>
+    <a href="#tradeoffs">9 Trade-offs</a>
+    <a href="#dynamic-reward">Dynamic Reward 3-Mode</a>
+
+    <div class="section-label">Part 4: AI Process</div>
+    <a href="#ai-process">5 AI Tools Division</a>
+    <a href="#key-prompts">10 Key Prompts</a>
+    <a href="#ai-skepticism">8 Cases of AI Skepticism</a>
+    <a href="#iterations">Iteration Cycles</a>
+
+    <div class="section-label">Part 5: Product Spec</div>
+    <a href="#architecture">3-App Architecture</a>
+    <a href="#room-fsm">Room State Machine</a>
+    <a href="#tech-stack">Tech Stack</a>
+    <a href="#kpis">10 KPIs</a>
+
+    <div class="section-label">Part 6: Validation & Execution</div>
+    <a href="#assumptions">5 Critical Assumptions</a>
+    <a href="#experiments">6 Experiments</a>
+    <a href="#roadmap">12-Week Roadmap</a>
+    <a href="#cold-start">Cold Start Strategy</a>
+
+    <div class="section-label">Part 7: Experiments & Evaluation</div>
+    <a href="#experiments-meta">4 Separate Experiments</a>
+    <a href="#self-eval">Multi-Angle Evaluation</a>
+
+    <div class="section-label">Conclusion</div>
+    <a href="#conclusion">Project Comprehensive Assessment</a>
+  </nav>
+</aside>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main>
+
+<!-- ============================================================ -->
+<h1 class="doc-title">Tapik</h1>
+<p class="doc-subtitle">Tablet-Based Independent F&B Customer Retention Platform · Malaysia Market Penetration<br>
+Assignment Submission · Comprehensive Document for Process-Based Evaluation</p>
+
+<!-- ===== EXECUTIVE SUMMARY ===== -->
+<section id="executive">
+  <h2>Executive Summary</h2>
+
+  <div class="stat-grid">
+    <div class="stat-box">
+      <div class="stat-num">RM 0.53</div>
+      <div class="stat-label">Net Profit per Transaction<br>(RM 15 AOV basis)</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">3.5%</div>
+      <div class="stat-label">Unit Net Margin<br>(10%-5%-1.5%)</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">3~4 months</div>
+      <div class="stat-label">Tablet Investment<br>Payback Period (Conservative)</div>
+    </div>
+  </div>
+
+  <div class="card card-blue">
+    <p style="margin-top:0;">
+      <strong>Tapik is a <em>tablet-based standalone customer retention platform</em> for independent F&B merchants in Malaysia.</strong>
+    </p>
+    <p>
+      Core: M40 urban professionals (Wei Ming) looking to shorten lunch hour wait times pay 5% service fee in exchange for pre-payment orders, with the entire fee converted to loyalty points. Merchants (Auntie Siew) receive a dedicated Lenovo Tab M7 and connect directly to Tapik with a 10% commission. The system operates independently without relying on POS systems, yet maintains multi-layered partnerships with POS manufacturers including business development, receipt QR code linking, transaction data integration, and maintenance support.
+    </p>
+    <p>
+      Result: At normal operation, 3.5% net margin per transaction. However, considering merchant onboarding, training, and customer acquisition ramp-up, tablet investment (25 units × RM 398 = RM 9,950) payback conservatively takes 3~4 months.
+    </p>
+    <p style="margin-bottom:0;">
+      <strong>Project Scope:</strong> 11 major pivots, 6 revenue model iterations, 25 assumption validations, single-file HTML+React+Babel 3 apps (5,168 total lines).
+    </p>
+  </div>
+</section>
+
+<!-- ===== PART 1: Opportunity Identification ===== -->
+<section id="part1">
+  <h2>Part 1: Opportunity Identification</h2>
+
+  <!-- === Pain Points === -->
+  <section id="painpoints">
+    <h3>4 Structural Pain Points</h3>
+
+    <table>
+      <tr>
+        <th>#</th>
+        <th>Pain Point</th>
+        <th>Target</th>
+        <th>Annual Loss</th>
+        <th>Existing Solutions' Problem</th>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td><strong>Lunch Hour Waiting</strong></td>
+        <td>M40 Professionals</td>
+        <td class="pain">62~94 hours<br>(paid 8~12 days)</td>
+        <td>Delivery App = 15~30% commission<a href="#fn4" class="fn">[4]</a> → Price increase</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>Repeat Customer Rewards = 0</strong></td>
+        <td>Consumers</td>
+        <td class="pain">Annual RM 0</td>
+        <td>Paper Stamps = 39% loss rate<a href="#fn3" class="fn">[3]</a></td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>Customer Data Gap</strong></td>
+        <td>Independent Merchants</td>
+        <td class="pain">Marketing<br>Opportunity Loss</td>
+        <td>POS Basic Reports = "Name·Contact" unavailable</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>Afternoon Off-Peak Loss</strong></td>
+        <td>Merchants</td>
+        <td class="pain">Capacity<br>30% ↓</td>
+        <td>No Discount Notification Channel</td>
+      </tr>
+    </table>
+
+    <div class="card card-blue">
+      <div class="card-title">Context: Service Fee Acceptability Validation</div>
+      <p style="margin-top:0;">When designing revenue model v3, "Will consumers accept a 5% service fee?" was the central issue. When the agent analyzed GrabFood's pricing structure and presented it, Captain had already identified a behavioral pattern where consumers accept higher prices on delivery apps compared to storefront prices, and reverse-engineered the likelihood that a 5% service fee would be acceptable based on this discovery.</p>
+      <div class="quote">
+        <div class="speaker">Captain (2026-04-15 05:40)</div>
+        "The delivery app works exactly this way... even when prices differ from the store, people don't resist much, right? Then 5% is less than one-third of GrabFood, and if we return it all as points, I think people won't have objections."
+      </div>
+    </div>
+  </section>
+
+  <!-- === Market Gaps === -->
+  <section id="market-gaps">
+    <h3>Market Gap: Payment Infrastructure Exploded, but CRM is Empty</h3>
+
+    <div class="stat-grid">
+      <div class="stat-box">
+        <div class="stat-num">18.4 Billion</div>
+        <div class="stat-label">E-payment Transactions<br>(2025, BNM)<a href="#fn1" class="fn">[1]</a></div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">3 Million</div>
+        <div class="stat-label">DuitNow QR Touchpoints<br>(2025, BNM)<a href="#fn2" class="fn">[2]</a></div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">538 Transactions</div>
+        <div class="stat-label">Per Capita Annual<br>E-payments (2025, BNM)<a href="#fn1" class="fn">[1]</a></div>
+      </div>
+    </div>
+
+    <p>Malaysia's digital payment infrastructure is already mature. 2025 e-payment volume reached 18.4 billion transactions<a href="#fn1" class="fn">[1]</a>, with approximately 3 million DuitNow QR touchpoints<a href="#fn2" class="fn">[2]</a>. However, very few independent merchants have CRM and loyalty tools to utilize this payment data. Paper stamp cards are abandoned at 39% loss rate<a href="#fn3" class="fn">[3]</a>, and basic POS reports don't include customer names or contact information. <strong>The gap between payment infrastructure and customer relationship management</strong> — this is where Tapik enters.</p>
+
+    <table>
+      <tr>
+        <th>Competitor</th>
+        <th>Positioning</th>
+        <th>Structural Weakness</th>
+      </tr>
+      <tr>
+        <td><strong>GrabFood</strong></td>
+        <td>Delivery App → Including Pickup</td>
+        <td>15~30% commission<a href="#fn4" class="fn">[4]</a>. Consumers bear the price increase</td>
+      </tr>
+      <tr>
+        <td><strong>Chope/Eatigo</strong></td>
+        <td>Reservation Discount Marketplace</td>
+        <td>Focused on T20 restaurants. M40 Kopitiam less than 5%</td>
+      </tr>
+      <tr>
+        <td><strong>Individual Stamps</strong></td>
+        <td>Paper or Simple Card</td>
+        <td>39% loss/discard<a href="#fn3" class="fn">[3]</a>. Merchant operational cost</td>
+      </tr>
+      <tr>
+        <td><strong>POS Basic Loyalty</strong></td>
+        <td>Points within POS</td>
+        <td>"Name·Contact unavailable" → No personalization</td>
+      </tr>
+    </table>
+
+    <div class="card card-blue">
+      <div class="card-title">Context: First Conception of Tablet Independence</div>
+      <p style="margin-top:0;">After confirming POS API integration was impossible, the agent presented several workarounds, all requiring POS manufacturer cooperation. In this situation, Captain posed a fundamental question: "Do we really need to go through POS?" After confirming Lenovo Tab M7's price (RM 398), the moment of discovering that directly installing a tablet would eliminate POS dependency entirely became apparent.</p>
+      <div class="quote">
+        <div class="speaker">Captain (2026-04-17 10:01)</div>
+        "If we put a tablet there, can't we connect directly without POS? All the problems we've been thinking about disappear?"
+      </div>
+    </div>
+
+    <h4 id="pos-partnership">POS Manufacturer Partnership: e-Invoice as the Key Link</h4>
+
+    <div class="card card-green">
+      <div class="card-title">Strategic Structure of Partnership</div>
+      <p style="margin-top:0;">
+        With tablet-independent operations, we eliminated technical dependency. But rather than breaking ties with POS manufacturers, we enabled <strong>even deeper cooperation</strong>. The key link is <strong>automated e-Invoice processing</strong>.
+      </p>
+      <p>
+        Starting January 2026, LHDN Phase 4 mandated e-Invoice for businesses with annual revenue RM 1M~5M<a href="#fn6" class="fn">[6]</a>. Most independent F&B merchants use POS but haven't addressed e-Invoice compliance. Many POS manufacturers are aware of the issue but lack solutions. This is where Tapik comes in.
+      </p>
+    </div>
+
+    <div class="highlight">
+      <h4 style="margin-top:0; color:#fbbf24;">Automated e-Invoice Processing Concept</h4>
+      <div class="flow-row">
+        <div class="flow-step">POS Transaction Data</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">Tapik Receives</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">Auto-Generate Monthly Consolidated e-Invoice</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">Submit via MyInvois API</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">LHDN Validation Complete</div>
+      </div>
+      <p style="margin-top:14px; font-size:13px;">
+        <strong>B2C Transactions</strong> (most F&B): Consolidate monthly into single e-invoice for submission. Format follows UBL 2.1 (XML/JSON) standard.<br>
+        <strong>RM 10,000+ Transactions</strong> (bulk orders, etc.): Auto-detect → Issue individual e-Invoice immediately.<br>
+        <strong>LHDN QR Code</strong>: After validation, unique number + QR automatically included in digital receipt.<br>
+        <strong>Submission Deadline</strong>: Within 7 days of month-end. Tapik handles automatically.
+      </p>
+    </div>
+
+    <p style="margin:16px 0;">
+      Core of this concept: <strong>receiving transaction data from POS manufacturers</strong>. Not just Tapik's own transactions, but covering all merchant transactions through POS. From sole proprietors to mid-size restaurants — "Use Tapik, never worry about e-Invoice again."
+    </p>
+
+    <table>
+      <tr>
+        <th>Target</th>
+        <th>Revenue Bracket</th>
+        <th>e-Invoice Requirement</th>
+        <th>Current Status</th>
+        <th>Tapik's Role</th>
+      </tr>
+      <tr>
+        <td><strong>Sole Proprietors</strong><br>(Kopitiam, Street Vendors)</td>
+        <td>Below RM 1M</td>
+        <td>Exempt (voluntary issue possible)</td>
+        <td>Mostly Non-Compliant</td>
+        <td>Enable voluntary e-Invoice → Tax simplification support</td>
+      </tr>
+      <tr>
+        <td><strong>Small Independent Merchants</strong><br>(Cafes, Restaurants)</td>
+        <td>RM 1M~5M</td>
+        <td class="pain">Phase 4 Mandatory (2026.01~)</td>
+        <td class="pain">Have POS but e-Invoice Non-Compliant</td>
+        <td class="fix">Receive POS Data → Auto-Generate & Submit Monthly Consolidated e-Invoice</td>
+      </tr>
+      <tr>
+        <td><strong>Mid-Size Restaurants</strong><br>(Franchise Scale)</td>
+        <td>RM 5M+</td>
+        <td class="pain">Phase 1~3 Already Mandatory</td>
+        <td class="neutral">Own System or Outsourced</td>
+        <td>More POS Network Expansion Beachhead than Competition</td>
+      </tr>
+    </table>
+
+    <h4>POS Manufacturer Collaboration Structure: What e-Invoice Opens</h4>
+    <p>Automated e-Invoice processing creates a data connection pathway with POS manufacturers. When this pathway opens, other collaborations naturally follow.</p>
+
+    <table>
+      <tr>
+        <th>Collaboration Layer</th>
+        <th>Content</th>
+        <th>e-Invoice Link</th>
+      </tr>
+      <tr>
+        <td><strong>① Transaction Data Receipt</strong><br><span class="tag tag-sharp">Key Link</span></td>
+        <td>POS transmits daily sales, items, payment methods to Tapik</td>
+        <td class="fix">Source data for e-Invoice generation. Impossible without it</td>
+      </tr>
+      <tr>
+        <td><strong>② BD (Business Development)</strong></td>
+        <td>POS manufacturers introduce Tapik to existing merchants</td>
+        <td>"Handles e-Invoice automatically" gives clear sales motivation</td>
+      </tr>
+      <tr>
+        <td><strong>③ Joint Marketing Bundle</strong></td>
+        <td>Include "Tapik e-Invoice Package" in POS contract renewals</td>
+        <td>POS manufacturers gain contract price increase + customer retention</td>
+      </tr>
+      <tr>
+        <td><strong>④ Maintenance Support</strong></td>
+        <td>POS field technicians handle Tapik tablet installation/inspection</td>
+        <td>Already in data integration relationship, so "joint management" is natural</td>
+      </tr>
+      <tr>
+        <td><strong>⑤ Receipt QR Integration</strong></td>
+        <td>Print both Tapik QR + LHDN QR on POS receipts</td>
+        <td>Combine e-Invoice validation QR and Tapik acquisition QR on one page</td>
+      </tr>
+      <tr>
+        <td><strong>⑥ Settlement Integration</strong></td>
+        <td>Unify POS revenue + Tapik commission + e-Invoice tax settlement</td>
+        <td>Data already connected, so unified settlement is natural extension</td>
+      </tr>
+    </table>
+
+    <div class="card card-amber">
+      <div class="card-title">Why POS Manufacturers Need Tapik</div>
+      <p style="margin-top:0;">
+        POS manufacturers sell hardware + basic software. Developing e-Invoice solutions in-house requires LHDN certification, MyInvois API integration, UBL 2.1 standard processing — software investments beyond POS manufacturers' core business. If Tapik takes this responsibility, POS manufacturers can tell their customers "e-Invoice is fully handled." Competition transforms to complementarity. In this structure, Tapik isn't subordinate — it's an equal partner.
+      </p>
+    </div>
+  </section>
+
+  <!-- === Why Now === -->
+  <section id="why-now">
+    <h3>Why This Opportunity is "Now"</h3>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-date">2024-2025</div>
+        <div class="tl-content"><strong>DuitNow QR Maturation</strong> — Transaction volume 2x YoY, surpasses 3 billion (2025)<a href="#fn2" class="fn">[2]</a>. Removes small-transaction friction.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">2025-2026</div>
+        <div class="tl-content"><strong>E-Wallet Urban Penetration 90%</strong> (BNM 2024 Q3)<a href="#fn5" class="fn">[5]</a> — Cash transactions shrinking rapidly. 538 e-payment transactions per capita annually<a href="#fn1" class="fn">[1]</a>.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">2026 Current</div>
+        <div class="tl-content"><strong>3 Million DuitNow QR Touchpoints<a href="#fn2" class="fn">[2]</a> + CRM Gap + e-Invoice Mandate<a href="#fn6" class="fn">[6]</a></strong> — Payment infrastructure established, but customer management and compliance layer vacant.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">2026 Q2-Q3</div>
+        <div class="tl-content"><strong>TikTok/Telegram Viral</strong> — TikTok Malaysia adult reach 114.8%, 19.3M users<a href="#fn7" class="fn">[7]</a>. Viral channels mature.</div>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- ===== PART 2: Target & Problem Definition ===== -->
+<section id="part2">
+  <h2>Part 2: Target & Problem Definition</h2>
+
+  <!-- === Segment Selection === -->
+  <section id="segments">
+    <h3>Segment Selection: A vs B</h3>
+
+    <table>
+      <tr>
+        <th>Dimension</th>
+        <th>A: M40 Third Place Repeat Economy</th>
+        <th>B: T20 Inner Circle Dining Culture</th>
+      </tr>
+      <tr>
+        <td><strong>Target</strong></td>
+        <td>Age 25~40 KL Professionals · Monthly Income RM 5k~8k</td>
+        <td>Age 19~28 Bangsar/Damansara · Monthly Income RM 3k~5k</td>
+      </tr>
+      <tr>
+        <td><strong>Eating Pattern</strong></td>
+        <td>Lunch at same merchant within 500m radius (4~5x/week)</td>
+        <td>Weekend outings + hotspot hopping (2~3+ times/week)</td>
+      </tr>
+      <tr>
+        <td><strong>Selection Criteria</strong></td>
+        <td>Time < Quality. "Quick bite and back"</td>
+        <td>Quality > Time. "Instagram presence"</td>
+      </tr>
+      <tr>
+        <td><strong>Our Value</strong></td>
+        <td class="fix">Wait Reduction + Point Rebate = "Effectively buying time"</td>
+        <td class="pain">Not interested in discounts. Reservation is attractive</td>
+      </tr>
+      <tr>
+        <td><strong>POS Partner Collaboration</strong></td>
+        <td class="fix">Kopitiam/Cafes = High POS penetration. Multi-layer collaboration possible (BD, receipt QR, maintenance)</td>
+        <td class="pain">Cafes/Casual = Low POS penetration, limited partner synergy</td>
+      </tr>
+      <tr>
+        <td><strong>Selection Result</strong></td>
+        <td class="fix"><strong>SELECTED</strong></td>
+        <td class="pain">Excluded (v2+ review)</td>
+      </tr>
+    </table>
+
+    <p style="margin-top:16px;">
+      <strong>Decision Process:</strong> Captain identified that B(T20) structurally lacks differentiation from Chope/Eatigo, and simultaneously assessed "without local market feel, B conversion risk is overstated." Focused on A.
+    </p>
+  </section>
+
+  <!-- === Personas === -->
+  <section id="personas">
+    <h3>2 Core Personas</h3>
+
+    <div class="persona">
+      <div style="overflow:auto;">
+        <div class="persona-avatar">W</div>
+        <div class="persona-name">Wei Ming</div>
+        <div class="persona-meta">29, IT Professional, Monthly Income RM 6,500</div>
+      </div>
+      <p style="margin-top:14px;">
+        <strong>Current Daily Life:</strong> Weekday start 8am. 1-hour lunch. Feeka Coffee lunch (300m radius). 4 meals/week eating out = RM 8,000 annual consumption. Points earned: RM 0.
+      </p>
+      <p>
+        <strong>Wait Time Pain:</strong> Average 12~18 min wait during 12:00~13:00 peak. Annual 62~94 hours (8~12 paid days). "If I pay 5% service fee and get points back?" → Result: RM 0 effective cost + merchant unchanged.
+      </p>
+      <p>
+        <strong>Tapik Value:</strong> RM 0.50 service fee × 80 orders/month = RM 40/month → RM 480 annually time-saving benefit. At minimum wage RM 8.72/hour<a href="#fn8" class="fn">[8]</a>, approximately 55 hours value.
+      </p>
+    </div>
+
+    <div class="persona">
+      <div style="overflow:auto;">
+        <div class="persona-avatar">A</div>
+        <div class="persona-name">Auntie Siew</div>
+        <div class="persona-meta">52, Kopitiam Owner, 27 Years Operation</div>
+      </div>
+      <p style="margin-top:14px;">
+        <strong>Current Daily Life:</strong> Opens 5am. Relies on son/nephew's IT support. POS reports don't show customer names/contacts. "How many customers yesterday?" — Can't answer.
+      </p>
+      <p>
+        <strong>GrabFood Dilemma:</strong> GrabFood's 15~30% commission<a href="#fn4" class="fn">[4]</a> is a burden for merchants. But exposure to consumers is beneficial. "That commission cuts margins even as sales go up"
+      </p>
+      <p>
+        <strong>Tapik Value:</strong> 10% commission but "actual burden only 5%" (recoverable via 5% sales uplift). One-third of GrabFood. Simultaneously, direct customer data captured. For the first time, learns names, contacts, visit frequency of 30+ repeat professionals.
+      </p>
+    </div>
+  </section>
+
+  <!-- === Value Proposition === -->
+  <section id="value-prop">
+    <h3>Value Proposition: "Giving Time Back"</h3>
+
+    <div class="vs-row">
+      <div class="vs-col">
+        <h4>Before (Now)</h4>
+        <ul>
+          <li>12:00-12:18 = Waiting</li>
+          <li>12:18-12:40 = Eating</li>
+          <li>12:40-13:00 = Return</li>
+          <li><span class="pain">Wait Proportion: 30%</span></li>
+        </ul>
+      </div>
+      <div class="vs-col">
+        <h4>After (Tapik)</h4>
+        <ul>
+          <li>11:55 = Pre-payment Complete</li>
+          <li>12:00-12:22 = Eating</li>
+          <li>12:22-13:00 = Leisure Time</li>
+          <li><span class="fix">Time Reclaimed: 18 minutes (30% recovery)</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <p style="margin-top:16px;">
+      Captain framed: "App's essence is time convenience — we're selling time." This insight drove the shift to 5% service fee model.
+    </p>
+  </section>
+</section>
+
+<!-- ===== PART 3: Product Strategy ===== -->
+<section id="part3">
+  <h2>Part 3: Product Strategy</h2>
+
+  <!-- === Product Concept === -->
+  <section id="product-concept">
+    <h3>Product Concept: Tablet-Independent Operations</h3>
+
+    <p style="margin-bottom:20px;">
+      <strong>Core Architecture Decision:</strong> POS API dependency → switched to independent Lenovo Tab M7 (RM 398)<a href="#fn9" class="fn">[9]</a> operation.
+    </p>
+
+    <div class="card card-amber">
+      <div class="card-title">Context: Root Cause Diagnosis of Repeated Pivots → Tablet Switch</div>
+      <p style="margin-top:0;">From project start, AI (Claude) recommended POS API integration as core strategy, and design was built on this foundation. However, no guarantee that POS manufacturers would open APIs. Proceeding with unvalidated assumptions caused repeated pivots. When Captain precisely identified this structural problem, the thought "Why go through POS at all? Why not install a tablet directly?" led to the major pivot to v4. This moment of realization, confirmed by Lenovo Tab M7 price (RM 398), was when architecture shifted 180 degrees.</p>
+      <div class="quote">
+        <div class="speaker">Captain (2026-04-17 09:34)</div>
+        "I shouldn't recommend things that are impossible or unknown, but I did, and that's how we got here. The fundamental reason we keep pivoting is exactly that. With that price point, wouldn't setting up a tablet be easy? No high specs needed, right? If we assume we install a tablet, we can connect directly with our app without POS, right? All the problems we've been worrying about disappear?"
+      </div>
+    </div>
+
+    <table>
+      <tr>
+        <th>Dimension</th>
+        <th>POS API Dependency (Failed)</th>
+        <th>Tablet Independence (v4 Adopted)</th>
+      </tr>
+      <tr>
+        <td><strong>Technical Risk</strong></td>
+        <td class="pain">Partner doesn't open API = entire strategy collapses</td>
+        <td class="fix">Independent system. Tapik 100% control</td>
+      </tr>
+      <tr>
+        <td><strong>Initial Investment</strong></td>
+        <td>Nearly 0</td>
+        <td>25 tablets × RM 398 = RM 9,950</td>
+      </tr>
+      <tr>
+        <td><strong>Payback Period</strong></td>
+        <td>N/A (unrealizable)</td>
+        <td>3~4 months (conservative estimate including ramp-up)</td>
+      </tr>
+      <tr>
+        <td><strong>Customer Data Ownership</strong></td>
+        <td class="pain">POS Partner owns</td>
+        <td class="fix">Tapik owns (Firebase)</td>
+      </tr>
+      <tr>
+        <td><strong>Scalability</strong></td>
+        <td>Partner dependent</td>
+        <td class="fix">Independent scaling possible</td>
+      </tr>
+      <tr>
+        <td><strong>POS Partnership</strong></td>
+        <td class="pain">Dependent relationship (API unavailable = total collapse)</td>
+        <td class="fix">Equal collaboration — automated e-Invoice processing as key link</td>
+      </tr>
+    </table>
+
+    <p>
+      After switching to tablet independence, paradoxically, the relationship with POS manufacturers becomes healthier. Rather than "Please open your API" (subordinate request), we can propose "Provide transaction data, we'll handle e-Invoice automatically" (equal partnership). POS manufacturers benefit from outsourcing e-Invoice solutions rather than building in-house. In this structure, Tapik is equal, not subordinate.
+    </p>
+  </section>
+
+  <!-- === Revenue Evolution === -->
+  <section id="revenue-evolution">
+    <h3>Revenue Model Evolution: v0 → v5</h3>
+
+    <table>
+      <tr>
+        <th>Version</th>
+        <th>Model</th>
+        <th>Why Fails</th>
+        <th>Captain's Judgment</th>
+        <th>Result</th>
+      </tr>
+      <tr>
+        <td>v0</td>
+        <td>SaaS Subscription (RM 50/month)</td>
+        <td class="pain">No reason to prepay for unvalidated app</td>
+        <td>Obviously rejected. "Why pay upfront for an app we don't know we'll use?"</td>
+        <td>Rejected</td>
+      </tr>
+      <tr>
+        <td>v1</td>
+        <td>Network Deal (Group Buying)</td>
+        <td class="pain">Cold start fatal. No value with just 1 person</td>
+        <td>1→2 network problem. "Don't need two simultaneously? What about first user?"</td>
+        <td>Rejected</td>
+      </tr>
+      <tr>
+        <td>v2</td>
+        <td>SaaS + Advertising</td>
+        <td class="pain">Initial users 0 → ad value also 0</td>
+        <td>Chicken-egg problem again. "This got more complex. Won't work either."</td>
+        <td>Rejected</td>
+      </tr>
+      <tr>
+        <td>v3</td>
+        <td class="fix">5% Service Fee + Point Rebate</td>
+        <td class="fix">None. Value generated even per individual order</td>
+        <td><strong>"This model generates value per order. Room isn't actually essential."</strong></td>
+        <td class="fix">Breakthrough</td>
+      </tr>
+      <tr>
+        <td>v4</td>
+        <td class="fix">v3 + Tablet Independence</td>
+        <td class="fix">None. Technical independence achieved</td>
+        <td>"POS API assumption was fatal. Let's completely decouple via tablet."</td>
+        <td class="fix">Adopted</td>
+      </tr>
+      <tr>
+        <td>v5</td>
+        <td class="fix">v4 + SNS Viral + Room</td>
+        <td class="fix">None. Cold start strategy confirmed</td>
+        <td>"Must go social. Room development accelerated."</td>
+        <td class="fix">Final Adoption</td>
+      </tr>
+    </table>
+
+    <div class="card card-green">
+      <div class="card-title">Captain's Key Insights (Decision Process Extracted)</div>
+      <div class="quote">
+        <div class="speaker">RM 10 + RM 0.50 Point Charge Error</div>
+        "If you sell for RM 10, the funding source for RM 0.5 point charge isn't secured." → Correct structure: RM 10.50 charged (RM 10 + RM 0.50 service fee) → RM 0.50 points rebated.
+      </div>
+      <div class="quote">
+        <div class="speaker">Commission Ceiling Logic</div>
+        "What percentage is the limit? Maximum commission merchants can accept?" → After confirming GrabFood 15~30%<a href="#fn4" class="fn">[4]</a>, secured positioning: Tapik 10% is more than half cheaper.
+      </div>
+    </div>
+  </section>
+
+  <!-- === Trade-offs === -->
+  <section id="tradeoffs">
+    <h3>9 Major Trade-off Decisions</h3>
+
+    <table>
+      <tr>
+        <th>#</th>
+        <th>Not Built</th>
+        <th>Instead</th>
+        <th>Captain's Rationale</th>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td><strong>Tapik Pass</strong><br>(Subscription Model)</td>
+        <td>Complete with 5% service fee only</td>
+        <td>"Value generated per order. Pass unnecessary."</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>Halal Certification</strong></td>
+        <td>Completely excluded v1 scope</td>
+        <td>"Structurally inferior ROI. Beyond 12-week scope. Review v2+."</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>T20 Segment (B)</strong></td>
+        <td>M40 single focus (A)</td>
+        <td>"Without local feel, B conversion risk overstated. Validate A first, B later."</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>Weekly Meal Planner</strong></td>
+        <td>Deferred to v2+</td>
+        <td>"Behavior change + network + operation complexity 3-way risk. Can't spend time on assumptions."</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><strong>POS API Integration</strong></td>
+        <td>Dedicated tablet operations</td>
+        <td>"Recommended impossible things and arrived here. This time resolved via tablet."</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td><strong>Room as v1 Core</strong></td>
+        <td>Room to v1.5</td>
+        <td>"Individual orders complete themselves. Room not essential. But SNS synergy? Accelerate."</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td><strong>Web3 Token Exposure</strong></td>
+        <td>v1 = Backend only</td>
+        <td>"No BNM license. Fasset precedent: 12~24 month sandbox needed. v2+ review."</td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td><strong>Next.js Hard Stance</strong></td>
+        <td>Vite → Single-file React</td>
+        <td>"Right tool for problem, not familiar tool. After 6 failures, switched."</td>
+      </tr>
+      <tr>
+        <td>9</td>
+        <td><strong>"No Competition 3~4 Years"</strong><br>Claim</td>
+        <td>Conservative Estimate<br>(SAM 6.5k / SOM 2k)</td>
+        <td>"Exaggeration damages credibility. Grab/TNG entry likely. Risky claims."</td>
+      </tr>
+    </table>
+  </section>
+
+  <!-- === Dynamic Reward === -->
+  <section id="dynamic-reward">
+    <h3>Dynamic Reward System: 3-Mode Accumulation Rate</h3>
+
+    <p style="margin-bottom:16px;">
+      Captain's "BEP Reversal Phenomenon" insight led to this design. Not simple fixed accumulation, but 3 modes switching per merchant situation.
+    </p>
+
+    <table>
+      <tr>
+        <th>Mode</th>
+        <th>Application Condition</th>
+        <th>Accumulation Rate</th>
+        <th>Purpose</th>
+      </tr>
+      <tr>
+        <td><strong>Default</strong><br>(Standard)</td>
+        <td>Regular Orders</td>
+        <td>RM 0.50 Points<br>(100% of Service Fee)</td>
+        <td>Baseline value for all users</td>
+      </tr>
+      <tr>
+        <td><strong>Spot Deal</strong><br>(Spot Promotion)</td>
+        <td>Off-Peak (2~5pm)<br>or Specific Menu</td>
+        <td>RM 1.00 Points<br>(2x Accumulation)</td>
+        <td>Shift off-peak volume · Promote specific items</td>
+      </tr>
+      <tr>
+        <td><strong>Hot Deal</strong><br>(Hot Spot)</td>
+        <td>Popular Menu (2-hour limit)<br>or Limited Quantity</td>
+        <td>RM 1.50 Points<br>(3x Accumulation)</td>
+        <td>Inventory clearance · Strengthen viral momentum</td>
+      </tr>
+    </table>
+
+    <div class="card card-amber">
+      <div class="card-title">BEP Analysis (25 Tablet Basis)</div>
+      <table style="margin:14px 0; font-size:12px;">
+        <tr>
+          <th colspan="4">Monthly Revenue Simulation</th>
+        </tr>
+        <tr>
+          <td style="width:30%;">Merchant Count</td>
+          <td style="width:20%;">50</td>
+          <td colspan="2"></td>
+        </tr>
+        <tr>
+          <td>Daily Orders/Location</td>
+          <td>15 orders</td>
+          <td colspan="2"></td>
+        </tr>
+        <tr>
+          <td>AOV</td>
+          <td>RM 15</td>
+          <td colspan="2"></td>
+        </tr>
+        <tr>
+          <th colspan="4" style="background:#334155; text-align:center; padding:6px;">Monthly Revenue</th>
+        </tr>
+        <tr>
+          <td>50 × 15 × RM 15 × 30 days</td>
+          <td colspan="3"><strong>RM 337,500</strong></td>
+        </tr>
+        <tr>
+          <th colspan="4" style="background:#334155; text-align:center; padding:6px;">Revenue Distribution</th>
+        </tr>
+        <tr>
+          <td>Tapik Commission (10%)</td>
+          <td>RM 33,750</td>
+          <td colspan="2"></td>
+        </tr>
+        <tr>
+          <td>Point Rebate Cost (5%)</td>
+          <td>RM 16,875</td>
+          <td colspan="2"></td>
+        </tr>
+        <tr>
+          <td>Payment Gateway (1.5%)</td>
+          <td>RM 5,063</td>
+          <td colspan="2"></td>
+        </tr>
+        <tr>
+          <th>Net Profit (3.5%)</th>
+          <td colspan="3"><span class="fix">RM 11,813</span></td>
+        </tr>
+        <tr>
+          <td colspan="4" style="font-size:11px; padding:8px; background:#1e293b; color:#94a3b8; text-align:center;">Tablet Investment RM 9,950 — At normal operation 0.84 months, but accounting for installation, training, customer acquisition ramp-up, conservatively <strong>3~4 months</strong><br>
+          (M1: avg 3 orders/day·location → M2: 8 → M3: 12 → M4: 15 normalization)</td>
+        </tr>
+      </table>
+    </div>
+  </section>
+</section>
+
+<!-- ===== PART 4: AI Process ===== -->
+<section id="part4">
+  <h2>Part 4: AI Process</h2>
+
+  <!-- === AI Tool Usage === -->
+  <section id="ai-process">
+    <h3>AI Tool Usage: 5 Tools Divided by Role</h3>
+
+    <p>Used 5 different AI tools, not a single tool, with <strong>role-based task division</strong>. The key was clearly defining purpose matched to each tool's strength.</p>
+
+    <table>
+      <tr>
+        <th>Tool</th>
+        <th>Role</th>
+        <th>Usage Proportion</th>
+        <th>Selection Rationale</th>
+      </tr>
+      <tr>
+        <td><strong>Claude Cowork</strong></td>
+        <td class="fix">Primary Development Tool (Core)</td>
+        <td>Highest</td>
+        <td>Direct file system access + sandbox shell + parallel agent launching. Research→Design→Code build→Documentation all completed in one environment</td>
+      </tr>
+      <tr>
+        <td><strong>Grok</strong></td>
+        <td>X(Twitter) Public Opinion & Market Research + Primary Fact-Checking</td>
+        <td>High</td>
+        <td>Direct access to real-time X platform opinion/trends. Malaysia F&B live reactions, GrabFood commission complaints, live market data collection. Also used as fact-checker to cross-validate other AI outputs</td>
+      </tr>
+      <tr>
+        <td><strong>Gemini</strong></td>
+        <td>Design Tool</td>
+        <td>Medium</td>
+        <td>Used for UI/UX visual feedback and layout review</td>
+      </tr>
+      <tr>
+        <td><strong>Perplexity</strong></td>
+        <td>Business Viability Validation</td>
+        <td>Supporting</td>
+        <td>Search-based AI for rapid validation of business model reality and market data</td>
+      </tr>
+      <tr>
+        <td><strong>ChatGPT</strong></td>
+        <td>Business Viability Validation</td>
+        <td>Supporting</td>
+        <td>Reviewed revenue model and pricing strategy logical gaps from separate perspective</td>
+      </tr>
+    </table>
+
+    <div class="card card-green">
+      <div class="card-title">Multi-AI Operation Principles</div>
+      <p style="margin-top:0;">
+        <strong>Concentrate core work (development, documentation) in Claude Cowork</strong>, while market research, fact-checking, business validation cross-verified with other tools. Created structure where one AI's output is validated by another AI, building systematic detection of specific tool bias or hallucination.
+      </p>
+    </div>
+
+    <h4 style="margin-top:24px;">Phase-by-Phase Application Process</h4>
+
+    <table>
+      <tr>
+        <th>Phase</th>
+        <th>Duration</th>
+        <th>Purpose</th>
+        <th>Primary Tool</th>
+        <th>Supporting Tool</th>
+        <th>Output</th>
+      </tr>
+      <tr>
+        <td><strong>Research</strong></td>
+        <td>04-14 18:53<br>→ 04-15 09:00</td>
+        <td>Market, Competition, Regulation Research</td>
+        <td>Claude Cowork<br>(8 Agents Parallel)</td>
+        <td>Grok (X Opinion Research·Fact-Check)<br>Perplexity (Market Data Validation)</td>
+        <td>market_research.html<br>(3000+ lines)</td>
+      </tr>
+      <tr>
+        <td><strong>Planning</strong></td>
+        <td>04-15 09:00<br>→ 04-16 16:00</td>
+        <td>Segment, Revenue Model, UX Design</td>
+        <td>Claude Cowork<br>(3 Agents Independent)</td>
+        <td>ChatGPT·Perplexity<br>(Revenue Model Logic Validation)<br>Gemini (UI/UX Review)</td>
+        <td>product_brief.html<br>UX Checklist</td>
+      </tr>
+      <tr>
+        <td><strong>Prototype</strong></td>
+        <td>04-16 16:00<br>→ 04-18 02:00</td>
+        <td>3-App Code Build<br>Firebase Integration</td>
+        <td>Claude Cowork<br>(Code Generation & Debugging)</td>
+        <td>Gemini (Design Feedback)</td>
+        <td>3 Apps 5,168 Lines<br>+ 601 i18n Keys</td>
+      </tr>
+      <tr>
+        <td><strong>Pivot Response</strong></td>
+        <td>04-17 07:00<br>→ 04-18 01:00</td>
+        <td>Framework Migration<br>Architecture Redesign</td>
+        <td>Claude Cowork<br>(Code Conversion & Automation)</td>
+        <td>Grok (Technical Alternative Fact-Check)</td>
+        <td>Unified Rendering<br>Real-time Synchronization</td>
+      </tr>
+      <tr>
+        <td><strong>Documentation</strong></td>
+        <td>04-17 18:00<br>→ 04-18 Current</td>
+        <td>Submission & Cross-Validation<br>i18n</td>
+        <td>Claude Cowork<br>(Document Generation & Editing)</td>
+        <td>Grok (Number & Source Validation)</td>
+        <td>Final Submission<br>Meta Document</td>
+      </tr>
+    </table>
+  </section>
+
+  <!-- === Key Prompts === -->
+  <section id="key-prompts">
+    <h3>10 Key Prompts & Results Analysis</h3>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-date">Prompt #1 (04-14 19:20)</div>
+        <div class="tl-content">
+          <strong>"What gap in Malaysia F&B market does delivery app not cover?"</strong>
+          <p style="margin:6px 0; font-size:12px; color:#cbd5e1;">
+            → Launched 8 agents in parallel: market size, competitors, regulation, payment environment, consumer preference, merchant operations, delivery app limits, technical infrastructure. Covered 8 topics simultaneously within 45 minutes. Captain then discovered Bangsar T20 anomaly through cross-validation, confirming M40 as target segment.
+          </p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">Prompt #2 (04-15 07:30)</div>
+        <div class="tl-content">
+          <strong>"Of our assumed things, which assumption is most vulnerable?"</strong>
+          <p style="margin:6px 0; font-size:12px; color:#cbd5e1;">
+            → POS API non-opening risk analysis. Result: 25 assumption list + vulnerability assessment for each. This prompt directly triggered v4 pivot to tablet independence.
+          </p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">Prompt #3 (04-15 14:00)</div>
+        <div class="tl-content">
+          <strong>"What's the maximum service fee consumers can accept?"</strong>
+          <p style="margin:6px 0; font-size:12px; color:#cbd5e1;">
+            → Surveyed existing delivery app fee benchmarking. Confirmed GrabFood 15~30%<a href="#fn4" class="fn">[4]</a>. Secured positioning logic: "5% is more than half cheaper."
+          </p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">Prompt #4 (04-16 02:15)</div>
+        <div class="tl-content">
+          <strong>"Is value complete with 5% service fee only, without Pass (subscription)?"</strong>
+          <p style="margin:6px 0; font-size:12px; color:#cbd5e1;">
+            → Generated simulation table. Confirmed monthly transaction occurrence on individual order basis. Captain immediately: "Oh, this essence is individual orders. Pass isn't necessary" → v3 confirmed.
+          </p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">Prompt #5 (04-17 01:30)</div>
+        <div class="tl-content">
+          <strong>"Why does accumulation rate decrease? (BEP Reversal)"</strong>
+          <p style="margin:6px 0; font-size:12px; color:#cbd5e1;">
+            → When switching to 3-tier structure, aggressive accumulation invaded margin reversely. Achieved monotonic increase through 6-tier continuous design. Later 3-mode (Default/Spot/Hot) strategy emerged.
+          </p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">Prompt #6 (04-17 09:30)</div>
+        <div class="tl-content">
+          <strong>"If POS partner doesn't open API? Workarounds?"</strong>
+          <p style="margin:6px 0; font-size:12px; color:#cbd5e1;">
+            → Presented Lenovo Tab M7 (RM 398) option. Captain: "Oh, this solves POS issue entirely?" → Architecture 180-degree conversion.
+          </p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">Prompt #7 (04-17 12:45)</div>
+        <div class="tl-content">
+          <strong>"Should Room be included in v1?"</strong>
+          <p style="margin:6px 0; font-size:12px; color:#cbd5e1;">
+            → v1 completable with individual orders + cold start solvable via SNS viral. Room is optional social layer. Scope reduced 50%. Later when Room + SNS synergy discovered, accelerated.
+          </p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">Prompt #8 (04-17 15:20)</div>
+        <div class="tl-content">
+          <strong>"Really no way to resolve Next.js prerender problem?"</strong>
+          <p style="margin:6px 0; font-size:12px; color:#cbd5e1;">
+            → Analyzed 6 workaround attempts, all failed. Structural judgment: "Right tool for problem, not familiar tool" → Vite switch → Single-file HTML+React+Babel convergence.
+          </p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">Prompt #9 (04-17 20:00)</div>
+        <div class="tl-content">
+          <strong>"How do we break through cold start?"</strong>
+          <p style="margin:6px 0; font-size:12px; color:#cbd5e1;">
+            → Compared POS QR channel vs SNS viral. Captain intuition: "Must go social" → 4-channel TikTok/Telegram/Facebook/WhatsApp strategy + Room acceleration decided.
+          </p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">Prompt #10 (04-18 08:00)</div>
+        <div class="tl-content">
+          <strong>"Does this business truly have viability?"</strong>
+          <p style="margin:6px 0; font-size:12px; color:#cbd5e1;">
+            → BEP table + 3 critical assumptions organized. Conclusion: "Yes, if 3 assumptions validate." Secured credibility through conservative estimation.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- === AI Skepticism === -->
+  <section id="ai-skepticism">
+    <h3>AI Skepticism & Validation: 8 Specific Cases</h3>
+
+    <div class="card card-red">
+      <div class="card-title"><span class="tag tag-trust">Skepticism 1</span> Gut Judgment Ban Rule Established</div>
+      <p style="margin-top:0;"><strong>Situation:</strong> Early project, market segment analysis phase. Launched 8 agents in parallel analyzing KL F&B segments. Returned results mixed "gut assessment" — "this segment favorable", "growth potential excellent" — scored grades without quantitative criteria. Evaluated based on "feel" without evidence.</p>
+      <div class="quote">
+        <div class="speaker">Captain (2026-04-14 21:00)</div>
+        "Don't support with gut feel. If evidence shakes, reasoning becomes meaningless."
+      </div>
+      <p><strong>Result:</strong> Codified as Working Guideline #13 — "Classification, evaluation, scoring requires explicit criteria + evidence." Applied to all subsequent AI outputs. Banned expressions like "favorable/excellent," mandated quantitative backing for everything.</p>
+    </div>
+
+    <div class="card card-red">
+      <div class="card-title"><span class="tag tag-trust">Skepticism 2</span> Bangsar T20 Anomaly Discovery</div>
+      <p style="margin-top:0;"><strong>Situation:</strong> Pilot region selection phase. Agent recommended "Bangsar + TTDI" as primary pilot location. Bangsar, KL's representative F&B dense zone, seemed reasonable. But Captain directed: "Verify Bangsar's income distribution matches our target (M40)" and launched separate cross-validation agent.</p>
+      <p><strong>Discovery:</strong> Cross-validation agent found Bangsar's T20 (high-income) proportion abnormally high. Tapik's target M40 professional proportion low, limiting pilot effectiveness.</p>
+      <p><strong>Result:</strong> Changed from Bangsar to TTDI + PJ SS2. Pattern established: never accept first AI recommendation as-is. Validate with independent agent before deciding. This pattern embedded from that point onward.</p>
+    </div>
+
+    <div class="card card-red">
+      <div class="card-title"><span class="tag tag-trust">Skepticism 3</span> "RM 10 + RM 0.50" Funding Error</div>
+      <p style="margin-top:0;"><strong>Situation:</strong> Designing revenue model v3. Agent framed: "Consumer orders RM 10 menu, gets RM 0.50 loyalty points." Looked correct on surface, but Captain immediately spotted accounting flaw: If we pay merchant RM 10 while simultaneously rebating consumer RM 0.50 as points, where does that RM 0.50 come from?</p>
+      <div class="quote">
+        <div class="speaker">Captain (2026-04-17 01:30)</div>
+        "If you sell for RM 10, the funding source for RM 0.5 point charge isn't secured."
+      </div>
+      <p><strong>Result:</strong> Corrected to proper structure — Consumer pays RM 10.50 (RM 10 menu + RM 0.50 service fee). Service fee RM 0.50 becomes point rebate funding source. This correction completed revenue model cash flow.</p>
+    </div>
+
+    <div class="card card-red">
+      <div class="card-title"><span class="tag tag-trust">Skepticism 4</span> BEP Reversal Phenomenon Detection</div>
+      <p style="margin-top:0;"><strong>Situation:</strong> Designing dynamic reward system (Room). As participant count increased, accumulation rate rose, but Tapik's margin decreased on participant count increase (4→5 person transition). More participants = worse profit — structural problem.</p>
+      <div class="quote">
+        <div class="speaker">Captain (2026-04-17 17:16)</div>
+        "Why does this profit decrease? Can't have it this way."
+      </div>
+      <p><strong>Result:</strong> Reverse-calculated from "profit must increase monotonically with participants" constraint, redesigned 6-tier accumulation. Achieved dual satisfaction: "user benefit increases AND Tapik margin increases."</p>
+    </div>
+
+    <div class="card card-red">
+      <div class="card-title"><span class="tag tag-trust">Skepticism 5</span> Calculation Error — Structural Mismatch</div>
+      <p style="margin-top:0;"><strong>Situation:</strong> After discovering BEP reversal, agent submitted revision. Captain specified "Default 3-tier" design, but agent broke it into 6 accumulation intervals. Design requirement 3-tier, artifact 6-tier — fundamentally mismatched.</p>
+      <div class="quote">
+        <div class="speaker">Captain (2026-04-17 17:35)</div>
+        "What are you saying? You're an idiot. 3 tiers but why 6 intervals?"
+      </div>
+      <p><strong>Result:</strong> Captain calculated directly and provided percentages. "Why create all these unnecessary numbers when my percentages work?" — Caught AI's tendency toward unnecessary complexity.</p>
+    </div>
+
+    <div class="card card-red">
+      <div class="card-title"><span class="tag tag-trust">Skepticism 6</span> "Bargain Inventory" Naming Rejection</div>
+      <p style="margin-top:0;"><strong>Situation:</strong> Adding afternoon off-peak inventory discount to merchant app. Agent named it "Bargain Inventory" (using Korean phrase with negative connotation). Functionally accurate but Captain caught language nuance issue: "Bargain" suggests "unsold, leftover" — negative brand implication for F&B, damaging perception of freshness.</p>
+      <div class="quote">
+        <div class="speaker">Captain (2026-04-15 18:00)</div>
+        ""Bargain" carries "old, unsold" negative tone. F&B "bargain inventory" suggests "leftover discount." Reframe to "Today's Special" for positive emotion."
+      </div>
+      <p><strong>Result:</strong> Renamed to "Hot Deal 🔥". Same feature, completely different brand perception through naming — positioning correction case.</p>
+    </div>
+
+    <div class="card card-red">
+      <div class="card-title"><span class="tag tag-trust">Skepticism 7</span> Timestamp Fabrication Detection</div>
+      <p style="margin-top:0;"><strong>Situation:</strong> Late project, documenting major decision history. Agent wrote timestamps for decision records as morning 08:30~11:30. But actual work happened evening 20:00~22:15. AI, unable to know actual timestamps, generated "believable-looking fake time." Additionally found ROOM_MIN change error: "4→3" instead of actual "2→3."</p>
+      <div class="quote">
+        <div class="speaker">Captain (2026-04-17 21:49)</div>
+        "Key decision history timestamps are a mess... Get it together and redo this section. This matters."
+      </div>
+      <p><strong>Significance:</strong> AI's most dangerous hallucination form — "stating false information confidently." Detected here only because timestamp is verifiable, but such errors in non-verifiable areas would remain undetected, revealing hallucination danger in knowledge areas beyond fact-checking reach.</p>
+    </div>
+
+    <div class="card card-red">
+      <div class="card-title"><span class="tag tag-trust">Skepticism 8</span> Agent Cross-Validation System Established</div>
+      <p style="margin-top:0;"><strong>Situation:</strong> Market research phase launched 8 parallel agents covering different topics (competitors, segments, pricing, payment infrastructure, etc.). Results returned within 45 minutes, but fact conflicts between agents occurred. Root cause: each agent researched individual topic without full project context. Captain identified structural problem and changed agent operation methodology entirely.</p>
+      <div class="quote">
+        <div class="speaker">Captain (2026-04-17 07:16)</div>
+        "If you're launching agents in parallel, educate them on full context properly, then you validate."
+      </div>
+      <p><strong>Result:</strong> Established 3-tier agent filter system — (1) Educate each agent on full project context before launching, (2) Cross-validate returned results with separate agent, (3) Captain final judgment. Applied this protocol to all subsequent parallel work.</p>
+    </div>
+  </section>
+
+  <!-- === Iterations === -->
+  <section id="iterations">
+    <h3>Iteration Cycles: Prototype 3x, Pass 3x, Framework 2x, Merchant 2x</h3>
+
+    <table>
+      <tr>
+        <th>Cycle</th>
+        <th>Topic</th>
+        <th>Round 1</th>
+        <th>Round 2</th>
+        <th>Round 3</th>
+        <th>Final</th>
+      </tr>
+      <tr>
+        <td rowspan="2"><strong>Prototype</strong><br>(Code)</td>
+        <td>Consumer App</td>
+        <td>Card List</td>
+        <td>+ Room Modal</td>
+        <td>+ Point History</td>
+        <td class="fix">Complete</td>
+      </tr>
+      <tr>
+        <td>Merchant App</td>
+        <td>Base 7 Tabs</td>
+        <td>POS Deduplication → 5 Tabs</td>
+        <td>Dark Mode + i18n</td>
+        <td class="fix">Complete</td>
+      </tr>
+      <tr>
+        <td rowspan="2"><strong>Pass</strong><br>(Subscription)</td>
+        <td>Model</td>
+        <td>Monthly RM 10</td>
+        <td>"Time Subscription" RM 30</td>
+        <td>Discarded (5% Fee Complete)</td>
+        <td class="fix">Excluded</td>
+      </tr>
+      <tr>
+        <td>Duration</td>
+        <td>Monthly</td>
+        <td>Quarterly</td>
+        <td>-</td>
+        <td class="fix">N/A</td>
+      </tr>
+      <tr>
+        <td rowspan="2"><strong>Framework</strong><br>(Technology)</td>
+        <td>Initial</td>
+        <td>Next.js</td>
+        <td>Vite Switch</td>
+        <td>Single-file HTML+React+Babel</td>
+        <td class="fix">Complete</td>
+      </tr>
+      <tr>
+        <td>Synchronization</td>
+        <td>Firestore only</td>
+        <td>+ BroadcastChannel</td>
+        <td>Bi-directional Real-time Sync</td>
+        <td class="fix">Complete</td>
+      </tr>
+      <tr>
+        <td rowspan="2"><strong>Merchant</strong><br>(Merchants)</td>
+        <td>Onboarding</td>
+        <td>Phone SMS Auth</td>
+        <td>Google Sign-In Priority</td>
+        <td>2-Factor Review</td>
+        <td class="fix">Complete</td>
+      </tr>
+      <tr>
+        <td>Owner Identity</td>
+        <td>Optional Input</td>
+        <td>Required Verification</td>
+        <td>KYC Consideration (v2+)</td>
+        <td class="fix">Complete</td>
+      </tr>
+    </table>
+  </section>
+</section>
+
+<!-- ===== PART 5: Product Specification ===== -->
+<section id="part5">
+  <h2>Part 5: Product Specification</h2>
+
+  <!-- === 3-App Architecture === -->
+  <section id="architecture">
+    <h3>3-App Architecture (Consumer · Merchant · Admin)</h3>
+
+    <div class="flow-row">
+      <div class="flow-step">Consumer Pre-payment</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Firestore Order</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">BroadcastChannel</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Merchant Notification</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Admin Dashboard</div>
+    </div>
+
+    <table>
+      <tr>
+        <th>App</th>
+        <th>Target</th>
+        <th>Core Features</th>
+        <th>Code Lines</th>
+      </tr>
+      <tr>
+        <td><strong>Consumer</strong></td>
+        <td>M40 Professionals</td>
+        <td>Store Search → Pre-payment → Point Accumulation · History · Room Join</td>
+        <td>2,757 Lines</td>
+      </tr>
+      <tr>
+        <td><strong>Merchant</strong></td>
+        <td>Auntie Siew</td>
+        <td>Order Management · Menu Setup · Accumulation Rate Adjust · Sales Report</td>
+        <td>1,013 Lines</td>
+      </tr>
+      <tr>
+        <td><strong>Admin</strong></td>
+        <td>Tapik Team</td>
+        <td>Merchant Onboarding · Accumulation Policy · Marketing Campaign · Analytics</td>
+        <td>1,398 Lines</td>
+      </tr>
+      <tr>
+        <td colspan="4" style="background:#1e293b; font-weight:600; text-align:center;">Total 5,168 Lines (i18n 601 Keys) · Single File (HTML+React+Babel)</td>
+      </tr>
+    </table>
+  </section>
+
+  <!-- === Room FSM === -->
+  <section id="room-fsm">
+    <h3>Room State Machine: 6-Phase Flow</h3>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-date">Phase 1</div>
+        <div class="tl-content"><strong>Room Creation</strong> — Consumer taps "Order Together?" → Creates Public Room. Invitation QR auto-generated.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">Phase 2</div>
+        <div class="tl-content"><strong>Participant Join</strong> — Other user scans QR → Telegram/WhatsApp share link → Room entry. "See you at Feeka today?"</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">Phase 3</div>
+        <div class="tl-content"><strong>Order In Progress</strong> — Leader (Room creator) owns order rights. Participants can "View Order List." Real-time entry count displayed.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">Phase 4</div>
+        <div class="tl-content"><strong>Order Complete</strong> — Leader taps "Confirm" → Creates individual orders for all participants. Each pays their amount. Points accumulated individually.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">Phase 5</div>
+        <div class="tl-content"><strong>Pickup Notification</strong> — Merchant app shows "Room Order" batch. On ready, Telegram/WhatsApp notification sent.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">Phase 6</div>
+        <div class="tl-content"><strong>Room Expiration</strong> — Auto-delete after 72 hours. Or auto-delete 1 hour after participant count reaches 0.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- === Tech Stack === -->
+  <section id="tech-stack">
+    <h3>Tech Stack & Selection Rationale</h3>
+
+    <table>
+      <tr>
+        <th>Layer</th>
+        <th>Selected</th>
+        <th>Alternative</th>
+        <th>Selection Rationale</th>
+      </tr>
+      <tr>
+        <td><strong>Frontend</strong></td>
+        <td>HTML + React 19<br>+ Babel (JSX Transform)</td>
+        <td>Next.js, Vue, Svelte</td>
+        <td>Single-file deployment · Build process eliminated · Client-only completion</td>
+      </tr>
+      <tr>
+        <td><strong>Backend</strong></td>
+        <td>Firebase Firestore<br>+ Cloud Functions</td>
+        <td>AWS Lambda, Supabase</td>
+        <td>Real-time synchronization · NoSQL flexibility · Pay-as-you-go (minimal startup cost)</td>
+      </tr>
+      <tr>
+        <td><strong>Authentication</strong></td>
+        <td>Google Sign-In<br>+ Phone SMS (Merchant)</td>
+        <td>Firebase Auth, Auth0</td>
+        <td>Malaysia Google account penetration high · SMS confirms phone registration</td>
+      </tr>
+      <tr>
+        <td><strong>Payments</strong></td>
+        <td>Billplz / Revenue Monster<br>(Approval Pending)</td>
+        <td>iPay88, Stripe</td>
+        <td>DuitNow QR based · Low fee (target 1.5% or under)</td>
+      </tr>
+      <tr>
+        <td><strong>Translation</strong></td>
+        <td>Custom i18n System<br>(Consumer/Merchant/Admin)</td>
+        <td>i18next, intl</td>
+        <td>601 key management · Runtime dynamic switching</td>
+      </tr>
+      <tr>
+        <td><strong>Inter-App Communication</strong></td>
+        <td>BroadcastChannel<br>+ Firestore Listener</td>
+        <td>WebSocket, Server</td>
+        <td>Same-browser tab real-time sync · Zero additional server cost</td>
+      </tr>
+    </table>
+  </section>
+
+  <!-- === KPIs === -->
+  <section id="kpis">
+    <h3>10 Success Indicators (KPI)</h3>
+
+    <table>
+      <tr>
+        <th>#</th>
+        <th>Indicator</th>
+        <th>Target</th>
+        <th>Measurement Method</th>
+        <th>Connected Hypothesis</th>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td><strong>Service Fee Acceptability</strong></td>
+        <td>70%+<br>(Payment Conversion)</td>
+        <td>Cart → Payment Complete</td>
+        <td>Hypothesis ①: Consumer accepts 5% fee</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>Merchant Onboarding Rate</strong></td>
+        <td>50+<br>(Within 12 weeks)</td>
+        <td>BD Pipeline Conversion</td>
+        <td>Hypothesis ②: Direct BD > POS MOU</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>D30 Retention</strong></td>
+        <td>40%+</td>
+        <td>Firebase Analytics Cohort</td>
+        <td>Hypothesis ③: Auto-accumulation drives revisit</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>Weekly Order Frequency</strong></td>
+        <td>2.5+ orders/user</td>
+        <td>Firestore Orders Aggregation</td>
+        <td>Hypothesis ④: M40 eats out 4+ times/week</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><strong>Point Redemption Rate</strong></td>
+        <td>30%+</td>
+        <td>Accumulated Points vs Redeemed</td>
+        <td>Hypothesis ⑤: 100% rebate drives revisit</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td><strong>Room Participation Rate</strong></td>
+        <td>20%+<br>(v1.5)</td>
+        <td>Room Creation vs Participation</td>
+        <td>Hypothesis ⑥: Public Room culturally accepted</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td><strong>SNS Viral Coefficient</strong></td>
+        <td>K-factor 1.2+</td>
+        <td>Invitation → Signup Conversion</td>
+        <td>Cold Start Strategy Core</td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td><strong>Tapik Net Margin</strong></td>
+        <td>3.5%+<br>(Per Transaction)</td>
+        <td>Fee - Points - Gateway</td>
+        <td>BEP Analysis Based Unit Economics</td>
+      </tr>
+      <tr>
+        <td>9</td>
+        <td><strong>Merchant Margin Improvement</strong></td>
+        <td>+2%<br>(vs GrabFood)</td>
+        <td>Revenue × 10% - Point Cost</td>
+        <td>Hypothesis ⑦: 10% < 29% advantage</td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td><strong>Dynamic Reward Conversion</strong></td>
+        <td>50%+<br>(Spot/Hot)</td>
+        <td>Default vs Spot vs Hot Ratio</td>
+        <td>Off-Peak & Specific Item Promotion Effect</td>
+      </tr>
+    </table>
+  </section>
+</section>
+
+<!-- ===== PART 6: Validation & Execution ===== -->
+<section id="part6">
+  <h2>Part 6: Validation & Execution</h2>
+
+  <!-- === Critical Assumptions === -->
+  <section id="assumptions">
+    <h3>Top 5 Critical Assumptions (by Criticality)</h3>
+
+    <table>
+      <tr>
+        <th>#</th>
+        <th>Assumption</th>
+        <th>Criticality</th>
+        <th>Impact</th>
+        <th>Validation Method</th>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td><strong>Consumer Accepts 5% Service Fee</strong></td>
+        <td class="pain">CRITICAL</td>
+        <td>Non-acceptance collapses entire revenue model</td>
+        <td>Pilot 50 merchants first 2 weeks payment conversion</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>Merchant Accepts 10% Commission</strong></td>
+        <td class="pain">CRITICAL</td>
+        <td>No supply itself</td>
+        <td>BD sales first 10 contracts conversion rate</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>POS Manufacturer Partnership Build Failure</strong></td>
+        <td class="pain">CRITICAL</td>
+        <td>Multi-layer collaboration collapse (e-Invoice auto, data integration, joint BD) → reduced merchant acquisition speed and operational efficiency</td>
+        <td>3+ POS vendors LoI or MoU execution</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>Payment Gateway RM 0.15 or Under</strong></td>
+        <td class="neutral">HIGH</td>
+        <td>iPay88 is RM 0.30 → small transaction negative margin</td>
+        <td>3 vendors formal quote comparison</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><strong>Public Room Has No Cultural Resistance</strong></td>
+        <td class="neutral">MEDIUM</td>
+        <td>Is "ordering together with strangers" culturally accepted</td>
+        <td>v1.5 Beta Room participation rate 20%+</td>
+      </tr>
+    </table>
+  </section>
+
+  <!-- === Experiments === -->
+  <section id="experiments">
+    <h3>6 Validation Experiments & Results</h3>
+
+    <table>
+      <tr>
+        <th>#</th>
+        <th>Experiment</th>
+        <th>Purpose</th>
+        <th>Result</th>
+        <th>Insight</th>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td><strong>8 Agents in Parallel</strong></td>
+        <td>Cover market data within 72h</td>
+        <td>8 topics completed within 45 min</td>
+        <td>Parallel is fast but fact conflicts → cross-validation essential</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>3 UX Agents Independent Validation</strong></td>
+        <td>Find failure points when Korean/Western defaults apply to Malaysia</td>
+        <td>5 failure points detected (3×3 grid, Icon-only, etc.)</td>
+        <td>Consensus points and divergence points clarified</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>BEP 3-Type Comparison</strong></td>
+        <td>Which accumulation system is mathematically superior</td>
+        <td>3-tier boundary problems → 6-tier continuous superior</td>
+        <td>Business requirements vs math constraints collision points</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>Next.js Static Export 6 Workarounds</strong></td>
+        <td>Framework preservation possibility</td>
+        <td>All failed</td>
+        <td>Overcoming "familiar tool" bias requires 6 failure experiences</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><strong>3-App Cross-Tab BroadcastChannel Sync</strong></td>
+        <td>Real-time communication without server</td>
+        <td>Success — Order creation→Merchant receipt→Admin aggregation real-time</td>
+        <td>BroadcastChannel effective. Firestore dual-structure caution</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td><strong>i18n 601 Key Integration</strong></td>
+        <td>3-app multilingual support</td>
+        <td>Complete (KR/EN translation)</td>
+        <td>Variable name shadowing bugs 3 cases → Admin screen white</td>
+      </tr>
+    </table>
+  </section>
+
+  <!-- === 12-Week Roadmap === -->
+  <section id="roadmap">
+    <h3>12-Week Roadmap: v1 → v2</h3>
+
+    <table>
+      <tr>
+        <th>Week</th>
+        <th>Milestone</th>
+        <th>Goal</th>
+        <th>P0 Tasks</th>
+      </tr>
+      <tr>
+        <td><strong>W1-4</strong></td>
+        <td>v1 MVP Launch</td>
+        <td>50+ Merchants Onboarded TTDI/PJ</td>
+        <td>QA, Payment Integration, Merchant App Stabilization</td>
+      </tr>
+      <tr>
+        <td><strong>W5-8</strong></td>
+        <td>v1.5 Room + SNS</td>
+        <td>500 Consumer Critical Mass Reached</td>
+        <td>Room Feature Complete, TikTok/Telegram Viral</td>
+      </tr>
+      <tr>
+        <td><strong>W9-12</strong></td>
+        <td>v2 Premium Tier</td>
+        <td>100+ Merchants · RM 500k+ Monthly Revenue</td>
+        <td>Dashboard Insights, Premium Upsell</td>
+      </tr>
+    </table>
+  </section>
+
+  <!-- === Cold Start === -->
+  <section id="cold-start">
+    <h3>Cold Start Strategy: 4-Channel SNS</h3>
+
+    <div class="card card-purple">
+      <h4 style="margin-top:0;">Prompt ("How do we break through cold start?")</h4>
+      <p style="margin-top:0;"><strong>Situation:</strong> Near product design completion, maximum challenge — "How do we acquire first users?" POS partner QR distribution was initial plan, but tablet independence means POS-based consumer inflow diminished. Agent analyzed TikTok/Telegram/Facebook/WhatsApp viral mechanics respectively, and Captain immediately pivoted strategy. Particularly caught Room function synergy with SNS — not just "order together" but becomes viral vehicle on SNS.</p>
+      <div class="quote">
+        <div class="speaker">Captain (2026-04-17 20:00)</div>
+        "Must go social for cold start. Social's power. And accelerate Room development. This is like the exit to break through cold start with viral momentum."
+      </div>
+      <p><strong>Significance:</strong> Previously decided "Room to v1.5 defer," reversed based on new information (SNS viral analysis). Growth engine skeleton "Cold Start → Room Viral → SNS Spread" formed this moment.</p>
+    </div>
+
+    <table>
+      <tr>
+        <th>Channel</th>
+        <th>Target</th>
+        <th>Mechanism</th>
+        <th>K-factor Target</th>
+      </tr>
+      <tr>
+        <td><strong>TikTok</strong></td>
+        <td>Gen Z (Adult Reach 114.8%<a href="#fn7" class="fn">[7]</a>)</td>
+        <td>Feeka Store Review + Wait Time-lapse + "#TapikFood"</td>
+        <td>2.0+ (High Viral Potential)</td>
+      </tr>
+      <tr>
+        <td><strong>Telegram</strong></td>
+        <td>Office Communities (KL Office Channels)</td>
+        <td>Lunch Discount Notice + Room Invite Link</td>
+        <td>1.5+ (Professional Target)</td>
+      </tr>
+      <tr>
+        <td><strong>Facebook</strong></td>
+        <td>40+ General Community</td>
+        <td>Store Info + Event Posts</td>
+        <td>1.0 (Base Reach)</td>
+      </tr>
+      <tr>
+        <td><strong>WhatsApp</strong></td>
+        <td>Existing Customers (Store Staff)</td>
+        <td>Share Button Prominent (98% Open Rate)</td>
+        <td>1.2+ (Strong Friend Network)</td>
+      </tr>
+    </table>
+
+    <p style="margin-top:16px;">
+      <strong>Simulation:</strong> W1 50 signups → W5 Room activation 500 reached possible (K-factor avg 1.3 basis).
+    </p>
+  </section>
+</section>
+
+<!-- ===== PART 7: Experiments & Evaluation ===== -->
+<section id="part7">
+  <h2>Part 7: Separate Experiments & Multi-Angle Evaluation</h2>
+
+  <p>Beyond app development itself, conducted 4 separate experiments. Organizing each experiment's purpose, method, result, and limitations.</p>
+
+  <!-- === Experiments Meta Section === -->
+  <section id="experiments-meta">
+    <h3>Experiment 1: AI Usage Skill — Does Multi-Tool Operation Actually Work?</h3>
+
+    <div class="card card-blue">
+      <div class="card-title">Experiment Design</div>
+      <p style="margin-top:0;"><strong>Hypothesis:</strong> Multiple tools divided by role > single AI tool for output quality and credibility.</p>
+      <p><strong>Method:</strong> Used Claude Cowork (development), Grok (fact-check·X opinion), Gemini (design), Perplexity·ChatGPT (business validation) concurrently. Threw identical questions at 2+ tools for cross-validation.</p>
+    </div>
+
+    <h4>Result</h4>
+    <table>
+      <tr>
+        <th>Dimension</th>
+        <th>Effective</th>
+        <th>Limitation</th>
+      </tr>
+      <tr>
+        <td><strong>Fact-Checking</strong></td>
+        <td class="fix">AI answer mismatch revealed errors (e.g., GrabFood fee variance, Bangsar T20 anomaly)</td>
+        <td class="pain">Eventually humans judge which AI correct. Final decision outside AI</td>
+      </tr>
+      <tr>
+        <td><strong>Speed</strong></td>
+        <td class="fix">8 agents parallel execution completed market research in 45 min. Single tool 3~4x slower feel</td>
+        <td class="pain">Context switching cost exists. Same context repeatedly explained to multiple tools</td>
+      </tr>
+      <tr>
+        <td><strong>Bias Correction</strong></td>
+        <td class="fix">Claude's optimistic estimates cross-checked with Grok·Perplexity secured conservative estimation</td>
+        <td class="pain">All AIs wrong in same direction (e.g., POS API feasibility) undetectable by cross-validation</td>
+      </tr>
+    </table>
+
+    <p><strong>Conclusion:</strong> Multi-tool operation effective. However, "what to assign which tool" is human judgment, and AI consensus can diverge from reality. AI provides speed; humans set direction.</p>
+
+    <h3>Experiment 2: Non-Developer Development Power — Can Non-Coders Build Apps?</h3>
+
+    <div class="card card-blue">
+      <div class="card-title">Experiment Design</div>
+      <p style="margin-top:0;"><strong>Premise:</strong> Executor had no development experience. HTML, React, Firebase all new.</p>
+      <p><strong>Method:</strong> Delegated all code generation to Claude Cowork. Executor focused on business requirement definition, UX feedback, logic validation.</p>
+    </div>
+
+    <h4>Result</h4>
+    <table>
+      <tr>
+        <th>Item</th>
+        <th>Possible</th>
+        <th>Impossible</th>
+      </tr>
+      <tr>
+        <td><strong>Prototype Generation</strong></td>
+        <td class="fix">3 apps 5,168 lines, Firebase real-time sync, i18n 601 keys — AI wrote code, actually works</td>
+        <td class="pain">Debug capability limited. 3 variable shadowing bugs AI created, AI fixed, but self-diagnosis difficult</td>
+      </tr>
+      <tr>
+        <td><strong>Architecture Decision</strong></td>
+        <td class="fix">Next.js → Vite → Single-file judged from business perspective ("simple deployment priority")</td>
+        <td class="pain">Technical trade-off depth limited. "Why Next.js prerender fails" relied on AI explanation</td>
+      </tr>
+      <tr>
+        <td><strong>Code Quality Management</strong></td>
+        <td class="fix">"Const vs Variable" structural issues experientially discovered ("Why change one fix everything?")</td>
+        <td class="pain">Pre-knowledge of best practices could prevent issues. Learning post-hoc</td>
+      </tr>
+    </table>
+
+    <div class="card card-amber">
+      <div class="card-title">Comparison vs Existing Developers</div>
+      <p style="margin-top:0;"><strong>Non-developer + AI</strong> can match junior developer's prototype speed, potentially faster. But <strong>production-phase</strong> (performance optimization, security, scalability design) clear limitations. AI codes, but "is this code production-ready" judgment remains experienced-developer territory.</p>
+      <p><strong>Conclusion:</strong> Non-developer + AI combo valid for "concept validation prototypes." Productization requires developers. However, non-developer AI prototyping experience becomes critical advantage in later developer communication — grasped technology possibility and limits experientially.</p>
+    </div>
+
+    <h3>Experiment 3: Can AI Validate Business Problems at Commercialization Phase?</h3>
+
+    <div class="card card-blue">
+      <div class="card-title">Experiment Design</div>
+      <p style="margin-top:0;"><strong>Hypothesis:</strong> Beyond business planning, actual commercialization problems (price acceptability, law compliance, competitor response) pre-validatable via AI.</p>
+      <p><strong>Method:</strong> Threw problems at AI, requested counterarguments, cross-checked with other AI. Classified results "Validated/Unvalidated/Unvalidatable."</p>
+    </div>
+
+    <h4>Result</h4>
+    <table>
+      <tr>
+        <th>Validation Attempt Item</th>
+        <th>AI Validation Possible</th>
+        <th>Actual Validation Needed</th>
+      </tr>
+      <tr>
+        <td><strong>Consumer 5% Fee Acceptance</strong></td>
+        <td class="neutral">Partial — GrabFood case indirect argument possible, actual acceptance unknown</td>
+        <td>Pilot 50 merchants first 2 weeks payment conversion measurement</td>
+      </tr>
+      <tr>
+        <td><strong>Merchant 10% Commission Acceptance</strong></td>
+        <td class="neutral">Partial — Competitor fee benchmark "relatively cheaper" argument possible</td>
+        <td>Actual BD sales contract conversion rate</td>
+      </tr>
+      <tr>
+        <td><strong>e-Invoice Regulation Requirements</strong></td>
+        <td class="fix">Possible — LHDN official docs/guidelines exact requirement determination possible</td>
+        <td>MyInvois API real integration test</td>
+      </tr>
+      <tr>
+        <td><strong>Payment Gateway Fee</strong></td>
+        <td class="pain">Impossible — Exact unit rate from public info unavailable. Vendor negotiation vastly different</td>
+        <td>iPay88, Revenue Monster etc. 3 vendors formal quotes</td>
+      </tr>
+      <tr>
+        <td><strong>Room (Joint Order) Cultural Acceptance</strong></td>
+        <td class="pain">Impossible — "Ordering with strangers" Malaysia cultural response has no data</td>
+        <td>Beta test Room participation rate measurement</td>
+      </tr>
+      <tr>
+        <td><strong>BEP (Break-Even Point) Math Validation</strong></td>
+        <td class="fix">Possible — Formula logical consistency AI precisely validates</td>
+        <td>Only input variables (AOV, daily orders) reality validation separate</td>
+      </tr>
+    </table>
+
+    <p><strong>Conclusion:</strong> AI validates "logical consistency" and "public-data benchmarking." Cannot validate "actual market reaction." AI's commercialization validation role is "organize assumption list to validate and design validation method." Actual validation is field work.</p>
+
+    <h3>Experiment 4: Is This Process Itself Repeatable?</h3>
+
+    <div class="card card-blue">
+      <div class="card-title">Experiment Design</div>
+      <p style="margin-top:0;"><strong>Question:</strong> This project's "multi-AI + non-developer + short-timeframe prototyping" repeatable for other projects?</p>
+    </div>
+
+    <div class="vs-row">
+      <div class="vs-col">
+        <h4 style="color:#4ade80;">Repeatable Elements</h4>
+        <p>Parallel agent launching → cross-validation pattern, multi-AI role division system, hypothesis → counterargument → re-review loop, gut judgment ban rule — these operational principles reusable across projects</p>
+      </div>
+      <div class="vs-col">
+        <h4 style="color:#f87171;">Difficult to Repeat</h4>
+        <p>First-hand local market experience (residential experience), "this doesn't work" intuition (domain knowledge), direct formula-based revenue model design business sense — these are personal capability, not process</p>
+      </div>
+    </div>
+
+    <p><strong>Conclusion:</strong> Process (AI operation methodology) repeatable. Result quality heavily dependent on person's domain knowledge and judgment. AI provides speed; humans set direction.</p>
+  </section>
+
+  <!-- === Self-Evaluation === -->
+  <section id="self-eval">
+    <h3>Multi-Angle Evaluation of Executor</h3>
+
+    <p>356+ prompts, 4 sessions, 11 pivot processes reveal executor characteristics for honest assessment.</p>
+
+    <h4>Dimension-by-Dimension Analysis</h4>
+
+    <table>
+      <tr>
+        <th>Area</th>
+        <th>Strength</th>
+        <th>Weakness</th>
+        <th>Rating</th>
+      </tr>
+      <tr>
+        <td><strong>Thinking System</strong></td>
+        <td>Never settles for surface answers. Repeats "what's the evidence?" Rejects unsourced numbers and systematically structures cross-validation</td>
+        <td>Depth comes at a time cost. Under a 72-hour limit, the drive to validate everything creates priority conflicts</td>
+        <td class="fix">High</td>
+      </tr>
+      <tr>
+        <td><strong>Decision Speed</strong></td>
+        <td>With sufficient information, sets direction within 1–2 sentences. Core pivots (tablet switch, SNS cold start) decided on the spot</td>
+        <td>Fast decisions occasionally cause document inconsistencies. Fee rate changes missed sync across 3 apps + 5 documents</td>
+        <td class="fix">High</td>
+      </tr>
+      <tr>
+        <td><strong>Business Sense</strong></td>
+        <td>Designs revenue models through direct math. Runs unit economics simulations in real time mentally. A "but that's a cost" sensibility embedded in every feature judgment</td>
+        <td>Limited use of financial modeling tools (spreadsheet-based simulations). Math is correct but sensitivity analysis was not performed</td>
+        <td class="fix">High</td>
+      </tr>
+      <tr>
+        <td><strong>UX Sense</strong></td>
+        <td>Identifies friction points immediately through hands-on app use. Catches state machine logic flaws via user scenarios. Strong Before/After storytelling instinct</td>
+        <td>Design system not systematically defined. Intuitive feedback is sharp, but does not generalize into formal design principles</td>
+        <td class="fix">Upper-Medium</td>
+      </tr>
+      <tr>
+        <td><strong>AI Usage Proficiency</strong></td>
+        <td>Uses advanced patterns: parallel agent launching, cross-validation, delegation scoping, gut-judgment ban rules. Precisely understands AI limitations (hallucination, unvalidated recommendations)</td>
+        <td>Room for improvement in prompt structuring. Long instructions occasionally lose focus, causing AI to miss the core point</td>
+        <td class="fix">High</td>
+      </tr>
+      <tr>
+        <td><strong>Technical Understanding</strong></td>
+        <td>With zero dev experience, achieved conceptual understanding of Firebase, React, and BroadcastChannel. Questions like "is npm a script?" immediately connect to business context</td>
+        <td>Code-level debugging not possible. Cannot self-diagnose technical errors like variable shadowing or TDZ. Lacks pre-awareness of technical debt</td>
+        <td class="neutral">Medium</td>
+      </tr>
+      <tr>
+        <td><strong>Emotion Management</strong></td>
+        <td>"Sigh... this gets harder as we go deeper" → immediately pivots to requesting an execution plan. Frustration-to-execution transition takes 1–2 sentences</td>
+        <td>Blunt communication style (e.g., "what are you saying, you idiot") is harmless to AI but would need tone adjustment in real team settings</td>
+        <td class="fix">Upper-Medium</td>
+      </tr>
+      <tr>
+        <td><strong>Local Market Understanding</strong></td>
+        <td>Grounded in Malaysia residential experience. Understands neighborhood-level characteristics of PJ, Damansara, TTDI. Grasps M40 concept and realistic constraints by store size</td>
+        <td>Malay/Bahasa language capability unconfirmed. Local regulatory details (especially e-Invoice specifics) remain AI-dependent</td>
+        <td class="fix">Upper-Medium</td>
+      </tr>
+    </table>
+
+    <h4>Synthesis: What Type of Person Is This?</h4>
+
+    <div class="vs-row">
+      <div class="vs-col" style="border-left:4px solid #4ade80;">
+        <h4 style="color:#4ade80;">Clear Strength</h4>
+        <p><strong>A rare combination of deep thinking and fast execution.</strong> Most people lean one way — they dig deep but execute slowly, or they move fast but lack depth. In this project, both operated simultaneously. Designing revenue model math from scratch while caring about line-break aesthetics is an uncommon pairing.</p>
+        <p>The ability to <strong>"use AI as a tool without blindly trusting it"</strong> is one of the most valuable competencies right now. Going beyond mere usage proficiency, Captain built an independent validation system and maintained healthy skepticism of AI outputs throughout.</p>
+      </div>
+      <div class="vs-col" style="border-left:4px solid #ef4444;">
+        <h4 style="color:#ef4444;">Must Confront Weakness</h4>
+        <p><strong>1. Technical Depth Limit:</strong> AI can carry you to prototype, but production-level code quality, security, and scalability are impossible without professional developers. Captain recognizes this limit, but the "it kinda works though" overconfidence trap remains a real danger.</p>
+        <p><strong>2. Perfectionism vs. Time:</strong> Attention to detail down to line breaks is a strength, but setting a "good enough" threshold under time constraints creates friction. In real business, this balance becomes even more critical.</p>
+        <p><strong>3. Validation Illusion:</strong> Running AI cross-validation creates a feeling of "verified," but AI consensus does not equal reality (as the POS API case proved). Despite learning this lesson experientially, the risk of falling into this trap again is ever-present.</p>
+        <p><strong>4. Team Collaboration Unvalidated:</strong> This project was essentially 1 person + AI. Whether the same decision speed and output quality would hold with a real team (developers, designers, BD) is an entirely separate question.</p>
+      </div>
+    </div>
+
+    <div class="card card-amber">
+      <div class="card-title">One-Line Summary</div>
+      <p style="margin-top:0; font-size:15px; color:#f8fafc;">
+        <strong>"Thinks deep, executes fast, uses AI well. But technical depth and team collaboration remain unvalidated."</strong>
+      </p>
+    </div>
+  </section>
+</section>
+
+<!-- ===== CONCLUSION ===== -->
+<section id="conclusion">
+  <h2>Conclusion</h2>
+
+  <div class="highlight">
+    <p style="font-size:15px; color:#f8fafc; line-height:1.8; margin-bottom:16px;">
+      <strong>Tapik Achieved:</strong>
+    </p>
+    <ul style="font-size:14px; color:#cbd5e1; margin-bottom:16px;">
+      <li>Market Analysis (18.4B e-payment transactions, 3M DuitNow QR touchpoints — identified digital transformation gap)</li>
+      <li>Revenue Model Evolution (v0→v5, 6 pivots)</li>
+      <li>Product Design (Tablet-independent operations, 3-app architecture)</li>
+      <li>Prototype (5,168 lines code, real-time synchronization)</li>
+      <li>Validation Feasibility (25 assumptions, 3 critical identified)</li>
+    </ul>
+
+    <p style="font-size:14px; color:#cbd5e1; margin-bottom:16px;">
+      <strong>Decision Process Characteristic:</strong> Across all 11 major pivots, Captain consistently asked "Is this the right direction?" — maintaining skepticism toward AI answers and flexibly changing course with new information. "We're selling time," "Why not just install a tablet?" and "We need to go social" — these three statements marked the project's 3 turning points, and all three were Captain's insights, not AI's.
+    </p>
+
+    <p style="font-size:14px; color:#cbd5e1;">
+      <strong>Remaining Task:</strong> v1 MVP technically feasible (1 engineer 12 weeks possible), but 3 critical assumptions — consumer 5% acceptance, merchant 10% acceptance, POS manufacturer partnership build — unvalidated means business viability unguaranteed. Pilot 50 merchants 2-week validation top priority.
+    </p>
+  </div>
+</section>
+
+</main>
+
+</div>
+
+<div class="footnotes-section">
+  <h3>Sources and References</h3>
+  <ol>
+    <li id="fn1">
+      <strong>BNM Annual Report 2025</strong> — Malaysia e-payment transactions 18.4 billion (YoY +25%), 538 per capita annual.
+      <a href="https://www.bernama.com/en/region/news.php?id=2539210" target="_blank">BERNAMA: BNM Malaysia's E-Payment Transactions Jump 25 Pct To 18.4 Bln In 2025</a>
+    </li>
+    <li id="fn2">
+      <strong>DuitNow QR Statistics (BNM 2025)</strong> — Transaction volume 3 billion (doubled from 1.5 billion YoY), registered touchpoints approximately 3 million.
+      <a href="https://www.malaymail.com/news/money/2026/03/31/contactless-and-duitnow-qr-transactions-rise-25pc-in-2025-malaysians-make-538-payments-each-on-average/214496" target="_blank">Malay Mail: Contactless and DuitNow QR Transactions Rise 25pc in 2025</a>
+    </li>
+    <li id="fn3">
+      <strong>Paper Stamp Card Loss Rate</strong> — 39% consumers abandon loyalty program due to paper card loss (Statista basis).
+      <a href="https://docs.loopyloyalty.com/en/articles/1501357-digital-stamp-cards-vs-paper-punch-cards" target="_blank">Loopy Loyalty: Digital Stamp Cards vs Paper Punch Cards</a>
+    </li>
+    <li id="fn4">
+      <strong>GrabFood Merchant Commission Rate</strong> — Partnership type 15~30% (varies by region, volume, promotion).
+      <a href="https://blog.menuviel.com/grabfood-fees-and-commissions-for-restaurants/" target="_blank">Menuviel: GrabFood Fees and Commissions for Restaurants (2025)</a>
+    </li>
+    <li id="fn5">
+      <strong>E-Wallet Penetration</strong> — Urban 90% (BNM 2024 Q3 basis). Digital wallet market share 35.10% (USD 92.14B).
+      <a href="https://www.mordorintelligence.com/industry-reports/malaysia-payments-market" target="_blank">Mordor Intelligence: Malaysia Payments Market Report</a>
+    </li>
+    <li id="fn6">
+      <strong>e-Invoice Phase 4 (LHDN)</strong> — Effective January 1, 2026 for businesses annual revenue RM 5M or less. Grace period through December 31, 2026. Transactions RM 10,000+ require individual e-Invoice.
+      <a href="https://www.cleartax.com/my/en/different-phases-implementation-timelines-einvoicing-malaysia" target="_blank">ClearTax: e-Invoice Implementation Date Malaysia 2026</a>
+    </li>
+    <li id="fn7">
+      <strong>TikTok Malaysia Users (DataReportal 2025)</strong> — 18+ users 30.7 million, adult population ad reach 114.8%. Total users approximately 19.3 million (population 53.9%).
+      <a href="https://datareportal.com/reports/digital-2026-malaysia" target="_blank">DataReportal: Digital 2026 Malaysia</a>
+    </li>
+    <li id="fn8">
+      <strong>Malaysia Minimum Wage (2025.02~)</strong> — Monthly RM 1,700, hourly RM 8.72. Single national application (domestic workers, trainees excluded).
+      <a href="https://pandahrms.com/malaysia-minimum-wage-2026-rm1700-rules-compliance-guide-payroll-requirements/" target="_blank">PandaHRMS: Malaysia Minimum Wage 2026 RM1,700 Guide</a>
+    </li>
+    <li id="fn9">
+      <strong>Lenovo Tab M7 (3rd Gen) Price</strong> — RM 398 Malaysia MSRP. 2GB RAM, 32GB ROM, 7" IPS, 4G LTE.
+      <a href="https://technave.com/gadget/Lenovo-Tab-M7-3rd-Gen-Price-in-Malaysia-Specs-25472.html" target="_blank">TechNave: Lenovo Tab M7 (3rd Gen) Price in Malaysia</a>
+    </li>
+  </ol>
+</div>
+
+<footer>
+  <p>Tapik Submission v6 · 2026-04-18</p>
+  <p style="margin-top:8px; font-size:12px;">Process-Based Evaluation: Specific Evidence of Judgment, Iteration, Critical Evaluation · Business Viability & Technical Feasibility Comprehensive Validation</p>
+</footer>
+
+</body>
+</html>

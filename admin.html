@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tapik v5 · Admin Dashboard (Firebase)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+import { getFirestore, collection, onSnapshot, query, orderBy, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAQNRuhwcTp89S63qKwbs3vLRx8JFv8V_w",
+  authDomain: "tapik-demo.firebaseapp.com",
+  projectId: "tapik-demo",
+  storageBucket: "tapik-demo.firebasestorage.app",
+  messagingSenderId: "503990315544",
+  appId: "1:503990315544:web:bd43a5a67b8d4a7064b16d",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+window.AFB = { db, collection, onSnapshot, query, orderBy, doc, setDoc, getDoc, serverTimestamp };
+</script>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; background:#0f172a; margin:0; }
+  .tabular { font-variant-numeric: tabular-nums; }
+  .hide-scroll::-webkit-scrollbar { display:none; }
+  .hide-scroll { -ms-overflow-style:none; scrollbar-width:none; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  .fade-in { animation: fadeIn 0.3s ease-out both; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  .blink { animation: pulse 1.5s ease-in-out infinite; }
+  @keyframes slideIn { from{transform:translateX(20px);opacity:0} to{transform:translateX(0);opacity:1} }
+  .slide-in { animation: slideIn 0.3s ease-out both; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useMemo, useRef } = React;
+
+// ================= i18n =================
+const LANG = {
+  ko: {
+    // Overview tab
+    'overview_title': 'Overview',
+    'today_gmv': '오늘 GMV',
+    'today_orders': '312건',
+    'tapik_net_revenue': 'Tapik Net Revenue',
+    'commission_points_pg': '수수료-포인트-PG',
+    'mrr': 'MRR',
+    'last_30_days': '최근 30일',
+    'active_stores': '활성 매장',
+    'orders_within_7_days': '7일 내 주문',
+    'wau': 'WAU',
+    'total_users': '총 {count}명',
+    'room_conversion': 'Room 전환율',
+    'room_orders_ratio': 'Room 주문/전체',
+    'cohort_retention_heatmap': '코호트 리텐션 히트맵 (소비자)',
+    'ai_insights': 'AI Insights',
+    'live_order_feed': '실시간 주문 피드',
+    'live_badge': 'LIVE +{count}건 · RM {gmv}',
+    'live_label': 'LIVE',
+
+    // Merchants tab
+    'merchants_title': 'Merchant Management',
+    'merchants_search_placeholder': '매장 검색...',
+    'all_status': '전체 상태',
+    'column_store_name': '매장명',
+    'column_area': '지역',
+    'column_commission': '수수료',
+    'column_status': '상태',
+    'column_monthly_gmv': '월 매출',
+    'column_health': '건강',
+    'column_orders': '주문수',
+    'column_accept_rate': '수락률',
+    'column_avg_prep': '평균준비',
+    'column_last_activity': '최근활동',
+    'tier_core': '코어 10%',
+    'tier_premium': '프리미엄 12%',
+    'status_active': 'Active',
+    'status_at_risk': 'At Risk',
+    'status_churned': 'Churned',
+    'min_ago': '{n}분 전',
+    'hours_ago': '{n}시간 전',
+    'days_ago': '{n}일 전',
+    'prep_time_min': '{n}분',
+
+    // Consumers tab
+    'consumers_title': '소비자 분석',
+    'conversion_funnel': '전환 퍼널',
+    'stage_app_install': '앱 설치',
+    'stage_signup': '회원가입',
+    'stage_first_explore': '첫 매장 탐색',
+    'stage_first_cart': '첫 장바구니',
+    'stage_first_payment': '첫 결제',
+    'stage_first_pickup': '첫 픽업',
+    'stage_repeat_7d': '재방문 (7일)',
+    'order_pattern_by_time': '시간대별 주문 패턴',
+    'low': '적음',
+    'high': '많음',
+    'hour': '{h}시',
+    'mon': '월',
+    'tue': '화',
+    'wed': '수',
+    'thu': '목',
+    'fri': '금',
+    'sat': '토',
+    'sun': '일',
+
+    // Transactions tab
+    'transactions_title': 'Transaction Monitor',
+    'transactions_monitor': '트랜잭션 모니터',
+    'status_all': '전체',
+    'column_time': '시각',
+    'column_order_id': '주문ID',
+    'column_store': '매장',
+    'column_consumer': '소비자',
+    'column_items': '메뉴',
+    'column_amount': '금액',
+    'column_room': 'Room',
+    'today_gmv_label': '오늘 GMV',
+    'tapik_net': 'Tapik Net',
+    'order_count': '주문 수',
+    'conversion_pickup': '전환율 (결제→픽업)',
+    'status_ordered': 'ORDERED',
+    'status_preparing': 'PREPARING',
+    'status_ready': 'READY',
+    'status_picked_up': 'PICKED_UP',
+    'status_cancelled': 'CANCELLED',
+
+    // Room tab
+    'room_title': 'Room Dashboard',
+    'room_dashboard': 'Room 대시보드',
+    'total_rooms': '총 Room',
+    'success_rooms': '성공 {count}',
+    'room_conversion_rate': 'Room 전환율',
+    'closed_total': 'CLOSED/전체',
+    'avg_size': '평균 크기',
+    'gmv_ratio': 'GMV 비율 {ratio}%',
+    'viral_coefficient': '바이럴 계수',
+    'new_via_room': 'Room 통해 신규 {count}명',
+    'creator_points_total': 'Creator 포인트 총액',
+    'creator_cac': 'Creator CAC',
+    'room_new_users': 'Room 신규 유저',
+    'first_order_room': '첫 주문이 Room',
+    'public_vs_private': 'Public vs Private',
+    'public_preference': 'Public 선호',
+    'column_room_id': 'Room ID',
+    'column_type': '유형',
+    'column_creator': 'Creator',
+    'column_members': '인원',
+    'column_gmv': 'GMV',
+    'column_status': '상태',
+    'public_type': '🌐 Public',
+    'private_type': '🔒 Private',
+    'room_status_active': 'ACTIVE',
+    'room_status_closed': 'CLOSED',
+    'room_status_expired': 'EXPIRED',
+
+    // Settlement tab
+    'settlement_title': 'Settlement Management',
+    'settlement_manage': '정산 관리 (W16)',
+    'batch_transfer': '일괄 이체 실행',
+    'download_report': '보고서 다운로드',
+    'weekly_gmv': '주간 GMV',
+    'commission_revenue': '수수료 수입',
+    'points_cost': '포인트 비용',
+    'pg_cost': 'PG 비용',
+    'tapik_net_settlement': 'Tapik Net',
+    'total_payout': '총 이체액',
+    'column_merchant': '매장',
+    'column_weekly_gmv': '주간 GMV',
+    'column_commission_tier': '수수료 티어',
+    'column_commission': '수수료',
+    'column_refunds': '환불',
+    'column_payout': '이체액',
+    'settlement_status_complete': '완료',
+    'settlement_status_processing': '처리중',
+    'settlement_status_pending': '대기',
+    'settlement_status_failed': '실패',
+
+    // Anomaly tab
+    'anomaly_title': 'Anomaly Detection',
+    'anomaly_detection': '이상탐지',
+    'detection_rules': '탐지 규칙 (8개 활성)',
+    'filter_all': '전체',
+    'filter_open': '열림',
+    'filter_resolved': '해결',
+    'rule_a01': '매장 3일+ 무주문',
+    'rule_a02': '거절률 > 20%',
+    'rule_a03': '준비시간 > 30분',
+    'rule_a04': '소비자 취소율 > 30%',
+    'rule_a05': '정산 이체 실패',
+    'rule_a06': 'VIP 14일+ 미방문',
+    'rule_a07': '주문 급증 (×3)',
+    'rule_a08': 'Room EXPIRED > 60%',
+    'anomaly_no_orders_3d': '3일째 주문 0건',
+    'anomaly_no_visit_18d': '18일째 미방문',
+    'anomaly_prep_time_22min': '오늘 평균 준비시간 22분 (카테고리 평균 12분)',
+    'anomaly_orders_42x3_2': '12-13시 주문 42건 (평균 ×3.2)',
+    'anomaly_room_expired_31': '이번 주 EXPIRED 비율 31% (임계 60% 미만 — 정상)',
+    'anomaly_time_today': '오늘 {time}',
+    'anomaly_status_open': '열림',
+    'anomaly_status_resolved': '해결',
+    'anomaly_resolve_button': '해결',
+    'severity_warn': '🟡',
+    'severity_caution': '🟠',
+    'severity_critical': '🔴',
+    'severity_ok': '🟢',
+
+    // Insights
+    'insight_growth': 'Feeka: 이번 주 GMV +25%. Room 전환율 38%. 프리미엄 티어 검토 권장.',
+    'insight_risk': 'Kedai Kopi Hainan: Health 42. 3일째 무주문. 온보딩 재지원 필요.',
+    'insight_trend_room': 'Room 주문 비율 이번 주 22% → 28%. 바이럴 계수 1.3. 목표(1.5) 근접.',
+    'insight_trend_aov': '평균 주문액 RM 15.62. 전주 대비 +8%. Bagel/Avocado 세트 인기.',
+
+    // Settings/Reward Modes
+    'settings_title': 'Reward Settings',
+    'reward_rate_settings': '적립률 설정',
+    'reward_rate_desc': 'Room 적립 모드를 변경하면 모든 소비자에게 즉시 반영됩니다',
+    'last_saved': '마지막 저장: {date}',
+    'reward_mode_default': '디폴트',
+    'reward_mode_default_desc': '3단계 티어 — 상시 적용',
+    'reward_mode_spot': '스팟 이벤트',
+    'reward_mode_spot_desc': '6단계 연속 — 적립률 업그레이드',
+    'reward_mode_hotspot': '핫스팟 이벤트',
+    'reward_mode_hotspot_desc': '대규모 프로모션 — Creator 최대 10%',
+    'mode_selected': '✓ 선택됨',
+    'apply_reward_mode': '적립 모드 적용',
+    'saving': '저장 중...',
+    'saved': '✓ 저장 완료!',
+    'reward_mode_note': '저장 시 Firestore에 반영 → 소비자 앱 실시간 적용',
+    'reward_details': '{mode} 적립률 상세',
+    'base_margin': '1인당 기본 마진: 3.5%',
+    'column_range': '구간',
+    'column_joiner_rate': 'Joiner 적립률',
+    'column_creator_rate': 'Creator 적립률',
+    'column_joiner_bonus': 'Joiner 추가분',
+    'column_creator_bonus': 'Creator 추가분',
+    'bep_simulation': 'BEP 시뮬레이션',
+    'column_members_n': '인원(N)',
+    'column_tapik_income': 'Tapik 수입',
+    'column_bonus_total': '추가적립 합계',
+    'column_tapik_net': 'Tapik Net',
+    'column_change': '증감',
+    'operation_guide': '운영 가이드',
+    'guide_default': '디폴트: 평상시 운영. 3단계 티어. Tapik Net 8.5%~19%',
+    'guide_spot': '스팟 이벤트: 초기 3개월 등. 6단계 연속. Tapik Net 8.5%~14.5%. 충성고객 확보용',
+    'guide_hotspot': '핫스팟 이벤트: 단기 집중. Creator 최대 10%. Tapik Net 8.5%~10%. 폭발적 유입용',
+    'guide_recommendation': '권장: 초기 3개월 스팟 → 중간중간 핫스팟 → 디폴트 전환',
+
+    // Fallback defaults & formatting
+    'range_format': '{n}명',
+    'default_store_name': '매장',
+    'default_consumer_name': '소비자',
+    'members_n_format': '{n}명',
+
+    // Tier ranges
+    'tier_range_default_1': '3~4명',
+    'tier_range_default_2': '5~6명',
+    'tier_range_default_3': '7~8명',
+    'tier_range_spot_3': '3명',
+    'tier_range_spot_4': '4명',
+    'tier_range_spot_5': '5명',
+    'tier_range_spot_6': '6명',
+    'tier_range_spot_7': '7명',
+    'tier_range_spot_8': '8명',
+    'tier_range_hotspot_3': '3명',
+    'tier_range_hotspot_4': '4명',
+    'tier_range_hotspot_5': '5명',
+    'tier_range_hotspot_6': '6명',
+    'tier_range_hotspot_7': '7명',
+    'tier_range_hotspot_8': '8명',
+
+    // Sidebar
+    'admin_title': 'Tapik Admin',
+    'admin_version': 'v4.0 · 25 stores',
+    'tab_overview': 'Overview',
+    'tab_merchants': '매장',
+    'tab_consumers': '소비자',
+    'tab_transactions': '트랜잭션',
+    'tab_room': 'Room',
+    'tab_settlement': '정산',
+    'tab_anomaly': '이상탐지',
+    'tab_settings': '적립률 설정',
+    'user_name': 'Gabriel',
+    'user_role': 'Super Admin',
+  },
+  en: {
+    // Overview tab
+    'overview_title': 'Overview',
+    'today_gmv': 'Today GMV',
+    'today_orders': '312 orders',
+    'tapik_net_revenue': 'Tapik Net Revenue',
+    'commission_points_pg': 'Commission - Points - PG',
+    'mrr': 'MRR',
+    'last_30_days': 'Last 30 days',
+    'active_stores': 'Active Stores',
+    'orders_within_7_days': 'Orders within 7 days',
+    'wau': 'WAU',
+    'total_users': 'Total {count} users',
+    'room_conversion': 'Room Conversion Rate',
+    'room_orders_ratio': 'Room orders / Total',
+    'cohort_retention_heatmap': 'Cohort Retention Heatmap (Consumers)',
+    'ai_insights': 'AI Insights',
+    'live_order_feed': 'Live Order Feed',
+    'live_badge': 'LIVE +{count} orders · RM {gmv}',
+    'live_label': 'LIVE',
+
+    // Merchants tab
+    'merchants_title': 'Merchant Management',
+    'merchants_search_placeholder': 'Search merchants...',
+    'all_status': 'All Status',
+    'column_store_name': 'Store Name',
+    'column_area': 'Area',
+    'column_commission': 'Commission',
+    'column_status': 'Status',
+    'column_monthly_gmv': 'Monthly GMV',
+    'column_health': 'Health',
+    'column_orders': 'Orders',
+    'column_accept_rate': 'Accept Rate',
+    'column_avg_prep': 'Avg Prep',
+    'column_last_activity': 'Last Activity',
+    'tier_core': 'Core 10%',
+    'tier_premium': 'Premium 12%',
+    'status_active': 'Active',
+    'status_at_risk': 'At Risk',
+    'status_churned': 'Churned',
+    'min_ago': '{n} min ago',
+    'hours_ago': '{n} hours ago',
+    'days_ago': '{n} days ago',
+    'prep_time_min': '{n} min',
+
+    // Consumers tab
+    'consumers_title': 'Consumer Analytics',
+    'conversion_funnel': 'Conversion Funnel',
+    'stage_app_install': 'App Install',
+    'stage_signup': 'Sign Up',
+    'stage_first_explore': 'First Explore',
+    'stage_first_cart': 'First Cart',
+    'stage_first_payment': 'First Payment',
+    'stage_first_pickup': 'First Pickup',
+    'stage_repeat_7d': 'Repeat (7d)',
+    'order_pattern_by_time': 'Order Pattern by Time',
+    'low': 'Low',
+    'high': 'High',
+    'hour': '{h}:00',
+    'mon': 'Mon',
+    'tue': 'Tue',
+    'wed': 'Wed',
+    'thu': 'Thu',
+    'fri': 'Fri',
+    'sat': 'Sat',
+    'sun': 'Sun',
+
+    // Transactions tab
+    'transactions_title': 'Transaction Monitor',
+    'transactions_monitor': 'Transaction Monitor',
+    'status_all': 'All',
+    'column_time': 'Time',
+    'column_order_id': 'Order ID',
+    'column_store': 'Store',
+    'column_consumer': 'Consumer',
+    'column_items': 'Items',
+    'column_amount': 'Amount',
+    'column_room': 'Room',
+    'today_gmv_label': 'Today GMV',
+    'tapik_net': 'Tapik Net',
+    'order_count': 'Order Count',
+    'conversion_pickup': 'Conversion (Pay→Pickup)',
+    'status_ordered': 'ORDERED',
+    'status_preparing': 'PREPARING',
+    'status_ready': 'READY',
+    'status_picked_up': 'PICKED_UP',
+    'status_cancelled': 'CANCELLED',
+
+    // Room tab
+    'room_title': 'Room Dashboard',
+    'room_dashboard': 'Room Dashboard',
+    'total_rooms': 'Total Rooms',
+    'success_rooms': 'Success {count}',
+    'room_conversion_rate': 'Room Conversion Rate',
+    'closed_total': 'CLOSED / Total',
+    'avg_size': 'Avg Size',
+    'gmv_ratio': 'GMV Ratio {ratio}%',
+    'viral_coefficient': 'Viral Coefficient',
+    'new_via_room': 'New via Room {count} users',
+    'creator_points_total': 'Creator Points Total',
+    'creator_cac': 'Creator CAC',
+    'room_new_users': 'Room New Users',
+    'first_order_room': 'First Order via Room',
+    'public_vs_private': 'Public vs Private',
+    'public_preference': 'Public Preferred',
+    'column_room_id': 'Room ID',
+    'column_type': 'Type',
+    'column_creator': 'Creator',
+    'column_members': 'Members',
+    'column_gmv': 'GMV',
+    'column_status': 'Status',
+    'public_type': '🌐 Public',
+    'private_type': '🔒 Private',
+    'room_status_active': 'ACTIVE',
+    'room_status_closed': 'CLOSED',
+    'room_status_expired': 'EXPIRED',
+
+    // Settlement tab
+    'settlement_title': 'Settlement Management',
+    'settlement_manage': 'Settlement Management (W16)',
+    'batch_transfer': 'Execute Batch Transfer',
+    'download_report': 'Download Report',
+    'weekly_gmv': 'Weekly GMV',
+    'commission_revenue': 'Commission Revenue',
+    'points_cost': 'Points Cost',
+    'pg_cost': 'PG Cost',
+    'tapik_net_settlement': 'Tapik Net',
+    'total_payout': 'Total Payout',
+    'column_merchant': 'Merchant',
+    'column_weekly_gmv': 'Weekly GMV',
+    'column_commission_tier': 'Commission Tier',
+    'column_commission': 'Commission',
+    'column_refunds': 'Refunds',
+    'column_payout': 'Payout',
+    'settlement_status_complete': 'Complete',
+    'settlement_status_processing': 'Processing',
+    'settlement_status_pending': 'Pending',
+    'settlement_status_failed': 'Failed',
+
+    // Anomaly tab
+    'anomaly_title': 'Anomaly Detection',
+    'anomaly_detection': 'Anomaly Detection',
+    'detection_rules': 'Detection Rules (8 Active)',
+    'filter_all': 'All',
+    'filter_open': 'Open',
+    'filter_resolved': 'Resolved',
+    'rule_a01': 'Store 3+ days no orders',
+    'rule_a02': 'Rejection rate > 20%',
+    'rule_a03': 'Prep time > 30 min',
+    'rule_a04': 'Consumer cancellation rate > 30%',
+    'rule_a05': 'Settlement transfer failed',
+    'rule_a06': 'VIP 14+ days no visit',
+    'rule_a07': 'Order spike (×3)',
+    'rule_a08': 'Room EXPIRED > 60%',
+    'anomaly_no_orders_3d': '3 days with no orders',
+    'anomaly_no_visit_18d': '18 days without visit',
+    'anomaly_prep_time_22min': 'Today avg prep time 22 min (category avg 12 min)',
+    'anomaly_orders_42x3_2': '12-13h: 42 orders (avg ×3.2)',
+    'anomaly_room_expired_31': 'This week EXPIRED ratio 31% (threshold 60% under — normal)',
+    'anomaly_time_today': 'Today {time}',
+    'anomaly_status_open': 'Open',
+    'anomaly_status_resolved': 'Resolved',
+    'anomaly_resolve_button': 'Resolve',
+    'severity_warn': '🟡',
+    'severity_caution': '🟠',
+    'severity_critical': '🔴',
+    'severity_ok': '🟢',
+
+    // Insights
+    'insight_growth': 'Feeka: This week GMV +25%. Room conversion 38%. Premium tier review recommended.',
+    'insight_risk': 'Kedai Kopi Hainan: Health 42. 3 days no orders. Re-onboarding support needed.',
+    'insight_trend_room': 'Room order ratio this week 22% → 28%. Viral coefficient 1.3. Target (1.5) approaching.',
+    'insight_trend_aov': 'Avg order value RM 15.62. +8% vs last week. Bagel/Avocado sets popular.',
+
+    // Settings/Reward Modes
+    'settings_title': 'Reward Settings',
+    'reward_rate_settings': 'Reward Rate Settings',
+    'reward_rate_desc': 'Changing Room reward mode applies instantly to all consumers',
+    'last_saved': 'Last saved: {date}',
+    'reward_mode_default': 'Default',
+    'reward_mode_default_desc': '3-tier system — Always active',
+    'reward_mode_spot': 'Spot Event',
+    'reward_mode_spot_desc': '6-tier progression — Reward rate upgrade',
+    'reward_mode_hotspot': 'Hotspot Event',
+    'reward_mode_hotspot_desc': 'Large-scale promotion — Creator max 10%',
+    'mode_selected': '✓ Selected',
+    'apply_reward_mode': 'Apply Reward Mode',
+    'saving': 'Saving...',
+    'saved': '✓ Saved!',
+    'reward_mode_note': 'Saves to Firestore → Consumer app applies in real-time',
+    'reward_details': '{mode} Reward Rate Details',
+    'base_margin': 'Base margin per person: 3.5%',
+    'column_range': 'Range',
+    'column_joiner_rate': 'Joiner Rate',
+    'column_creator_rate': 'Creator Rate',
+    'column_joiner_bonus': 'Joiner Bonus',
+    'column_creator_bonus': 'Creator Bonus',
+    'bep_simulation': 'BEP Simulation',
+    'column_members_n': 'Members (N)',
+    'column_tapik_income': 'Tapik Income',
+    'column_bonus_total': 'Total Bonus',
+    'column_tapik_net': 'Tapik Net',
+    'column_change': 'Change',
+    'operation_guide': 'Operation Guide',
+    'guide_default': 'Default: Normal operations. 3-tier system. Tapik Net 8.5%~19%',
+    'guide_spot': 'Spot Event: Initial 3 months etc. 6-tier progression. Tapik Net 8.5%~14.5%. For loyal customer acquisition',
+    'guide_hotspot': 'Hotspot Event: Short-term intensive. Creator max 10%. Tapik Net 8.5%~10%. For explosive growth',
+    'guide_recommendation': 'Recommended: Initial 3 months Spot → Occasional Hotspot → Default transition',
+
+    // Fallback defaults & formatting
+    'range_format': '{n} members',
+    'default_store_name': 'Store',
+    'default_consumer_name': 'Consumer',
+    'members_n_format': '{n} members',
+
+    // Tier ranges
+    'tier_range_default_1': '3~4 members',
+    'tier_range_default_2': '5~6 members',
+    'tier_range_default_3': '7~8 members',
+    'tier_range_spot_3': '3 members',
+    'tier_range_spot_4': '4 members',
+    'tier_range_spot_5': '5 members',
+    'tier_range_spot_6': '6 members',
+    'tier_range_spot_7': '7 members',
+    'tier_range_spot_8': '8 members',
+    'tier_range_hotspot_3': '3 members',
+    'tier_range_hotspot_4': '4 members',
+    'tier_range_hotspot_5': '5 members',
+    'tier_range_hotspot_6': '6 members',
+    'tier_range_hotspot_7': '7 members',
+    'tier_range_hotspot_8': '8 members',
+
+    // Sidebar
+    'admin_title': 'Tapik Admin',
+    'admin_version': 'v4.0 · 25 stores',
+    'tab_overview': 'Overview',
+    'tab_merchants': 'Merchants',
+    'tab_consumers': 'Consumers',
+    'tab_transactions': 'Transactions',
+    'tab_room': 'Room',
+    'tab_settlement': 'Settlement',
+    'tab_anomaly': 'Anomaly',
+    'tab_settings': 'Reward Settings',
+    'user_name': 'Gabriel',
+    'user_role': 'Super Admin',
+  }
+};
+
+let _currentLang = localStorage.getItem('tapik_lang') || 'en';
+
+const t = (key, params = {}) => {
+  let str = LANG[_currentLang]?.[key] || LANG['en'][key] || key;
+  Object.entries(params).forEach(([k, v]) => {
+    str = str.replace(`{${k}}`, v);
+  });
+  return str;
+};
+
+let setLangState_global = null;
+
+// ================= Cross-App BroadcastChannel =================
+const tapikChannel = new BroadcastChannel('tapik-orders');
+
+const setLang = (lang) => {
+  _currentLang = lang;
+  localStorage.setItem('tapik_lang', lang);
+  if (setLangState_global) setLangState_global(lang);
+  try {
+    tapikChannel.postMessage({ type: 'LANG_CHANGE', lang });
+  } catch(e) {}
+};
+
+tapikChannel.addEventListener('message', (e) => {
+  if (e.data.type === 'LANG_CHANGE') {
+    _currentLang = e.data.lang;
+    localStorage.setItem('tapik_lang', e.data.lang);
+    window.location.reload();
+  }
+});
+
+// ================= Constants =================
+const TAPIK = { MARKUP:0.05, MERCHANT_COMM:0.10, PREMIUM_COMM:0.12 };
+
+// ================= Mock Data =================
+const KPI = {
+  todayGMV: 4872.60, weekGMV: 28450.00, monthGMV: 112340.00,
+  tapikRevenue: 3248.20, mrr: 11234.00,
+  activeStores: 22, totalStores: 25,
+  wau: 1847, totalUsers: 4210,
+  roomConversion: 28.4,
+  todayOrders: 312, avgOrderValue: 15.62,
+  todayTapikNet: 487.20,
+};
+
+const STORES = [
+  {id:1, name:'Feeka Coffee Roasters', area:'TTDI', tier:'tier_core', status:'status_active', monthGMV:18420, health:92, lastActive:'5', lastActiveUnit:'min', orders:156, acceptRate:98, avgPrep:8},
+  {id:2, name:'Lim Kopitiam', area:'PJ SS2', tier:'tier_core', status:'status_active', monthGMV:14280, health:88, lastActive:'12', lastActiveUnit:'min', orders:128, acceptRate:95, avgPrep:12},
+  {id:3, name:'The Hub Coffee', area:'Bangsar', tier:'tier_core', status:'status_active', monthGMV:12650, health:85, lastActive:'23', lastActiveUnit:'min', orders:98, acceptRate:97, avgPrep:9},
+  {id:4, name:'Nasi Lemak Wanjo', area:'Kampung Baru', tier:'tier_premium', status:'status_active', monthGMV:22100, health:94, lastActive:'2', lastActiveUnit:'min', orders:210, acceptRate:99, avgPrep:7},
+  {id:5, name:'Roti Canai Transfer Rd', area:'Penang (Pilot)', tier:'tier_core', status:'status_active', monthGMV:8900, health:78, lastActive:'45', lastActiveUnit:'min', orders:72, acceptRate:90, avgPrep:15},
+  {id:6, name:'Kedai Kopi Hainan', area:'Petaling St', tier:'tier_core', status:'status_at_risk', monthGMV:2100, health:42, lastActive:'3', lastActiveUnit:'days', orders:18, acceptRate:82, avgPrep:22},
+  {id:7, name:'Ah Weng Koh', area:'Imbi', tier:'tier_core', status:'status_churned', monthGMV:0, health:0, lastActive:'42', lastActiveUnit:'days', orders:0, acceptRate:0, avgPrep:0},
+];
+
+const CONSUMERS_DATA = {
+  funnel: [
+    {stageKey:'stage_app_install', count:4210, rate:100},
+    {stageKey:'stage_signup', count:3890, rate:92.4},
+    {stageKey:'stage_first_explore', count:3200, rate:82.3},
+    {stageKey:'stage_first_cart', count:2450, rate:76.6},
+    {stageKey:'stage_first_payment', count:1980, rate:80.8},
+    {stageKey:'stage_first_pickup', count:1920, rate:97.0},
+    {stageKey:'stage_repeat_7d', count:1420, rate:74.0},
+  ],
+};
+
+const TRANSACTIONS = [
+  {id:'ORD-4872', store:'Feeka', consumer:'Wei Ming', items:'Iced Flat White ×1, Bagel ×1', amount:39.90, status:'PICKED_UP', room:null, time:'12:45'},
+  {id:'ORD-4871', store:'Lim Kopitiam', consumer:'Uncle Tan', items:'Kaya Toast Set ×1, Kopi O ×2', amount:14.70, status:'READY', room:null, time:'12:42'},
+  {id:'ORD-4870', store:'Feeka', consumer:'Aiden K.', items:'Matcha Latte ×2', amount:33.60, status:'PREPARING', room:'RM-012', time:'12:41'},
+  {id:'ORD-4869', store:'The Hub', consumer:'Sarah L.', items:'Cortado ×1', amount:12.60, status:'ORDERED', room:'RM-015', time:'12:40'},
+  {id:'ORD-4868', store:'Nasi Lemak Wanjo', consumer:'Nur F.', items:'Nasi Lemak Special ×1', amount:13.65, status:'PICKED_UP', room:null, time:'12:38'},
+  {id:'ORD-4867', store:'Feeka', consumer:'David C.', items:'Avocado Toast ×1', amount:23.10, status:'PICKED_UP', room:null, time:'12:35'},
+  {id:'ORD-4866', store:'Lim Kopitiam', consumer:'Aisyah R.', items:'Chicken Rice ×2', amount:21.00, status:'CANCELLED', room:null, time:'12:32'},
+  {id:'ORD-4865', store:'The Hub', consumer:'Tommy L.', items:'Cortado ×2, Bagel ×1', amount:50.40, status:'PICKED_UP', room:'RM-014', time:'12:28'},
+];
+
+const ROOMS_DATA = {
+  kpi: {totalRooms:142, successRooms:98, conversionRate:69.0, avgSize:3.2, gmvRatio:28.4, viralCoeff:1.3, creatorPoints:8420, newViaRoom:86},
+  history: [
+    {id:'RM-015', store:'The Hub', creator:'Sarah L.', members:'2/4', gmv:46.20, status:'ACTIVE', type:'public', time:'12:40'},
+    {id:'RM-014', store:'The Hub', creator:'Tommy L.', members:'3/6', gmv:125.80, status:'CLOSED', type:'public', time:'12:15'},
+    {id:'RM-013', store:'Feeka', creator:'Priya S.', members:'2/3', gmv:0, status:'EXPIRED', type:'private', time:'11:50'},
+    {id:'RM-012', store:'Feeka', creator:'Aiden K.', members:'2/4', gmv:52.50, status:'ACTIVE', type:'private', time:'12:35'},
+    {id:'RM-011', store:'Lim Kopitiam', creator:'Uncle Tan', members:'4/4', gmv:58.80, status:'CLOSED', type:'public', time:'11:20'},
+  ],
+};
+
+const SETTLEMENTS_DATA = {
+  summary: {weekGMV:28450.00, totalComm:2845.00, totalPoints:1422.50, totalGateway:487.40, tapikNet:935.10, totalPayout:25605.00},
+  merchants: [
+    {name:'Nasi Lemak Wanjo', gmv:5520.00, tier:'12%', commission:662.40, refunds:0, payout:4857.60, statusKey:'settlement_status_complete'},
+    {name:'Feeka Coffee Roasters', gmv:4605.00, tier:'10%', commission:460.50, refunds:37.80, payout:4106.70, statusKey:'settlement_status_complete'},
+    {name:'Lim Kopitiam', gmv:3570.00, tier:'10%', commission:357.00, refunds:0, payout:3213.00, statusKey:'settlement_status_processing'},
+    {name:'The Hub Coffee', gmv:3162.50, tier:'10%', commission:316.25, refunds:0, payout:2846.25, statusKey:'settlement_status_pending'},
+    {name:'Roti Canai Transfer Rd', gmv:2225.00, tier:'10%', commission:222.50, refunds:16.80, payout:1985.70, statusKey:'settlement_status_pending'},
+    {name:'Kedai Kopi Hainan', gmv:525.00, tier:'10%', commission:52.50, refunds:0, payout:472.50, statusKey:'settlement_status_pending'},
+  ],
+};
+
+const ANOMALIES = [
+  {id:'A-01-006', rule:'A-01', target:'Kedai Kopi Hainan', descKey:'anomaly_no_orders_3d', severity:'warn', timeKey:'09:00', statusKey:'anomaly_status_open'},
+  {id:'A-06-012', rule:'A-06', target:'VIP James W. @ Feeka', descKey:'anomaly_no_visit_18d', severity:'warn', timeKey:'09:00', statusKey:'anomaly_status_open'},
+  {id:'A-03-008', rule:'A-03', target:'Roti Canai Transfer Rd', descKey:'anomaly_prep_time_22min', severity:'warn', timeKey:'11:30', statusKey:'anomaly_status_open'},
+  {id:'A-07-001', rule:'A-07', target:'Nasi Lemak Wanjo', descKey:'anomaly_orders_42x3_2', severity:'caution', timeKey:'13:05', statusKey:'anomaly_status_resolved'},
+  {id:'A-08-002', rule:'A-08', target:'Room 전체', descKey:'anomaly_room_expired_31', severity:'ok', timeKey:'00:00', statusKey:'anomaly_status_resolved'},
+];
+
+const INSIGHTS = [
+  {type:'growth', textKey:'insight_growth', icon:'📈'},
+  {type:'risk', textKey:'insight_risk', icon:'⚠️'},
+  {type:'trend', textKey:'insight_trend_room', icon:'🚀'},
+  {type:'trend', textKey:'insight_trend_aov', icon:'💰'},
+];
+
+// ================= Components =================
+const KPICard = ({label, value, sub, color='text-white'}) => (
+  <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-3 hover:bg-slate-800 transition cursor-pointer">
+    <div className="text-[10px] text-slate-400 mb-1">{label}</div>
+    <div className={`text-lg font-bold tabular ${color}`}>{value}</div>
+    {sub && <div className="text-[10px] text-slate-500 mt-0.5">{sub}</div>}
+  </div>
+);
+
+const StatusBadge = ({status}) => {
+  const colors = {
+    'Active':'bg-green-500/20 text-green-400', 'At Risk':'bg-amber-500/20 text-amber-400', 'Churned':'bg-red-500/20 text-red-400',
+    'PICKED_UP':'bg-green-500/20 text-green-400', 'READY':'bg-emerald-500/20 text-emerald-400', 'PREPARING':'bg-amber-500/20 text-amber-400', 'ORDERED':'bg-blue-500/20 text-blue-400', 'CANCELLED':'bg-red-500/20 text-red-400', 'NO_SHOW':'bg-gray-500/20 text-gray-400',
+    'ACTIVE':'bg-green-500/20 text-green-400', 'CLOSED':'bg-slate-500/20 text-slate-300', 'EXPIRED':'bg-red-500/20 text-red-400',
+    '완료':'bg-green-500/20 text-green-400', '처리중':'bg-amber-500/20 text-amber-400', '대기':'bg-blue-500/20 text-blue-400', '실패':'bg-red-500/20 text-red-400',
+    '열림':'bg-amber-500/20 text-amber-400', '해결':'bg-green-500/20 text-green-400',
+  };
+  return <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${colors[status]||'bg-slate-600 text-slate-300'}`}>{status}</span>;
+};
+
+const HealthBar = ({score}) => {
+  const color = score >= 80 ? 'bg-green-500' : score >= 50 ? 'bg-amber-500' : 'bg-red-500';
+  return (
+    <div className="flex items-center gap-2">
+      <div className="w-16 h-1.5 bg-slate-700 rounded-full"><div className={`h-full rounded-full ${color}`} style={{width:`${score}%`}}/></div>
+      <span className={`text-xs font-bold tabular ${score >= 80 ? 'text-green-400' : score >= 50 ? 'text-amber-400' : 'text-red-400'}`}>{score}</span>
+    </div>
+  );
+};
+
+// ================= Tabs =================
+
+// 5-1 Overview
+const OverviewTab = ({liveFeed=[], liveKPI={orders:0,gmv:0}}) => (
+  <div className="p-5 overflow-y-auto hide-scroll" style={{height:'calc(100vh - 56px)'}}>
+    <div className="text-lg font-bold text-white mb-4">{t('overview_title')}</div>
+
+    {/* KPI row */}
+    <div className="grid grid-cols-6 gap-3 mb-5">
+      <KPICard label={t('today_gmv')} value={`RM ${KPI.todayGMV.toLocaleString()}`} sub={t('today_orders')} color="text-white"/>
+      <KPICard label={t('tapik_net_revenue')} value={`RM ${KPI.tapikRevenue.toLocaleString()}`} sub={t('commission_points_pg')} color="text-green-400"/>
+      <KPICard label={t('mrr')} value={`RM ${KPI.mrr.toLocaleString()}`} sub={t('last_30_days')} color="text-amber-400"/>
+      <KPICard label={t('active_stores')} value={`${KPI.activeStores}/${KPI.totalStores}`} sub={t('orders_within_7_days')} color="text-blue-400"/>
+      <KPICard label={t('wau')} value={KPI.wau.toLocaleString()} sub={t('total_users', {count: KPI.totalUsers.toLocaleString()})} color="text-purple-400"/>
+      <KPICard label={t('room_conversion')} value={`${KPI.roomConversion}%`} sub={t('room_orders_ratio')} color="text-pink-400"/>
+    </div>
+
+    <div className="grid grid-cols-3 gap-4">
+      {/* Cohort heatmap placeholder */}
+      <div className="col-span-2 bg-slate-800/50 border border-slate-700 rounded-xl p-4">
+        <div className="text-sm font-bold text-white mb-3">{t('cohort_retention_heatmap')}</div>
+        <div className="grid grid-cols-9 gap-1">
+          <div className="text-[9px] text-slate-500"></div>
+          {['W0','W1','W2','W3','W4','W5','W6','W7'].map(w => <div key={w} className="text-[9px] text-slate-500 text-center">{w}</div>)}
+          {[
+            {cohort:'W12', vals:[100,72,58,48,42,38,35,33]},
+            {cohort:'W13', vals:[100,75,62,52,45,40,37,0]},
+            {cohort:'W14', vals:[100,78,65,55,48,42,0,0]},
+            {cohort:'W15', vals:[100,80,68,58,50,0,0,0]},
+            {cohort:'W16', vals:[100,82,70,60,0,0,0,0]},
+          ].map(row => (
+            <React.Fragment key={row.cohort}>
+              <div className="text-[9px] text-slate-400 flex items-center">{row.cohort}</div>
+              {row.vals.map((v,i) => {
+                if (v === 0) return <div key={i} className="h-7 rounded bg-slate-800"/>;
+                const opacity = Math.max(0.15, v / 100);
+                return <div key={i} className="h-7 rounded flex items-center justify-center text-[8px] font-bold text-white" style={{backgroundColor:`rgba(34,197,94,${opacity})`}}>{v}%</div>;
+              })}
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
+
+      {/* AI Insights */}
+      <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-4">
+        <div className="text-sm font-bold text-white mb-3">{t('ai_insights')}</div>
+        <div className="space-y-2">
+          {INSIGHTS.map((ins,i) => (
+            <div key={i} className="bg-slate-900/50 rounded-lg p-2.5 text-xs text-slate-300 leading-relaxed fade-in" style={{animationDelay:`${i*0.1}s`}}>
+              <span className="mr-1">{ins.icon}</span> {t(ins.textKey)}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    {/* Live order feed */}
+    <div className="mt-4 bg-slate-800/50 border border-slate-700 rounded-xl p-4">
+      <div className="flex items-center gap-2 mb-3">
+        <div className="text-sm font-bold text-white">{t('live_order_feed')}</div>
+        {liveKPI.orders > 0 && <span className="bg-green-500/20 text-green-400 text-[10px] font-bold px-2 py-0.5 rounded-full blink">{t('live_badge', {count: liveKPI.orders, gmv: liveKPI.gmv.toFixed(2)})}</span>}
+      </div>
+      <div className="space-y-1">
+        {/* 실제 연동 주문 (위에 표시) */}
+        {liveFeed.map((tx,i) => (
+          <div key={tx.id} className="flex items-center gap-3 py-1.5 px-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs slide-in" style={{animationDelay:`${i*0.05}s`}}>
+            <span className="text-amber-400 text-[9px] font-bold">{t('live_label')}</span>
+            <span className="text-slate-500 tabular w-10">{tx.time}</span>
+            <span className="text-slate-300 w-28">{tx.store}</span>
+            <span className="text-slate-400 w-20">{tx.consumer}</span>
+            <span className="text-slate-400 flex-1 truncate">{tx.items}</span>
+            <span className="text-white font-bold tabular w-16 text-right">RM {tx.amount?.toFixed(2)}</span>
+            <StatusBadge status={tx.status}/>
+            {tx.room && <span className="text-purple-400 text-[10px]">🚪 {tx.room}</span>}
+          </div>
+        ))}
+        {/* 기존 목업 데이터 */}
+        {TRANSACTIONS.slice(0,5).map((tx,i) => (
+          <div key={tx.id} className="flex items-center gap-3 py-1.5 px-2 rounded-lg hover:bg-slate-700/50 cursor-pointer text-xs slide-in" style={{animationDelay:`${(liveFeed.length+i)*0.05}s`}}>
+            <span className="text-slate-500 tabular w-10">{tx.time}</span>
+            <span className="text-slate-300 w-28">{tx.store}</span>
+            <span className="text-slate-400 w-20">{tx.consumer}</span>
+            <span className="text-slate-400 flex-1 truncate">{tx.items}</span>
+            <span className="text-white font-bold tabular w-16 text-right">RM {tx.amount.toFixed(2)}</span>
+            <StatusBadge status={tx.status}/>
+            {tx.room && <span className="text-purple-400 text-[10px]">🚪 {tx.room}</span>}
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+// 5-2 Merchants
+const MerchantsTab = () => (
+  <div className="p-5 overflow-y-auto hide-scroll" style={{height:'calc(100vh - 56px)'}}>
+    <div className="flex items-center justify-between mb-4">
+      <div className="text-lg font-bold text-white">{t('merchants_title')}</div>
+      <div className="flex gap-2">
+        <input placeholder={t('merchants_search_placeholder')} className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 outline-none focus:border-amber-500 w-48"/>
+        <select className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white outline-none">
+          <option>{t('all_status')}</option><option>{t('status_active')}</option><option>{t('status_at_risk')}</option><option>{t('status_churned')}</option>
+        </select>
+      </div>
+    </div>
+    <div className="bg-slate-800/50 border border-slate-700 rounded-xl overflow-hidden">
+      <table className="w-full text-xs">
+        <thead>
+          <tr className="border-b border-slate-700">
+            {[t('column_store_name'),t('column_area'),t('column_commission'),t('column_status'),t('column_monthly_gmv'),t('column_health'),t('column_orders'),t('column_accept_rate'),t('column_avg_prep'),t('column_last_activity')].map(h => (
+              <th key={h} className="text-left px-3 py-2.5 text-slate-400 font-medium">{h}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {STORES.map(s => (
+            <tr key={s.id} className="border-b border-slate-800 hover:bg-slate-700/30 cursor-pointer transition">
+              <td className="px-3 py-2.5 text-white font-medium">{s.name}</td>
+              <td className="px-3 py-2.5 text-slate-400">{s.area}</td>
+              <td className="px-3 py-2.5 text-slate-300">{t(s.tier)}</td>
+              <td className="px-3 py-2.5"><StatusBadge status={t(s.status)}/></td>
+              <td className="px-3 py-2.5 text-white tabular">RM {s.monthGMV.toLocaleString()}</td>
+              <td className="px-3 py-2.5"><HealthBar score={s.health}/></td>
+              <td className="px-3 py-2.5 text-slate-300 tabular">{s.orders}</td>
+              <td className="px-3 py-2.5 text-slate-300 tabular">{s.acceptRate}%</td>
+              <td className="px-3 py-2.5 text-slate-300 tabular">{_currentLang==='ko'?s.avgPrep+'분':s.avgPrep+' min'}</td>
+              <td className="px-3 py-2.5 text-slate-500">{t(s.lastActiveUnit === 'min' ? 'min_ago' : 'days_ago', {n: s.lastActive})}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+);
+
+// 5-3 Consumers
+const ConsumersTab = () => (
+  <div className="p-5 overflow-y-auto hide-scroll" style={{height:'calc(100vh - 56px)'}}>
+    <div className="text-lg font-bold text-white mb-4">{t('consumers_title')}</div>
+    <div className="grid grid-cols-2 gap-4">
+      {/* Funnel */}
+      <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-4">
+        <div className="text-sm font-bold text-white mb-3">{t('conversion_funnel')}</div>
+        <div className="space-y-2">
+          {CONSUMERS_DATA.funnel.map((f,i) => (
+            <div key={i}>
+              <div className="flex items-center justify-between text-xs mb-1">
+                <span className="text-slate-300">{t(f.stageKey)}</span>
+                <span className="text-white font-bold tabular">{f.count.toLocaleString()} <span className="text-slate-500 font-normal">({f.rate}%)</span></span>
+              </div>
+              <div className="w-full h-2 bg-slate-700 rounded-full">
+                <div className="h-full rounded-full bg-gradient-to-r from-amber-500 to-orange-500" style={{width:`${f.count/4210*100}%`}}/>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Time heatmap */}
+      <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-4">
+        <div className="text-sm font-bold text-white mb-3">{t('order_pattern_by_time')}</div>
+        <div className="grid grid-cols-7 gap-1">
+          <div></div>
+          {['mon','tue','wed','thu','fri','sat','sun'].map(d => <div key={d} className="text-[9px] text-slate-500 text-center">{t(d)}</div>)}
+          {['07','08','09','10','11','12','13','14','15','16','17','18','19','20'].map(h => (
+            <React.Fragment key={h}>
+              <div className="text-[9px] text-slate-500 flex items-center">{t('hour', {h})}</div>
+              {[0,1,2,3,4,5,6].map(d => {
+                const isLunch = (h==='12'||h==='13');
+                const isMorning = (h==='08'||h==='09');
+                const isWeekend = d>=5;
+                const intensity = isLunch ? 0.9 : isMorning ? 0.6 : (h>='17'&&h<='19') ? 0.5 : isWeekend ? 0.2 : 0.3;
+                return <div key={d} className="h-5 rounded-sm" style={{backgroundColor:`rgba(251,146,60,${intensity * (isWeekend ? 0.6 : 1)})`}}/>;
+              })}
+            </React.Fragment>
+          ))}
+        </div>
+        <div className="flex items-center gap-2 mt-3 justify-center">
+          <span className="text-[9px] text-slate-500">{t('low')}</span>
+          {[0.1,0.3,0.5,0.7,0.9].map(o => <div key={o} className="w-4 h-3 rounded-sm" style={{backgroundColor:`rgba(251,146,60,${o})`}}/>)}
+          <span className="text-[9px] text-slate-500">{t('high')}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+// 5-4 Transactions
+const TransactionsTab = () => {
+  const [statusFilter, setStatusFilter] = useState('status_all');
+  const statuses = ['status_all','status_ordered','status_preparing','status_ready','status_picked_up','status_cancelled'];
+  const filtered = statusFilter === 'status_all' ? TRANSACTIONS : TRANSACTIONS.filter(t => t.status === statusFilter);
+  return (
+    <div className="p-5 overflow-y-auto hide-scroll" style={{height:'calc(100vh - 56px)'}}>
+      <div className="flex items-center justify-between mb-4">
+        <div className="text-lg font-bold text-white">{t('transactions_monitor')}</div>
+        <div className="flex gap-2">
+          {statuses.map(s => (
+            <button key={s} onClick={()=>setStatusFilter(s)} className={`px-3 py-1 rounded-lg text-[10px] font-bold ${statusFilter===s ? 'bg-amber-500 text-white' : 'bg-slate-800 text-slate-400 border border-slate-700'}`}>{t(s)}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* Top metrics */}
+      <div className="grid grid-cols-4 gap-3 mb-4">
+        <KPICard label={t('today_gmv_label')} value={`RM ${KPI.todayGMV.toLocaleString()}`} color="text-white"/>
+        <KPICard label={t('tapik_net')} value={`RM ${KPI.todayTapikNet.toFixed(2)}`} color="text-green-400"/>
+        <KPICard label={t('order_count')} value={`${KPI.todayOrders}`+(_currentLang==='ko'?'건':'')} color="text-blue-400"/>
+        <KPICard label={t('conversion_pickup')} value="97.0%" color="text-emerald-400"/>
+      </div>
+
+      {/* Transaction table */}
+      <div className="bg-slate-800/50 border border-slate-700 rounded-xl overflow-hidden">
+        <table className="w-full text-xs">
+          <thead>
+            <tr className="border-b border-slate-700">
+              {[t('column_time'),t('column_order_id'),t('column_store'),t('column_consumer'),t('column_items'),t('column_amount'),t('column_status'),t('column_room')].map(h => (
+                <th key={h} className="text-left px-3 py-2.5 text-slate-400 font-medium">{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map(tx => (
+              <tr key={tx.id} className="border-b border-slate-800 hover:bg-slate-700/30 cursor-pointer transition">
+                <td className="px-3 py-2.5 text-slate-500 tabular">{tx.time}</td>
+                <td className="px-3 py-2.5 text-amber-400 font-mono">{tx.id}</td>
+                <td className="px-3 py-2.5 text-white">{tx.store}</td>
+                <td className="px-3 py-2.5 text-slate-300">{tx.consumer}</td>
+                <td className="px-3 py-2.5 text-slate-400 max-w-[200px] truncate">{tx.items}</td>
+                <td className="px-3 py-2.5 text-white font-bold tabular">RM {tx.amount.toFixed(2)}</td>
+                <td className="px-3 py-2.5"><StatusBadge status={tx.status}/></td>
+                <td className="px-3 py-2.5">{tx.room ? <span className="text-purple-400 text-[10px]">🚪 {tx.room}</span> : <span className="text-slate-600">—</span>}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+// 5-5 Room
+const RoomTab = () => {
+  const rd = ROOMS_DATA;
+  return (
+    <div className="p-5 overflow-y-auto hide-scroll" style={{height:'calc(100vh - 56px)'}}>
+      <div className="text-lg font-bold text-white mb-4">{t('room_dashboard')}</div>
+
+      {/* KPI */}
+      <div className="grid grid-cols-4 gap-3 mb-5">
+        <KPICard label={t('total_rooms')} value={rd.kpi.totalRooms} sub={t('success_rooms', {count: rd.kpi.successRooms})} color="text-purple-400"/>
+        <KPICard label={t('room_conversion_rate')} value={`${rd.kpi.conversionRate}%`} sub={t('closed_total')} color="text-green-400"/>
+        <KPICard label={t('avg_size')} value={`${rd.kpi.avgSize}`+(_currentLang==='ko'?'명':'')} sub={t('gmv_ratio', {ratio: rd.kpi.gmvRatio})} color="text-blue-400"/>
+        <KPICard label={t('viral_coefficient')} value={rd.kpi.viralCoeff} sub={t('new_via_room', {count: rd.kpi.newViaRoom})} color="text-pink-400"/>
+      </div>
+
+      <div className="grid grid-cols-3 gap-4 mb-4">
+        <KPICard label={t('creator_points_total')} value={`${rd.kpi.creatorPoints.toLocaleString()} TP`} sub={t('creator_cac')} color="text-amber-400"/>
+        <KPICard label={t('room_new_users')} value={rd.kpi.newViaRoom} sub={t('first_order_room')} color="text-emerald-400"/>
+        <KPICard label={t('public_vs_private')} value="68% / 32%" sub={t('public_preference')} color="text-cyan-400"/>
+      </div>
+
+      {/* Room history */}
+      <div className="bg-slate-800/50 border border-slate-700 rounded-xl overflow-hidden">
+        <table className="w-full text-xs">
+          <thead>
+            <tr className="border-b border-slate-700">
+              {[t('column_room_id'),t('column_type'),t('column_store'),t('column_creator'),t('column_members'),t('column_gmv'),t('column_status'),t('column_time')].map(h => (
+                <th key={h} className="text-left px-3 py-2.5 text-slate-400 font-medium">{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rd.history.map(r => (
+              <tr key={r.id} className="border-b border-slate-800 hover:bg-slate-700/30 cursor-pointer transition">
+                <td className="px-3 py-2.5 text-purple-400 font-mono">{r.id}</td>
+                <td className="px-3 py-2.5 text-slate-300">{r.type === 'public' ? t('public_type') : t('private_type')}</td>
+                <td className="px-3 py-2.5 text-white">{r.store}</td>
+                <td className="px-3 py-2.5 text-slate-300">{r.creator}</td>
+                <td className="px-3 py-2.5 text-slate-300 tabular">{r.members}</td>
+                <td className="px-3 py-2.5 text-white font-bold tabular">{r.gmv > 0 ? `RM ${r.gmv.toFixed(2)}` : '—'}</td>
+                <td className="px-3 py-2.5"><StatusBadge status={r.status}/></td>
+                <td className="px-3 py-2.5 text-slate-500 tabular">{r.time}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+// 5-6 Settlement
+const SettlementTab = () => {
+  const sd = SETTLEMENTS_DATA;
+  return (
+    <div className="p-5 overflow-y-auto hide-scroll" style={{height:'calc(100vh - 56px)'}}>
+      <div className="flex items-center justify-between mb-4">
+        <div className="text-lg font-bold text-white">{t('settlement_manage')}</div>
+        <div className="flex gap-2">
+          <button className="bg-green-600 text-white text-xs font-bold px-4 py-1.5 rounded-lg hover:bg-green-700 transition">{t('batch_transfer')}</button>
+          <button className="bg-slate-700 text-slate-300 text-xs font-bold px-4 py-1.5 rounded-lg hover:bg-slate-600 transition">{t('download_report')}</button>
+        </div>
+      </div>
+
+      {/* Summary */}
+      <div className="grid grid-cols-6 gap-3 mb-5">
+        <KPICard label={t('weekly_gmv')} value={`RM ${sd.summary.weekGMV.toLocaleString()}`} color="text-white"/>
+        <KPICard label={t('commission_revenue')} value={`RM ${sd.summary.totalComm.toLocaleString()}`} color="text-amber-400"/>
+        <KPICard label={t('points_cost')} value={`RM ${sd.summary.totalPoints.toLocaleString()}`} color="text-red-400"/>
+        <KPICard label={t('pg_cost')} value={`RM ${sd.summary.totalGateway.toFixed(2)}`} color="text-red-400"/>
+        <KPICard label={t('tapik_net_settlement')} value={`RM ${sd.summary.tapikNet.toFixed(2)}`} color="text-green-400"/>
+        <KPICard label={t('total_payout')} value={`RM ${sd.summary.totalPayout.toLocaleString()}`} color="text-blue-400"/>
+      </div>
+
+      {/* Per-merchant */}
+      <div className="bg-slate-800/50 border border-slate-700 rounded-xl overflow-hidden">
+        <table className="w-full text-xs">
+          <thead>
+            <tr className="border-b border-slate-700">
+              {[t('column_merchant'),t('column_weekly_gmv'),t('column_commission_tier'),t('column_commission'),t('column_refunds'),t('column_payout'),t('column_status')].map(h => (
+                <th key={h} className="text-left px-3 py-2.5 text-slate-400 font-medium">{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {sd.merchants.map((m,i) => (
+              <tr key={i} className="border-b border-slate-800 hover:bg-slate-700/30 cursor-pointer transition">
+                <td className="px-3 py-2.5 text-white font-medium">{m.name}</td>
+                <td className="px-3 py-2.5 text-white tabular">RM {m.gmv.toLocaleString()}</td>
+                <td className="px-3 py-2.5 text-slate-300">{m.tier}</td>
+                <td className="px-3 py-2.5 text-amber-400 tabular">RM {m.commission.toFixed(2)}</td>
+                <td className="px-3 py-2.5 text-red-400 tabular">{m.refunds > 0 ? `RM ${m.refunds.toFixed(2)}` : '—'}</td>
+                <td className="px-3 py-2.5 text-green-400 font-bold tabular">RM {m.payout.toLocaleString()}</td>
+                <td className="px-3 py-2.5"><StatusBadge status={t(m.statusKey)}/></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+// 5-7 Anomaly
+const AnomalyTab = () => {
+  const [filter, setFilter] = useState('filter_all');
+  const filtered = filter === 'filter_all' ? ANOMALIES : ANOMALIES.filter(a => a.statusKey === ('anomaly_status_'+filter.split('_')[1]));
+  const severityIcon = {warn:'🟡', caution:'🟠', critical:'🔴', ok:'🟢'};
+  return (
+    <div className="p-5 overflow-y-auto hide-scroll" style={{height:'calc(100vh - 56px)'}}>
+      <div className="flex items-center justify-between mb-4">
+        <div className="text-lg font-bold text-white">{t('anomaly_detection')}</div>
+        <div className="flex gap-2">
+          {['filter_all','filter_open','filter_resolved'].map(f => {
+            let count = ANOMALIES.length;
+            if(f==='filter_open') count = ANOMALIES.filter(a=>a.statusKey==='anomaly_status_open').length;
+            if(f==='filter_resolved') count = ANOMALIES.filter(a=>a.statusKey==='anomaly_status_resolved').length;
+            return <button key={f} onClick={()=>setFilter(f)} className={`px-3 py-1 rounded-lg text-[10px] font-bold ${filter===f ? 'bg-amber-500 text-white' : 'bg-slate-800 text-slate-400 border border-slate-700'}`}>{t(f)} ({count})</button>;
+          })}
+        </div>
+      </div>
+
+      {/* Rules summary */}
+      <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-4 mb-4">
+        <div className="text-sm font-bold text-white mb-2">{t('detection_rules')}</div>
+        <div className="grid grid-cols-4 gap-2 text-[10px]">
+          {[
+            {id:'A-01', descKey:'rule_a01', severity:'🟡'},
+            {id:'A-02', descKey:'rule_a02', severity:'🟠'},
+            {id:'A-03', descKey:'rule_a03', severity:'🟡'},
+            {id:'A-04', descKey:'rule_a04', severity:'🟡'},
+            {id:'A-05', descKey:'rule_a05', severity:'🔴'},
+            {id:'A-06', descKey:'rule_a06', severity:'🟡'},
+            {id:'A-07', descKey:'rule_a07', severity:'🟠'},
+            {id:'A-08', descKey:'rule_a08', severity:'🟡'},
+          ].map(r => (
+            <div key={r.id} className="bg-slate-900/50 rounded-lg p-2 flex items-center gap-1.5">
+              <span>{r.severity}</span>
+              <span className="text-slate-400 font-mono">{r.id}</span>
+              <span className="text-slate-300">{t(r.descKey)}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Incidents */}
+      <div className="space-y-2">
+        {filtered.map(a => (
+          <div key={a.id} className={`bg-slate-800/50 border rounded-xl p-4 flex items-center justify-between ${a.statusKey==='anomaly_status_open' ? 'border-amber-500/30' : 'border-slate-700'}`}>
+            <div className="flex items-center gap-3">
+              <span className="text-lg">{severityIcon[a.severity]}</span>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-mono text-slate-500">{a.id}</span>
+                  <span className="text-sm font-bold text-white">{a.target}</span>
+                </div>
+                <div className="text-xs text-slate-400 mt-0.5">{t(a.descKey)}</div>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-[10px] text-slate-500">{t('anomaly_time_today', {time: a.timeKey})}</span>
+              <StatusBadge status={t(a.statusKey)}/>
+              {a.statusKey === 'anomaly_status_open' && (
+                <button className="bg-green-600 text-white text-[10px] font-bold px-3 py-1 rounded-lg hover:bg-green-700">{t('anomaly_resolve_button')}</button>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ================= Reward Mode Config =================
+const REWARD_MODES = {
+  default: {
+    nameKey: 'reward_mode_default',
+    descKey: 'reward_mode_default_desc',
+    color: 'green',
+    tiers: [
+      { rangeKey: 'tier_range_default_1', joiner: 5.50, creator: 6.00 },
+      { rangeKey: 'tier_range_default_2', joiner: 5.75, creator: 6.50 },
+      { rangeKey: 'tier_range_default_3', joiner: 6.00, creator: 7.00 },
+    ],
+    getRate(n) {
+      if (n <= 4) return { joiner: 5.50, creator: 6.00 };
+      if (n <= 6) return { joiner: 5.75, creator: 6.50 };
+      return { joiner: 6.00, creator: 7.00 };
+    }
+  },
+  spot: {
+    nameKey: 'reward_mode_spot',
+    descKey: 'reward_mode_spot_desc',
+    color: 'amber',
+    tiers: [
+      { rangeKey: 'tier_range_spot_3', joiner: 5.50, creator: 6.00 },
+      { rangeKey: 'tier_range_spot_4', joiner: 5.70, creator: 6.40 },
+      { rangeKey: 'tier_range_spot_5', joiner: 5.90, creator: 6.80 },
+      { rangeKey: 'tier_range_spot_6', joiner: 6.10, creator: 7.20 },
+      { rangeKey: 'tier_range_spot_7', joiner: 6.30, creator: 7.60 },
+      { rangeKey: 'tier_range_spot_8', joiner: 6.50, creator: 8.00 },
+    ],
+    getRate(n) {
+      const j = 5.5 + (Math.min(n,8) - 3) * 0.2;
+      const c = 6.0 + (Math.min(n,8) - 3) * 0.4;
+      return { joiner: Math.round(j*100)/100, creator: Math.round(c*100)/100 };
+    }
+  },
+  hotspot: {
+    nameKey: 'reward_mode_hotspot',
+    descKey: 'reward_mode_hotspot_desc',
+    color: 'red',
+    tiers: [
+      { rangeKey: 'tier_range_hotspot_3', joiner: 5.50, creator: 6.00 },
+      { rangeKey: 'tier_range_hotspot_4', joiner: 6.04, creator: 7.08 },
+      { rangeKey: 'tier_range_hotspot_5', joiner: 6.40, creator: 7.80 },
+      { rangeKey: 'tier_range_hotspot_6', joiner: 6.66, creator: 8.31 },
+      { rangeKey: 'tier_range_hotspot_7', joiner: 6.85, creator: 8.70 },
+      { rangeKey: 'tier_range_hotspot_8', joiner: 7.00, creator: 9.00 },
+    ],
+    getRate(n) {
+      const bonus = n * 3.5 - (8.5 + (Math.min(n,8)-3)*0.3);
+      let jb = bonus / (n+1), cb = 2*jb;
+      if (cb+5 > 10) { cb=5; jb=(bonus-cb)/(n-1); }
+      return { joiner: Math.round((5+jb)*100)/100, creator: Math.round((5+cb)*100)/100 };
+    }
+  },
+};
+
+// 5-8 Settings
+const SettingsTab = () => {
+  const [mode, setMode] = useState('default');
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [lastSaved, setLastSaved] = useState(null);
+
+  // Load current setting from Firestore
+  useEffect(() => {
+    if (!window.AFB) return;
+    AFB.getDoc(AFB.doc(AFB.db, 'settings', 'rewardMode')).then(snap => {
+      if (snap.exists()) {
+        const data = snap.data();
+        if (data.mode && REWARD_MODES[data.mode]) setMode(data.mode);
+        if (data.updatedAt) setLastSaved(data.updatedAt.toDate?.() || null);
+      }
+    }).catch(()=>{});
+  }, []);
+
+  const handleSave = async () => {
+    if (!window.AFB) return;
+    setSaving(true);
+    try {
+      const modeData = REWARD_MODES[mode];
+      await AFB.setDoc(AFB.doc(AFB.db, 'settings', 'rewardMode'), {
+        mode,
+        nameKey: modeData.nameKey,
+        tiers: modeData.tiers,
+        updatedAt: AFB.serverTimestamp(),
+        updatedBy: 'admin',
+      });
+      setSaved(true);
+      setLastSaved(new Date());
+      setTimeout(() => setSaved(false), 2000);
+    } catch(e) { console.error('Save error:', e); }
+    setSaving(false);
+  };
+
+  const colorMap = {green:'green', amber:'amber', red:'red'};
+
+  return (
+    <div className="p-5 overflow-y-auto hide-scroll" style={{height:'calc(100vh - 56px)'}}>
+      <div className="flex items-center justify-between mb-5">
+        <div>
+          <div className="text-lg font-bold text-white">{t('reward_rate_settings')}</div>
+          <div className="text-xs text-slate-400 mt-0.5">{t('reward_rate_desc')}</div>
+        </div>
+        {lastSaved && <div className="text-[10px] text-slate-500">{t('last_saved', {date: lastSaved.toLocaleString()})}</div>}
+      </div>
+
+      {/* Mode selector */}
+      <div className="grid grid-cols-3 gap-4 mb-6">
+        {Object.entries(REWARD_MODES).map(([key, m]) => {
+          const isActive = mode === key;
+          const border = key==='default' ? (isActive?'border-green-500 bg-green-500/10':'border-slate-700') : key==='spot' ? (isActive?'border-amber-500 bg-amber-500/10':'border-slate-700') : (isActive?'border-red-500 bg-red-500/10':'border-slate-700');
+          const dot = key==='default'?'bg-green-500':key==='spot'?'bg-amber-500':'bg-red-500';
+          return (
+            <button key={key} onClick={()=>setMode(key)}
+              className={`border-2 rounded-xl p-4 text-left transition ${border} hover:bg-slate-800/50`}>
+              <div className="flex items-center gap-2 mb-2">
+                <div className={`w-3 h-3 rounded-full ${dot} ${isActive?'':'opacity-30'}`}/>
+                <span className={`text-sm font-bold ${isActive?'text-white':'text-slate-400'}`}>{t(m.nameKey)}</span>
+              </div>
+              <div className="text-[10px] text-slate-500 mb-3">{t(m.descKey)}</div>
+              {isActive && <div className="text-[10px] font-bold text-green-400">✓ {t('mode_selected')}</div>}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Save button — 모드 선택 바로 아래 */}
+      <div className="flex items-center gap-4 mb-6">
+        <button onClick={handleSave} disabled={saving}
+          className={`px-6 py-2.5 rounded-xl text-sm font-bold transition ${saving ? 'bg-slate-600 text-slate-400 cursor-wait' : 'bg-amber-500 text-white hover:bg-amber-600'}`}>
+          {saving ? t('saving') : saved ? t('saved') : t('apply_reward_mode')}
+        </button>
+        <div className="text-[10px] text-slate-500">{t('reward_mode_note')}</div>
+      </div>
+
+      {/* Rate table for selected mode */}
+      <div className="bg-slate-800/50 border border-slate-700 rounded-xl overflow-hidden mb-6">
+        <div className="px-4 py-3 border-b border-slate-700 flex items-center justify-between">
+          <div className="text-sm font-bold text-white">{t('reward_details', {mode: t(REWARD_MODES[mode].nameKey)})}</div>
+          <div className="text-[10px] text-slate-500">{t('base_margin')}</div>
+        </div>
+        <table className="w-full text-xs">
+          <thead>
+            <tr className="border-b border-slate-700">
+              {[t('column_range'),t('column_joiner_rate'),t('column_creator_rate'),t('column_joiner_bonus'),t('column_creator_bonus')].map(h => (
+                <th key={h} className="text-left px-4 py-2.5 text-slate-400 font-medium">{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {REWARD_MODES[mode].tiers.map((tier, i) => (
+              <tr key={i} className="border-b border-slate-800">
+                <td className="px-4 py-2.5 text-white font-medium">{t(tier.rangeKey)}</td>
+                <td className="px-4 py-2.5 text-blue-400 tabular font-bold">{tier.joiner.toFixed(2)}%</td>
+                <td className="px-4 py-2.5 text-purple-400 tabular font-bold">{tier.creator.toFixed(2)}%</td>
+                <td className="px-4 py-2.5 text-slate-300 tabular">+{(tier.joiner - 5).toFixed(2)}%</td>
+                <td className="px-4 py-2.5 text-slate-300 tabular">+{(tier.creator - 5).toFixed(2)}%</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* BEP simulation for selected mode */}
+      <div className="bg-slate-800/50 border border-slate-700 rounded-xl overflow-hidden mb-6">
+        <div className="px-4 py-3 border-b border-slate-700">
+          <div className="text-sm font-bold text-white">{t('bep_simulation')}</div>
+        </div>
+        <table className="w-full text-xs">
+          <thead>
+            <tr className="border-b border-slate-700">
+              {[t('column_members_n'),t('column_tapik_income'),t('column_bonus_total'),t('column_tapik_net'),t('column_change')].map(h => (
+                <th key={h} className="text-left px-4 py-2.5 text-slate-400 font-medium">{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {[3,4,5,6,7,8].map((n, i) => {
+              const rate = REWARD_MODES[mode].getRate(n);
+              const income = n * 3.5;
+              const bonus = (rate.joiner - 5) * (n-1) + (rate.creator - 5);
+              const net = income - bonus;
+              const prevRate = i > 0 ? REWARD_MODES[mode].getRate(n-1) : null;
+              const prevNet = prevRate ? ((n-1)*3.5 - ((prevRate.joiner-5)*(n-2) + (prevRate.creator-5))) : null;
+              const delta = prevNet !== null ? net - prevNet : null;
+              return (
+                <tr key={n} className="border-b border-slate-800">
+                  <td className="px-4 py-2.5 text-white font-bold">{t('members_n_format', {n})}</td>
+                  <td className="px-4 py-2.5 text-green-400 tabular">{income.toFixed(1)}%</td>
+                  <td className="px-4 py-2.5 text-red-400 tabular">{bonus.toFixed(2)}%</td>
+                  <td className="px-4 py-2.5 text-white font-bold tabular">{net.toFixed(2)}%</td>
+                  <td className={`px-4 py-2.5 tabular font-bold ${delta===null?'text-slate-500':delta>=0?'text-green-400':'text-red-400'}`}>
+                    {delta === null ? '—' : `${delta >= 0 ? '+' : ''}${delta.toFixed(2)}%`}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Operation guide */}
+      <div className="mt-6 bg-slate-800/30 border border-slate-700/50 rounded-xl p-4">
+        <div className="text-sm font-bold text-slate-300 mb-2">{t('operation_guide')}</div>
+        <div className="space-y-1.5 text-[11px] text-slate-400">
+          <div>• <span className="text-green-400 font-bold">{t('reward_mode_default')}</span>: {t('guide_default')}</div>
+          <div>• <span className="text-amber-400 font-bold">{t('reward_mode_spot')}</span>: {t('guide_spot')}</div>
+          <div>• <span className="text-red-400 font-bold">{t('reward_mode_hotspot')}</span>: {t('guide_hotspot')}</div>
+          <div className="text-slate-500 mt-2">※ {t('guide_recommendation')}</div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ================= Main =================
+function AdminApp() {
+  const [tab, setTab] = useState('overview');
+  const [liveFeed, setLiveFeed] = useState([]);
+  const [liveKPI, setLiveKPI] = useState({orders:0, gmv:0});
+  const [lang, setLangState] = useState(_currentLang);
+
+  // Store the state setter globally so setLang can access it
+  useEffect(() => {
+    setLangState_global = setLangState;
+  }, []);
+
+  // BroadcastChannel: 모든 앱 이벤트 수신 → 라이브 피드
+  useEffect(() => {
+    const handler = (e) => {
+      const d = e.data;
+      const now = new Date().toLocaleTimeString('ko',{hour:'2-digit',minute:'2-digit'});
+      if (d.type === 'order.placed') {
+        setLiveFeed(prev => [{id:d.order.id, store:d.order.storeName||t('default_store_name'), consumer:d.order.customerName||t('default_consumer_name'), items:d.order.items?.map(i=>i.name).join(', ')||'', amount:d.order.total, status:'ORDERED', room:d.order.role!=='solo'?'Room':'', time:now}, ...prev].slice(0,20));
+        setLiveKPI(prev => ({orders:prev.orders+1, gmv:Math.round((prev.gmv+(d.order.total||0))*100)/100}));
+      } else if (d.type === 'order.accepted') {
+        setLiveFeed(prev => prev.map(f => f.id===d.orderId ? {...f, status:'PREPARING'} : f));
+      } else if (d.type === 'order.ready') {
+        setLiveFeed(prev => prev.map(f => f.id===d.orderId ? {...f, status:'READY'} : f));
+      } else if (d.type === 'order.pickedUp') {
+        setLiveFeed(prev => prev.map(f => f.id===d.orderId ? {...f, status:'PICKED_UP'} : f));
+      }
+    };
+    tapikChannel.addEventListener('message', handler);
+    return () => tapikChannel.removeEventListener('message', handler);
+  }, []);
+
+  // Firestore: 전체 주문 실시간 감시
+  useEffect(() => {
+    if (!window.AFB) return;
+    const q = AFB.query(AFB.collection(AFB.db, 'orders'));
+    const unsub = AFB.onSnapshot(q, (snap) => {
+      const now = new Date().toLocaleTimeString('ko',{hour:'2-digit',minute:'2-digit'});
+      snap.docChanges().forEach(change => {
+        const o = change.doc.data();
+        if (change.type === 'added') {
+          setLiveFeed(prev => {
+            if (prev.some(f => f.id === o.id)) return prev;
+            return [{id:o.id, store:o.storeName||t('default_store_name'), consumer:o.customerName||t('default_consumer_name'), items:(o.items||[]).map(i=>i.name).join(', '), amount:o.total, status:o.status, room:o.role!=='solo'?'Room':'', time:now, source:'firebase'}, ...prev].slice(0,30);
+          });
+          setLiveKPI(prev => ({orders:prev.orders+1, gmv:Math.round((prev.gmv+(o.total||0))*100)/100}));
+        } else if (change.type === 'modified') {
+          setLiveFeed(prev => prev.map(f => f.id === o.id ? {...f, status: o.status} : f));
+        }
+      });
+    });
+    return unsub;
+  }, []);
+
+  const tabs = [
+    {id:'overview', labelKey:'tab_overview', icon:'📊'},
+    {id:'merchants', labelKey:'tab_merchants', icon:'🏪'},
+    {id:'consumers', labelKey:'tab_consumers', icon:'👥'},
+    {id:'transactions', labelKey:'tab_transactions', icon:'💳'},
+    {id:'room', labelKey:'tab_room', icon:'🚪'},
+    {id:'settlement', labelKey:'tab_settlement', icon:'💰'},
+    {id:'anomaly', labelKey:'tab_anomaly', icon:'🚨'},
+    {id:'settings', labelKey:'tab_settings', icon:'⚙️'},
+  ];
+
+  return (
+    <div className="min-h-screen bg-slate-900 flex">
+      {/* Sidebar */}
+      <div className="w-52 bg-slate-950 border-r border-slate-800 flex flex-col flex-shrink-0">
+        <div className="p-4 border-b border-slate-800">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><path d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z"/></svg>
+              </div>
+              <div>
+                <div className="text-white font-bold text-sm">{t('admin_title')}</div>
+                <div className="text-[9px] text-slate-500">{t('admin_version')}</div>
+              </div>
+            </div>
+            <div className="flex gap-1 bg-slate-800 rounded-lg p-1">
+              <button onClick={()=>setLang('en')} className={`px-2 py-1 rounded text-[10px] font-bold ${_currentLang==='en'?'bg-amber-500 text-white':'text-slate-400'}`}>EN</button>
+              <button onClick={()=>setLang('ko')} className={`px-2 py-1 rounded text-[10px] font-bold ${_currentLang==='ko'?'bg-amber-500 text-white':'text-slate-400'}`}>KR</button>
+            </div>
+          </div>
+        </div>
+        <nav className="flex-1 p-2">
+          {tabs.map(tab_item => (
+            <button key={tab_item.id} onClick={()=>setTab(tab_item.id)}
+              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm mb-0.5 transition ${tab===tab_item.id ? 'bg-amber-500/10 text-amber-400 font-medium' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'}`}>
+              <span className="text-base">{tab_item.icon}</span>
+              <span>{t(tab_item.labelKey)}</span>
+              {tab_item.id === 'anomaly' && <span className="ml-auto bg-amber-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">{ANOMALIES.filter(a=>a.statusKey==='anomaly_status_open').length}</span>}
+            </button>
+          ))}
+        </nav>
+        <div className="p-3 border-t border-slate-800">
+          <div className="flex items-center gap-2 px-2">
+            <div className="w-7 h-7 rounded-full bg-slate-700 flex items-center justify-center text-[10px] font-bold text-white">GA</div>
+            <div>
+              <div className="text-xs text-white">{t('user_name')}</div>
+              <div className="text-[9px] text-slate-500">{t('user_role')}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main content */}
+      <div className="flex-1 overflow-hidden">
+        {tab === 'overview' && <OverviewTab liveFeed={liveFeed} liveKPI={liveKPI}/>}
+        {tab === 'merchants' && <MerchantsTab/>}
+        {tab === 'consumers' && <ConsumersTab/>}
+        {tab === 'transactions' && <TransactionsTab/>}
+        {tab === 'room' && <RoomTab/>}
+        {tab === 'settlement' && <SettlementTab/>}
+        {tab === 'anomaly' && <AnomalyTab/>}
+        {tab === 'settings' && <SettingsTab/>}
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<AdminApp/>);
+</script>
+</body>
+</html>
