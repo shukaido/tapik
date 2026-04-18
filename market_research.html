@@ -1,0 +1,2166 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>ShardLab PO 과제 — 시장 조사 통합 문서 (Market Research)</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    background: #ffffff;
+    color: #1f2937;
+    line-height: 1.65;
+    font-size: 15px;
+  }
+  .container { display: flex; min-height: 100vh; }
+
+  /* Sidebar */
+  aside {
+    width: 280px;
+    background: #f9fafb;
+    border-right: 1px solid #e5e7eb;
+    padding: 24px 20px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    flex-shrink: 0;
+  }
+  aside h1 {
+    font-size: 15px;
+    margin: 0 0 4px 0;
+    color: #111827;
+    line-height: 1.4;
+  }
+  aside .meta {
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  aside nav a {
+    display: block;
+    padding: 7px 10px;
+    color: #374151;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+  aside nav a:hover { background: #e5e7eb; }
+  aside nav a.pending { color: #9ca3af; font-style: italic; }
+  aside nav a.in-progress { color: #d97706; font-weight: 600; }
+  aside nav a.done { color: #059669; }
+  aside nav .section-label {
+    font-size: 11px;
+    color: #9ca3af;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    margin: 14px 10px 6px;
+  }
+
+  /* Main */
+  main {
+    flex: 1;
+    padding: 40px 56px;
+    max-width: 960px;
+  }
+  h2 {
+    font-size: 24px;
+    color: #111827;
+    margin-top: 40px;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #111827;
+  }
+  h2:first-of-type { margin-top: 0; }
+  h3 {
+    font-size: 18px;
+    color: #1f2937;
+    margin-top: 28px;
+    margin-bottom: 10px;
+  }
+  h4 {
+    font-size: 15px;
+    color: #374151;
+    margin-top: 20px;
+    margin-bottom: 6px;
+  }
+  p { margin: 10px 0; }
+
+  .callout {
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+  .callout.info { background: #eff6ff; border-left: 4px solid #3b82f6; }
+  .callout.warn { background: #fffbeb; border-left: 4px solid #f59e0b; }
+  .callout.key  { background: #f0fdf4; border-left: 4px solid #10b981; }
+  .callout.risk { background: #fef2f2; border-left: 4px solid #ef4444; }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 12px 0;
+    font-size: 13.5px;
+  }
+  th, td {
+    border: 1px solid #e5e7eb;
+    padding: 9px 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { background: #f3f4f6; font-weight: 600; color: #111827; }
+  tr:nth-child(even) td { background: #fafafa; }
+
+  ul, ol { padding-left: 22px; }
+  li { margin: 5px 0; }
+
+  code {
+    background: #f3f4f6;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12.5px;
+    color: #be185d;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .tag-h { background: #d1fae5; color: #065f46; }
+  .tag-m { background: #fef3c7; color: #92400e; }
+  .tag-l { background: #fee2e2; color: #991b1b; }
+  .tag-done { background: #d1fae5; color: #065f46; }
+  .tag-wip  { background: #fef3c7; color: #92400e; }
+  .tag-pend { background: #e5e7eb; color: #4b5563; }
+
+  .assumption {
+    background: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    padding: 10px 14px;
+    border-radius: 4px;
+    font-size: 14px;
+    margin: 10px 0;
+  }
+  .assumption::before {
+    content: "ASSUMPTION · ";
+    font-weight: 700;
+    color: #92400e;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+
+  .updated-heading {
+    background: linear-gradient(to right, #fef3c7 0%, rgba(254,243,199,0) 60%);
+    padding-left: 14px !important;
+    margin-left: -14px;
+    border-left: 4px solid #f59e0b !important;
+  }
+  .update-stamp {
+    display: inline-block;
+    background: #f59e0b;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 10px;
+    margin-left: 10px;
+    vertical-align: middle;
+  }
+  .update-stamp .ustamp-time {
+    font-weight: 400;
+    opacity: 0.85;
+    margin-left: 4px;
+    font-size: 10px;
+  }
+  .nav-new {
+    display: inline-block;
+    background: #ef4444;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 3px;
+    margin-left: 6px;
+    vertical-align: middle;
+    letter-spacing: 0.04em;
+    animation: pulse-new 2s ease-in-out infinite;
+  }
+  .nav-new.seen { display: none !important; }
+  @keyframes pulse-new {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<aside>
+  <h1>ShardLab PO 과제<br>Market Research</h1>
+  <div class="meta">
+    작성 시작: 2026-04-14 21:15 KST<br>
+    마지막 업데이트: 2026-04-15 01:00 KST<br>
+    v1 방향 최종 확정: <strong>A — M40 Third Place</strong><br>
+    환율 기준: 1 USD ≈ 4.45 MYR
+  </div>
+  <nav>
+    <div class="section-label">섹션</div>
+    <a href="#section-0" class="done">0 · 메타<span class="nav-new" data-update-id="2026-04-14-21-mr-sec0">NEW</span></a>
+    <a href="#section-1" class="done">1 · 소비자 외식·라이프스타일<span class="nav-new" data-update-id="2026-04-14-21-mr-sec1">NEW</span></a>
+    <a href="#section-2" class="done">2 · 금융·결제 맥락<span class="nav-new" data-update-id="2026-04-14-21-mr-sec2">NEW</span></a>
+    <a href="#section-3" class="done">3 · POS × F&amp;B 랜드스케이프<span class="nav-new" data-update-id="2026-04-14-22-mr-sec3">NEW</span></a>
+    <a href="#section-4" class="done">4 · 결제 페인포인트 4분류<span class="nav-new" data-update-id="2026-04-14-22-mr-sec4">NEW</span></a>
+    <a href="#section-5" class="done">5 · 12개 시장 갭<span class="nav-new" data-update-id="2026-04-14-22-mr-sec5">NEW</span></a>
+    <a href="#section-6" class="done">6 · Web3 교차점<span class="nav-new" data-update-id="2026-04-14-23-mr-sec6">NEW</span></a>
+    <a href="#section-7" class="done">7 · 종합 시사점 · F 재평가<span class="nav-new" data-update-id="2026-04-14-23-mr-sec7">NEW</span></a>
+    <a href="#section-8" class="done">8 · 팩트 충돌·신뢰도 노트<span class="nav-new" data-update-id="2026-04-14-23-mr-sec8">NEW</span></a>
+    <a href="#section-9" class="done">9 · 다음 단계<span class="nav-new" data-update-id="2026-04-14-23-mr-sec9">NEW</span></a>
+    <a href="#section-10" class="done">10 · 시장 세분화 (Segmentation)<span class="nav-new" data-update-id="2026-04-15-00-mr-sec10">NEW</span></a>
+  </nav>
+</aside>
+
+<main>
+
+<!-- =========== Section 0 — 메타 =========== -->
+<h2 id="section-0" class="updated-heading">Section 0 — 메타 (Meta) <span class="update-stamp">2026-04-14 작성<span class="ustamp-time">21:15 KST</span></span></h2>
+
+<p>본 문서는 ShardLab Senior Product Owner 면접 과제의 **시장 조사 통합 문서**다. 7개 리서치 에이전트(A~G) 산출물을 보조 PM이 소화·검증·교차확인해 단일 문서로 재구성한다. 요약이 아닌 **핵심 설명 + 세세한 예시 + 팩트·출처 보장**을 원칙으로 한다.</p>
+
+<h3>0.1 문서 목적과 사용 방식</h3>
+<ul>
+  <li><strong>목적</strong>: v1 코어 결정·타겟 세그먼트·페르소나·제품 스펙 전 단계에서 필요한 시장 팩트를 집약</li>
+  <li><strong>독자</strong>: 캡틴(Gabriel) 단일 독자. 보조 PM이 작성, 캡틴이 의사결정</li>
+  <li><strong>갱신 원칙</strong>: 분기점 결정·팩트 충돌 해소·신규 데이터 유입 시 즉시 반영. 모든 업데이트에 날짜·시간(KST) 기록</li>
+  <li><strong>쌍둥이 문서</strong>: <code>shardlab_research.html</code>이 과제 맥락·지침·결정 이력·논의 기록을 담당. 본 문서는 시장 데이터에 집중</li>
+</ul>
+
+<h3>0.2 대상 시장 · 지리적 범위</h3>
+<table>
+  <tr><th>항목</th><th>범위</th><th>근거</th></tr>
+  <tr><td>대상 시장</td><td>말레이시아 단독</td><td>과제 브리프 명시 · 캡틴 2026-04-14 확정 (태국·인도네시아 비교 제외)</td></tr>
+  <tr><td>1차 지역</td><td>Klang Valley (쿠알라룸푸르·슬랑오르)</td><td>인구밀도 8,045/km² · 외식 빈도·앱 사용률·스마트폰 보급률 최고 · 외식 시장 가치의 60%</td></tr>
+  <tr><td>2차 고려</td><td>Penang, Johor Bahru</td><td>3도시 간 거리 327~669km · 사실상 독립 시장 · 1차 론칭 후 확장 검토</td></tr>
+  <tr><td>제외</td><td>동부 말레이시아(사바·사라왁)</td><td>인터넷 인프라 불안정 · Klang Valley 론칭 검증 전 확장 비효율</td></tr>
+</table>
+
+<h3>0.3 환율 기준</h3>
+<div class="callout info">
+<strong>본 문서 전체 환율 기준</strong> (2026-04-15 업데이트): <strong>1 USD ≈ 3.95 MYR</strong> (BNM 공식 2026-04 참조환율)<br>
+<em>이전 가정 4.45에서 정정</em> — Agent O BNM 확인 결과 MYR 강세. 본 문서 모든 USD 환산치는 이 환율 기준. 구 환율로 환산된 수치가 남아있을 수 있음 — 발견 시 재계산 요망.
+</div>
+
+<p><strong>Agent O BNM/DOSM 공식 수치 확정 (2026-04-15)</strong>:</p>
+<ul>
+  <li>GDP 2024 실적 <strong>5.1%</strong> · 2025 전망 4.0~4.8% · 실제 5.2% 예상 초과</li>
+  <li>Headline CPI 2024 <strong>1.8%</strong> · Q3 2025 1.3% YoY</li>
+  <li>Food CPI 2024 <strong>2.0%</strong>, 2025 2.5~3.5% 전망</li>
+  <li>Core Inflation Q3 2025 2.0% YoY</li>
+  <li>BNM OPR 2025.11 2.75% 동결</li>
+  <li>MYR/USD 2026-04-14 <strong>3.95</strong></li>
+  <li>B40 threshold HIES 2024 (2025-10 발표) <strong>≤ RM 5,858/월</strong> (이전 RM 5,249에서 상향)</li>
+  <li>Median household income <strong>RM 7,017/월</strong></li>
+</ul>
+
+<h3>0.4 출처 분류 체계</h3>
+<p>본 문서는 모든 인용 출처를 <strong>3단계</strong>로 분류한다. 신뢰도 등급·인용 우선순위 결정에 사용.</p>
+
+<table>
+  <tr><th>분류</th><th>정의</th><th>예시</th><th>인용 우선순위</th></tr>
+  <tr>
+    <td><strong>1차 (Primary)</strong></td>
+    <td>데이터 발원자·규제 당국·공식 기관 직접 공시</td>
+    <td>DOSM(통계청), BNM(중앙은행), PayNet, SC Malaysia, LHDN, JAKIM, Bursa Malaysia, 기업 공식 페이지·연차보고서</td>
+    <td>최상. 단독 인용 가능</td>
+  </tr>
+  <tr>
+    <td><strong>2차 (Secondary)</strong></td>
+    <td>전문 기관·언론이 1차 자료를 해석·재가공</td>
+    <td>Mordor Intelligence, Credence Research, Statista, The Edge, Malay Mail, Fintech News Malaysia</td>
+    <td>중. 가능하면 1차 출처와 교차 확인</td>
+  </tr>
+  <tr>
+    <td><strong>대안 (Alternative)</strong></td>
+    <td>소비자·커뮤니티·검색 패턴에서 간접 추출한 신호</td>
+    <td>Trustpilot·Play Store 리뷰, Lowyat Forum·Reddit r/malaysia, Google Trends, PissedConsumer</td>
+    <td>낮음. <strong>단독 인용 금지</strong>. 정형 출처와 교차 확인된 경우만 사용. 인용 시 "소수 표본·편향 가능" 각주 필수</td>
+  </tr>
+</table>
+
+<h3>0.5 신뢰도 등급 기준</h3>
+<p>본 문서의 모든 주요 주장에 아래 기준으로 신뢰도 태그를 붙인다.</p>
+<table>
+  <tr><th>등급</th><th>기준</th><th>태그</th></tr>
+  <tr><td>High</td><td>1차 출처 + 최근(2024~2026) + 독립 2개 이상 교차 확인</td><td><span class="tag tag-h">H</span></td></tr>
+  <tr><td>Medium</td><td>2차 출처 단독 or 1차 출처 + 일부 2023 자료</td><td><span class="tag tag-m">M</span></td></tr>
+  <tr><td>Low</td><td>대안 데이터 포함 or 단일 출처 or 2023 이전 자료</td><td><span class="tag tag-l">L</span></td></tr>
+</table>
+
+<h3>0.6 에이전트 지시 테이블 (리서치 원재료 이력)</h3>
+<p>본 문서는 7개 리서치 에이전트 산출물에 기반. 아래는 각 에이전트에게 발주한 지시의 요약. 원본 프롬프트는 모두 스크래치패드에 보관.</p>
+<table>
+  <tr>
+    <th>에이전트</th><th>발주일 (KST)</th><th>주제</th><th>핵심 지시</th><th>산출물</th><th>분량</th>
+  </tr>
+  <tr>
+    <td><strong>A</strong></td><td>2026-04-14 20:15</td>
+    <td>말레이 사회·문화·라이프스타일</td>
+    <td>식습관 / 근무·점심 패턴 / 종교·할랄 / 라마단 / 세대별 디지털 리터러시 / MBTI·사주·심리테스트 / 그룹 결제 / 오락</td>
+    <td><code>research_A.md</code></td><td>2,847 words</td>
+  </tr>
+  <tr>
+    <td><strong>B</strong></td><td>2026-04-14 20:15</td>
+    <td>금융·MLM·돈 문화</td>
+    <td>부동산·대출 / BNPL·신용카드 / 보험·투자 / 뱅킹·현금 비율 / MLM 성공 사례 / 가정 필수품 / B40·M40·T20 / 그룹 결제</td>
+    <td><code>research_B.md</code></td><td>2,100+ words</td>
+  </tr>
+  <tr>
+    <td><strong>C</strong></td><td>2026-04-14 20:15</td>
+    <td>POS × F&amp;B 서비스 랜드스케이프</td>
+    <td>주요 POS 공급자 / 소비자 앱 / 수익 모델 / 2025~2026 신규 서비스 / POS 로열티 통합 / 가맹점 불만 / 소비자 불만 + 파트너 POS 후보 랭킹</td>
+    <td><code>research_C.md</code></td><td>2,400+ words</td>
+  </tr>
+  <tr>
+    <td><strong>D</strong></td><td>2026-04-14 20:15</td>
+    <td>결제 페인포인트</td>
+    <td>A/B/C/D 4분류 (인지·비인지·비희망·불가능) 프레임으로 소비자·가맹점·그룹·구조 4개 도메인 분석</td>
+    <td><code>research_D.md</code></td><td>2,400+ words</td>
+  </tr>
+  <tr>
+    <td><strong>E</strong></td><td>2026-04-14 20:15</td>
+    <td>Web3 × F&amp;B × POS 교차점</td>
+    <td>글로벌 케이스 (Starbucks·Nike·Blackbird 등) / 말레이 크립토 규제 / SEA 스테이블코인 / 진짜 vs 가짜 Web3 / 세금·할랄 / POS 블록체인</td>
+    <td><code>research_E.md</code></td><td>2,847 words</td>
+  </tr>
+  <tr>
+    <td><strong>F</strong></td><td>2026-04-14 20:15</td>
+    <td>공급·수요 갭 (대안 데이터 중심)</td>
+    <td>앱 리뷰·포럼·트렌드 등 대안 데이터 기반 8~12개 구체 갭 추출. 각 갭에 증거·미충족 이유·POS 해결 가능성·수요 규모 기재. <strong>컴파일 핵심 기둥</strong></td>
+    <td><code>research_F.md</code></td><td>3,400+ words</td>
+  </tr>
+  <tr>
+    <td><strong>G</strong></td><td>2026-04-14 21:00</td>
+    <td>2025~2026 최신 데이터 재수집</td>
+    <td>이전 6개 에이전트의 2023 자료 재검증. 최신 출처로 업데이트. 12개 핵심 수치 대상</td>
+    <td><code>research_G_latest.md</code></td><td>3,850 words</td>
+  </tr>
+</table>
+
+<h3>0.7 에이전트 산출물 품질 평가 (명시적 기준 기반)</h3>
+
+<p>평가 기준 7축 (2026-04-14 21:00 수립):</p>
+<ol>
+  <li><strong>출처 수</strong>: 20+ 충분 / 10~20 부족 / &lt;10 미달</li>
+  <li><strong>출처 최신성</strong>: 2025~2026 비중 50%+ 양호 / 30~50% 허용 / &lt;30% 주의</li>
+  <li><strong>1차 출처 비율</strong>: 40%+ 양호 / 20~40% 허용 / &lt;20% 주의</li>
+  <li><strong>주장-근거 매핑</strong>: 주장당 출처 필수</li>
+  <li><strong>수치 교차검증</strong>: 같은 수치 독립 2+ 출처 있는가</li>
+  <li><strong>반대 관점·한계 서술</strong>: 있는가</li>
+  <li><strong>내부 팩트 충돌 점검</strong>: 자체 모순 확인되어 있는가</li>
+</ol>
+
+<table>
+  <tr>
+    <th>에이전트</th><th>출처수</th><th>최신성</th><th>1차 비율</th><th>주장-근거</th><th>교차검증</th><th>반대 관점</th><th>내부 점검</th><th>종합</th>
+  </tr>
+  <tr>
+    <td>A</td><td>20+</td><td>중 (2023~2024 다수)</td><td>중 (~30%)</td><td>O</td><td>부분</td><td>일부</td><td>X</td><td>보통 (M)</td>
+  </tr>
+  <tr>
+    <td>B</td><td>30+</td><td>양호</td><td>양호 (BNM·DOSM·Experian)</td><td>O</td><td>O</td><td>일부</td><td>X</td><td>양호 (M+)</td>
+  </tr>
+  <tr>
+    <td>C</td><td>52</td><td>중 (일부 2023)</td><td>양호</td><td>O</td><td>O</td><td>일부</td><td>X</td><td>양호 (M+)</td>
+  </tr>
+  <tr>
+    <td>D</td><td>25+</td><td>양호</td><td>양호 (BNM 정책문서 직접 인용)</td><td>O</td><td>O</td><td>O (Category A/B/C/D 프레임)</td><td>O</td><td>양호 (M+)</td>
+  </tr>
+  <tr>
+    <td>E</td><td>30+</td><td>양호</td><td>중 (케이스 분석 2차 의존)</td><td>O</td><td>부분</td><td>O (강점)</td><td>X</td><td>보통 (M)</td>
+  </tr>
+  <tr>
+    <td>F</td><td>60+</td><td>중</td><td>중 (대안 데이터 25~35%)</td><td>O</td><td>O</td><td>부분</td><td>X (방법론 공식 미명시)</td><td>보통~양호 (M)</td>
+  </tr>
+  <tr>
+    <td>G</td><td>45+</td><td>양호 (재수집 목적)</td><td>양호 (DOSM·BNM·PayNet)</td><td>O</td><td>O</td><td>일부 (stuck data 명시)</td><td>O (OLD vs NEW 비교)</td><td>양호 (M+)</td>
+  </tr>
+</table>
+
+<div class="callout warn">
+<strong>평가 수정 노트 (2026-04-14 21:00)</strong>: 이전에 일부 에이전트를 "매우 우수"로 분류한 건 기준 없는 감각적 표현이었음. 기준표 수립 후 재평가 결과 전부 Medium 또는 Medium+. 재교육 없이 사용하되 컴파일 시 신뢰도 태그(H/M/L) 명시.
+</div>
+
+<h3>0.8 팩트 충돌 투명 공개</h3>
+<p>에이전트 간·내부 데이터 간 충돌 발견된 4건. 해소 방식 명시.</p>
+
+<table>
+  <tr><th>#</th><th>충돌</th><th>값 1</th><th>값 2</th><th>해소</th><th>이유</th></tr>
+  <tr>
+    <td>1</td>
+    <td>BonusLink 회원수</td>
+    <td>14.9M (blink.my 공식)</td>
+    <td>12M (StoreHub blog) / 8M (Agent G 현재 앱)</td>
+    <td>14.9M 기본 채택 · 다른 수치 각주 병기</td>
+    <td>1차 공식 출처 우선 · 다만 "total vs active" 정의 차이 가능성 추후 확인</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>식품 배달 시장 점유율</td>
+    <td>GrabFood 64% / Foodpanda 63% (Momentum Asia Q1 2023, Transaction share)</td>
+    <td>GrabFood 79% (Statista 2023, Consumer preference)</td>
+    <td>측정 방법 명시해 분리 표기</td>
+    <td>측정 단위가 다름 (거래 점유 vs 선호율). 같은 축으로 비교 불가</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>말레이 무슬림 비율</td>
+    <td>55% (A) / 60%+ (E) / 70% (F)</td>
+    <td>63.5% (DOSM 2020 Census · Agent G)</td>
+    <td><strong>63.5% 채택</strong></td>
+    <td>정부 공식 전수 조사 &gt; 2차 추정. 다른 수치는 편차 원인 미확인 → 각주 기재</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>e-wallet 시장 점유</td>
+    <td>TnG 38.3% (2023)</td>
+    <td>TnG 94% (2025 Agent G)</td>
+    <td>측정 방법 확인 필요 · 잠정 94%(2025) 우선, 38.3%(2023) 병기</td>
+    <td>"시장 점유율"과 "유저 중 사용률"이 다른 축. Agent G 수치 재검증 필요 (open issue)</td>
+  </tr>
+</table>
+
+<h3>0.9 주요 약어·용어</h3>
+<p>본 문서에서 반복 사용되는 약어. 상세 정의는 <code>shardlab_research.html</code>의 용어집 참조.</p>
+<table>
+  <tr><th>약어</th><th>정의</th></tr>
+  <tr><td>POS</td><td>Point of Sale — 가맹점 결제·주문 단말기/시스템</td></tr>
+  <tr><td>BNM</td><td>Bank Negara Malaysia — 말레이시아 중앙은행</td></tr>
+  <tr><td>DOSM</td><td>Department of Statistics Malaysia — 말레이 통계청</td></tr>
+  <tr><td>SC Malaysia</td><td>Securities Commission Malaysia — 증권위</td></tr>
+  <tr><td>LHDN</td><td>Lembaga Hasil Dalam Negeri — 말레이 국세청</td></tr>
+  <tr><td>JAKIM</td><td>Department of Islamic Development Malaysia — 할랄 인증 주관</td></tr>
+  <tr><td>PayNet</td><td>Payments Network Malaysia — DuitNow 운영사</td></tr>
+  <tr><td>DuitNow</td><td>말레이 국가 결제 표준 (QR · A2A 포함)</td></tr>
+  <tr><td>PDPA</td><td>Personal Data Protection Act — 말레이 개인정보보호법</td></tr>
+  <tr><td>B40 / M40 / T20</td><td>가구소득 계층 — 하위 40% / 중위 40% / 상위 20%</td></tr>
+  <tr><td>MDR</td><td>Merchant Discount Rate — 가맹점 결제 수수료율</td></tr>
+  <tr><td>BNPL</td><td>Buy Now Pay Later — 후불 결제</td></tr>
+  <tr><td>SME</td><td>Small and Medium Enterprise — 중소기업 (Micro &lt; RM 300k, Small &lt; RM 15M, Medium &lt; RM 50M)</td></tr>
+  <tr><td>e-invoicing</td><td>LHDN 지정 XML 포맷 전자세금계산서 · 2026.01~ 단계 의무화</td></tr>
+  <tr><td>POS 레버리지</td><td>2만+ POS 네트워크라는 과제 핵심 자산을 제품 가치의 원천으로 쓰는 것. "POS 없으면 불가능한 기능"만 레버리지 성립. 자동 적립·대기 가시성 = 성립. 예약·쿠폰·컨시어지 = 미성립</td></tr>
+  <tr><td>컨시어지 (Concierge)</td><td>요청 대행·우선 처리·개인 맞춤 프리미엄 서비스. 가이드(정보 제공)와 구분. v1 A 방향 미사용</td></tr>
+  <tr><td>Third Place</td><td>집·직장 외의 제3의 공간 (Ray Oldenburg). v1 제품 내러티브 중심 개념</td></tr>
+  <tr><td>Hawker / Hawker center</td><td>말레이·싱가포르의 정부 관리 공공 음식 스탠드 집합소. 수십~수백 개 개별 운영 스탠드가 한 공간에 밀집, 공용 좌석. 다민족 메뉴 공존. 저가 (RM 8~15). 독립 가맹점 73.5% 구조의 핵심. KL Jalan Alor · Penang Gurney Drive 등 대표</td></tr>
+  <tr><td>Kopitiam</td><td>하이난계 기원 전통 커피숍. 조식·간단식·노년층 사교 공간 기능. 가정 요리 분위기. Hawker center보다 작고 정적</td></tr>
+  <tr><td>Mamak</td><td>인도계 무슬림 운영 24시간 식당. 할랄 인증. Roti canai·teh tarik 특화. 심야 영업</td></tr>
+  <tr><td>Food court</td><td>쇼핑몰 내부 음식 집합소. 에어컨·정돈 좌석. 10~20개 스탠드. 가격 RM 12~25. Hawker center보다 정돈·고가</td></tr>
+  <tr><td>KL</td><td>Kuala Lumpur — 말레이시아 수도·경제 중심. 주요 상업지구: KLCC · Bukit Bintang · Bangsar · Mid Valley · TRX. Klang Valley 중심 도시</td></tr>
+  <tr><td>Klang Valley</td><td>KL + Petaling Jaya + Shah Alam + Subang Jaya + Klang 등 KL 광역권 전체. 약 900만 명 거주 (말레이 인구의 ~26%)</td></tr>
+  <tr><td>점심 피크 (12~14시)</td><td>본 문서에서 내가 "점심 창"이라 줄여 쓴 것. 직장인 법정 1시간 unpaid 점심이 집중 몰리는 2시간 구간. F&amp;B 수요 최대 밀도</td></tr>
+  <tr><td>Dewan Bandaraya</td><td>말레이시아 시청 — hawker center·상업 시설 면허·위생 감독</td></tr>
+</table>
+
+<h3>0.10 주요 미해결 질문 (Open Issues)</h3>
+<ol>
+  <li>BonusLink 회원수: 공식 14.9M vs 현재 앱 8M — 정의 차이(total/active)인지 실제 감소인지 확인 필요</li>
+  <li>말레이 무슬림 비율: 본 문서는 DOSM Census 2020의 63.5% 채택. 2025 업데이트 발표 여부 재확인</li>
+  <li>Agent F 스코어링 공식: 단순 평균인지 가중 평균인지 F가 명시 안 함</li>
+  <li>StoreHub 인용 "단골 67%·4배" 수치 원출처: 자체 조사인지 외부 인용인지 미확인</li>
+  <li>식품 배달 시장 점유율 측정 기준: Transaction share vs Consumer preference 중 의사결정 근거로 어느 쪽 우선인지</li>
+  <li>e-wallet 점유 94%(2025) vs 38.3%(2023): 측정 축 확인 필요</li>
+  <li>환율 1 USD = 4.45 MYR (추정): BNM 공식 2026-04 월 평균환율 재확인</li>
+  <li>F의 POS-Addressability 편향: 소비자 측 갭이 정말 작은지, POS 중심 평가 편향인지 분리 검증 (섹션 7)</li>
+</ol>
+
+<h3>0.11 본 문서 작성 계획</h3>
+<table>
+  <tr><th>섹션</th><th>주제</th><th>상태</th><th>예상 분량</th></tr>
+  <tr><td>0</td><td>메타</td><td><span class="tag tag-done">완료</span></td><td>현재 분량</td></tr>
+  <tr><td>1</td><td>소비자 외식·라이프스타일</td><td><span class="tag tag-done">완료 (21:40)</span></td><td>中</td></tr>
+  <tr><td>2</td><td>금융·결제 맥락</td><td><span class="tag tag-done">완료 (21:50)</span></td><td>中</td></tr>
+  <tr><td>3</td><td>POS × F&amp;B 랜드스케이프</td><td><span class="tag tag-done">완료 (22:10)</span></td><td>中</td></tr>
+  <tr><td>4</td><td>결제 페인포인트 4분류</td><td><span class="tag tag-done">완료 (22:15)</span></td><td>中</td></tr>
+  <tr><td>5</td><td>12개 시장 갭</td><td><span class="tag tag-done">완료 (22:35)</span></td><td><strong>大 (핵심)</strong></td></tr>
+  <tr><td>6</td><td>Web3 교차점</td><td><span class="tag tag-done">완료 (23:00)</span></td><td>小~中</td></tr>
+  <tr><td>7</td><td>종합 시사점 · F 방법론 재평가</td><td><span class="tag tag-done">완료 (23:05)</span></td><td><strong>大 (의사결정 집약)</strong></td></tr>
+  <tr><td>8</td><td>팩트 충돌·신뢰도 노트</td><td><span class="tag tag-done">완료 (23:30)</span></td><td>小</td></tr>
+  <tr><td>9</td><td>다음 단계</td><td><span class="tag tag-done">완료 (23:35)</span></td><td>小</td></tr>
+  <tr><td>10</td><td>시장 세분화 (Segmentation)</td><td><span class="tag tag-done">완료 (00:10)</span></td><td><strong>大 (재검증·파일럿 제안)</strong></td></tr>
+</table>
+
+<div class="callout key">
+<strong>다음 턴 계획</strong>: Section 1 (소비자 외식·라이프스타일)부터 착수. 식습관·근무·종교·세대 등 research_A 소화 + 최신 데이터 교차. 대안 데이터 인용 시 정형 출처 교차 확인 원칙 적용.
+</div>
+
+<!-- Section 1~9 자리표시자 -->
+<h2 id="section-1" class="updated-heading">Section 1 — 소비자 외식·라이프스타일 <span class="update-stamp">2026-04-14 작성<span class="ustamp-time">21:40 KST</span></span></h2>
+
+<p>본 섹션은 말레이시아 소비자가 <strong>언제·어디서·왜</strong> 외식하는지 구조를 팩트로 정리한다. 타겟 세그먼트·페르소나 설계의 기초 데이터.</p>
+
+<h3>1.1 식사 패턴 구조 (조식·점심·석식)</h3>
+<table>
+  <tr><th>지표</th><th>수치</th><th>출처·신뢰도</th></tr>
+  <tr><td>아시아식 조식 섭취자</td><td>50.7%</td><td>Malaysian Adults Nutrition Survey <span class="tag tag-h">H</span></td></tr>
+  <tr><td>서양식 조식 섭취자</td><td>26.1%</td><td>MANS <span class="tag tag-h">H</span></td></tr>
+  <tr><td>조식 스킵</td><td>17.6%</td><td>MANS <span class="tag tag-h">H</span></td></tr>
+  <tr><td>외식 빈도 — 주 수회</td><td>43%</td><td>Statista/Innova <span class="tag tag-h">H</span></td></tr>
+  <tr><td>외식 빈도 — 매일</td><td>19%</td><td>Statista/Innova <span class="tag tag-h">H</span></td></tr>
+  <tr><td>매장 dine-in 비중 (foodservice 창구 중)</td><td>64%</td><td>Innova/과제 브리프 <span class="tag tag-m">M</span></td></tr>
+  <tr><td>배달 시장 규모 (2023)</td><td>USD 2.7B → 2032 USD 6.1B (CAGR 9.5%)</td><td>Innova Market Insights <span class="tag tag-m">M</span></td></tr>
+  <tr><td>배달이 F&amp;B 총매출 차지 비중</td><td>약 18~20% (USD 2.7B ÷ 14.75B)</td><td>계산치 <span class="tag tag-m">M</span></td></tr>
+</table>
+
+<h4>구체 예시 — KL 직장인 전형적 하루</h4>
+<ul>
+  <li><strong>07:30~08:30</strong> — 출근길 kopitiam 또는 mamak에서 roti canai + teh tarik (RM 6~10)</li>
+  <li><strong>12:00~13:00</strong> — 회사 근처 food court 또는 hawker center (RM 10~15)</li>
+  <li><strong>19:00~21:00</strong> — 매장 dine-in, hawker, 또는 가족과 가정 식사</li>
+</ul>
+
+<h4>해석</h4>
+<ul>
+  <li><strong>점심 창(12~14시)이 가장 밀집한 F&amp;B 수요 피크</strong> — 우리 앱의 개입 골든 타임</li>
+  <li>매장 식사 64%로 여전히 지배적 → 제품 핵심 가치는 "배달"이 아닌 "매장 방문 시점 가치"</li>
+  <li>배달 18~20%도 결코 무시 불가. v1은 "매장 우선, 배달 보조" 포지셔닝이 합리적</li>
+</ul>
+
+<h3>1.2 Kopitiam·Hawker 문화 — 독립 가맹점 73.5% 구조의 근원</h3>
+
+<table>
+  <tr><th>지표</th><th>수치</th><th>출처·신뢰도</th></tr>
+  <tr><td>거리음식·Hawker 비중 (모든 식사 중)</td><td>34%</td><td>RestroWorks <span class="tag tag-m">M</span></td></tr>
+  <tr><td>Takeaway/delivery 포함 시</td><td>43%</td><td>RestroWorks <span class="tag tag-m">M</span></td></tr>
+  <tr><td>25~34세 거리음식/Hawker 선호율</td><td>69%</td><td>RestroWorks <span class="tag tag-l">L — 단일 출처</span></td></tr>
+  <tr><td>독립 가맹점 시장 점유</td><td>73.5%</td><td>Credence Research / 과제 브리프 <span class="tag tag-m">M</span></td></tr>
+</table>
+
+<h4>Kopitiam 역사·기능</h4>
+<p>Kopitiam(咖啡店)은 식민 시대 영국 가정에서 일하던 하이난계 요리사들이 독립해 만든 전통 커피숍. 1960년대부터 노동자 계층 사교 공간이 됐고 현재도:</p>
+<ul>
+  <li>노년층 정치·사회 토론 공간 ("coffee shop talk")</li>
+  <li>직장인 빠른 조식 (07:00~08:30)</li>
+  <li>배달·택시 기사 중식·간단 식사</li>
+  <li>젊은 세대의 "레트로 힙" 재발견</li>
+</ul>
+
+<h4>Hawker center 다민족 구조</h4>
+<p>한 hawker center에 <strong>nasi lemak (말레이), char kway teow (중국), roti canai (인도)</strong> 스탠드가 나란히 있어 다민족 식사 공간이 되는 것이 일반적. Penang Gurney Drive, KL Jalan Alor 같은 유명 지역은 관광지이자 현지인 일상 공간.</p>
+
+<h4>해석</h4>
+<ul>
+  <li>독립 가맹점 73.5% 비중은 <strong>수십 년 축적된 소규모 자영 문화의 결과</strong>. 단기 파괴 불가</li>
+  <li>우리 제품의 기회이자 장벽: 독립 가맹점에 접근 가능하면 거대 시장, 접근 실패 시 제품 가치 급락</li>
+  <li>기존 coalition 프로그램(BonusLink·GrabRewards)이 못 닿는 73.5% 영역 = 경쟁 공백</li>
+</ul>
+
+<h3>1.3 근무·점심 의례 — 12~2pm 1시간 보호 창</h3>
+
+<table>
+  <tr><th>지표</th><th>수치</th><th>출처·신뢰도</th></tr>
+  <tr><td>주간 법정 최대 근무시간</td><td>45시간 (2022 48→45 축소)</td><td>Employment Act 1955 <span class="tag tag-h">H</span></td></tr>
+  <tr><td>표준 근무 시간</td><td>9:00~18:00 (점심 1시간)</td><td>Employment Act <span class="tag tag-h">H</span></td></tr>
+  <tr><td>점심 시간 — unpaid 별도 보장</td><td>1시간 (12:00~14:00 창)</td><td>Swingvy/Employment Act <span class="tag tag-h">H</span></td></tr>
+  <tr><td>워크라이프 밸런스 최우선 응답</td><td>42.3%</td><td>Randstad <span class="tag tag-m">M</span></td></tr>
+  <tr><td>워크라이프 밸런스 부족 퇴사 고려</td><td>58.3%</td><td>Randstad <span class="tag tag-m">M</span></td></tr>
+</table>
+
+<h4>점심 창 구체 시나리오 (KL 기준)</h4>
+<ul>
+  <li><strong>11:30~</strong>: 사무실 건물에서 "점심 탈출 러시" 시작</li>
+  <li><strong>12:00~12:30</strong>: 근처 hawker center/food court 대기 20~40분</li>
+  <li><strong>13:00~13:45</strong>: 테이블 회전 2~3회</li>
+  <li><strong>14:00~</strong>: 창 종료, 사무실 복귀</li>
+</ul>
+
+<h4>한국 palli-palli 문화와의 차이</h4>
+<ul>
+  <li>말레이: 점심 1시간을 <strong>의례적 보호 창으로 유지</strong>. 스킵·책상 식사 문화 약함</li>
+  <li>한국: 점심 30~45분 압축 가능, 스킵도 흔함</li>
+  <li>결과: 말레이 직장인의 <strong>점심 소비 빈도·규모가 한국 대비 안정적</strong></li>
+</ul>
+
+<h4>해석</h4>
+<div class="callout key">
+<strong>이 1시간이 우리 앱의 핵심 개입 창</strong>. 사전 주문·혼잡 예측·자동 적립·근처 가게 발견 기능이 이 밀집 수요 시간에 정확히 작동하면 제품 가치 가장 높음.
+</div>
+
+<h3>1.4 할랄 생태계 — MVP 탈락 결정 (핵심 요약)</h3>
+
+<div class="callout warn">
+<strong>결정 (2026-04-14 21:30 KST)</strong>: 할랄 기능 v1 MVP에서 <strong>완전 배제</strong>. 상세 근거는 <code>shardlab_research.html</code>의 의사결정 일지 참조.
+</div>
+
+<table>
+  <tr><th>지표</th><th>수치</th><th>출처·신뢰도</th></tr>
+  <tr><td>말레이 무슬림 비율</td><td>63.5%</td><td>DOSM Census 2020 <span class="tag tag-h">H</span></td></tr>
+  <tr><td>독립 가맹점 JAKIM 인증률 (추정)</td><td>40~50%</td><td>ASSUMPTION <span class="tag tag-l">L</span></td></tr>
+  <tr><td>비무슬림·관광객 F&amp;B 소비 기여도</td><td>30~40%</td><td>인구·일인당 외식 추정 <span class="tag tag-l">L</span></td></tr>
+</table>
+
+<div class="assumption">
+독립 가맹점의 50~60%가 무인증 상태로 영업을 유지할 수 있는 이유는 비무슬림·중국계·관광객·Moderate 무슬림 시장이 30~40% 존재하기 때문. Klang Valley·Penang 도심은 이 비중이 더 높음.
+</div>
+
+<p><strong>MVP 탈락 핵심 근거 6가지</strong>:</p>
+<ol>
+  <li>무인증 영업 가능 — 독립 가맹점 50~60%가 비무슬림 시장으로 생존</li>
+  <li>Klang Valley·Penang 도심 비무슬림 비중 높음 — 1차 타겟 지역 구조적 유리</li>
+  <li>Strict 무슬림은 JAKIM 포털 자체 확인 가능 — 우리 앱 추가 가치 낮음</li>
+  <li>JAKIM API 파트너십 필요 — 72h·12주 범위 초과</li>
+  <li>가맹점 인증 전환 비용 과도 — 강요 의미 없음</li>
+  <li>가성비 구조적 열위 (캡틴 판단)</li>
+</ol>
+
+<p>Section 5·7에서 해당 갭 재평가 시 <strong>기능 구현 불필요</strong>에 초점을 맞춰 근거 모은다. 이후 섹션에서 할랄 부분은 핵심만 요약.</p>
+
+<h3>1.5 라마단 사이클 — 집중 수요 스파이크</h3>
+<table>
+  <tr><th>지표</th><th>수치</th><th>출처·신뢰도</th></tr>
+  <tr><td>라마단 중 F&amp;B 최우선 지출 응답 무슬림</td><td>72%</td><td>TGM Research <span class="tag tag-m">M</span></td></tr>
+  <tr><td>라마단 식품 낭비 증가</td><td>15~20%</td><td>WWF-Malaysia <span class="tag tag-m">M</span></td></tr>
+  <tr><td>호텔·FSR의 라마단 매출 집중</td><td>연 매출의 20~30%</td><td>업계 추정 <span class="tag tag-l">L</span></td></tr>
+</table>
+<ul>
+  <li>이프타르(Iftar, 저녁 단식 해제) 뷔페·라마단 바자가 1개월 매출 폭증 드라이버</li>
+  <li>가족·친지 대규모 그룹 식사 (15~30인) — 사전 예약·메뉴 조율 수요 급증</li>
+  <li><strong>v1 론칭이 라마단과 겹치면 기회</strong>: 2027 라마단 ≈ 2월 17일 시작 (ASSUMPTION - 이슬람 달력 기반 추정, 정확 날짜 재확인 필요)</li>
+  <li>단, 할랄 배제 결정과 맞물려 <strong>v1에 라마단 특화 기능 불필요</strong>. 일반 예약·혼잡 예측 기능이 라마단 수요도 자연 커버</li>
+</ul>
+
+<h3>1.6 세대별 디지털·결제 리터러시</h3>
+
+<table>
+  <tr><th>세대</th><th>출생 범위</th><th>디지털 특성</th><th>결제 특성</th></tr>
+  <tr><td>Gen Z</td><td>1997~2012</td><td>100% 스마트폰. TikTok 81%, YouTube 77%, Instagram 70% <span class="tag tag-m">M</span></td><td>e-wallet 네이티브, QR 결제 기본값</td></tr>
+  <tr><td>Millennial</td><td>1981~1996</td><td>디지털 전환 세대. e-commerce 경험</td><td>e-wallet + 신용카드 혼용. BNPL 주 소비층</td></tr>
+  <tr><td>Gen X</td><td>1965~1980</td><td>최대 tech skills gap. 실용·편의 추구</td><td>신용카드·은행 앱 선호. e-wallet 선택적</td></tr>
+  <tr><td>Boomer+</td><td>pre-1965</td><td>디지털 채널 의심. Face-to-face 선호</td><td>현금 지배적</td></tr>
+</table>
+
+<h4>e-wallet 사용률 세부</h4>
+<ul>
+  <li>전체 Malaysian e-wallet 사용률: <strong>64%</strong> (Adyen 2024) <span class="tag tag-h">H</span></li>
+  <li>Early adopter: 18~25세 도시 여성 (Upstack) <span class="tag tag-m">M</span></li>
+  <li>Late adopter: 61~65세 비도시 기혼 남성</li>
+  <li>도시 e-wallet 63.8% vs 비도시 36.5% (SoyaCincau) <span class="tag tag-m">M</span></li>
+</ul>
+
+<h4>해석</h4>
+<div class="callout key">
+<strong>v1 핵심 타겟: Millennial + Gen Z 도시 직장인 (25~35세)</strong>. 이 세그먼트는 e-wallet·QR·P2P 송금에 이미 능숙해 별도 교육·설득 비용 최소화. 나머지 세대는 v2+ 확장 대상.
+</div>
+
+<h3>1.7 그룹 다이닝 + 더치페이 문화 변화</h3>
+
+<h4>세대별 그룹 결제 규범 이동</h4>
+<table>
+  <tr><th>세대</th><th>규범</th><th>근거</th></tr>
+  <tr><td>Gen X+</td><td>초청자·연장자 전액 지불. 위계 표현 (생색 아님)</td><td>Mabel Kwong <span class="tag tag-l">L — 2차 블로그</span></td></tr>
+  <tr><td>Gen Z·Millennial</td><td>n-way split 일반화. DuitNow P2P 즉시 송금</td><td>Splitty/PayNet <span class="tag tag-m">M</span></td></tr>
+  <tr><td>공통 퍼포먼스</td><td>"내가 낸다" 외치기 → 가장 늦게 지갑 꺼낸 사람이 결국 지불</td><td>문화 관찰 <span class="tag tag-l">L</span></td></tr>
+</table>
+
+<h4>결제 인프라 — DuitNow P2P 지배</h4>
+<ul>
+  <li>DuitNow P2P 특징: 휴대폰 번호·NRIC·email로 즉시 송금. 은행 계좌 공유 불필요 <span class="tag tag-h">H</span></li>
+  <li>이용자 수: 19M+ (2023 말) <span class="tag tag-h">H</span></li>
+  <li>Touch 'n Go, GrabPay, Boost 모두 P2P 송금 지원 (자체 wallet 간 or DuitNow 경유)</li>
+</ul>
+
+<h4>해석</h4>
+<div class="callout key">
+<strong>그룹 n-way split 마찰이 Agent D가 꼽은 Category B 미인지 페인포인트 1순위</strong>. 기존 e-wallet 어디도 native bill-split 기능 없음. 단 "결제 자체"는 라이선스 제약. 우리는 <strong>계산만 해주고 실제 송금은 DuitNow로 위임하는 레이어</strong>로 구현 가능.
+</div>
+
+<h3>Section 1 요약 — 핵심 시사점</h3>
+<ol>
+  <li><strong>점심 창 12~14시가 개입 골든 타임</strong> — 제품의 핵심 가치 이 순간에 집중</li>
+  <li><strong>독립 73.5% 구조가 기회이자 장벽</strong> — POS 파트너십 결정적</li>
+  <li><strong>Millennial·Gen Z 도시 직장인이 v1 타겟</strong> — e-wallet 네이티브 세그먼트</li>
+  <li><strong>매장 dine-in 64%가 핵심 시나리오</strong> — 배달 아닌 "결제 순간 가치"로 포지셔닝</li>
+  <li><strong>할랄 기능 v1 배제 확정</strong> — 비무슬림 시장 30~40%로 충분, 구현 ROI 열위</li>
+  <li><strong>그룹 결제 n-way split가 미인지 페인포인트</strong> — v1~v2 유력 기능 후보</li>
+</ol>
+
+<h2 id="section-2" class="updated-heading">Section 2 — 금융·결제 맥락 <span class="update-stamp">2026-04-14 작성<span class="ustamp-time">21:50 KST</span></span></h2>
+
+<p>제품의 수익 모델·리스크·규제 제약을 정하려면 소비자 재정 구조와 결제 인프라를 팩트로 알아야 한다. Web3·크립토는 <strong>당장 구현 불가</strong>이므로 핵심만 요약, 상세는 Section 6에서.</p>
+
+<h3>2.1 소득 계층 B40/M40/T20 — 타겟 우선순위의 기반</h3>
+
+<table>
+  <tr><th>계층</th><th>월 가구소득 (MYR)</th><th>USD 환산</th><th>순수입 (after expenses)</th><th>출처·신뢰도</th></tr>
+  <tr><td>B40 (하위 40%)</td><td>&lt; RM 5,249 (2025 업데이트)</td><td>&lt; USD 1,180</td><td>RM 230/월</td><td>DOSM HIES 2024 · iMoney <span class="tag tag-h">H</span></td></tr>
+  <tr><td>M40 (중위 40%)</td><td>RM 5,250 ~ 10,970</td><td>USD 1,181~2,466</td><td>RM 1,127/월</td><td>CIMB/iMoney <span class="tag tag-h">H</span></td></tr>
+  <tr><td>T20 (상위 20%)</td><td>&gt; RM 10,971</td><td>&gt; USD 2,466</td><td>RM 4,081/월</td><td>iMoney <span class="tag tag-h">H</span></td></tr>
+  <tr><td>중위 가구소득</td><td>RM 6,338 (HIES 2022)</td><td>USD 1,424</td><td>—</td><td>CIMB <span class="tag tag-h">H</span></td></tr>
+</table>
+
+<h4>핵심 동향 — M40 squeeze</h4>
+<ul>
+  <li>Pandemic 후 M40의 <strong>20%가 B40으로 하락</strong> — 가계 재정 취약성 증가 (PMC) <span class="tag tag-m">M</span></li>
+  <li>B40: 소득 60%가 기본 생활비. 여유 자금 거의 없음 (Planning Malaysia) <span class="tag tag-m">M</span></li>
+  <li>M40: BNPL·개인대출 주 소비층. 절약 동기 강하나 재정 관리 능력 편차</li>
+</ul>
+
+<div class="callout key">
+<strong>v1 핵심 타겟: M40 도시 직장인 (RM 5,250~10,970, 25~35세)</strong>. 이유: 소비 여력 있고 절약 동기도 강한 "가장 크고 가장 마진 있는 세그먼트". B40은 할인·쿠폰 중심 접근, T20은 프리미엄 UX — v2+ 확장 대상.
+</div>
+
+<h3>2.2 BNPL 폭증 + 연체 리스크 — 양면성</h3>
+
+<table>
+  <tr><th>지표</th><th>수치</th><th>출처·신뢰도</th></tr>
+  <tr><td>BNPL 시장 규모</td><td>USD 2.52B (2025) → USD 4.22B (2030)</td><td>Globenewswire <span class="tag tag-h">H</span></td></tr>
+  <tr><td>활성 유저</td><td>5.1M명 (H2 2024)</td><td>Globenewswire <span class="tag tag-h">H</span></td></tr>
+  <tr><td>반기 소비 규모</td><td>RM 7.1B (H2 2024)</td><td>Globenewswire <span class="tag tag-h">H</span></td></tr>
+  <tr><td>지배적 3개 제공자 거래 점유</td><td>97% (Shopee PayLater · Grab PayLater · Atome)</td><td>Globenewswire <span class="tag tag-m">M</span></td></tr>
+  <tr><td><strong>신규 디지털 대출자 연체율</strong></td><td><strong>1/3 (33%)</strong></td><td>BNM <span class="tag tag-h">H</span></td></tr>
+</table>
+
+<h4>규제 변화</h4>
+<ul>
+  <li><strong>Consumer Credit Act</strong> 2025년 7월 시행 → BNPL 라이선스 의무화, 소비자 보호 강화</li>
+  <li>AKPK(신용상담·채무관리청) 구조조정 중 부채 RM 35.2B (USD 7.9B)</li>
+</ul>
+
+<h4>해석 — v1 제품 설계 시사</h4>
+<ul>
+  <li>우리 v1은 BNPL 직접 제공 불가 (BNM 라이선스 필요). 파트너십 여부는 v2+ 검토</li>
+  <li>M40 타겟의 절반가량이 BNPL 의존 → "누적 지출 추적·경고" 기능이 소비자 가치 될 수 있음</li>
+  <li>연체율 33% = 소비자 재정 불안정성 신호 → 우리 리워드가 "더 쓰게 만드는" 방향이면 <strong>윤리적으로·규제적으로 리스크</strong>. "리워드 = 합리적 선택" 톤 유지 필요</li>
+</ul>
+
+<h3>2.3 e-wallet · DuitNow · 현금 — 혼재 결제 환경</h3>
+
+<table>
+  <tr><th>지표</th><th>수치</th><th>출처·신뢰도</th></tr>
+  <tr><td>e-wallet 전체 사용률</td><td>64% (2024)</td><td>Adyen Index <span class="tag tag-h">H</span></td></tr>
+  <tr><td>TnG 점유 (e-wallet 유저 중)</td><td>94% (2025)</td><td>Agent G <span class="tag tag-m">M — 재검증 필요</span></td></tr>
+  <tr><td>DuitNow QR 거래 건수</td><td>8.7억(2024) → <strong>30억(2025, +244%)</strong></td><td>PayNet <span class="tag tag-h">H</span></td></tr>
+  <tr><td>1인당 e-payment 연 거래</td><td>409건(2024) → 538건(2025, +31.5%)</td><td>BNM Annual Report <span class="tag tag-h">H</span></td></tr>
+  <tr><td>QR 결제 도입률</td><td>글로벌 2위 (61.5%, 1위 중국 67.4%)</td><td>Fintech News Malaysia <span class="tag tag-h">H</span></td></tr>
+  <tr><td>현금 사용 — 도시</td><td>36.2% (일상 구매)</td><td>BNM <span class="tag tag-h">H</span></td></tr>
+  <tr><td>현금 사용 — 비도시</td><td>63.5%</td><td>BNM <span class="tag tag-h">H</span></td></tr>
+  <tr><td>"자주" 현금 사용 응답</td><td>89%</td><td>Fintech News Malaysia <span class="tag tag-m">M</span></td></tr>
+</table>
+
+<h4>주요 e-wallet 4강</h4>
+<ul>
+  <li><strong>Touch 'n Go eWallet (TnG)</strong> — 대중교통·톨·결제 통합. 가장 넓은 사용</li>
+  <li><strong>GrabPay</strong> — Grab 슈퍼앱 생태계 (ride-hailing · food · 택배 · 결제)</li>
+  <li><strong>Boost</strong> — Axiata 소유. 통신사 연계 프로모션 강점</li>
+  <li><strong>MAE by Maybank2</strong> — 은행 앱 기반. 신뢰도 높음, 보수 소비자 선호</li>
+  <li><strong>ShopeePay</strong> — Shopee 커머스 생태계 연동</li>
+</ul>
+
+<h4>해석</h4>
+<ul>
+  <li><strong>현금이 여전 강력</strong>. 특히 비도시 63.5%. 우리 앱은 현금 결제 시나리오도 커버 필요 (영수증 QR 스캔 적립 등)</li>
+  <li>DuitNow QR 3배 성장 = 결제 인프라 표준화 가속. 우리 앱 결제 트리거 연동 현실적</li>
+  <li>4강 e-wallet 병존 → 통합 리워드 aggregator(우리 앱)의 가치 ↑</li>
+</ul>
+
+<h3>2.4 MLM·직접판매 — 문화 배경 (v1 범위 밖)</h3>
+<p>핵심 요약 — v1 직접 접점 낮음, 문화 배경 이해용.</p>
+<ul>
+  <li>MLM·Direct Selling 배급자 <strong>800만 명 (63% 여성)</strong> — 가구 기준 20%+ 가정에 최소 1명 관여 <span class="tag tag-h">H</span></li>
+  <li>산업 연 매출 RM 7.1B (DSAM 2023). Amway·QNet·Cosway·Elken·Hai-O 등 주력</li>
+  <li>정부 DSAM 감독으로 <strong>정당화된 수익 구조</strong> — 한국 불법·회색 이미지와 다름</li>
+  <li><strong>v1 직접 관련 없음</strong>. 단 부업·추가 소득 문화가 강하다는 신호 → "저렴한 외식" 수요 기반 설명</li>
+</ul>
+
+<h3>2.5 크립토·디지털 자산 — 핵심 요약 (v1 구현 불가)</h3>
+
+<div class="callout warn">
+<strong>결정 (2026-04-14)</strong>: 크립토·Web3 기능은 v1 <strong>소비자 UX에 노출 금지</strong>. 백엔드 인프라 수준에서만 검토. 상세는 Section 6.
+</div>
+
+<table>
+  <tr><th>지표</th><th>수치·현황</th><th>출처·신뢰도</th></tr>
+  <tr><td>활성 크립토 유저</td><td>6.2M (2025)</td><td>Agent E/G <span class="tag tag-m">M</span></td></tr>
+  <tr><td>SC 등록 DAX (Digital Asset Exchange)</td><td>6개 (Luno·Tokenize·MX Global·SINEGY 등)</td><td>SC Malaysia <span class="tag tag-h">H</span></td></tr>
+  <tr><td>Chainalysis Global Adoption</td><td>47위 (2024) — 2023 38위에서 <strong>하락</strong></td><td>Chainalysis <span class="tag tag-h">H</span></td></tr>
+  <tr><td>거래량 YoY 성장</td><td>RM 5.4B(2023) → RM 13.9B(2024), +157%</td><td>Oppotus <span class="tag tag-m">M</span></td></tr>
+  <tr><td>암호화폐 인지도</td><td>92% (Q3 2024)</td><td>Oppotus <span class="tag tag-m">M</span></td></tr>
+</table>
+
+<ul>
+  <li><strong>규제 구조</strong>: BNM (결제·금융 안정성) + SC Malaysia (증권·디지털 자산) 이중 감독. 크립토는 법정통화 아님 — 결제 수단 허용 안 됨</li>
+  <li><strong>Fasset 2025 선례</strong>: 스테이블코인 기반 Islamic Digital Bank BNM 라이선스 취득. 샌드박스 12~24개월</li>
+  <li><strong>ShardLab 한계</strong>: 72h·12주 기간 내 크립토 소비자 UX 구현 불가. v2+에서 백엔드 레이어로만 검토</li>
+</ul>
+
+<h3>2.6 금융 리터러시 — 소비자 부채 상태</h3>
+
+<table>
+  <tr><th>지표</th><th>수치</th><th>출처·신뢰도</th></tr>
+  <tr><td><strong>가계 부채/GDP 비율</strong></td><td>84.3% (2025) — ASEAN 최고 수준</td><td>data.gov.my <span class="tag tag-h">H</span></td></tr>
+  <tr><td>DMP 참여자 — 재무 계획 실패 자인</td><td>38%</td><td>AFI Global <span class="tag tag-m">M</span></td></tr>
+  <tr><td>DMP 참여자 — 생활비 상승 원인 지목</td><td>31%</td><td>AFI Global <span class="tag tag-m">M</span></td></tr>
+  <tr><td>AKPK 구조조정 중 부채</td><td>RM 35.2B (USD 7.9B)</td><td>BNM <span class="tag tag-m">M</span></td></tr>
+</table>
+
+<h4>주요 연체 원인 (구성비)</h4>
+<ul>
+  <li>개인 대출: <strong>27.76%</strong></li>
+  <li>할부 구매: <strong>24.73%</strong></li>
+  <li>주택 담보: 14.09%</li>
+  <li>신용카드: 9.91%</li>
+</ul>
+
+<h4>행동 편향</h4>
+<ul>
+  <li>자기통제 편향 — 과소비 억제 실패</li>
+  <li>과신 편향 — 상환 능력 과대평가</li>
+  <li><strong>소비자는 "단기 리워드에 반응, 장기 부채는 무시"</strong> 경향</li>
+</ul>
+
+<h4>해석 — 제품 윤리 가이드라인</h4>
+<div class="callout risk">
+<strong>윤리 레드 라인</strong>: 우리 리워드 시스템이 "더 쓰게 만드는" 방향이면 BNPL 연체율 33% + 부채/GDP 84.3% 환경에서 <strong>사회적·규제적 리스크</strong> 증가. 제품 원칙: "리워드 = 이미 쓸 계획이었던 소비를 더 합리적으로"로 톤 고정. 추가 소비 유도 광고 기반 부스팅 지양 (캡틴 이전 지시 반영).
+</div>
+
+<h3>Section 2 요약 — 핵심 시사점</h3>
+<ol>
+  <li><strong>v1 핵심 타겟: M40 도시 직장인</strong> — 소비 여력 + 절약 동기 최대</li>
+  <li><strong>BNPL 폭증 + 연체 33% — 양면</strong>. 리워드 설계 시 "더 쓰게" 유도 금지</li>
+  <li><strong>DuitNow QR이 결제 표준화 가속</strong> — 우리 앱 결제 트리거 연동 현실적</li>
+  <li><strong>4강 e-wallet 병존</strong> — 통합 리워드 aggregator 가치 ↑</li>
+  <li><strong>현금 도시 36% · 비도시 63.5%</strong> — 현금 시나리오도 커버 필요</li>
+  <li><strong>크립토·Web3는 v1 UX 노출 금지</strong> — 백엔드 인프라만. 상세 Section 6</li>
+  <li><strong>부채/GDP 84.3% — ASEAN 최고</strong>. "리워드 = 합리적 선택" 윤리 원칙 고정</li>
+</ol>
+<h2 id="section-3" class="updated-heading">Section 3 — POS × F&amp;B 랜드스케이프 <span class="update-stamp">2026-04-14 작성<span class="ustamp-time">22:10 KST</span></span></h2>
+
+<p>파트너·경쟁사·기존 서비스를 팩트로 정리. 우리 제품이 비집고 들어갈 공백 확인용.</p>
+
+<h3>3.1 POS 공급자 — 파트너 후보 분석</h3>
+
+<table>
+  <tr><th>공급자</th><th>가맹점 수</th><th>아키텍처</th><th>F&amp;B 점유</th><th>우리 파트너 적합도</th><th>출처</th></tr>
+  <tr><td><strong>IRS Software</strong></td><td>30,000+</td><td>온프레미스 중심 (2002년 설립)</td><td>다양 (F&amp;B, 리테일, 약국, 살롱, 자동차)</td><td><strong>85% — 가장 유력</strong></td><td>irs-pos.com <span class="tag tag-h">H</span></td></tr>
+  <tr><td><strong>StoreHub</strong></td><td>18,000+ (말레이 15,000+)</td><td>클라우드 네이티브 (iPad 기반)</td><td>F&amp;B·리테일 균형</td><td>70% — 2순위</td><td>storehub.com <span class="tag tag-h">H</span></td></tr>
+  <tr><td>Slurp POS</td><td>2,600</td><td>클라우드 (F&amp;B 전용)</td><td>QSR·카페 특화</td><td>20% — 규모 부족</td><td>getslurp.com <span class="tag tag-m">M</span></td></tr>
+  <tr><td>Eats365</td><td>800+ (Oddle 디렉토리)</td><td>클라우드 iPad BYOD (RM 99/월~)</td><td>F&amp;B 전용</td><td>15%</td><td>eats365pos.com <span class="tag tag-m">M</span></td></tr>
+  <tr><td>Oddle</td><td>800+ (말레이)</td><td>클라우드 O2O (온라인 주문·예약)</td><td>F&amp;B 전용</td><td>15%</td><td>oddle.me <span class="tag tag-m">M</span></td></tr>
+  <tr><td>Qashier</td><td>비공개</td><td>클라우드 (QSR·캐주얼)</td><td>F&amp;B 중심</td><td>10%</td><td>qashier.com <span class="tag tag-m">M</span></td></tr>
+  <tr><td>GrabPOS (GrabMerchant)</td><td>비공개 (~15~25k 추정)</td><td>클라우드 Grab 생태계</td><td>64% 배달 점유</td><td>낮음 — 폐쇄 생태계</td><td>Agent C <span class="tag tag-m">M</span></td></tr>
+  <tr><td>기타 (Loyverse·Xilnex·POSPal·BigPOS·Multiable·Lightspeed)</td><td>&lt;5k 각</td><td>다양</td><td>부분</td><td>&lt;10%</td><td>ConnectPOS <span class="tag tag-m">M</span></td></tr>
+</table>
+
+<h4>우리 파트너 유력 후보 — 이유 정리</h4>
+<ul>
+  <li><strong>IRS Software (30k+)</strong>: 유일하게 공개된 20,000+ 스케일. 다양한 F&amp;B 세그먼트 커버. 단 구형 아키텍처 → API 통합·데이터 대시보드 구축이 우리 쪽 추가 공수 필요</li>
+  <li><strong>StoreHub (18k+)</strong>: 모던 클라우드 스택. "Ecosystem First" 전략으로 통합 파트너십 수용도 높음. 이미 GrabFood·Foodpanda API 연동 완료 → 우리 제품 통합 빠름</li>
+  <li>GrabPOS: 가맹점 수는 많을 수 있으나 Grab 자체 B2C 생태계가 완성돼 <strong>ShardLab 제품과 충돌</strong>. 파트너십 보다는 경쟁 구도</li>
+</ul>
+
+<div class="callout key">
+<strong>잠정 가설</strong>: 과제 브리프의 "20,000+ 가맹점 POS 파트너" = <strong>IRS Software 또는 StoreHub</strong>. 브리프에 명시되지 않아 추측이나, 시장에 공개된 스케일로는 이 둘 외 유력 후보 없음.
+</div>
+
+<h3>3.2 소비자 앱 랜드스케이프 — 기존 경쟁·참조</h3>
+
+<h4>리워드·로열티</h4>
+<table>
+  <tr><th>앱</th><th>회원 수</th><th>커버리지</th><th>수익 모델</th><th>약점</th></tr>
+  <tr><td><strong>BonusLink</strong></td><td>14.9M (2024 공식) / 8M (2025 앱 표기)<br>→ <em>정의 차이 가능, 각주</em></td><td>Shell·AmBank·Parkson·MAS 등 연합. F&amp;B 가맹점 KL 200곳 (주로 체인)</td><td>파트너 수수료·데이터 판매</td><td>독립 73.5% 미커버</td></tr>
+  <tr><td>Maybank Treats</td><td>Maybank 카드 고객</td><td>Maybank 카드 사용 시</td><td>은행 카드 리워드</td><td>Maybank 카드 전용</td></tr>
+  <tr><td>CIMB Deals</td><td>CIMB 카드 고객</td><td>CIMB 카드 사용 시</td><td>은행 카드 리워드</td><td>CIMB 카드 전용</td></tr>
+  <tr><td>GrabRewards</td><td>GrabPay 17M+ (2024)</td><td>Grab 생태계</td><td>Grab 내부 거래 수수료</td><td>Grab 생태계 밖 없음</td></tr>
+  <tr><td>ShopBack</td><td>45M (13개국 합)</td><td>이커머스 + 리테일 (2024.08 GHL 제휴)</td><td>제휴 커미션 · 캐시백 마진</td><td>ShopBack Pay 2026.03 말레이 중단</td></tr>
+  <tr><td>AirAsia BIG</td><td>비공개</td><td>항공·호텔·소매 포인트 전환 허브</td><td>포인트 전환 수수료</td><td>F&amp;B 직접 적립 약함</td></tr>
+</table>
+
+<h4>예약·할인 플랫폼</h4>
+<table>
+  <tr><th>앱</th><th>가맹점 수</th><th>포지션</th><th>약점</th></tr>
+  <tr><td>Eatigo</td><td>4,500+ (동남아 전체)</td><td>타임 슬롯 할인 (최대 50%). 프리미엄 중심</td><td>독립 가맹점 커버 약함, 자발적 등록</td></tr>
+  <tr><td>Chope</td><td>13,000+ (아시아)</td><td>예약 + ChopePerks 리워드</td><td>프리미엄 중심, 말레이 커버 중간</td></tr>
+  <tr><td>TableApp</td><td>말레이 특화</td><td>무수수료 예약, 할인 14%+</td><td>중상급 다이닝 중심</td></tr>
+  <tr><td>Quandoo</td><td>아시아 진출</td><td>예약당 100점 적립</td><td>말레이 커버리지 약함</td></tr>
+  <tr><td>OpenRice</td><td>아시아</td><td>리뷰 + 예약</td><td>예약 실행보다 디렉토리 중심</td></tr>
+</table>
+
+<h4>배달 플랫폼</h4>
+<table>
+  <tr><th>앱</th><th>시장 점유 (2023, Transaction share)</th><th>강점</th><th>소비자 페인</th></tr>
+  <tr><td>GrabFood</td><td>64%</td><td>100+ 도시 커버, Merchant AI Assistant</td><td>수수료 비싸 가격 전가</td></tr>
+  <tr><td>Foodpanda</td><td>63%</td><td>브랜드 인지도, 광역 커버</td><td>환불·고객 서비스 불만 다수 (Trustpilot 1.7점)</td></tr>
+  <tr><td>ShopeeFood</td><td>11.9%(2024) → 14%(2025)</td><td>Shopee 생태계 + 후발 저수수료</td><td>커버리지 상대적 부족</td></tr>
+  <tr><td>AirAsia Food</td><td>소수</td><td>AirAsia 생태계</td><td>확장 제한</td></tr>
+  <tr><td>Bungkusit</td><td>틈새</td><td>로컬 지향</td><td>규모</td></tr>
+</table>
+
+<div class="callout warn">
+<strong>Foodpanda Trustpilot 1.7점</strong> (3,268 리뷰) — 대안 데이터 <span class="tag tag-l">L</span>. 정형 출처 교차 확인 필요. 리뷰 작성자가 불만 있는 소수일 가능성 크나, "환불 불가 · 템플릿 응대" 같은 반복 패턴은 정형 인용 (PissedConsumer, Ken Article)과 일치.
+</div>
+
+<h3>3.3 가맹점 측 페인포인트 — Agent C·F 교차 종합</h3>
+<ol>
+  <li><strong>통합 복잡성</strong> — 5~8개 플랫폼(GrabFood·Foodpanda·ShopeeFood·AirAsia 등) 주문을 수기로 병합. 오류·누락 발생</li>
+  <li><strong>커미션 누수 (가시성 부재)</strong> — 25~35% 수수료 + 프로모션 + 게이트웨이 비용 통합 분석 도구 없음. 마진 계산 불가</li>
+  <li><strong>숨은 비용</strong> — 설치비 RM 1k~10k, 월 RM 99~500, 거래 수수료, 직원 재교육 RM 200~5k</li>
+  <li><strong>24/7 지원 공백</strong> — 대부분 8:30~22:30 지원. 야간 매출 피크 시 장애 대응 불가</li>
+  <li><strong>고객 인사이트 결여</strong> — POS가 단골 재방문·LTV·이탈 리스크 등 분석 제공 안 함. 개인화 불가</li>
+  <li><strong>다운타임</strong> — 하드웨어 장애 시 매출 중단. 수리·교체 수일</li>
+  <li><strong>e-invoicing 2026 Phase 4A</strong> — 엑셀·수기 세금계산서로 운영해온 독립 가맹점이 법정 대응 준비 어려움</li>
+  <li><strong>할랄 인증 갱신 관리 (v1 배제 영역이지만 존재)</strong> — 2년 유효, 소멸 반영 안 돼</li>
+</ol>
+
+<h3>3.4 소비자 측 페인포인트 — Agent D·F 교차 종합</h3>
+<ol>
+  <li><strong>로열티 프로그램 파편화</strong> — 10+ 앱에 소액 포인트 분산. 환원율 낮음. "loyalty app fatigue"</li>
+  <li><strong>포인트·캐시백 불투명</strong> — 환산 비율·만료 규칙 앱마다 다름. 최적 선택 불가</li>
+  <li><strong>QR 스캔 번거로움</strong> — 적립하려 앱 열고 스캔하는 단계 귀찮아 포기</li>
+  <li><strong>영수증·거래 이력 분산</strong> — 복수 지갑 간 통합 조회 불가. 환불·분쟁 추적 어려움</li>
+  <li><strong>배달 환불 마찰</strong> — Foodpanda 15~30일 지연. 템플릿 응대. 실패율 8~12% 추정</li>
+  <li><strong>대기·혼잡 불투명</strong> — 인기 매장 20~60분 대기. 예측·예약 수단 없음 (Hai Di Lao 한 달 전 예약 마감 사례)</li>
+  <li><strong>그룹 결제(더치페이) 마찰</strong> — e-wallet 어디도 native bill-split 없음. DuitNow 송금 후 수기 계산</li>
+  <li><strong>메뉴 이름만 알면 끝</strong> — 할랄·채식·저당·저염 등 필터 앱 간 통합 불가</li>
+</ol>
+
+<h3>3.5 규제 테일윈드 — 우리에게 유리한 흐름</h3>
+<table>
+  <tr><th>규제</th><th>시점</th><th>영향</th><th>우리 제품 기회</th></tr>
+  <tr><td><strong>e-Invoicing Phase 4A</strong></td><td>2026.01 시행</td><td>RM 1M~5M 매출 F&amp;B 가맹점 전자세금계산서 의무화</td><td>POS 통합 제품이 자동 대응 → <strong>강제 수요 창출</strong>. 가맹점 거부 시 벌금</td></tr>
+  <tr><td>e-Invoicing Phase 4B</td><td>2026.07 시행</td><td>나머지 과세 사업자 전체</td><td>대상 확장</td></tr>
+  <tr><td>BNM Open Finance</td><td>2025 H2~</td><td>은행 API 개방. 소비자 데이터 이동성</td><td>은행 파트너십 기반 BNPL·embedded finance 통합 가능</td></tr>
+  <tr><td>Consumer Credit Act</td><td>2025.07 시행</td><td>BNPL 라이선스 의무화</td><td>BNPL 파편화 재편 → 아직 라이선스 없는 우리는 정제된 파트너 선택 가능</td></tr>
+  <tr><td>DuitNow QR 0% MDR</td><td>2026 중반까지 연장</td><td>가맹점 수수료 무료 프로모션</td><td>DuitNow QR 통합이 가맹점 비용 중립</td></tr>
+  <tr><td>JAKIM 할랄 의무화 검토 중</td><td>미정</td><td>할랄 인증 의무화 가능성</td><td>v1 배제 결정했지만, 의무화 시 v2+ 재검토 trigger</td></tr>
+</table>
+
+<div class="callout key">
+<strong>타이밍 함의</strong>: <strong>2026.01 e-Invoicing Phase 4A 직전 시점</strong>이 우리 가맹점 영업의 최적 타이밍. "e-invoice 강제 대응 + 가맹점 운영 도구" 통합 가치로 접근 가능.
+</div>
+
+<h3>Section 3 요약</h3>
+<ol>
+  <li>POS 파트너 유력: <strong>IRS Software(30k+) 또는 StoreHub(18k+)</strong></li>
+  <li>소비자 앱 시장: 리워드는 파편화, 예약·할인은 프리미엄 중심, 배달은 과점 → <strong>독립 가맹점·결제 시점 리워드 공백 존재</strong></li>
+  <li>가맹점 페인: 통합·마진 가시성·24/7 지원·고객 인사이트 부재 + 2026 e-invoicing 압박</li>
+  <li>소비자 페인: 로열티 파편화·영수증 분산·배달 환불·대기 불투명·bill-split 마찰</li>
+  <li><strong>규제 테일윈드로 e-invoicing · Open Finance · DuitNow 0% MDR가 진입 시점 유리화</strong></li>
+</ol>
+
+<h2 id="section-4" class="updated-heading">Section 4 — 결제 페인포인트 4분류 (A/B/C/D) <span class="update-stamp">2026-04-14 작성<span class="ustamp-time">22:15 KST</span></span></h2>
+
+<p>Agent D의 분석 프레임. 12개 페인포인트를 4분류로 정리해 <strong>우리가 집중할 영역</strong>을 식별한다.</p>
+
+<h3>4.1 4분류 프레임 정의</h3>
+<table>
+  <tr><th>분류</th><th>정의</th><th>전략 함의</th></tr>
+  <tr><td><strong>Category A</strong></td><td>소비자·가맹점이 <strong>인지하고</strong> 적극 해결 원함</td><td>이미 경쟁 치열. 진입 시 차별화 필수</td></tr>
+  <tr><td><strong>Category B</strong></td><td><strong>미인지</strong> 마찰 (정상화된 불편)</td><td><strong>최대 기회 영역</strong>. 인지 시켜주면 가치 큼</td></tr>
+  <tr><td><strong>Category C</strong></td><td>인지하나 <strong>해결 원치 않음</strong> (의도적 유지)</td><td>접근 금지. 세금 회피·프라이버시 등</td></tr>
+  <tr><td><strong>Category D</strong></td><td>해결 원하나 <strong>구조적 불가능</strong></td><td>수용 제약. 우회 설계 필요</td></tr>
+</table>
+
+<h3>4.2 Category A — 인지 + 해결 시도 중</h3>
+<ol>
+  <li><strong>e-Wallet 충전 수수료</strong> — TnG 1% · Boost 0.75% · GrabPay 1% 신용카드 충전. DuitNow·직불카드는 무료. 소비자 가격 비교 중</li>
+  <li><strong>MDR 3%</strong> — 가맹점 규제 당국에 인하 요구 중 (2024.01 리테일 협회 BNM 청원)</li>
+  <li><strong>정산 지연</strong> — 비-DuitNow 1~3일 지연. 가맹점 현금흐름 영향. DuitNow 실시간으로 이전</li>
+  <li><strong>QR 코드 범람</strong> — 2025 DuitNow QR 표준화로 대부분 해결. 단일 "핑크 QR"로 통합</li>
+  <li><strong>네트워크 장애</strong> — 비도시 연결 불안정. 오프라인 폴백 없음</li>
+</ol>
+
+<p><strong>전략</strong>: Category A는 <strong>이미 경쟁자들이 해결 중</strong>. 진입 시 "더 나은 대안" 명확해야. 우리 v1은 여기 집중 지양.</p>
+
+<h3>4.3 Category B — 미인지 페인포인트 (최대 기회)</h3>
+<ol>
+  <li><strong>B1. 그룹 bill-split 마찰</strong> — 식당 테이블에서 수기 계산. TnG·GrabPay·Boost·MAE·ShopeePay 어디도 native split 없음. <strong>최우선 기회</strong></li>
+  <li><strong>B2. 영수증·거래 이력 분산</strong> — 지갑 간 통합 조회 불가. 환불·비용 정산 어려움. 이용자가 "앱 한계"로 내재화</li>
+  <li><strong>B3. 리워드·캐시백 불투명</strong> — 앱마다 환산 규칙 다름. 만료·최적 redemption 놓침. 이용자가 "어쩔 수 없음"으로 수용</li>
+  <li><strong>B4. 전환 비용·생태계 락인</strong> — 3~4개 지갑 병존 유지 강제. 포인트 휴대 불가. 이용자가 "정상"으로 내재화</li>
+  <li><strong>B5. 소액 P2P 마찰</strong> — 친구 RM 5~20 송금 시 DuitNow는 과도. Native "돈 요청" 기능 부재. 현금·비정형 처리</li>
+</ol>
+
+<div class="callout key">
+<strong>Category B가 ShardLab 핵심 기회</strong>. 소비자가 "불편함을 이미 정상화"해 목소리 내지 않음 — 역으로 경쟁자들도 진입 안 함. Bayar(말레이 split-bill 앱)은 2017 실패 — <em>너무 빨랐을 수 있음</em>. DuitNow 성숙·이용자 64% 시점인 <strong>지금이 B1 재도전 적기</strong>.
+</div>
+
+<h3>4.4 Category C — 해결 원치 않음 (접근 금지)</h3>
+<ol>
+  <li><strong>C1. 현금 선호 — 세금 불투명성</strong> — 비공식 경제 ~20% GDP. 노점·소상공인 의도적 현금 유지. <strong>"디지털화"가 이들에게는 비즈니스 위협</strong></li>
+  <li><strong>C2. 프라이버시·감시 우려</strong> — 추정 15~20% 인구. 가족·정부 추적 피하기. 디지털 지급 원치 않음</li>
+</ol>
+
+<p><strong>전략</strong>: 접근 금지. 이 영역을 "digitize" 하려는 시도는 근본적으로 역효과. 규제 강화로 자연 전환 대기.</p>
+
+<h3>4.5 Category D — 구조적 불가능 (수용 제약)</h3>
+<ol>
+  <li><strong>D1. BNM EMI 라이선스 자본</strong> — RM 5M+ 자본 + AML/CFT 요구 → ShardLab 독자 e-money 발행 <strong>불가</strong>. 기존 레일 위 aggregation만 가능</li>
+  <li><strong>D2. 크로스보더 MSB 라이선스</strong> — 별도 라이선스 필요. 크립토 우회도 SC 단속. 국경 간 결제 불가 — <strong>도메스틱 전용</strong> 포지션 확정</li>
+  <li><strong>D3. A2A 실시간 정산 한계</strong> — DuitNow는 은행 의존. 비은행 개발자 직접 접근 불가. 파트너 통해 우회</li>
+  <li><strong>D4. 오프라인 결제</strong> — 전 인프라 인터넷 의존. 비도시·네트워크 취약 지역 대응 불가 (일본 FeliCa 오프라인 IC카드 수준 대안 없음)</li>
+  <li><strong>D5. 가맹점 차지백 인프라</strong> — 카드 네트워크 규칙은 협상 불가. 친근 사기(friendly fraud) 79%(2024)가 가맹점 부담. <strong>우리 제품 경계 밖</strong></li>
+</ol>
+
+<p><strong>전략</strong>: 수용 제약. 제품 아키텍처가 이 경계 안에서 작동하도록 설계. <strong>EMI 라이선스 없이 aggregation 중심</strong>이 오히려 Category B 공략에 유리.</p>
+
+<h3>4.6 종합 — ShardLab 포지셔닝 함의</h3>
+
+<div class="callout key">
+<strong>핵심 포지셔닝</strong>: ShardLab은 "파편화된 지갑을 대체" (D1 때문 불가능) 하는 것이 아니라 <strong>"파편화된 지갑을 덜 고통스럽게"</strong> 만드는 aggregation 레이어로 자리잡는다. Category B 5개 (bill-split·영수증·리워드 투명·지갑 락인·소액 P2P)가 핵심 공략 대상.
+</div>
+
+<h3>Section 4 요약</h3>
+<ol>
+  <li>Category A 5개 — 이미 경쟁 치열, v1 집중 지양</li>
+  <li><strong>Category B 5개 — 최대 기회</strong>. bill-split · 영수증 통합 · 리워드 투명 · 지갑 portability · 소액 P2P</li>
+  <li>Category C 2개 — 접근 금지 (현금 세금 회피 · 프라이버시)</li>
+  <li>Category D 5개 — 구조 제약 수용. EMI 라이선스 없는 <strong>aggregation 레이어</strong> 구조 확정</li>
+  <li>ShardLab 포지셔닝: <strong>"지갑 대체" X — "지갑 aggregation" O</strong></li>
+</ol>
+<h2 id="section-4" style="color: #9ca3af;">Section 4 — 결제 페인포인트 4분류 <span class="tag tag-pend">대기</span></h2>
+<h2 id="section-5" class="updated-heading">Section 5 — 12개 시장 갭 (핵심 기둥) <span class="update-stamp">2026-04-14 작성<span class="ustamp-time">22:35 KST</span></span></h2>
+
+<p>Agent F가 추출한 12개 갭을 재구성. F의 POS-Addressability × Demand Magnitude 점수는 <strong>참고 신호</strong>로 인용하되, ShardLab 맥락(72h·12주·1엔지니어·과제 B2C 제약·Klang Valley 1차·할랄 배제 등)을 반영한 <strong>재평가 열</strong>을 추가한다. F 방법론 한계(POS 편향·주관 점수·대안 데이터 의존)는 Section 7에서 본격 다룬다.</p>
+
+<h3>5.0 갭 한눈 보기 — 재정렬 요약</h3>
+
+<table>
+  <tr><th>#</th><th>갭</th><th>측</th><th>F 점수</th><th>ShardLab 재평가</th><th>v1 상태</th></tr>
+  <tr><td>1</td><td>배달 고객서비스 분쟁</td><td>소비자</td><td>7.0</td><td>중 — 배달 의존 불필요</td><td>검토</td></tr>
+  <tr><td>2</td><td>할랄 투명성</td><td>가맹점+소비자</td><td>8.75</td><td><strong>하 — 탈락 확정</strong></td><td><strong>drop</strong></td></tr>
+  <tr><td>3</td><td>가맹점 커미션 누수</td><td>가맹점</td><td>8.5</td><td>상 — B2B2C 경로 핵심</td><td><strong>core 후보</strong></td></tr>
+  <tr><td>4</td><td>주간 점심 조율</td><td>소비자</td><td>6.75</td><td>중상 — 점심 창 의례와 결합</td><td>검토 (v2 ②)</td></tr>
+  <tr><td>5</td><td>대기 시간 투명성</td><td>가맹점+소비자</td><td>8.25</td><td>상 — POS로 자연 구현</td><td><strong>core 후보</strong></td></tr>
+  <tr><td>6</td><td>독립 가게 리워드</td><td>가맹점+소비자</td><td>8.75</td><td>상 — 73.5% 공백 정면 해결</td><td><strong>core 후보 (기존 ①과 연결)</strong></td></tr>
+  <tr><td>7</td><td>식단 필터·영양 투명성</td><td>소비자</td><td>6.75</td><td>하 — 틈새 소비자, 구현 공수 ↑</td><td>drop</td></tr>
+  <tr><td>8</td><td>라마단 이프타르 조율</td><td>소비자+가맹점</td><td>7.0</td><td>하 — 할랄 배제와 함께 탈락</td><td>drop</td></tr>
+  <tr><td>9</td><td>노년·비영어 접근성</td><td>소비자</td><td>5.25</td><td>하 — v1 타겟 밖</td><td>drop</td></tr>
+  <tr><td>10</td><td>e-Invoicing 규제 대응</td><td>가맹점</td><td>7.5</td><td>상 — 2026.01 규제 타이밍</td><td><strong>검토 (B2B 기회)</strong></td></tr>
+  <tr><td>11</td><td>크로스플랫폼 매출 분석</td><td>가맹점</td><td>7.75</td><td>중상 — #3과 묶임</td><td>#3에 흡수</td></tr>
+  <tr><td>12</td><td>기업·대학 식대 구독</td><td>가맹점+소비자</td><td>6.25</td><td>중 — B2B 복잡</td><td>v3+ 확장</td></tr>
+</table>
+
+<div class="callout key">
+<strong>핵심 재정렬 결과</strong>: v1 core 후보 3개 — <strong>#3 커미션 누수 · #5 대기 시간 투명성 · #6 독립 가게 리워드</strong>. v2 후보 #4 주간 플래너. B2B 기회 #10 e-invoicing. 나머지 6개는 v1에서 배제(할랄·라마단·노년·식단·식대·분쟁). Section 7에서 이 3개를 단일 프로덕트 내러티브로 통합할지 검토.
+</div>
+
+<h3>5.1 Gap #1 — 배달 고객서비스 분쟁</h3>
+<table>
+  <tr><th>항목</th><th>내용</th></tr>
+  <tr><td>Gap</td><td>Foodpanda·GrabFood 환불 15~30일 지연, 템플릿 응대. 주문 8~12% 실패 추정</td></tr>
+  <tr><td>증거</td><td>Foodpanda Trustpilot 1.7점 (3,268 리뷰), PissedConsumer 사례 <span class="tag tag-l">L — 리뷰 편향</span> · Vulcan Post GrabFood 대조 <span class="tag tag-m">M</span></td></tr>
+  <tr><td>F 점수</td><td>POS 7 · Demand 7 · 종합 7.0</td></tr>
+  <tr><td>미충족 이유</td><td>플랫폼 incentive 부재. 템플릿 응대가 비용 최소화</td></tr>
+  <tr><td>POS 해결 가능성</td><td>부분. 실시간 주문 확인 + 가맹점-소비자 중재 레이어. 단 배달 경로에만 유효</td></tr>
+  <tr><td><strong>ShardLab 재평가</strong></td><td><strong>중</strong> — 매장 dine-in 64% 중심 포지셔닝과 충돌. 배달 의존 불필요</td></tr>
+  <tr><td>v1 상태</td><td>검토. 가맹점 분쟁 해결 레이어 부가 기능으로만 고려 가능</td></tr>
+</table>
+
+<h3>5.2 Gap #2 — 할랄 인증 투명성 <span class="tag tag-l">MVP 탈락</span></h3>
+<p>상세: Section 1.4 참조. 핵심만: 독립 가맹점 무인증 영업 유지 가능 · 비무슬림 시장 30~40%로 충분 · JAKIM API 파트너십 공수 과다 · 가성비 구조적 열위. <strong>v1에서 drop 확정</strong> (2026-04-14 21:30 결정). Section 7에서 "기능 불필요" 근거 집약.</p>
+
+<h3>5.3 Gap #3 — 가맹점 커미션 누수 <span class="tag tag-h">core 후보</span></h3>
+<table>
+  <tr><th>항목</th><th>내용</th></tr>
+  <tr><td>Gap</td><td>독립 레스토랑이 5~8개 배달 플랫폼에 동시 등록, 25~35% 수수료 + 2% 게이트웨이 + 프로모션 비용. <strong>통합 마진 분석 도구 부재</strong> → 점주가 플랫폼별 실제 수익성 모름</td></tr>
+  <tr><td>증거</td><td>Menuviel — GrabFood/Foodpanda 수수료 구조 공개 <span class="tag tag-m">M</span> · The Ken — 말레이 레스토랑-배달 갈등 기사 <span class="tag tag-m">M</span> · Lowyat Forum — 2020 MCO 수수료 60~100% 사례 <span class="tag tag-l">L</span> · ConnectPOS — 재정산 실패 보고 <span class="tag tag-m">M</span></td></tr>
+  <tr><td>F 점수</td><td>POS 9 · Demand 8 · 종합 8.5</td></tr>
+  <tr><td>미충족 이유</td><td>플랫폼이 투명성 공개 incentive 없음. 가맹점은 개별 협상력 부족</td></tr>
+  <tr><td>POS 해결 가능성</td><td>높음. 주문 데이터 + 수수료·프로모션 계산 레이어. 구현 공수 주의 (구형 POS API 연동)</td></tr>
+  <tr><td>시장 규모</td><td>TAM ≈ 5,000 멀티플랫폼 가맹점 × 연 RM 6k 절감 = <strong>RM 30M 연 개선</strong>. SaaS ARR 추정 RM 10~15M</td></tr>
+  <tr><td><strong>ShardLab 재평가</strong></td><td><strong>상</strong>. 단 과제 B2C 제약과 긴장. 해결책: <strong>B2B2C 구조</strong> — 가맹점 측 마진 가시화 → 소비자에게는 "투명 가격 가맹점" 배지·할인 형태로 전이</td></tr>
+  <tr><td>v1 상태</td><td><strong>core 후보</strong>. Section 7에서 B2C 전환 설계 확정</td></tr>
+</table>
+
+<h3>5.4 Gap #4 — 주간 점심 조율 (직장인)</h3>
+<table>
+  <tr><th>항목</th><th>내용</th></tr>
+  <tr><td>Gap</td><td>B40/M40 직장인이 주간 점심을 미리 조율·예약할 통합 앱 없음. WhatsApp·Chope 수기 병행. 8~10인 그룹 주문 마찰</td></tr>
+  <tr><td>증거</td><td>Hopes Malaysia B40·M40 규모 <span class="tag tag-m">M</span> · DietMonsta 예산 식단 RM 5~7 달성 가능 <span class="tag tag-l">L</span> · Lowyat Forum 대형 그룹 예약 논의 <span class="tag tag-l">L</span> · Any5354 Hai Di Lao 대기 2~3시간 사례 <span class="tag tag-m">M</span></td></tr>
+  <tr><td>F 점수</td><td>POS 7 · Demand 6.5 · 종합 6.75</td></tr>
+  <tr><td>미충족 이유</td><td>Chope·Eatigo는 개인 예약 중심, 그룹·예산 통합 없음. 가맹점 최소 인원·예치금 요구</td></tr>
+  <tr><td>POS 해결 가능성</td><td>중간 — 그룹 예약·사전 결제 POS 수용. 단 <strong>행동 변화 요구</strong> (직장인이 일주일치 점심 미리 결정)</td></tr>
+  <tr><td><strong>ShardLab 재평가</strong></td><td><strong>중상</strong>. Section 1.3의 "12~2pm 점심 의례"와 결합하면 잠재력 ↑. 단 네트워크 효과 필요 → v1 검증 어려움</td></tr>
+  <tr><td>v1 상태</td><td>검토. <strong>기존 ② 주간 식사 플래너 후보와 직접 연결</strong>. Section 7에서 v1 포함/v2 연기 재검토</td></tr>
+</table>
+
+<h3>5.5 Gap #5 — 대기 시간 투명성 <span class="tag tag-h">core 후보</span></h3>
+<table>
+  <tr><th>항목</th><th>내용</th></tr>
+  <tr><td>Gap</td><td>Hai Di Lao 등 인기 매장 20~60분 대기 · 한 달 전 예약 마감. 실시간 혼잡 가시성 앱 부재. 가맹점은 수요 예측 불가</td></tr>
+  <tr><td>증거</td><td>Any5354 Hai Di Lao 사례 <span class="tag tag-m">M</span> · QueueBee·Kewdoo·Eats365 Queue 존재 (가맹점 측만) <span class="tag tag-m">M</span> · Reddit·Lowyat 피크 시간 불만 <span class="tag tag-l">L</span></td></tr>
+  <tr><td>F 점수</td><td>POS 9 · Demand 7.5 · 종합 8.25</td></tr>
+  <tr><td>미충족 이유</td><td>가맹점 실시간 수용량 공개 꺼림. 프로토콜 표준 없음. hawker 1인 운영은 큐 관리 자체 없음</td></tr>
+  <tr><td>POS 해결 가능성</td><td>높음. POS가 테이블 점유·메뉴별 평균 체류 시간 추적 → 실시간 대기 예측</td></tr>
+  <tr><td>시장 규모</td><td>50k+ F&amp;B 중 60% 워크인 의존. 25% abandonment × RM 500/일 = RM 15k/월/가맹점. TAM 연 RM 60~90M</td></tr>
+  <tr><td><strong>ShardLab 재평가</strong></td><td><strong>상</strong>. POS 자연 기능으로 구현 용이. 소비자 가치 명확 ("지금 500m 내 빈자리")</td></tr>
+  <tr><td>v1 상태</td><td><strong>core 후보</strong>. 기존 ③ 오프피크 할인과 결합 가능</td></tr>
+</table>
+
+<h3>5.6 Gap #6 — 독립 가게 리워드 <span class="tag tag-h">core 후보</span></h3>
+<table>
+  <tr><th>항목</th><th>내용</th></tr>
+  <tr><td>Gap</td><td>F&amp;B 73.5%가 독립 가맹점. BonusLink·GrabRewards는 체인 중심 (BonusLink F&amp;B 200곳). <strong>독립 가게 대상 저비용 QR 리워드 솔루션 부재</strong></td></tr>
+  <tr><td>증거</td><td>Adroit Market Research — 독립 73.52% 점유 <span class="tag tag-m">M</span> · Shell BonusLink F&amp;B 200 매장 <span class="tag tag-h">H</span> · StoreHub — 단골 지출 67%·빈도 4배 <span class="tag tag-l">L — 원출처 미확인</span> · Pixalink·Avocado Loyalty 존재하나 POS 외부 <span class="tag tag-m">M</span></td></tr>
+  <tr><td>F 점수</td><td>POS 9 · Demand 8.5 · 종합 8.75</td></tr>
+  <tr><td>미충족 이유</td><td>독립 가맹점 로열티 프로그램 자본·인력 부족. 기존 coalition은 브랜드 파트너 위주. Pixalink는 POS 외 추가 인터페이스 부담</td></tr>
+  <tr><td>POS 해결 가능성</td><td>높음. POS 내장 QR 리워드로 가맹점 추가 부담 0. 결제 완료 = 자동 적립</td></tr>
+  <tr><td>시장 규모</td><td>독립 가맹점 36,500곳 중 20% 도입 = 7,300곳 × RM 250/월 = <strong>연 RM 21.9M</strong></td></tr>
+  <tr><td><strong>ShardLab 재평가</strong></td><td><strong>상</strong>. 과제 "왜 이 POS 파트너십인가"에 가장 정직한 답. 기존 "① 자동 포인트 적립" 후보와 직접 연결</td></tr>
+  <tr><td>v1 상태</td><td><strong>core 후보 — 가장 유력</strong></td></tr>
+</table>
+
+<h3>5.7 Gap #7 — 식단 필터·영양 투명성</h3>
+<table>
+  <tr><th>항목</th><th>내용</th></tr>
+  <tr><td>Gap</td><td>채식·글루텐프리·저당 필터 + 영양 정보 통합 앱 부재. GoVeggie·HappyCow 파편화</td></tr>
+  <tr><td>증거</td><td>GoVeggie 1,800+ 베지 식당 <span class="tag tag-m">M</span> · HappyCow 불완전 커버 <span class="tag tag-l">L</span> · FWD 건강 예산 식단 관심 <span class="tag tag-l">L</span></td></tr>
+  <tr><td>F 점수</td><td>POS 7 · Demand 6.5 · 종합 6.75</td></tr>
+  <tr><td>POS 해결 가능성</td><td>중 — 메뉴 영양 데이터 가맹점 입력 부담</td></tr>
+  <tr><td><strong>ShardLab 재평가</strong></td><td><strong>하</strong> — 틈새 소비자. 구현 공수 대비 임팩트 낮음</td></tr>
+  <tr><td>v1 상태</td><td>drop. v2+ 기능 확장 시 재검토</td></tr>
+</table>
+
+<h3>5.8 Gap #8 — 라마단 이프타르 조율 <span class="tag tag-l">MVP 탈락</span></h3>
+<p>할랄 MVP 탈락 결정과 연동. 라마단은 할랄 인증 필수 영역 + 연 1회 집중 수요 + 가족 15~30인 그룹 조율이라는 특수 UX. <strong>v1 범위 밖으로 확정</strong>. Section 1.5 참조.</p>
+
+<h3>5.9 Gap #9 — 노년·비영어 접근성</h3>
+<table>
+  <tr><th>항목</th><th>내용</th></tr>
+  <tr><td>Gap</td><td>60+ 인터넷 이용 3.4%. 비영어 이용자 UX 부재. 음성 주문·Bahasa Malaysia 지원 앱 없음</td></tr>
+  <tr><td>증거</td><td>IEEE 60+ 인터넷 3.4% <span class="tag tag-h">H</span> · Sage 70% 스마트폰 소유+WhatsApp <span class="tag tag-m">M</span></td></tr>
+  <tr><td>F 점수</td><td>POS 5 · Demand 5.5 · 종합 5.25</td></tr>
+  <tr><td><strong>ShardLab 재평가</strong></td><td><strong>하</strong>. v1 타겟 M40·Gen Z·Millennial과 직접 불일치</td></tr>
+  <tr><td>v1 상태</td><td>drop</td></tr>
+</table>
+
+<h3>5.10 Gap #10 — e-Invoicing 규제 대응 <span class="tag tag-m">B2B 기회</span></h3>
+<table>
+  <tr><th>항목</th><th>내용</th></tr>
+  <tr><td>Gap</td><td>2026.01 Phase 4A (RM 1M~5M 매출) F&amp;B 가맹점 전자세금계산서 의무. 엑셀·수기 운영 다수. POS 통합 솔루션 드묾</td></tr>
+  <tr><td>증거</td><td>LHDN 공식 일정 <span class="tag tag-h">H</span> · ClearTax 가이드 <span class="tag tag-m">M</span> · Jom e-Invoice F&amp;B 분석 <span class="tag tag-m">M</span> · Advintek SME 도전 <span class="tag tag-m">M</span></td></tr>
+  <tr><td>F 점수</td><td>POS 9 · Demand 6 · 종합 7.5</td></tr>
+  <tr><td>POS 해결 가능성</td><td>높음. POS가 결제 데이터 이미 보유 → XML 자동 생성 + LHDN 제출</td></tr>
+  <tr><td>시장 규모</td><td>대상 5~8k 가맹점 × 20% 도입 = 1~1.6k 가맹점 × RM 40/월 = 연 RM 576k</td></tr>
+  <tr><td><strong>ShardLab 재평가</strong></td><td><strong>상 — B2B 영업 레버리지</strong>. 과제 B2C 범위 밖이지만 가맹점 획득 수단으로 유용. 소비자 앱은 별도 레이어로 구축</td></tr>
+  <tr><td>v1 상태</td><td>v1 B2C 범위 밖. 단 <strong>가맹점 영업 툴킷</strong>으로 번들링 가능. Section 7에서 Go-To-Market 전략 검토</td></tr>
+</table>
+
+<h3>5.11 Gap #11 — 크로스플랫폼 매출 분석</h3>
+<p>Gap #3(커미션 누수)의 측면. 멀티플랫폼 주문 통합·수익성 비교·벤치마킹. F 점수 POS 8 · Demand 7.5 · 종합 7.75. <strong>재평가: #3에 흡수 통합</strong>. 단일 갭으로 다룸.</p>
+
+<h3>5.12 Gap #12 — 기업·대학 식대 구독</h3>
+<table>
+  <tr><th>항목</th><th>내용</th></tr>
+  <tr><td>Gap</td><td>2~3M 직장인·500k+ 대학생 통합 식대 구독 앱 없음. 기업 웰니스 프로그램 수기</td></tr>
+  <tr><td>F 점수</td><td>POS 6 · Demand 6.5 · 종합 6.25</td></tr>
+  <tr><td><strong>ShardLab 재평가</strong></td><td><strong>중</strong>. B2B+B2C 양면 시장 복잡성. 1엔지니어 팀 범위 밖</td></tr>
+  <tr><td>v1 상태</td><td>v3+ 확장 후보. v1 배제</td></tr>
+</table>
+
+<h3>5.13 종합 — v1 core 후보 3개 정렬</h3>
+
+<table>
+  <tr><th>순위</th><th>Gap</th><th>F 종합</th><th>재평가</th><th>전략적 역할</th></tr>
+  <tr><td>1</td><td><strong>#6 독립 가게 리워드</strong></td><td>8.75</td><td>상</td><td><strong>내러티브 중심축</strong> — "왜 이 POS 파트너십인가"에 정직한 답</td></tr>
+  <tr><td>2</td><td><strong>#5 대기 시간 투명성</strong></td><td>8.25</td><td>상</td><td>소비자 유입 훅 — "지금 근처 빈자리"</td></tr>
+  <tr><td>3</td><td><strong>#3 커미션 누수</strong></td><td>8.5</td><td>상 (B2B2C 변환)</td><td>가맹점 세일즈 무기 — "포스 통합으로 마진 가시화"</td></tr>
+</table>
+
+<p><strong>추가 검토</strong>: #4 주간 점심 조율 (v2 후보), #10 e-Invoicing (가맹점 번들 영업 툴). 나머지 #1·#2·#7·#8·#9·#11·#12는 drop 또는 통합.</p>
+
+<p>단일 프로덕트 내러티브 통합 구조, 과제 B2C 제약 충족 전략, core 3개의 시너지 논리는 <strong>Section 7 (종합 시사점)</strong>에서 본격 전개.</p>
+<h2 id="section-6" class="updated-heading">Section 6 — Web3 교차점 (핵심 요약) <span class="update-stamp">2026-04-14 작성<span class="ustamp-time">23:00 KST</span></span></h2>
+
+<div class="callout warn">
+<strong>결정 재확인</strong>: v1 소비자 UX에 Web3/블록체인 <strong>노출 금지</strong>. 백엔드 인프라 레이어로만 향후 검토. 본 섹션은 핵심 요약.
+</div>
+
+<h3>6.1 규제 구조 — 이중 감독</h3>
+<ul>
+  <li><strong>BNM</strong> (Bank Negara Malaysia): 결제·e-money·스테이블코인·금융 안정성</li>
+  <li><strong>SC Malaysia</strong> (Securities Commission): 디지털 자산·토큰·거래소</li>
+  <li>크립토 = 법정통화 아님 선언. <strong>결제 수단 사용 허용 안 됨</strong></li>
+  <li>SC 등록 Digital Asset Exchange (DAX) 6개만 합법: Luno Malaysia · Tokenize Technology · MX Global · SINEGY · 기타 2곳 <span class="tag tag-h">H</span></li>
+  <li>Chainalysis Global Crypto Adoption Index 47위 (2024) — 2023 38위에서 <strong>하락</strong> <span class="tag tag-h">H</span></li>
+</ul>
+
+<h3>6.2 글로벌 케이스 — 성공·실패</h3>
+<table>
+  <tr><th>프로젝트</th><th>상태</th><th>교훈</th></tr>
+  <tr><td>Starbucks Odyssey</td><td>2024.03 종료</td><td>NFT Stamp 복잡성이 전통 리워드 대비 가치 없음. 블록체인 노출이 마찰만 추가</td></tr>
+  <tr><td>Nike .Swoosh (RTFKT)</td><td>축소·소송</td><td>NFT 단독 커뮤니티 앵커 안 됨. 토큰 가치 붕괴로 고객 손실</td></tr>
+  <tr><td><strong>Blackbird Labs ($FLY)</strong></td><td>Series B $50M (2025.04), 1,000+ 레스토랑</td><td>상호운용 토큰으로 <strong>가맹점 3~4% 수수료 절감</strong>. 블록체인은 구현 세부. 소비자엔 "스마트 리워드"로만 보임</td></tr>
+  <tr><td>Reddit Community Points</td><td>유지 (niche)</td><td>크립토 네이티브 커뮤니티만 유효</td></tr>
+  <tr><td>LVMH Aura</td><td>50 멤버·5천만 제품</td><td>럭셔리 인증(위조 방지) 특화. F&amp;B와 무관</td></tr>
+  <tr><td>Chipotle</td><td>전통 앱으로 회귀</td><td>시장 선도자는 Web3 선택 안 함 (2026 Rewards on Repeat)</td></tr>
+</table>
+
+<h3>6.3 v2+ 고려 가능한 Web3 가치 3개 (UX 노출 없이)</h3>
+<ol>
+  <li><strong>스테이블코인 상호운용 리워드 토큰</strong> — XSGD 기반. 여러 가맹점 공통 리워드. Blackbird 모델. v2+ 12~18개월 로드맵</li>
+  <li><strong>온체인 소비 이력 대안 신용</strong> — 비공식 가맹점 신용 평가. v3+ B2B</li>
+  <li><strong>스마트 컨트랙트 프로그래머블 리워드</strong> — 조건부 자동 리워드 (Happy Hour 2배·구매 조합 보너스). 프론트는 전통, 백엔드 블록체인. Boba Guys 케이스</li>
+</ol>
+
+<h3>6.4 피해야 할 Web3 강요 3개</h3>
+<ol>
+  <li><strong>NFT 영수증·NFT 멤버십</strong> — 이메일·로그인 대비 제로 가치. Starbucks Odyssey 실패 원인</li>
+  <li><strong>변동성 토큰 리워드</strong> — 가격 붕괴 시 고객 가치 소실. 반드시 스테이블코인만</li>
+  <li><strong>DAO 거버넌스 연출</strong> — F&amp;B 빠른 의사결정 필요. 고래 투표 집중. 실 가치 없음</li>
+</ol>
+
+<h3>6.5 말레이 규제·샌드박스</h3>
+<ul>
+  <li><strong>BNM Fintech Regulatory Sandbox</strong> (2016~): 40+ 스타트업 통과. <strong>Fasset 2025</strong>가 스테이블코인 기반 Islamic Digital Bank 라이선스 첫 취득 — Web3 × 금융 승인 선례</li>
+  <li>샌드박스 통과 12~24개월 필요 — <strong>72h·12주 과제 범위 밖</strong></li>
+  <li>Hashed/ShardLab은 Thailand SCBX 파트너십 중심. 말레이 현지 기반 없음 — 별도 규제 협의 필요</li>
+  <li>세금: LHDN 가이드 (2025.12) — 로열티 토큰은 "barter income"으로 과세 가능성. 이차 시장 거래 시 소득세</li>
+  <li>할랄 크립토: 2020 Shariah Council — BTC·ETH는 "commodity(ṣarf)"로 인정. 스테이블코인 리워드는 <strong>정적 가치·리바 없음·투명 메커닉</strong>이면 Shariah 호환 가능</li>
+</ul>
+
+<h3>6.6 v1 결론</h3>
+<div class="callout key">
+<strong>v1: Web3 무노출</strong>. 백엔드 아키텍처 설계 시 "나중에 스테이블코인 레이어 붙일 수 있는 구조"는 고려하되, 소비자 UX·마케팅·제품 언어에 블록체인·토큰·NFT 등장 금지. "Web3 스타트업이 Web3 제품 내놨다" 인식은 말레이 소비자에 부정적. Blackbird 모델 따라 <strong>"가맹점·소비자 이익 먼저, Web3는 구현 세부"</strong> 원칙.
+</div>
+
+<h2 id="section-7" class="updated-heading">Section 7 — 종합 시사점 · F 재평가 <span class="update-stamp">2026-04-14 작성<span class="ustamp-time">23:05 KST</span></span></h2>
+
+<p>본 섹션은 의사결정 집약. Section 0~6에서 확인한 팩트를 토대로 v1 방향을 도출한다. 아직 최종 결정 아님 — 캡틴 검토 후 확정.</p>
+
+<h3>7.1 과제 맥락 재정리</h3>
+<ul>
+  <li><strong>목표</strong>: 72시간 과제 → 워킹 프로토타입 + 6파트 프로덕트 브리프 → 면접 심화 토론</li>
+  <li><strong>B2C 제약</strong>: 과제 브리프 명시 — "direct value to <strong>consumers</strong>". 순수 가맹점 SaaS는 금지</li>
+  <li><strong>POS 레버리지 강제</strong>: 2만+ 가맹점 POS 네트워크가 핵심 자산. 이게 없어도 되는 아이디어는 실격</li>
+  <li><strong>리소스 제약</strong>: PM 1(캡틴) + 엔지니어 1 + 디자이너 0.5. AI-first 개발</li>
+  <li><strong>규제 제약</strong>: BNM 결제 라이선스 없음 → aggregation only. SC 디지털자산 허가제 → Web3 UX 노출 불가</li>
+  <li><strong>1차 지역</strong>: Klang Valley (인구밀도 최고·앱 사용률 최고·외식 빈도 최고)</li>
+  <li><strong>할랄 배제 확정</strong> (2026-04-14 21:30)</li>
+</ul>
+
+<h3>7.2 F 방법론 한계 공식 진단</h3>
+
+<table>
+  <tr><th>한계</th><th>내용</th><th>본 섹션 보정 방식</th></tr>
+  <tr><td>POS Addressability 편향</td><td>축 자체가 POS 중심 평가 → 가맹점 갭이 구조적으로 고점</td><td>B2C 제약 하에서 "소비자 가치로 전이 가능한가" 재평가</td></tr>
+  <tr><td>Demand Magnitude 주관성</td><td>공식 TAM·빈도 측정 없이 에이전트 판단</td><td>환산 가능한 경우 USD 단위 규모 제시, 아닐 경우 "정성적" 명시</td></tr>
+  <tr><td>대안 데이터 편향</td><td>앱 리뷰·포럼이 불만 있는 소수만 표본화</td><td>정형 출처 교차 확인 없는 주장은 신뢰도 L로 표시</td></tr>
+  <tr><td>스코어링 공식 미명시</td><td>단순 평균·가중 평균 불명</td><td>단일 점수 절대 인용 금지. 순위·상대 비교로만 사용</td></tr>
+  <tr><td>구현 난이도 반영 부재</td><td>이론 상한이지 실제 가능성 아님</td><td>Section 5 재평가 열에서 72h·12주·1엔지니어 제약으로 재판정</td></tr>
+</table>
+
+<p><strong>결론</strong>: F 테이블은 <strong>참고 신호</strong>로만 사용. 우리 재평가가 실제 우선순위.</p>
+
+<h3>7.3 v1 core 3개 → 단일 내러티브 통합</h3>
+
+<p>Section 5에서 core 후보로 확정한 3개:</p>
+<ol>
+  <li><strong>#6 독립 가게 리워드</strong> — 73.5% 공백 정면 해결</li>
+  <li><strong>#5 대기 시간 투명성</strong> — 소비자 유입 훅</li>
+  <li><strong>#3 커미션 누수 (B2B2C 전환)</strong> — 가맹점 세일즈 논리</li>
+</ol>
+
+<h4>통합 내러티브 제안 (ASSUMPTION — 캡틴 검토 대상)</h4>
+
+<div class="callout key">
+<strong>"포스 결제 순간을 단골 경제로 전환하는 레이어"</strong><br><br>
+<strong>Consumer-facing pitch</strong>: "당신이 가는 동네 식당·카페가 이제 단골에게 돌려준다. 앱 없이 결제만 해도 자동 적립. 주변 지금 빈자리·할인 시간도 한눈에. 체인이 아닌 진짜 동네 가게들의 리워드가 처음으로 존재한다."<br><br>
+<strong>Merchant-facing pitch</strong>: "POS 그대로 두고 리워드 프로그램을 즉시 장착. 고객 재방문 데이터·배달 플랫폼별 마진·빈 시간 수요 모두 한 대시보드. e-Invoicing 2026 의무화도 자동 대응."
+</div>
+
+<h4>3개 갭의 상호 작용</h4>
+<ul>
+  <li><strong>#6 리워드가 안정 리텐션 축</strong> — "왜 이 앱 계속 쓰나"에 답. 앵커링</li>
+  <li><strong>#5 대기 투명성이 신규 유입 훅</strong> — "지금 근처 빈자리+15% 할인" 푸시로 설치 동기</li>
+  <li><strong>#3 커미션 누수 해소(B2B2C)가 가맹점 영업 논리</strong> — "우리 앱 쓰면 배달 플랫폼 의존도 낮아진다" + 마진 가시화. 가맹점이 POS 파트너 영업에서 이 앱을 받아들이는 이유</li>
+</ul>
+
+<h3>7.4 기존 A/B/C 후보와의 매핑</h3>
+
+<table>
+  <tr><th>기존 후보</th><th>Agent F 갭 매핑</th><th>v1 상태</th></tr>
+  <tr><td>① 자동 포인트 적립</td><td>#6 독립 가게 리워드로 진화</td><td><strong>v1 core — 확장 재정의</strong></td></tr>
+  <tr><td>② 주간 식사 플래너</td><td>#4 주간 점심 조율 (F 점수 6.75)</td><td>v2 연기 (행동 변화·네트워크 효과 리스크)</td></tr>
+  <tr><td>③ 오프피크 할인</td><td>#5 대기 시간 투명성과 결합</td><td><strong>v1 core — 대기 투명성으로 진화</strong></td></tr>
+</table>
+
+<p>기존 A/B/C 중 A와 C가 살아남아 Agent F 갭과 결합. B(주간 플래너)는 v2로 연기. 추가로 <strong>#3 커미션 누수 해소가 새 축으로 등장</strong> — 가맹점 영업 논리 강화.</p>
+
+<h3>7.5 B2C 제약 vs 가맹점 문제의 긴장 해소</h3>
+
+<p>Agent F 결론 "가맹점 측 문제가 소비자 측보다 크다"는 신호는 유효하지만 과제 B2C 강제와 충돌. 해소 방식:</p>
+
+<ol>
+  <li><strong>가맹점 문제를 소비자 UX로 전이</strong> — 예: 커미션 누수 분석은 B2B 기능이나, 결과를 "배달 앱 대신 우리 앱에서 직접 주문하면 5% 저렴" 같은 소비자 혜택으로 노출</li>
+  <li><strong>B2B2C 구조 명시</strong> — 가맹점이 진짜 고객(유통 파트너), 소비자가 end user. 가맹점 가치 = 소비자 가치의 공급원</li>
+  <li><strong>과제 B2C 조건 엄격 해석 → "소비자에게 직접 가치" 충족</strong>. 가맹점 SaaS와 동일 시 판매하지 않음</li>
+  <li><strong>가맹점 기능은 영업·리텐션 동력</strong>, 소비자 앱은 제품 얼굴</li>
+</ol>
+
+<h3>7.6 Go-To-Market 초기 전략</h3>
+
+<h4>타겟 지역·세그먼트</h4>
+<ul>
+  <li><strong>1차 지역</strong>: Klang Valley (KL·Petaling Jaya·Shah Alam) 반경 30km</li>
+  <li><strong>1차 소비자 세그먼트</strong>: <strong>M40 도시 직장인 25~35세</strong>
+    <ul>
+      <li>월 가구소득 RM 5,250~10,970 (USD 1,181~2,466)</li>
+      <li>점심·저녁 외식 빈도 주 4~5회</li>
+      <li>e-wallet 네이티브 (TnG·GrabPay·Boost 복수 사용)</li>
+      <li>고정 출근지 반경 500m~2km 반복 방문 패턴</li>
+      <li>BNPL·생활비 압박으로 가격 민감도 중상</li>
+    </ul>
+  </li>
+  <li><strong>1차 가맹점 세그먼트</strong>: POS 파트너(IRS 또는 StoreHub) 가맹점 중 <strong>독립 F&B·연매출 RM 500k~2M·일 매출 30~200건</strong>
+    <ul>
+      <li>KL 중심 반경 30km 내 밀집 지역</li>
+      <li>체인 아닌 개인 운영 (73.5% 공백 정면)</li>
+      <li>배달 플랫폼 2+개 사용 중</li>
+      <li>자체 리워드 프로그램 없음</li>
+    </ul>
+  </li>
+  <li><strong>독립 가맹점 유형별 우선순위 (2026-04-14 추가 — 캡틴 질문 반영)</strong>
+    <p>말레이 독립 F&amp;B 73.5%는 다양한 유형 혼합. 공식 세분 통계 없음 (Open Issue #9). 관찰 기반 ASSUMPTION:</p>
+    <table>
+      <tr><th>Tier</th><th>유형</th><th>특성</th><th>독립 73.5% 중 추정</th><th>v1 상태</th></tr>
+      <tr><td>1</td><td>Kopitiam · Mamak · Mom-and-pop café · Fusion cafe · 소형 독립 식당 (말레이·중국·인도계)</td><td>점주 1인 의사결정. 고정 점포. POS 도입 수용 가능</td><td>55~65% (전체 F&amp;B의 40~48%)</td><td><strong>v1 1차 타겟</strong></td></tr>
+      <tr><td>2</td><td>Bakery · 디저트숍 · Nasi Kandar · Warung</td><td>유사 구조이나 메뉴·타이밍 다름</td><td>포함 가능</td><td>v1 부분 포함</td></tr>
+      <tr><td>3</td><td>Hawker stall · Street vendor</td><td>공용 공간 스탠드. 호커 센터 관리 주체 별도 협상 필요. 스탠드 주인 1:1 설득 N명</td><td>25~35% (전체 F&amp;B의 18~26%)</td><td>v2+ 연기</td></tr>
+      <tr><td>4</td><td>Food truck · Ghost kitchen</td><td>고정 POS 부재 or 배달 전용. 구조 불일치</td><td>5~15%</td><td>배제 또는 v3+</td></tr>
+    </table>
+    <p><strong>v1 접근성 핵심 기준</strong>: "점주 1인이 도입 결정을 내릴 수 있는가". Tier 1은 예, Tier 3은 아니오. 1차 타겟 = Tier 1 집중.</p>
+  </li>
+  <li><strong>영업 가능 가맹점 수 추정 (2026-04-14 추가)</strong>
+    <p>아래는 ASSUMPTION 다수 쌓인 추정치. 공식 통계 부재 (Open Issue #9). 의사결정 방향 설정용으로만 사용.</p>
+    <table>
+      <tr><th>단계</th><th>추정 범위</th><th>가정</th><th>신뢰도</th></tr>
+      <tr><td>말레이 F&amp;B outlet 총 수</td><td>60,000~70,000</td><td>Mordor 50,000+ + 일부 warung 포함 보수적 중간값</td><td><span class="tag tag-m">M</span></td></tr>
+      <tr><td>전국 독립 가맹점</td><td>44,000~51,000</td><td>독립 비중 73.5% 적용</td><td><span class="tag tag-m">M</span></td></tr>
+      <tr><td>전국 Tier 1 (호커 제외·v1 영업 가능)</td><td><strong>24,000~33,000</strong></td><td>독립 중 Tier 1 55~65%</td><td><span class="tag tag-l">L</span></td></tr>
+      <tr><td>Klang Valley Tier 1</td><td><strong>7,000~13,000</strong></td><td>KV outlet 비중 30~40% (가치 60% · 인구 26% 중간)</td><td><span class="tag tag-l">L</span></td></tr>
+      <tr><td>IRS 파트너 × KV Tier 1</td><td><strong>2,000~3,400</strong></td><td>IRS 30k 중 F&amp;B 40~50% · KV 30~35% · Tier 1 55~65%</td><td><span class="tag tag-l">L</span></td></tr>
+      <tr><td>StoreHub 파트너 × KV Tier 1</td><td><strong>1,800~2,500</strong></td><td>StoreHub 18k 중 F&amp;B ~60% · KV 30~35% · Tier 1 55~65%</td><td><span class="tag tag-l">L</span></td></tr>
+    </table>
+    <p><strong>해석</strong>:</p>
+    <ul>
+      <li>v1 목표 "100 가맹점 파일럿" = 기회 풀 2,000~3,000의 3~5%로 달성 가능 → <strong>규모 아닌 BD 효율·제품 핏이 병목</strong></li>
+      <li>v2 목표 "1,000 가맹점" = 기회 풀의 30~50% → 실현 가능 범위</li>
+      <li>추정 정확도 향상에는 POS 파트너 실제 DB 조회 또는 DOSM 산업 통계 접근 필요 — 과제 기간 중 불가</li>
+    </ul>
+  </li>
+</ul>
+
+<h4>콜드스타트 해결</h4>
+<ul>
+  <li>가맹점 측: POS 파트너 BD 팀을 통한 기존 관계 레버리지 (과제 제약 e 반영)</li>
+  <li>소비자 측: 가맹점 QR 테이블 탑스티커 + 영수증 QR → <strong>결제 시점 유입 훅</strong>
+    <ul>
+      <li>"이 가게 리워드 쌓기 → 앱 다운로드" CTA</li>
+      <li>광고비 없이 2만 가맹점이 분산 유통 채널</li>
+    </ul>
+  </li>
+  <li>바이럴 메커닉: 그룹 결제 "함께 쌓기" — 일행 중 1명만 앱 있으면 타인 포인트도 합산 송금 (DuitNow 연동)</li>
+</ul>
+
+<h3>7.7 수익 모델 후보 — 캡틴 이전 지침 반영</h3>
+
+<div class="callout warn">
+<strong>지침 반영</strong>: (1) 초기 부스팅 광고 배제 — 유입자 없으면 무의미. (2) 특정 가맹점용 부스팅 대신 "매출 낮은 시간대 디지털 전단지" 형태. (3) 광고 최소화·편의 중심. (4) 데이터 인사이트가 주 수익축.
+</div>
+
+<h4>1순위: 가맹점 SaaS 구독</h4>
+<ul>
+  <li>RM 150~400/월 (USD 34~90) · 티어 구조
+    <ul>
+      <li>Basic: 리워드 + 결제 집계 (RM 150)</li>
+      <li>Plus: + 마진 분석 + 대기 예측 (RM 250)</li>
+      <li>Pro: + e-invoicing 자동 + 고객 세분화 (RM 400)</li>
+    </ul>
+  </li>
+  <li>과제 목적에 가장 안정적 수익. 1,000 가맹점 확보 시 연 RM 3M+ ARR 달성 가능</li>
+</ul>
+
+<h4>2순위: 데이터 인사이트 리포트</h4>
+<ul>
+  <li>익명 집계 데이터 기반. 가맹점 본인 매장 vs 지역 동종 업계 벤치마크</li>
+  <li>예: "당신 가게 평균 객단가 RM 28, 지역 평균 RM 32 → 프리미엄 메뉴 기회"</li>
+  <li>Pro 구독 포함 or 별도 리포트 RM 200/분기</li>
+</ul>
+
+<h4>3순위: 디지털 전단지 (저노출 시간대만)</h4>
+<ul>
+  <li>광고가 아니라 "비수기 수요 매칭 서비스"</li>
+  <li>POS 데이터로 자동 감지된 저매출 시간대·요일만 대상</li>
+  <li>해당 슬롯에 한해 푸시 알림으로 인근 소비자에게 타임세일 알림 → 가맹점은 경쟁 입찰 유사 구조 (슬롯 겹칠 때)</li>
+  <li>피크 시간 광고는 제공하지 않음 (소비자 경험 보호)</li>
+</ul>
+
+<h4>4순위: 프리미엄 쿠폰·결제 수수료 기반 모델 (검토)</h4>
+<ul>
+  <li>가맹점이 할인 쿠폰 발행하고 소비자 redemption 당 수수료 10~15%</li>
+  <li>단 비즈니스 모델로 확정 시 "쿠폰 남발 → 브랜드 가치 훼손" 리스크 → 섹션 9 검토 과제로 남김</li>
+</ul>
+
+<h3>7.8 리스크 3가지 (Part 6 예고)</h3>
+<ol>
+  <li><strong>파트너 의존</strong>: POS 파트너 한 곳에 절대 의존. 계약 해지 시 제품 소멸. 말레이 을 보호 법제 약함</li>
+  <li><strong>콜드스타트 실패</strong>: 가맹점 있어도 소비자 유입 부족 시 리워드 순환 시작 안 됨. Klang Valley 100 가맹점 임계점 돌파 필요</li>
+  <li><strong>POS사 직접 경쟁</strong>: 중기(6~24개월)에 POS 공급자가 자체 리워드 앱 출시 가능성. 계약 조항·데이터 독점성·속도로 대응</li>
+</ol>
+
+<h3>Section 7 요약</h3>
+
+<div class="callout key">
+<strong>v1 제품 방향 잠정 (캡틴 검토 전)</strong><br><br>
+<strong>이름 가칭</strong>: "Tapik" or 미정 — 동네 가맹점 리워드 레이어<br>
+<strong>코어 3개</strong>: 독립 가게 자동 리워드(#6) + 대기 시간 투명성(#5) + 가맹점 마진 B2B2C 전이(#3)<br>
+<strong>v2 연기</strong>: 주간 식사 플래너(#4)<br>
+<strong>B2B 번들</strong>: e-Invoicing 2026.01 대응(#10)<br>
+<strong>1차 타겟</strong>: Klang Valley M40 도시 직장인 25~35세 × 독립 F&amp;B 가맹점<br>
+<strong>수익</strong>: 가맹점 SaaS 구독이 주축. 광고 배제. 저노출 시간대 디지털 전단지만 허용<br>
+<strong>Web3</strong>: v1 무노출<br>
+<strong>할랄</strong>: v1 배제 확정
+</div>
+
+<p>이 방향이 캡틴 판단에 부합한다면 Section 9에서 구체적 다음 단계(페르소나 · 기능 스펙 · 프로토타입 방향)로 진행한다.</p>
+<h2 id="section-7" style="color: #9ca3af;">Section 7 — 종합 시사점 · F 방법론 재평가 <span class="tag tag-pend">대기</span></h2>
+<h2 id="section-8" class="updated-heading">Section 8 — 팩트 충돌·신뢰도 노트 <span class="update-stamp">2026-04-14 작성<span class="ustamp-time">23:30 KST</span></span></h2>
+
+<p>본 섹션은 본 문서의 한계를 투명 공개. 과제 평가자·심화 토론 시 "어디까지가 팩트이고 어디부터 가정인가"를 스스로 짚어두기 위한 용도.</p>
+
+<h3>8.1 확인된 팩트 충돌 (Section 0.8 확장판)</h3>
+
+<table>
+  <tr><th>#</th><th>주제</th><th>충돌 수치</th><th>채택·이유</th><th>잔여 리스크</th></tr>
+  <tr>
+    <td>1</td><td>BonusLink 회원수</td>
+    <td>14.9M (blink.my 공식) / 12M (StoreHub blog) / 8M (2025 앱 표기)</td>
+    <td>14.9M 기본, 다른 수치 각주 병기</td>
+    <td>공식 페이지 업데이트 시점 불명. "total vs active" 정의 차이 가능. 본 문서 결정에 결정적 영향 없음</td>
+  </tr>
+  <tr>
+    <td>2</td><td>식품 배달 시장 점유율</td>
+    <td>GrabFood 64%/Foodpanda 63% (Transaction share, Q1 2023) / GrabFood 79% (Consumer preference, 2023)</td>
+    <td>측정 방법 명시해 분리 표기</td>
+    <td>혼용 시 판단 왜곡. "점유율"이라는 용어 단독 사용 금지 원칙 유지</td>
+  </tr>
+  <tr>
+    <td>3</td><td>말레이 무슬림 비율</td>
+    <td>55%(A) / 60%+(E) / 70%(F) / 63.5%(DOSM 2020)</td>
+    <td><strong>63.5%</strong> (DOSM Census 2020) 확정</td>
+    <td>2025 업데이트 Census 발표 여부 재확인. 현재 문서는 할랄 MVP 배제 결정에 이 수치 직접 의존 안 함</td>
+  </tr>
+  <tr>
+    <td>4</td><td>e-wallet 시장 점유</td>
+    <td>TnG 38.3%(2023 wallet share) / TnG 94%(2025 사용자 중 사용률)</td>
+    <td>측정 축 다름. 분리 표기</td>
+    <td>94% 수치 측정 방식 재검증 필요 — 본 문서 결정에 직접 영향 없음</td>
+  </tr>
+  <tr>
+    <td>5</td><td>독립 가맹점 F&amp;B 점유</td>
+    <td>73.5% (Adroit/Credence 공통)</td>
+    <td>73.5% 채택</td>
+    <td>여러 보고서 일치 — 팩트 신뢰도 High. 본 문서 "기존 로열티 공백" 논리의 핵심 수치</td>
+  </tr>
+  <tr>
+    <td>6</td><td>환율 1 USD = 4.45 MYR</td>
+    <td>본 문서 ASSUMPTION (2026-04 초 추정)</td>
+    <td>추정치 단일 사용</td>
+    <td>BNM 공식 2026-04 월 평균환율 재확인 필요. 변동 시 본 문서 USD 환산치 전부 재계산</td>
+  </tr>
+</table>
+
+<h3>8.2 출처 신뢰도 분포 (본 문서 기준)</h3>
+
+<table>
+  <tr><th>등급</th><th>정의</th><th>본 문서 내 주장 비중 (추정)</th></tr>
+  <tr><td><span class="tag tag-h">H</span></td><td>1차 출처 + 2024~2026 자료 + 독립 2+ 출처 교차 확인</td><td>~40%</td></tr>
+  <tr><td><span class="tag tag-m">M</span></td><td>2차 출처 단독 또는 1차 + 2023 자료</td><td>~45%</td></tr>
+  <tr><td><span class="tag tag-l">L</span></td><td>대안 데이터 포함 · 단일 출처 · 2023 이전 · ASSUMPTION</td><td>~15%</td></tr>
+</table>
+
+<p><strong>주의</strong>: 신뢰도 H 주장만으로 의사결정 근거가 부족한 경우 M·L 주장을 포함하되, 각 주장마다 태그를 명시해 독자가 의존도를 판단하게 한다.</p>
+
+<h3>8.3 대안 데이터 편향 명시</h3>
+
+<p>본 문서에서 인용된 대안 데이터(앱 리뷰·포럼·트렌드) 출처와 그 한계:</p>
+
+<ul>
+  <li><strong>Foodpanda Trustpilot 1.7점 (3,268 리뷰)</strong> — 리뷰 작성자가 불만 있는 소수일 가능성. 만족 고객은 리뷰 안 씀 → <strong>과대 부정 편향</strong>. 단 "환불 마찰·템플릿 응대" 패턴은 산업 언론(The Edge, Ken)과 일치 — 이중 출처 교차로 사용 가능</li>
+  <li><strong>Lowyat Forum 인용</strong> — Malaysia IT·소비자 커뮤니티. 기술 친화 사용자 편향. 일반 소비자 대표성 약함</li>
+  <li><strong>Hai Di Lao 대기 2~3시간 (Any5354)</strong> — 개별 블로그 일화. 극단 사례 가능. 단 "대기 투명성 공백"이라는 구조적 주장의 예시로만 사용</li>
+  <li><strong>StoreHub "단골 67%·4배" 수치</strong> — StoreHub 블로그 인용, 원출처 추적 미완료. 대체 1차 출처 찾지 못했음. <strong>ASSUMPTION 처리</strong></li>
+  <li><strong>Google Trends 검색어 언급</strong> — 검색 빈도만 파악 가능. 의도·감정 불명. 약한 신호로만 사용</li>
+</ul>
+
+<div class="callout warn">
+<strong>원칙 재확인</strong>: 본 문서에서 대안 데이터 단독 인용은 없다. 모든 대안 데이터는 정형 출처(1차·2차)와 교차 확인되거나, "추세 신호" 수준으로만 사용됐다.
+</div>
+
+<h3>8.4 재검증 필요 항목 (Open Issues 업데이트)</h3>
+
+<table>
+  <tr><th>#</th><th>항목</th><th>재검증 방법</th><th>긴급도</th></tr>
+  <tr><td>1</td><td>BonusLink 2025 현재 회원수</td><td>BonusLink 공식 press release 또는 모회사 (Parkson 또는 Shell) 연차보고서 확인</td><td>낮음</td></tr>
+  <tr><td>2</td><td>말레이 무슬림 비율 2025 업데이트</td><td>DOSM 공식 발표 확인 (Census 중간 추정치 여부)</td><td>낮음 (v1 할랄 배제로 영향 적음)</td></tr>
+  <tr><td>3</td><td>식품 배달 시장 점유율 2025 최신</td><td>Euromonitor·Statista 2025 최신 보고서. 측정 방법 명시</td><td>중간</td></tr>
+  <tr><td>4</td><td>환율 1 USD = 4.45 MYR</td><td>BNM 공식 2026-04 월 평균환율 확인</td><td><strong>높음 — USD 환산 전부 영향</strong></td></tr>
+  <tr><td>5</td><td>IRS Software·StoreHub 2025 가맹점 수</td><td>기업 공식 페이지·press release 최신 확인</td><td>중간 — 파트너 후보 판단에 영향</td></tr>
+  <tr><td>6</td><td>e-Invoicing Phase 4A 실제 도입률</td><td>LHDN 2026 중반 공식 감사 보고서 대기</td><td>낮음 (아직 미발표)</td></tr>
+  <tr><td>7</td><td>StoreHub "단골 67%·4배" 원출처</td><td>StoreHub 본사·학술 출처 추적</td><td>중간 — 우리 내러티브 중심 수치</td></tr>
+  <tr><td>8</td><td>F 스코어링 공식</td><td>Section 7 재평가로 보정 완료 (단일 점수 절대 인용 금지 원칙)</td><td>완료</td></tr>
+  <tr><td>9</td><td>말레이 F&amp;B outlet 정확 수치 · 독립 유형별 분포 · Klang Valley 지역 분포</td><td>POS 파트너 실제 DB 조회 or DOSM 산업 통계 요청. 과제 기간 중 불가. 추정치는 "의사결정 방향 잡기" 수준</td><td>중간</td></tr>
+</table>
+
+<h3>8.5 방법론 한계 선언</h3>
+
+<ol>
+  <li><strong>본 문서는 2차 자료 재구성</strong>이지 1차 시장조사가 아니다. 실제 말레이시아 소비자·가맹점 인터뷰·설문·포커스 그룹 없음</li>
+  <li>Agent F의 12개 갭은 가설 단계. 현장 검증 전까지 <strong>우선순위 주장에 불과</strong></li>
+  <li>POS 파트너 후보 IRS 85%·StoreHub 70%는 공개 수치 기반 <strong>추정</strong>이지 확정 아님. 실제 과제 브리프에는 파트너사 명시 없음</li>
+  <li>1차 타겟 세그먼트 "M40 도시 직장인 25~35세"는 시장 데이터 + 논리 전개로 도출한 <strong>가설 타겟</strong>. Part 6 검증 대상</li>
+  <li>수익 모델 수치 (RM 150~400 구독 등)는 <strong>업계 벤치마크 기반 추정</strong>. 실제 payload 테스트 없음</li>
+</ol>
+
+<h2 id="section-9" class="updated-heading">Section 9 — 다음 단계 <span class="update-stamp">2026-04-14 작성<span class="ustamp-time">23:35 KST</span></span></h2>
+
+<p>컴파일 완료. 이제 과제 실제 제출물 (Part 1~6 + 프로토타입) 작성 단계로 이행한다. 본 섹션은 <strong>제출 전 남은 작업</strong>과 <strong>캡틴 의사결정 대기 항목</strong>을 정리.</p>
+
+<h3>9.1 캡틴 의사결정 대기 항목</h3>
+
+<div class="callout warn">
+아래는 컴파일 과정에서 <strong>나 혼자 판단 불가</strong>로 남겨둔 항목. 캡틴 확정 필요.
+</div>
+
+<ol>
+  <li><strong>v1 방향 확정</strong>: Section 7.8의 잠정 방향 ("포스 결제 순간을 단골 경제로 전환하는 레이어") 수용 여부. 다른 방향 제안이 있으면 지금 반영</li>
+  <li><strong>Core 3개 확정</strong>: #3 커미션 누수·#5 대기 투명성·#6 독립 가게 리워드 조합. 혹은 우선순위 재조정</li>
+  <li><strong>v2 연기 기능</strong>: #4 주간 플래너 연기 동의 여부. 혹은 v1 포함 강행</li>
+  <li><strong>B2B 번들 결정</strong>: #10 e-Invoicing 대응을 v1 가맹점 영업 번들로 포함할지 여부</li>
+  <li><strong>가맹점 세그먼트 우선순위</strong>: Kopitiam·소형 독립 식당 우선, Hawker center 스탠드 v2+ 후순위 확정</li>
+  <li><strong>수익 모델 구조</strong>: 가맹점 SaaS 구독이 주축, 광고 배제, 저노출 시간대 디지털 전단지만 허용 — 이 방향 확정 여부</li>
+  <li><strong>제품 이름</strong>: 가칭 없이 현재 "Tapik" 언급됨. 네이밍 본격 검토 필요</li>
+</ol>
+
+<h3>9.2 즉시 착수 가능 작업 (캡틴 확정 후)</h3>
+
+<h4>A. 페르소나 구축 (Part 2 재료)</h4>
+<ul>
+  <li>소비자 페르소나 1: "M40 KL 직장인 Wei Ming/Aina" 같은 구체 가공 인물</li>
+  <li>가맹점 페르소나 1: "Kopitiam 점주 Uncle Lim/Kak Sarah"</li>
+  <li>각 페르소나: 인구·일상·임시방편·감정적 페인 포함</li>
+</ul>
+
+<h4>B. 프로덕트 스펙 초안 (Part 3·5)</h4>
+<ul>
+  <li>v1 유저 플로우 3개
+    <ol>
+      <li>소비자: 결제 → 자동 적립 → 대시보드 확인 → 리워드 사용</li>
+      <li>소비자: 근처 빈자리·리워드 가맹점 탐색 → 방문 → 결제 → 적립</li>
+      <li>가맹점: POS 설치 → 리워드 규칙 설정 → 매출·고객 대시보드 확인</li>
+    </ol>
+  </li>
+  <li>핵심 화면 와이어프레임 (디자이너 작업)</li>
+  <li>데이터·상태 요구사항 (엔지니어 작업)</li>
+  <li>성공 지표 (Part 5)
+    <ul>
+      <li>소비자: D30 retention, 월 적립 트랜잭션 수, NPS</li>
+      <li>가맹점: 월 구독 유지율, 신규 구독 전환율, 단골 재방문 증가율</li>
+    </ul>
+  </li>
+</ul>
+
+<h4>C. 프로토타입 빌드 (Part 4)</h4>
+<ul>
+  <li>AI 툴: Claude Artifacts / v0 / Bolt / Cursor 조합</li>
+  <li>3개 모드 (소비자·가맹점·본사) 단일 React 파일에서 모드 전환</li>
+  <li>상태 로컬 시뮬레이션 (가짜 데이터로 유기적 연동 연출)</li>
+  <li>소비자 모드만 인터랙티브 필수. 가맹점·본사는 정적 화면 몇 장으로 충분</li>
+  <li>AI 활용 과정 <code>ai-log.md</code>에 실시간 기록 (지침 10)</li>
+</ul>
+
+<h4>D. 검증 계획 (Part 6)</h4>
+<ul>
+  <li>가장 위험한 가정 3개 도출
+    <ol>
+      <li>"POS 파트너 BD 채널로 독립 가맹점 100곳 초기 온보딩 가능"</li>
+      <li>"자동 적립만으로 소비자가 앱을 반복 열고 리워드 확인함"</li>
+      <li>"KL M40 직장인이 동네 독립 가게 리워드에 충분한 흥미 느낌"</li>
+    </ol>
+  </li>
+  <li>각 가정 검증 실험 설계 (실제 Test Plan)</li>
+  <li>12주 로드맵
+    <ul>
+      <li>Week 1~4: KL 특정 상업지역 (Bangsar·Mont Kiara·TTDI 중 1곳) 30~50 가맹점 파일럿</li>
+      <li>Week 5~8: 소비자 500명 획득 + 리워드 적립 순환 시작</li>
+      <li>Week 9~12: 데이터 수집 후 첫 개인화 오퍼 실험 + 2차 지역 확장 결정</li>
+    </ul>
+  </li>
+</ul>
+
+<h3>9.3 후속 리서치 대상 (시간 여유 있을 때)</h3>
+
+<ol>
+  <li><strong>현장 가맹점 인터뷰</strong> — Klang Valley Kopitiam 5~10곳 실제 운영자 대화. 리서치 가정 검증</li>
+  <li><strong>소비자 인터뷰</strong> — M40 KL 직장인 10명. 점심·리워드·결제 습관</li>
+  <li><strong>POS 파트너 구체 협의</strong> — IRS·StoreHub 영업 담당 접촉. API 통합 조건·수익 배분 논의</li>
+  <li><strong>JAKIM API 추적</strong> (v2+ 준비) — 현재 공개 정책. 할랄 의무화 trigger 시 즉시 대응</li>
+  <li><strong>경쟁사 동향 모니터링</strong> — BonusLink·GrabRewards·Boost가 독립 가게 대상으로 확장하는지 감시</li>
+</ol>
+
+<h3>9.4 Part 1~6 작성 순서 제안</h3>
+
+<table>
+  <tr><th>Part</th><th>착수 시점</th><th>재료</th></tr>
+  <tr><td>1. 기회 발굴</td><td>즉시</td><td>market_research.html Section 3~5</td></tr>
+  <tr><td>2. 타겟 유저·문제 정의</td><td>즉시 (페르소나 구축 병행)</td><td>Section 1·2, 캡틴 9.1 결정</td></tr>
+  <tr><td>3. 프로덕트 전략·우선순위</td><td>1·2 완료 후</td><td>Section 7, 캡틴 9.1 결정</td></tr>
+  <tr><td>4. 프로토타입 + AI 과정</td><td>3 완료 후 (가장 공수 큼)</td><td>Section 7.8 + 기능 스펙</td></tr>
+  <tr><td>5. 프로덕트 스펙</td><td>4 병행</td><td>Section 7 + 기능 도출</td></tr>
+  <tr><td>6. 검증·실행 계획</td><td>마지막</td><td>Section 8 (위험 가정) + 7.6 (GTM)</td></tr>
+</table>
+
+<h3>9.5 컴파일 종결</h3>
+
+<div class="callout key">
+<strong>market_research.html 컴파일 완료 (2026-04-14 23:35 KST)</strong><br><br>
+10개 섹션 · 7개 에이전트 산출물 소화 · 팩트 충돌 6건 해소 · 12개 갭 재평가 · v1 방향 잠정 제안까지. 이제 캡틴 검토 + Part 1~6 착수 단계.<br><br>
+본 문서는 작업 과정에서 계속 업데이트됨. 특히 Section 5 갭 재평가·Section 7 방향 수정·Section 8 재검증 결과는 과제 제출 전까지 지속 갱신.
+</div>
+
+<!-- ===================== Section 10 ===================== -->
+<h2 id="section-10" class="updated-heading">Section 10 — 시장 세분화 (Segmentation) <span class="update-stamp">2026-04-15 추가<span class="ustamp-time">00:10 KST</span></span></h2>
+
+<p>Section 7.6의 영업 가능 가맹점 수 추정이 감각 기반 비중으로 도출된 게 드러나 (지침 14 위반) 전면 재검증. Agent H가 DOSM·Mordor 기반 공식 수치 찾아옴. 본 섹션은 지금까지 범위 좁히기 논의 + Agent H 팩트 + 남은 축 재정리를 통합 기록.</p>
+
+<h3>10.1 배경 — 왜 재계산?</h3>
+<ol>
+  <li>Section 7.6의 영업 가능 가맹점 수 추정(IRS × KV × F&amp;B × Tier 1 = 2,000~3,400)은 <strong>3개 비중 (F&amp;B 40~50% · KV 30~35% · Tier 1 55~65%)을 감각으로 설정</strong>한 결과</li>
+  <li>캡틴 지적 (2026-04-14 23:55): "비중이 어디서 나왔지?"</li>
+  <li>정정 필요 → Agent H 발사 (2026-04-15 00:00) → DOSM Economic Census 2023 · Mordor Intelligence 2025 기반 공식 수치 확보</li>
+  <li>본 섹션에서 <strong>팩트 대체 + ASSUMPTION 명시</strong>하여 재산출</li>
+</ol>
+
+<h3>10.2 Agent H 확인 팩트</h3>
+
+<table>
+  <tr><th>지표</th><th>수치</th><th>출처·신뢰도</th></tr>
+  <tr><td>전국 F&amp;B outlet 총 수</td><td><strong>136,453</strong></td><td>DOSM Economic Census 2023 (2024.08 발표, 2022 reference) <span class="tag tag-h">H</span></td></tr>
+  <tr><td>— Food Services (식당·카페·바)</td><td>107,129 (78.5%)</td><td>DOSM <span class="tag tag-h">H</span></td></tr>
+  <tr><td>— Event Catering</td><td>16,208 (11.9%)</td><td>DOSM <span class="tag tag-h">H</span></td></tr>
+  <tr><td>— Beverage Services</td><td>13,116 (9.6%)</td><td>DOSM <span class="tag tag-h">H</span></td></tr>
+  <tr><td>전국 F&amp;B 총 매출 (2022)</td><td>RM 99.0B</td><td>DOSM <span class="tag tag-h">H</span></td></tr>
+  <tr><td>Klang Valley outlet 비중 (volume)</td><td><strong>28.2%</strong> (KL 10.1% + Selangor 18.0%)</td><td>DOSM <span class="tag tag-h">H</span></td></tr>
+  <tr><td>KL + Selangor 합계 outlet 수</td><td><strong>38,474 outlet</strong></td><td>DOSM <span class="tag tag-h">H</span></td></tr>
+  <tr><td>Klang Valley market value 비중</td><td>~38%</td><td>Mordor Intelligence 2025 <span class="tag tag-m">M</span></td></tr>
+  <tr><td>3 지역 (KV+Penang+Johor) 시장가치</td><td>59.75% (과제 브리프 60%와 일치)</td><td>Mordor 2025 <span class="tag tag-m">M</span></td></tr>
+  <tr><td>독립 vs 체인 (by value)</td><td><strong>73.52% 독립 / 26.48% 체인</strong></td><td>Mordor 2025 <span class="tag tag-m">M</span></td></tr>
+  <tr><td>체인 성장률 (CAGR)</td><td>12.98% (가장 빠름)</td><td>Mordor 2025 <span class="tag tag-m">M</span></td></tr>
+  <tr><td>QSR outlet 비중</td><td>87% (≈ 119,000 QSR)</td><td>GlobalData 2024 <span class="tag tag-m">M</span></td></tr>
+  <tr><td>Klang Valley 카페 수</td><td>4,780 (2022) → 5,540 (2026E)</td><td>Mordor 2025 <span class="tag tag-m">M</span></td></tr>
+  <tr><td>브랜드 카페 체인 outlet</td><td>2,775 (2025)</td><td>Mordor 2025 <span class="tag tag-m">M</span></td></tr>
+</table>
+
+<h3>10.3 이전 감각 추정치 → 팩트 대체 결과</h3>
+
+<table>
+  <tr><th>항목</th><th>이전 (감각)</th><th>팩트 대체 후</th><th>판정</th></tr>
+  <tr><td>전국 F&amp;B outlet 총 수</td><td>60,000~70,000 (Mordor 인용 기반 추정)</td><td><strong>136,453</strong> (DOSM 공식)</td><td><strong>내가 약 2배 과소 추정</strong>. 철회</td></tr>
+  <tr><td>Klang Valley outlet 비중</td><td>30~35%</td><td><strong>28.2% (volume) / 38% (value)</strong></td><td>범위 근접 — 수용 가능. "28.2%"로 고정</td></tr>
+  <tr><td>독립 가맹점 비중</td><td>73.5% (과제 브리프)</td><td><strong>73.52% by value</strong> — volume 비중 미공개</td><td>"가치 기준"만 공식. Volume 투영은 ASSUMPTION</td></tr>
+  <tr><td>IRS 30k 중 F&amp;B 비중</td><td>40~50%</td><td>미공개</td><td><strong>철회</strong> — 업종 나열 기반 ~29~35% 상한만 유추 가능</td></tr>
+  <tr><td>IRS Klang Valley 비중</td><td>30~35%</td><td>미공개 (지역 분포 비공개)</td><td>국가 평균 28.2% 투영만 가능 <span class="tag tag-l">L</span></td></tr>
+  <tr><td>Tier 1 독립 비중</td><td>55~65%</td><td>미공개</td><td><strong>철회</strong>. 전국 독립 73.52%가 value 상한</td></tr>
+</table>
+
+<h3>10.4 데이터 기반 재산출 (최대한 근거 유지)</h3>
+
+<table>
+  <tr><th>단계</th><th>수치</th><th>근거·신뢰도</th></tr>
+  <tr><td>전국 Food Services outlet</td><td><strong>107,129</strong></td><td>DOSM 직접 <span class="tag tag-h">H</span></td></tr>
+  <tr><td>전국 F&amp;B 총 outlet (catering·beverage 포함)</td><td>136,453</td><td>DOSM 직접 <span class="tag tag-h">H</span></td></tr>
+  <tr><td>Klang Valley Food Services outlet</td><td><strong>~30,210</strong></td><td>107,129 × 28.2% (DOSM volume 비중) <span class="tag tag-h">H</span></td></tr>
+  <tr><td>Klang Valley 독립 outlet</td><td><strong>~22,210</strong></td><td>30,210 × 73.52% (국가 value 비중 → volume 투영) <span class="tag tag-m">M</span> — volume 공식 수치 없음</td></tr>
+  <tr><td>Klang Valley Tier 1 (Kopitiam·café·소형 독립 식당·Mom-and-pop)</td><td><strong>11,000~14,400</strong></td><td>22,210 × 50~65% (ASSUMPTION, Tier 1 내 비중 추정) <span class="tag tag-l">L</span></td></tr>
+  <tr><td>POS 파트너 × KV Tier 1 접근 가능 풀</td><td>미확정</td><td>IRS·StoreHub 업종·지역 분포 비공개 → 본 추정 불가. POS 파트너 실제 DB 조회 필요</td></tr>
+</table>
+
+<div class="callout key">
+<strong>데이터 기반 핵심 결과</strong>: Klang Valley v1 영업 가능 Tier 1 가맹점 풀 <strong>~11,000~14,400개</strong>. v1 파일럿 "100 가맹점" = 기회 풀의 0.7~0.9% → 달성 용이. v2 "1,000 가맹점" = 7~9% → 현실적. <strong>병목은 시장 규모 아님</strong>.
+</div>
+
+<h3>10.5 지리 축 세분화 — Klang Valley 구역별</h3>
+
+<p><strong>미확인</strong>: DBKL(KL 시청)·DBPJ·MBPJ 구역별 F&amp;B 라이선스 수치는 공공 데이터 아님. FOI 요청 필요. 과제 기간 중 불가.</p>
+
+<p>대체 신호 — 알려진 상업지구 F&amp;B 집적도 (정성적):</p>
+
+<table>
+  <tr><th>지구</th><th>특성</th><th>타겟 적합도 (Tier 1 + M40)</th></tr>
+  <tr><td><strong>Bangsar</strong></td><td>중산 직장인·expats 거주+근무. 카페·브런치·독립 식당 밀집</td><td><strong>상</strong></td></tr>
+  <tr><td><strong>Mont Kiara</strong></td><td>expats·M40·T20 상위. 모던 카페·퓨전 식당 많음</td><td><strong>상</strong> (M40 경계)</td></tr>
+  <tr><td><strong>TTDI (Taman Tun Dr Ismail)</strong></td><td>주거 밀집 + 로컬 식당·카페. 가족 단위</td><td><strong>상</strong></td></tr>
+  <tr><td><strong>KLCC</strong></td><td>오피스 밀집. 쇼핑몰 food court + 독립 점심 식당</td><td>상 — 점심 피크 집중 · 단 임대료로 체인 비중 높음</td></tr>
+  <tr><td><strong>Bukit Bintang</strong></td><td>관광·쇼핑 중심. 독립 식당·Jalan Alor hawker</td><td>중 — 관광 비중 높아 직장인 타겟 약함</td></tr>
+  <tr><td><strong>Petaling Jaya — SS2·Damansara Uptown·Bandar Utama</strong></td><td>주거 + 로컬 식당·Kopitiam 밀집. 중산 가족</td><td><strong>상</strong></td></tr>
+  <tr><td><strong>Shah Alam</strong></td><td>주거·말레이계 많음. 독립 식당</td><td>중 — Tier 1 많으나 Kopitiam·독립 중심, 디지털 리터러시 편차</td></tr>
+  <tr><td><strong>Cheras</strong></td><td>주거 광대. 중국계 많음. 독립 식당·카페</td><td>중</td></tr>
+  <tr><td><strong>Subang Jaya</strong></td><td>주거·학생·청년 M40. 카페·모던 식당</td><td>상 — 젊은 타겟 풍부</td></tr>
+</table>
+
+<div class="callout warn">
+<strong>Open Issue #10</strong>: 각 구역별 정확 outlet 수는 DBKL·DBPJ·MBPJ FOI 요청 필요. 본 표는 업계 관찰 기반 정성 판정 <span class="tag tag-l">L</span>.
+</div>
+
+<h3>10.6 업종 축 세분화 — Tier 1 내 유형별</h3>
+
+<p>DOSM 세분 통계 부재. Agent H 확인 실패. Mordor Intelligence 카페 outlet 일부만 공개.</p>
+
+<table>
+  <tr><th>업종</th><th>특성</th><th>예상 POS 보급률</th><th>v1 적합도</th></tr>
+  <tr><td><strong>Kopitiam</strong></td><td>전통 커피숍. 조식·간단식. 노년·직장인 혼재</td><td>낮음 (40~50% 추정)</td><td>중 — POS 도입 설득 필요</td></tr>
+  <tr><td><strong>Mom-and-pop café / 모던 카페</strong></td><td>2010년대 이후 확산. 젊은 주인. SNS·트렌드 친화</td><td><strong>높음 (70~80% 추정)</strong></td><td><strong>상</strong> — POS 이미 사용 多, 리워드 제안 수용도 高</td></tr>
+  <tr><td><strong>Fusion cafe · 브런치 레스토랑</strong></td><td>중상 가격대. 오피스·주거지 인근</td><td>높음 (70~80%)</td><td>상</td></tr>
+  <tr><td><strong>Mamak</strong></td><td>24시간 인도계 무슬림 식당. 할랄</td><td>중 (50~60%)</td><td>중 — 심야 영업이 점심 타겟과 불일치</td></tr>
+  <tr><td><strong>Nasi Kandar · Warung</strong></td><td>말레이 전통 뷔페식 밥집</td><td>낮음 (30~40%)</td><td>중하 — POS 미보유 多</td></tr>
+  <tr><td><strong>중국계 독립 식당</strong> (Char kway teow·wonton mee 등)</td><td>가족 운영. 메뉴 단순</td><td>중 (40~50%)</td><td>중상</td></tr>
+  <tr><td><strong>Bakery · 디저트숍</strong></td><td>소형 점포. 주인 1인</td><td>중상 (60~70%)</td><td>중상</td></tr>
+  <tr><td><strong>Brand 카페 체인 outlet</strong> (2,775곳 공식)</td><td>체인이라 Tier 1 아님 — 독립 73.5% 제외</td><td>높음</td><td>배제 (체인)</td></tr>
+</table>
+
+<p><strong>POS 보급률은 ASSUMPTION</strong> <span class="tag tag-l">L</span>. 실 수치는 POS 공급자 공개 안 함.</p>
+
+<h3>10.7 소비자 축 세분화 — M40 직장인 세분</h3>
+
+<p>DOSM 국가 M40 가구 수 3.16M (2022) 공개. Klang Valley 세분 미공개. 인구 26% × M40 40% 투영 시 <strong>~820만 명 KV 인구 중 M40 ~328만</strong> 가구원 추정 <span class="tag tag-l">L</span>.</p>
+
+<table>
+  <tr><th>세분 기준</th><th>하위 그룹</th><th>v1 타겟 적합도</th></tr>
+  <tr><td>업종</td><td>IT·금융·서비스·교육·의료</td><td>IT·금융 상위 — 디지털·e-wallet 네이티브 · 점심 외식 빈도 최고</td></tr>
+  <tr><td>가족 구성</td><td>싱글 / 커플 노키즈 / 유자녀</td><td>싱글·커플 상위 — 외식 빈도 최고 · 의사결정 빠름</td></tr>
+  <tr><td>점심 패턴</td><td>반복형 (같은 가게 4~5회/주) / 탐색형 (매일 다른 곳)</td><td>반복형 상위 — 리워드 적립 동기 강함</td></tr>
+  <tr><td>월 외식 지출</td><td>RM 500~1,000 / 1,000~2,000 / 2,000+</td><td>1,000~2,000 구간 상위 — 가격 민감도 + 소비 여력 균형</td></tr>
+  <tr><td>결제 방식</td><td>TnG 중심 / GrabPay 중심 / 카드 중심 / 혼합</td><td>TnG·GrabPay 혼합형 상위 — aggregation 가치 最大</td></tr>
+</table>
+
+<h3>10.8 파일럿 영역 잠정 제안 (캡틴 결정 대기)</h3>
+
+<div class="callout info">
+아래 시나리오는 지금까지 모든 축을 결합한 구체 제안. 캡틴 판단 필요.
+</div>
+
+<h4>제안 1 — "Bangsar + TTDI × Mom-and-pop café + Fusion cafe"</h4>
+<ul>
+  <li>지역: Bangsar·TTDI (중산 직장인·expats 밀집)</li>
+  <li>업종: 모던 카페·브런치 (POS 보급률 높음 · 리워드 수용도 높음)</li>
+  <li>예상 파일럿 풀: KV Tier 1 11,000~14,400 중 Bangsar+TTDI 비중 약 5~10% = <strong>~550~1,440 가맹점</strong> (ASSUMPTION)</li>
+  <li>100 가맹점 목표 = 7~18% 확보 — 현실적</li>
+  <li>장점: 디지털 친화 · 영업 속도 빠름 · M40·T20 하위 소비자 접근성 높음</li>
+  <li>단점: 점포 임대료 높아 폐업·이전율 높음</li>
+</ul>
+
+<h4>제안 2 — "Petaling Jaya (SS2·Damansara Uptown·Bandar Utama) × Kopitiam + 중국계 독립 식당"</h4>
+<ul>
+  <li>지역: PJ 주거·상업 혼합지</li>
+  <li>업종: 전통 Kopitiam + 중국계 독립 식당 (73.5% 독립 정면 공략)</li>
+  <li>장점: "독립 가게 단골 경제 활성화" 내러티브 가장 선명</li>
+  <li>단점: POS 보급률 낮음 → BD 설득 공수 높음</li>
+</ul>
+
+<h4>제안 3 — "KLCC + Bukit Bintang × Fusion·브런치 + 모던 카페"</h4>
+<ul>
+  <li>지역: 오피스 최대 밀집지</li>
+  <li>업종: 점심 피크 타겟 모던 업종</li>
+  <li>장점: M40 직장인 최대 밀도 · 점심 피크 수요 최대</li>
+  <li>단점: 체인 비중 높음 → 독립 Tier 1 풀이 상대적 적음. 관광 비중 (Bukit Bintang)으로 타겟 흐려짐</li>
+</ul>
+
+<h4>제안 4 — "Subang Jaya + Bangsar × 모던 카페 집중"</h4>
+<ul>
+  <li>지역: 젊은 직장인·학생·청년 M40 밀집</li>
+  <li>업종: 모던 카페 단일 업종 — BD·UX 단순화</li>
+  <li>장점: 타겟 단일화로 메시징·기능 최적화 쉬움. 디지털 네이티브 소비자</li>
+  <li>단점: 업종 편중 — "독립 73.5% 공백" 내러티브 약화</li>
+</ul>
+
+<h3>10.9 Open Issues — 세분화 관련</h3>
+
+<ol>
+  <li><strong>#10 Klang Valley 구역별 F&amp;B outlet 수</strong> — DBKL·DBPJ·MBPJ 라이선스 데이터 공개 아님. FOI 필요</li>
+  <li><strong>#11 IRS·StoreHub 지역·업종 분포</strong> — 기업 비공개. 직접 영업 접촉만 해결 가능</li>
+  <li><strong>#12 업종별 POS 보급률</strong> — Kopitiam·Mamak·소형 식당 등. 공식 통계 없음</li>
+  <li><strong>#13 Tier 1 내 세부 업종 비중</strong> — Kopitiam/café/식당 등 outlet 수 분해 미공개</li>
+  <li><strong>#14 Klang Valley M40 가구 세분화</strong> — 국가 M40 3.16M만 공개. 지역 수 ASSUMPTION 기반</li>
+</ol>
+
+<h3>Section 10 요약 (1차 완료)</h3>
+<ol>
+  <li>감각 추정 3개 비중 전부 재검증 — <strong>전국 outlet 수는 2배 과소 추정 정정</strong> (60k → 136,453)</li>
+  <li>Klang Valley 비중 28.2% (공식) · 독립 73.52% (가치 기준 공식)</li>
+  <li>KV Tier 1 가맹점 풀 <strong>11,000~14,400</strong> 재산출. v1 100 파일럿 = 기회 풀 0.9%, 실현 용이</li>
+  <li>IRS·StoreHub 업종·지역 분포는 기업 비공개 → 직접 영업 접촉 없이는 결론 불가</li>
+  <li>파일럿 영역 4개 제안 — 캡틴 결정 대기</li>
+  <li>시장 규모는 병목 아님. <strong>병목은 BD 효율·타겟 정밀도·제품 핏</strong></li>
+</ol>
+
+<h3>10.11 업종 공통분모 — Kopitiam + Modern Café 통합 프레임 <span class="tag tag-h">교차 검증 완료</span></h3>
+
+<p>Agent I·J·K 3개 에이전트 병렬 조사 + 교차 검증 결과. Tier 1 핵심 업종 2개 (Kopitiam + Modern Café)의 공통분모 5개 확인. 정형 출처 2+ 교차 기준.</p>
+
+<table>
+  <tr><th>#</th><th>공통분모</th><th>의미</th><th>교차 출처</th><th>제품 함의</th></tr>
+  <tr><td>1</td><td><strong>Third Place</strong> (Oldenburg 프레임)</td><td>집·직장 외의 "제3의 공간". 공동체·비공식 교류</td><td>Springer, UiTM, FULCRUM, UNESCO Courier 4+</td><td>리워드 앱이 "제3의 공간" 정체성 강화 — 단순 할인 앱과 차별</td></tr>
+  <tr><td>2</td><td><strong>Low-pressure dwell</strong></td><td>주문 압박 없이 장시간 체류 가능. 식당과 다른 특성</td><td>Singapore kopitiam 연구·SETHLUI·Palate Asia 3+</td><td>체류 시간 = 브랜드 노출 시간. 앱 탐색·대화 창구로 활용</td></tr>
+  <tr><td>3</td><td><strong>Solo-friendly</strong></td><td>혼자 방문이 자연스럽고 낙인 없음</td><td>Palate Asia (digital nomads) · Happy Go KL · The Star 3+</td><td>솔로 M40 직장인 반복 이용 패턴 → 자동 적립 습관화 핵심</td></tr>
+  <tr><td>4</td><td><strong>의례화된 음료 + 사회 스크립트</strong></td><td>Kopi tarik, teh O, 스페셜티 pour-over 등 시그니처 음료가 사회 신호</td><td>Academia · SETHLUI · ResearchGate 3+</td><td>리워드 매커닉에 "시그니처 메뉴 10잔 스탬프" 같은 의례 반영</td></tr>
+  <tr><td>5</td><td><strong>M40+ 재방문 가능 가격</strong></td><td>Kopitiam RM 5~15, 모던 카페 RM 20~40 → 반복 가능 예산</td><td>Mordor · GrowthHQ · Oppotus 2+</td><td>리워드 ROI 명확. 적립 → 무료 1잔 전환 실감 쉬움</td></tr>
+</table>
+
+<div class="callout key">
+<strong>공통분모 통합 제품 컨셉</strong>: "Third place를 단골 경제로 전환" — Kopitiam과 모던 카페가 공유하는 "공간적·사회적·의례적·가격적" 특성을 리워드·대기 가시성·결제 시점 가치로 통합하는 레이어.
+</div>
+
+<h3>10.12 District 재평가 — 교차 검증 기반 수정 랭킹</h3>
+
+<div class="callout warn">
+<strong>이전 추천 정정 (2026-04-15 00:45)</strong>: Section 10.8 제안 1 "Bangsar + TTDI"는 Agent K 교차 검증에서 <strong>"Bangsar는 T20 anomaly · M40 mass-market 아님"</strong>으로 확인됨. 내 이전 "M40+T20 혼재" 가정은 부분 오류. 정정한다.
+</div>
+
+<table>
+  <tr><th>Tier</th><th>지역</th><th>M40 정렬</th><th>독립 밀집</th><th>공통분모 적합</th><th>임대료 리스크</th><th>v1 권고</th></tr>
+  <tr>
+    <td>T1 · <strong>최우선</strong></td>
+    <td><strong>PJ SS2 (Damansara Utama)</strong></td>
+    <td>최상</td>
+    <td>최상 (SS2 Hub·Bean Brothers·Curate·SPACEGREY 등)</td>
+    <td>상 (가족·직장인·노마드)</td>
+    <td>중</td>
+    <td><strong>핵심 지역</strong></td>
+  </tr>
+  <tr>
+    <td>T1</td>
+    <td><strong>TTDI (TTDI Plaza)</strong></td>
+    <td>최상 — gentrifying M40 + nomad 허브</td>
+    <td>상 (12-18 independent cafés)</td>
+    <td>상 (Common Ground co-working)</td>
+    <td>중</td>
+    <td><strong>핵심 지역</strong></td>
+  </tr>
+  <tr>
+    <td>T1 · 주의</td>
+    <td>Bangsar (Jalan Telawi)</td>
+    <td><strong>T20 위주 — M40 상위만</strong></td>
+    <td>최상 (15-25 cafés · BSC 16k/day 2022)</td>
+    <td>상 (expats·professionals)</td>
+    <td><strong>최고</strong></td>
+    <td>보조·실험 지역</td>
+  </tr>
+  <tr>
+    <td>T2</td>
+    <td>Mutiara Damansara</td>
+    <td>중</td>
+    <td>중 (몰 중심)</td>
+    <td>중</td>
+    <td>중</td>
+    <td>확장 후보</td>
+  </tr>
+  <tr>
+    <td>T2</td>
+    <td>KLCC</td>
+    <td>M40·T20 직장인 최대 밀도</td>
+    <td><strong>하 (80%+ 체인)</strong></td>
+    <td>하 — 점심 회전 중심, dwell 낮음</td>
+    <td>최고</td>
+    <td>배제 — 독립 풀 부족</td>
+  </tr>
+</table>
+
+<h3>10.13 수정된 파일럿 지역 권고</h3>
+
+<div class="callout key">
+<strong>최종 권고 (2026-04-15 00:45)</strong>: <strong>TTDI + PJ SS2 (Damansara Utama) 병행</strong>. Bangsar는 보조·T20 상한 실험 지역으로만.
+</div>
+
+<h4>근거</h4>
+<ol>
+  <li><strong>M40 타겟 정렬</strong>: TTDI·SS2가 직접 맞음. Bangsar은 T20 편향 (Agent K 교차 확인)</li>
+  <li><strong>독립 가맹점 절대 수</strong>: SS2가 KV 내 독립 카페·Kopitiam 최대 밀집</li>
+  <li><strong>카페·Kopitiam 혼재</strong>: TTDI가 균형 최상 (모던 카페 + Kopitiam + 브런치 + co-working)</li>
+  <li><strong>임대료 리스크</strong>: SS2·TTDI &lt; Bangsar → 가맹점 생존율 높음, BD 투자 회수 유리</li>
+  <li><strong>디지털 친화</strong>: TTDI가 work-from-café·digital nomad 허브 → 소비자 디지털 리터러시 확보</li>
+  <li><strong>노인층 Kopitiam + 젊은층 카페 공존</strong>: SS2가 이 혼합 최대 — 세대 교차 검증 가능</li>
+</ol>
+
+<h4>Bangsar 보조 역할</h4>
+<ul>
+  <li>15~25 독립 카페 밀도로 <strong>제품 검증 밀도 실험</strong>에 여전 유용</li>
+  <li>T20 상한 소비자 구매력 실험 (가격 탄력성 테스트)</li>
+  <li>영어 UX 수용도 테스트 (expats·국제 소비자)</li>
+</ul>
+
+<h4>100 가맹점 배분 제안</h4>
+<table>
+  <tr><th>지역</th><th>배분</th><th>목적</th></tr>
+  <tr><td>TTDI</td><td>40</td><td>M40 정렬 + 카페/Kopitiam 혼재 검증</td></tr>
+  <tr><td>PJ SS2 Damansara Utama</td><td>40</td><td>독립 밀집·절대 수 + 가족 M40</td></tr>
+  <tr><td>Bangsar</td><td>20</td><td>T20 상한 실험 + 영어 UX</td></tr>
+  <tr><td><strong>합계</strong></td><td><strong>100</strong></td><td>12주 파일럿</td></tr>
+</table>
+
+<h3>10.14 Kopitiam·Modern Café 이용자 프로필 — Agent I·J 핵심</h3>
+
+<table>
+  <tr><th>항목</th><th>전통 Kopitiam</th><th>현대 Kopitiam (Old Town 등)</th><th>Modern Café</th></tr>
+  <tr><td>주 이용 연령</td><td>60+ 일일 · 40~60 주 4~5회</td><td>25~40 Urban professional</td><td>22~35 Urban professional</td></tr>
+  <tr><td>소득 계층</td><td>다양 (B40~T20)</td><td>M40 중심</td><td>Upper M40·T20 하위</td></tr>
+  <tr><td>방문 빈도</td><td>60+ 매일 · 25~40 주 2~3회</td><td>주 3~5회</td><td>주 1~3회</td></tr>
+  <tr><td>체류 시간</td><td>30분~2시간</td><td>1~2시간 (WiFi·laptop)</td><td>1~3시간 (work-from-café)</td></tr>
+  <tr><td>대화 주제</td><td>정치·사회·가족·스포츠 (60+) / 업무·일상 (40~60)</td><td>업무·사교·가족</td><td>커리어·관계·팝컬처·여행·재무</td></tr>
+  <tr><td>평균 객단가</td><td>RM 5~15</td><td>RM 12~25</td><td>RM 20~40</td></tr>
+  <tr><td>M40 월 지출</td><td>RM 160~300 (주 4~5회 × RM 10~15)</td><td>RM 200~400</td><td>RM 240~480 (주 2~3회 × RM 30~40)</td></tr>
+  <tr><td>주문 메뉴</td><td>kaya toast · kopi · teh tarik · nasi lemak · 국수</td><td>점심 세트 · kopi · 토스트</td><td>flat white · matcha latte · 브런치 · 사워도우 · 아보카도 토스트</td></tr>
+  <tr><td>힙 상승 계기</td><td>Instagram 기반 발견 · Gen Z 레트로 감성 · 2020년대 인플루언서 UGC</td><td>2000~2010년대 체인화 (Old Town 200+) · 공조·WiFi·빠른 서비스 결합</td><td>2015 Third Wave Coffee · 귀국 expat Millennial · Melbourne·Tokyo 영향 · KL 디지털 노마드 순위 84→22위</td></tr>
+</table>
+
+<h3>10.15 데이터 공백 (Open Issues 추가)</h3>
+<ol>
+  <li><strong>#15</strong> 각 district별 정확 독립 카페·Kopitiam 수치 — DBKL·DBPJ 라이선스 데이터 비공개</li>
+  <li><strong>#16</strong> 업종별 POS 보급률 — 공식 통계 없음</li>
+  <li><strong>#17</strong> 평균 체류 시간 — 베이스라인 없음 (Agent K 지적)</li>
+  <li><strong>#18</strong> "Kopitiam 30% GDP" 주장 교차 실패 — <strong>본 문서에서 인용 금지</strong></li>
+  <li><strong>#19</strong> M40 특화 외식 소비 세그먼트 데이터 — 전국 평균만 공개</li>
+</ol>
+
+<h3 id="sec-10-16" class="updated-heading">10.16 v1 방향 원점 재검증 — A 수용 배경 (전 과정 기록) <span class="update-stamp">2026-04-15 추가<span class="ustamp-time">01:15 KST</span></span></h3>
+
+<p>타겟을 "M40 직장인 × Third Place" 로 확정하게 된 배경을 시간 순으로 전 과정 기록. 단순 결과가 아니라 <strong>어떤 대안을 검토했고 왜 버렸는가</strong>를 남긴다. Part 3 (프로덕트 전략·트레이드오프)의 직접 근거가 되는 이력.</p>
+
+<h4>10.16.1 재검증 계기</h4>
+<ul>
+  <li>지금까지 자연스러운 논의 흐름으로 "M40 도시 직장인 25~35세"에 도달</li>
+  <li>캡틴 지적 (2026-04-15 00:50 KST): <em>"지금이 분기점이긴 한데, 지금의 선택이 맞느냐를 검증해야 한다. 과제에서 제시한 조건들로 미루어 보았을 때 지금 만들어갈 v1 기능이 최적이냐"</em></li>
+  <li>Bangsar T20 anomaly 발견(Section 10.12)으로 "타겟을 T20/상위 M40으로 맞추면 완전히 다른 제품이 나올 수 있음" 인식</li>
+  <li>→ 과제 원문 조건으로 돌아가 처음부터 재검증</li>
+</ul>
+
+<h4>10.16.2 과제 원문 8개 제약 재확인</h4>
+<table>
+  <tr><th>#</th><th>제약</th><th>함의</th></tr>
+  <tr><td>1</td><td>Web3 VC 자회사 (ShardLab)</td><td>Web3 맥락 존재하나 강제 아님</td></tr>
+  <tr><td>2</td><td>2만+ POS 가맹점 네트워크 (F&amp;B + 리테일)</td><td><strong>핵심 자산 — POS 레버리지 미활용 시 탈락</strong></td></tr>
+  <tr><td>3</td><td>B2C 프로덕트</td><td>순수 B2B SaaS 금지</td></tr>
+  <tr><td>4</td><td>PM1 + Eng1 + Des0.5 · AI-first</td><td>공수 큰 통합 불가</td></tr>
+  <tr><td>5</td><td>기존 소비자 유저 베이스 0</td><td>콜드스타트 해소 전략 필수</td></tr>
+  <tr><td>6</td><td>BNM 라이선스 없음</td><td>stored-value·직접 결제 금지. aggregation만</td></tr>
+  <tr><td>7</td><td>마케팅 예산 없음</td><td>가맹점 채널·유기 바이럴만</td></tr>
+  <tr><td>8</td><td>BNM·PDPA·SC 규제</td><td>가드레일</td></tr>
+</table>
+
+<h4>10.16.3 후보 타겟 세그먼트 8개 전수</h4>
+
+<p>과제 조건 하에서 가능한 모든 타겟 나열. 자연스러운 흐름에 의존 않고 처음부터:</p>
+
+<table>
+  <tr><th>#</th><th>세그먼트</th><th>규모</th><th>구매력</th><th>반복</th><th>디지털</th><th>POS 레버리지</th></tr>
+  <tr><td>A</td><td><strong>M40 도시 직장인</strong> (현 방향)</td><td>대 (수백만)</td><td>중</td><td>높음 (점심 의례)</td><td>중상</td><td><strong>상</strong></td></tr>
+  <tr><td>B</td><td><strong>T20 + 상위 M40 부촌</strong> (캡틴 제기)</td><td>중 (~68만 가구 T20)</td><td><strong>상</strong></td><td>중상</td><td><strong>상</strong></td><td>중</td></tr>
+  <tr><td>C</td><td>가족 주말 외식</td><td>대</td><td>중</td><td>중 (주 1~2회)</td><td>중</td><td>중</td></tr>
+  <tr><td>D</td><td>학생·Gen Z</td><td>중</td><td>낮음</td><td>높음</td><td>상</td><td>중</td></tr>
+  <tr><td>E</td><td>관광객 (inbound 2,500만/년)</td><td>중</td><td>중상</td><td><strong>낮음</strong> (1회성)</td><td>상</td><td>중</td></tr>
+  <tr><td>F</td><td>Digital Nomad / Remote Worker</td><td>소 (수만)</td><td>상</td><td><strong>최상</strong></td><td>최상</td><td>중상</td></tr>
+  <tr><td>G</td><td>B40 실용 생활비 절감</td><td>최대</td><td>낮음</td><td>중</td><td>낮음</td><td>중</td></tr>
+  <tr><td>H</td><td>기업 식대 복지 (B2B2C)</td><td>중</td><td>중상</td><td>중</td><td>상</td><td>중상</td></tr>
+</table>
+
+<h4>10.16.4 세그먼트별 제품 컨셉 분기</h4>
+<p>같은 POS 자산 + 같은 규제 제약 내에서 <strong>타겟이 바뀌면 제품이 완전히 달라진다</strong>. 핵심만:</p>
+
+<table>
+  <tr><th>세그먼트</th><th>제품 컨셉</th><th>핵심 기능</th><th>수익 모델</th></tr>
+  <tr><td><strong>A</strong></td><td>Third Place 단골 경제</td><td>자동 적립 · 대기 가시성 · 가격 투명성</td><td>가맹점 SaaS</td></tr>
+  <tr><td><strong>B</strong></td><td>프리미엄 다이닝 멤버십 (KL Inner Circle)</td><td>컨시어지 · 우선 예약 · VIP 오퍼</td><td>소비자 구독 + 가맹점 수수료</td></tr>
+  <tr><td>C</td><td>그룹 외식 코디네이터</td><td>그룹 예약 · 할인 · 메뉴 투표</td><td>플랫폼 수수료</td></tr>
+  <tr><td>D</td><td>저가 할인 큐레이션</td><td>BNPL · 할인 · 스트리트 푸드</td><td>광고·제휴</td></tr>
+  <tr><td>E</td><td>로컬 F&amp;B 가이드</td><td>다국어 · 지도 · 할랄 필터 · 환전</td><td>관광 제휴</td></tr>
+  <tr><td>F</td><td>Work-café 허브</td><td>Wi-Fi · 조용함 필터 · 장기 할인</td><td>월 구독</td></tr>
+  <tr><td>G</td><td>생활비 절약 앱</td><td>쿠폰 · BNPL 관리 · 지출 경고</td><td>제휴·광고</td></tr>
+  <tr><td>H</td><td>기업 복지 플랫폼</td><td>기업 계정 · 월 식대 · 직원 redemption</td><td>B2B 구독</td></tr>
+</table>
+
+<h4>10.16.5 B 시나리오 구체 검토 — 캡틴 제기 정면 답변</h4>
+
+<p>T20/상위 M40 Bangsar 중심 "KL F&amp;B Inner Circle" 시나리오.</p>
+
+<h5>5가지 아이디어</h5>
+<ol>
+  <li><strong>셰프 시그니처 추적 (POS 메뉴 데이터 직결)</strong> — "셰프 교체 감지", "한정 시그니처 오늘만"을 T20 고객에게 자동 푸시. POS 레버리지 성립</li>
+  <li><strong>프리미엄 컨시어지 + 우선 예약권</strong> — 월 RM 88~288 구독. Bangsar·Mont Kiara 탑 레스토랑 우선권. Wine pairing 추천</li>
+  <li><strong>숨은 독립 프리미엄 디스커버리</strong> — Lucky Garden·Mont Kiara·Bangsar Baru 숨은 레스토랑 큐레이션. Expats·국제 소비자 타겟</li>
+  <li><strong>프라이빗 다이닝 이벤트 플랫폼</strong> — 셰프 테이블 · 와인 테이스팅 · 팝업 디너 티켓팅 (RM 180~500)</li>
+  <li><strong>T20 지출 인사이트 + 라이프스타일 트래커</strong> — F&amp;B 지출 분석 · 세금 신고 자동 분류 · 보험·자산 관리 제휴</li>
+</ol>
+
+<h5>B 시나리오 장점</h5>
+<ul>
+  <li>구매력: T20 가구 월 RM 10,971+ · 월 F&amp;B 지출 RM 1,500~3,000 추정</li>
+  <li>월 구독 수용도 높음 (Netflix·Spotify·Grab Plus 복수 구독 이미)</li>
+  <li>재방문 빈도 5~7회/주 (Bangsar·Mont Kiara 거주자)</li>
+  <li>디지털 리터러시 최상 — UX 현지화 공수 낮음</li>
+  <li>객단가 RM 30~80 → 적립 체감 규모 큼</li>
+</ul>
+
+<h5>B 시나리오 단점·리스크</h5>
+<ul>
+  <li><strong>시장 규모 제한</strong>: T20 = 전국 약 68만 가구. KV T20 약 18만 가구</li>
+  <li><strong>이미 포화</strong>: Chope · Eatigo · Quandoo · OpenRice 경쟁. 차별화 어려움</li>
+  <li><strong>POS 파트너십 정당화 약함</strong>: 다수 기능 POS 없이도 가능 (예약·할인은 API 불필요)</li>
+  <li>체인 선호 부분 존재 (Nobu · Troika · Starbucks Reserve)</li>
+  <li>Bangsar Jalan Telawi 점포 교체 빠름 — BD 투자 회수 리스크</li>
+  <li>"73.5% 독립 공백" 내러티브 약화</li>
+</ul>
+
+<h4>10.16.6 세 주요 시나리오 비교</h4>
+
+<table>
+  <tr><th>축</th><th><strong>A. M40 Third Place</strong></th><th><strong>B. T20/상위M40 Inner Circle</strong></th><th>A+B 듀얼</th></tr>
+  <tr><td>과제 B2C 제약</td><td>충족</td><td>충족</td><td>충족</td></tr>
+  <tr><td>POS 레버리지 정당화</td><td><strong>최강</strong></td><td>약함</td><td>최강</td></tr>
+  <tr><td>시장 규모 (KV)</td><td><strong>~11k~14k 가맹점·수백만 소비자</strong></td><td>~1k~2k 가맹점·~18만 가구</td><td>병렬</td></tr>
+  <tr><td>객단가·LTV</td><td>중</td><td><strong>상</strong></td><td>혼합</td></tr>
+  <tr><td>반복 이용</td><td><strong>최상</strong> (점심 의례)</td><td>상</td><td>최상</td></tr>
+  <tr><td>BD 영업 난이도</td><td>중</td><td>상 (프리미엄 설득)</td><td>상</td></tr>
+  <tr><td>콜드스타트 해소</td><td>POS QR 배포로 용이</td><td>구전·SNS 의존</td><td>병렬</td></tr>
+  <tr><td>경쟁 환경</td><td><strong>공백</strong> (73.5% 미커버)</td><td>포화</td><td>혼합</td></tr>
+  <tr><td>v1 내러티브</td><td>"동네 단골 경제" 선명</td><td>"KL F&amp;B Inner Circle" 중상</td><td>복잡</td></tr>
+  <tr><td>72h 프로토타입</td><td>단순 흐름 가능</td><td>여러 기능 필요</td><td>복잡</td></tr>
+  <tr><td>12주 MVP</td><td>현실적</td><td>빠듯</td><td><strong>불가 (1엔지니어)</strong></td></tr>
+</table>
+
+<h4>10.16.7 POS 레버리지 관점 — 결정적 축</h4>
+
+<p>과제가 묻는 핵심: "이 POS 네트워크가 아니면 <strong>불가능한 가치</strong>를 만드는가". 기능별 평가:</p>
+
+<table>
+  <tr><th>기능</th><th>POS 없어도 가능?</th><th>A</th><th>B</th></tr>
+  <tr><td>결제 완료 → 자동 적립</td><td>불가 (POS 결제 신호 필수)</td><td>핵심</td><td>부가</td></tr>
+  <tr><td>실시간 매장 대기 시간</td><td>불가 (POS 테이블 점유 추적)</td><td>핵심</td><td>부가</td></tr>
+  <tr><td>가맹점 커미션·마진 분석</td><td>불가 (POS 거래 데이터)</td><td>핵심</td><td>없음</td></tr>
+  <tr><td>메뉴 데이터 · 셰프 변경 감지</td><td>불가 (POS 메뉴 데이터)</td><td>없음</td><td>핵심</td></tr>
+  <tr><td>예약 플랫폼</td><td>가능 (Chope 등 존재)</td><td>없음</td><td>부가</td></tr>
+  <tr><td>할인 쿠폰</td><td>가능</td><td>부가</td><td>부가</td></tr>
+  <tr><td>컨시어지 멤버십</td><td>가능</td><td>없음</td><td>핵심</td></tr>
+  <tr><td>프라이빗 이벤트 티켓팅</td><td>가능</td><td>없음</td><td>핵심</td></tr>
+  <tr><td>지출 인사이트</td><td>가능 (전자지갑·카드 연동)</td><td>부가</td><td>부가</td></tr>
+</table>
+
+<p><strong>결론</strong>: A의 핵심 기능은 <strong>구조적으로 POS 없이 불가능</strong>. B의 핵심 기능은 <strong>다수가 POS 없이도 구현 가능</strong> — POS 레버리지 정당화 A가 압도.</p>
+
+<h4>10.16.8 지역 옵션 4개 장단점 심화</h4>
+
+<h5>옵션 1 — Bangsar + TTDI × Mom-and-pop café + Kopitiam</h5>
+<ul>
+  <li><strong>장점</strong>: 모던 카페·브런치·Kopitiam 혼재. 디지털 친화. POS 보급률 높음. 영어 UI 허용. 주거+근무 혼재로 반복 방문</li>
+  <li><strong>단점</strong>: 체인 비중 상대적 높음. 임대료 최고. Bangsar는 T20 anomaly (Agent K). Expats 비중 — 로컬과 결 다름</li>
+</ul>
+
+<h5>옵션 2 — KLCC + Bukit Bintang × 독립 중가 식당 + 모던 카페</h5>
+<ul>
+  <li><strong>장점</strong>: 오피스 최대 밀집 · 점심 피크 수요 최대 · 교통 최상</li>
+  <li><strong>단점</strong>: <strong>독립 Tier 1 풀 적음</strong> (임대료 최고 → 체인·대형 식당). Bukit Bintang 관광 비중. 임대료 폐업률. 경쟁 포화</li>
+</ul>
+
+<h5>옵션 3 — PJ SS2·Damansara Uptown·Bandar Utama × Kopitiam + 전통 독립</h5>
+<ul>
+  <li><strong>장점</strong>: 독립 Kopitiam·중국계 식당 최밀집. "73.5% 공백" 내러티브 최선명. 임대료 낮음 → 가맹점 생존율 높음. 가족·중산 M40 반복</li>
+  <li><strong>단점</strong>: Kopitiam 점주 고령 · 디지털 리터러시 편차. POS 보급률 낮음. 모던 카페 수 적음. 오피스 비중 적어 점심 피크 검증 제약</li>
+</ul>
+
+<h5>옵션 4 — KL 광역 × Mom-and-pop café 단일</h5>
+<ul>
+  <li><strong>장점</strong>: 업종 단일 · 메시징·UX 최적화. 디지털 네이티브 주인</li>
+  <li><strong>단점</strong>: 지리 분산 → BD 비효율. 모던 카페 경쟁 치열 (ZUS 743점포 · 자체 앱 구축). "공백" 내러티브 약화. 임대료 리스크</li>
+</ul>
+
+<h4>10.16.9 Bangsar T20 플래그 배경</h4>
+
+<p>처음 지역 추천에서 "Bangsar + TTDI" 선택한 건 <strong>내가 "M40+T20 혼재"로 잘못 가정</strong>한 결과. Agent K 교차 검증이 이를 뒤집음:</p>
+
+<ul>
+  <li>Agent J: "Demographic = Urban professionals 22~35, <strong>T20/Upper M40</strong>" (Rakuten Insight 2022, Malaysia Restaurant Statistics)</li>
+  <li>Agent K: "Bangsar 15~25 independent cafés · <strong>T20/upper-M40 · CAVEAT: not mass-market M40</strong>" (KL Foodie · SETHLUI · ExpatGo · The Edge 2022~2025)</li>
+  <li>Agent I: "Bangsar 말레이시아 최고 부자동네 · 61% 말레이계 · 외국인 집중 · 현대식 카페 중심"</li>
+</ul>
+
+<p><strong>정정</strong>: Bangsar은 T20 편향 지역. M40 mass-market 타겟과 어긋남. TTDI + PJ SS2가 M40 정렬에 더 적합.</p>
+
+<h4>10.16.10 A 수용 최종 결정 — 캡틴 판단 근거</h4>
+
+<p>캡틴 결정 (2026-04-15 01:00 KST): <strong>A 유지 · B는 v2+ 확장 후보로 이연</strong>.</p>
+
+<table>
+  <tr><th>판단 근거</th><th>출처</th></tr>
+  <tr><td>A는 POS 레버리지 정당화 최강 (자동 적립·대기 가시성이 POS 직결)</td><td>Section 10.16.7</td></tr>
+  <tr><td>A는 "73.5% 독립 공백" 내러티브 선명</td><td>Mordor 2025 / Section 10.2</td></tr>
+  <tr><td>A는 1엔지니어·12주 범위 적합 — B는 빠듯</td><td>Section 10.16.6</td></tr>
+  <tr><td>B는 Chope·Eatigo·Quandoo와 차별화 논리 약함</td><td>Section 3.2 · 10.16.5</td></tr>
+  <tr><td>B 기능 다수가 POS 없이도 가능 — 과제 논리 불리</td><td>Section 10.16.7</td></tr>
+  <tr><td><strong>캡틴 판단</strong>: "현지 감 없는 상태에서 데이터만 보고 B 전환은 리스크 과대. B는 꼭 필요한 서비스로 보이지 않음. 명분도 약함"</td><td>캡틴 2026-04-15 01:00</td></tr>
+</table>
+
+<p><strong>B 완전 폐기 아님</strong> — v1 안정화 후 6~12개월 내 T20 프리미엄 플랜으로 확장 가능성 유지. Bangsar는 파일럿에서 보조(20%·T20 실험용)로 잔류.</p>
+
+<h4>10.16.11 핵심 교훈 — 지침 14 재확인</h4>
+
+<p>이 원점 재검증 과정에서 얻은 교훈:</p>
+<ol>
+  <li><strong>자연스러운 흐름은 검증 아니다</strong>. 캡틴 지적 없었으면 A로 자동 진행됐을 것. 매 분기점마다 "다른 답도 가능했나" 되묻는 습관 필요</li>
+  <li>"M40+T20 혼재"처럼 <strong>감각적 가정이 전제로 숨어있을 수 있음</strong>. Agent K 교차 검증이 없었으면 Bangsar 추천이 유지됐을 것</li>
+  <li>POS 레버리지 정당화는 <strong>과제 평가의 결정적 축</strong>. 기능 나열 전에 "이 기능 POS 없어도 가능한가"부터 점검</li>
+  <li>대안을 체계적으로 전수(A~H) 하면 <strong>내 선택의 근거가 훨씬 단단</strong>해짐 — "다른 것도 검토했으나 이 이유로 버렸다"로 방어 가능</li>
+</ol>
+
+<h3>Section 10 (최종) 요약 — A 확정 반영</h3>
+<ol>
+  <li><strong>공통분모 5개 확정</strong>: Third place · dwell · solo-friendly · 의례 음료 · M40 가격. Kopitiam + Modern Café 통합 프레임 "Third place를 단골 경제로"</li>
+  <li><strong>District 랭킹 재확정</strong>: TTDI + PJ SS2 Tier 1 · Bangsar는 T20 주의 → 보조 역할</li>
+  <li><strong>100 가맹점 배분</strong>: TTDI 40 · SS2 40 · Bangsar 20</li>
+  <li><strong>이용자 프로필 3유형</strong>: 전통 Kopitiam · 현대 Kopitiam · Modern Café — 연령·소득·체류·객단가·메뉴 구분</li>
+  <li><strong>개방 이슈 5건 추가</strong>: district 수치 · POS 보급률 · 체류 기준 · GDP 주장 차단 · M40 세그먼트</li>
+  <li><strong>원점 재검증 완료 (10.16)</strong>: 타겟 세그먼트 8개 전수 검토 → A (M40 Third Place) 확정. B (T20 Inner Circle) v2+ 이연. POS 레버리지 정당화가 결정적 축이었음을 명문화</li>
+</ol>
+<h2 id="section-9" style="color: #9ca3af;">Section 9 — 다음 단계 <span class="tag tag-pend">대기</span></h2>
+
+</main>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  try {
+    var KEY = 'shardlabMrSeenUpdates';
+    var seen = [];
+    try { seen = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e) { seen = []; }
+    document.querySelectorAll('.nav-new').forEach(function(badge) {
+      var id = badge.getAttribute('data-update-id');
+      if (!id) return;
+      if (seen.indexOf(id) !== -1) { badge.classList.add('seen'); return; }
+      var link = badge.parentElement;
+      link.addEventListener('click', function() {
+        badge.classList.add('seen');
+        if (seen.indexOf(id) === -1) {
+          seen.push(id);
+          try { localStorage.setItem(KEY, JSON.stringify(seen)); } catch(e) {}
+        }
+      });
+    });
+  } catch (err) {}
+});
+</script>
+</body>
+</html>

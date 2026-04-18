@@ -1,0 +1,2573 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tapik v5 앱 프로토콜 설계서 — Firebase 전면 재설계</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.7; }
+  main { max-width: 960px; margin: 0 auto; padding: 40px 24px 120px; }
+  h1 { font-size: 28px; font-weight: 800; margin-bottom: 8px; color: #0f172a; }
+  h1 small { font-size: 14px; font-weight: 400; color: #64748b; display: block; margin-top: 4px; }
+  h2 { font-size: 22px; font-weight: 700; margin: 56px 0 16px; padding-bottom: 8px; border-bottom: 3px solid #1e293b; color: #0f172a; }
+  h3 { font-size: 17px; font-weight: 700; margin: 32px 0 12px; color: #334155; }
+  h4 { font-size: 15px; font-weight: 700; margin: 20px 0 8px; color: #475569; }
+  p { margin-bottom: 14px; font-size: 15px; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 13px; }
+  th { background: #1e293b; color: white; padding: 10px 12px; text-align: left; font-weight: 600; }
+  td { padding: 9px 12px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+  tr:nth-child(even) { background: #f8fafc; }
+  .callout { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 16px 20px; margin: 20px 0; border-radius: 0 8px 8px 0; font-size: 14px; }
+  .callout-red { background: #fef2f2; border-left-color: #ef4444; }
+  .callout-blue { background: #eff6ff; border-left-color: #3b82f6; }
+  .callout-green { background: #f0fdf4; border-left-color: #22c55e; }
+  .callout-purple { background: #faf5ff; border-left-color: #a855f7; }
+  .highlight { background: #fef08a; padding: 2px 6px; border-radius: 3px; font-weight: 700; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; margin-right: 4px; }
+  .tag-red { background: #fee2e2; color: #dc2626; }
+  .tag-green { background: #dcfce7; color: #16a34a; }
+  .tag-amber { background: #fef3c7; color: #b45309; }
+  .tag-blue { background: #dbeafe; color: #2563eb; }
+  .tag-purple { background: #f3e8ff; color: #9333ea; }
+  .tag-gray { background: #f1f5f9; color: #64748b; }
+  code { background: #f1f5f9; padding: 2px 6px; border-radius: 3px; font-size: 13px; font-family: 'SF Mono', 'Consolas', monospace; }
+  pre { background: #1e293b; color: #e2e8f0; padding: 20px; border-radius: 8px; font-size: 13px; overflow-x: auto; margin: 16px 0 24px; font-family: 'SF Mono', 'Consolas', monospace; line-height: 1.5; }
+  blockquote { background: #f1f5f9; border-left: 4px solid #64748b; padding: 16px 20px; margin: 16px 0; font-size: 14px; font-style: italic; border-radius: 0 8px 8px 0; }
+  .divider { border: none; border-top: 2px solid #e2e8f0; margin: 40px 0; }
+  .screen-box { border: 2px solid #e2e8f0; border-radius: 12px; padding: 20px; margin: 16px 0; background: white; }
+  .screen-box h4 { margin-top: 0; color: #0f172a; font-size: 16px; }
+  .btn-spec { display: grid; grid-template-columns: 180px 1fr; gap: 0; margin: 8px 0; font-size: 13px; }
+  .btn-spec dt { font-weight: 700; color: #475569; padding: 6px 0; border-bottom: 1px solid #f1f5f9; }
+  .btn-spec dd { padding: 6px 0; border-bottom: 1px solid #f1f5f9; }
+  .flow-arrow { color: #f59e0b; font-weight: 800; margin: 0 4px; }
+  .section-num { display: inline-block; background: #1e293b; color: white; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-size: 14px; font-weight: 700; margin-right: 8px; }
+  .removed { text-decoration: line-through; color: #dc2626; opacity: 0.6; }
+  .new { color: #16a34a; font-weight: 700; }
+  .state-machine { background: #0f172a; color: #fbbf24; padding: 20px; border-radius: 8px; font-family: 'SF Mono', monospace; font-size: 12px; line-height: 1.8; overflow-x: auto; margin: 16px 0; white-space: pre; }
+  .toc { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px 32px; margin: 24px 0; }
+  .toc ol { counter-reset: toc; list-style: none; padding: 0; }
+  .toc ol li { counter-increment: toc; margin: 6px 0; font-size: 14px; }
+  .toc ol li::before { content: counter(toc) ". "; font-weight: 700; color: #f59e0b; }
+  .toc ol li a { color: #1e293b; text-decoration: none; }
+  .toc ol li a:hover { color: #f59e0b; }
+  .toc ol ol { padding-left: 24px; }
+  .toc ol ol li::before { content: counter(toc, lower-alpha) ". "; }
+  .api-row { font-family: 'SF Mono', monospace; font-size: 12px; }
+</style>
+</head>
+<body>
+<main>
+
+<h1>Tapik v5 앱 프로토콜 설계서<small>Consumer · Merchant Tablet · Admin — 버튼 하나하나의 로직, 처리, 크로스앱 영향</small></h1>
+<p style="color:#64748b; font-size:13px;">2026-04-18 · ShardLab Senior PO 과제 · Firebase 전면 재설계 (v5 — Firebase Auth + Firestore + 동적 적립률 3모드)</p>
+
+<div class="callout">
+<strong>이 문서의 목적:</strong> Tapik 앱의 모든 화면, 모든 버튼, 모든 인터랙션이 클라이언트→서버→다른 앱에 어떤 영향을 미치는지를 정밀하게 정의한다. "대충 뭘 넣을지"가 아니라, 각 액션의 로직·처리 프로세스·프로토콜을 설계한 기획서다.
+</div>
+
+<div class="callout-red callout">
+<strong>v5 핵심 변경 (v4 → v5):</strong><br>
+① <strong>Firebase Auth + Firestore</strong> — Node+PG+WS 서버 → Firebase 클라이언트 SDK 직접 연동. 서버리스 아키텍처.<br>
+② <strong>동적 적립률 3모드</strong> — 고정 5%/6%/8% → Default(3-tier) / Spot(6-stage linear) / Hotspot(Creator max 10%). Admin에서 실시간 전환.<br>
+③ <strong>Room 상태 머신 6단계</strong> — waiting→ready→ordering→all_paid→closing→deleted. ROOM_MIN 2→3. paidMembers 추적. Creator 방폭.<br>
+④ <strong>TP Cap 100,000</strong> — 포인트 적립 상한 (RM 1,000 상당). 한도 도달 시 UI 넛지.<br>
+⑤ <strong>Private Room 비밀번호</strong> — 친구 관계 대신 비밀번호로 입장 제어.<br>
+⑥ <strong>실시간 매장 대기열</strong> — Firestore 기반 실시간 주문 수 → 예상 대기 시간 자동 계산.<br>
+⑦ <strong>적응형 홈 섹션</strong> — Room 초대 배너 → "나의 현황" (주문 미니 + 룸 미니 + 재주문 폴백).
+</div>
+
+<nav class="toc">
+<strong>목차</strong>
+<ol>
+  <li><a href="#s1">v5 아키텍처 개요 & 설계 원칙</a></li>
+  <li><a href="#s2">글로벌 상태 머신 & 이벤트 버스</a></li>
+  <li><a href="#s3">Consumer App — 화면별 버튼별 설계</a></li>
+  <li><a href="#s4">Merchant Tablet App — 화면별 버튼별 설계</a></li>
+  <li><a href="#s5">Admin App — 화면별 버튼별 설계</a></li>
+  <li><a href="#s6">Room 프로토콜 — 전체 UX & 로직</a></li>
+  <li><a href="#s7">알림 & 푸시 매트릭스</a></li>
+  <li><a href="#s8">데이터/정산 프로토콜 (앱 내 반영)</a></li>
+  <li><a href="#s9">에러 핸들링 & 엣지케이스</a></li>
+  <li><a href="#s10">API 엔드포인트 매핑</a></li>
+  <li><a href="#s11">v3→v4→v5 제거/변경 매핑</a></li>
+  <li><a href="#s12">퍼미션 모델 & 첫 실행 온보딩</a></li>
+  <li><a href="#s13">i18n 아키텍처</a></li>
+  <li><a href="#s14">Merchant 데이터 범위 확정</a></li>
+</ol>
+</nav>
+
+<!-- ================================================================== -->
+<h2 id="s1"><span class="section-num">1</span> v5 아키텍처 개요 & 설계 원칙</h2>
+
+<h3>1-1. 시스템 토폴로지 (v5 — Firebase 아키텍처)</h3>
+<pre>
+┌──────────────┐                                      ┌────────────────────┐
+│ Consumer App │──Firebase SDK──┐                     │ Merchant Tablet    │
+│  (iOS/AOS)   │                │                     │ (Lenovo Tab M7)    │
+└──────────────┘                │                     └──────┬─────────────┘
+                                │                            │
+                         ┌──────▼────────────────────────────▼──────┐
+                         │           Firebase Platform               │
+                         │  ┌─────────────┐  ┌──────────────────┐   │
+                         │  │ Firebase Auth│  │    Firestore     │   │
+                         │  │ (Google SSO) │  │  (실시간 DB)      │   │
+                         │  └─────────────┘  └──────────────────┘   │
+                         │  ┌─────────────────────────────────────┐ │
+                         │  │  BroadcastChannel (크로스탭 동기화)   │ │
+                         │  └─────────────────────────────────────┘ │
+                         └──────────────────────────────────────────┘
+                                │
+                         ┌──────┴──────┐
+                         │  Admin Web  │
+                         │  (SPA)      │
+                         └─────────────┘
+
+POS: 없음. 영영 안녕.
+배달앱 통합: 없음. Tapik 폐쇄 루프.
+PG: iPay88 / FPX / Touch 'n Go / Boost
+서버: Firebase (서버리스). Node+PG+WS → Firestore 실시간 구독으로 대체.
+인증: Firebase Auth + Google Sign-In (OTP 제거)
+크로스앱 동기화: BroadcastChannel API (같은 브라우저 탭 간 실시간 이벤트)
+</pre>
+
+<div class="callout-blue callout">
+<strong>v5 아키텍처 핵심 전환:</strong><br>
+• <strong>REST API → Firestore onSnapshot</strong>: 실시간 구독으로 폴링/WS 제거. 주문 상태, Room 멤버, 적립률 모두 실시간.<br>
+• <strong>OTP 인증 → Google Sign-In</strong>: Firebase Auth signInWithPopup(GoogleAuthProvider). 전화번호 인증 불필요.<br>
+• <strong>서버 이벤트 버스 → BroadcastChannel</strong>: Consumer↔Merchant↔Admin 같은 브라우저에서 실시간 이벤트 전파.<br>
+• <strong>포인트 저장: Firestore</strong> <code>users/{uid}</code> 문서에 <code>totalPoints</code>, <code>pointsByStore</code>, <code>lastEarnedAt</code> 영속 저장.
+</div>
+
+<h3>1-2. v5 상수</h3>
+<pre>
+TAPIK = {
+  MARKUP:         0.05,    // 소비자 서비스료 5%
+  MERCHANT_COMM:  0.10,    // 가맹점 기본 수수료 10% (온보딩/코어 10%, 프리미엄 12%)
+  GATEWAY_PCT:    0.012,   // PG 수수료 1.2%
+  GATEWAY_FIXED:  0.15,    // PG 고정 RM 0.15/건
+  PTS_PER_SEN:    1,       // 1 TP = RM 0.01
+  POINTS_SOLO:    0.05,    // 솔로 포인트 5%
+  <span class="removed">POINTS_JOINER:  0.06,  // ← v4 고정값 제거</span>
+  <span class="removed">POINTS_CREATOR: 0.08,  // ← v4 고정값 제거</span>
+  // v5: 동적 적립률 — REWARD_MODES에서 인원 수 기반 실시간 계산
+  ROOM_MIN:       <span class="highlight">3</span>,       // Room 최소 인원 (v4: 2 → v5: 3)
+  ROOM_MAX:       8,       // Room 최대 인원
+  ROOM_TIMEOUT:   30,      // Room 참여 대기 시간 (분)
+  <span class="new">TP_CAP:        100000,  // 포인트 적립 상한 (100,000 TP = RM 1,000)</span>
+  SETTLEMENT_DAY: 'MON',   // 정산일 (매주 월요일)
+}
+</pre>
+
+<h3>1-2b. 동적 적립률 3모드 (v5 신규)</h3>
+<div class="callout-purple callout">
+<strong>v5 핵심 변경:</strong> 고정 적립률(solo 5% / joiner 6% / creator 8%) → Room 인원 수(N)에 따라 <strong>동적으로 계산</strong>되는 3가지 모드. Admin에서 실시간 전환 가능.
+</div>
+
+<table>
+<tr><th>모드</th><th>이름</th><th>설명</th><th>Joiner 적립률</th><th>Creator 적립률</th></tr>
+<tr>
+  <td><span class="tag tag-green">default</span></td>
+  <td>디폴트</td>
+  <td>3단계 티어 — 상시 적용</td>
+  <td>N≤4: 5.50% · N≤6: 5.75% · N≥7: 6.00%</td>
+  <td>N≤4: 6.00% · N≤6: 6.50% · N≥7: 7.00%</td>
+</tr>
+<tr>
+  <td><span class="tag tag-amber">spot</span></td>
+  <td>스팟</td>
+  <td>6단계 리니어 — 이벤트 기간 한정</td>
+  <td>5.00% + (N-3)×0.20% (3명 5.0% → 8명 6.0%)</td>
+  <td>5.50% + (N-3)×0.40% (3명 5.5% → 8명 7.5%)</td>
+</tr>
+<tr>
+  <td><span class="tag tag-red">hotspot</span></td>
+  <td>핫스팟</td>
+  <td>Creator 보너스 극대화 — 바이럴 부스트</td>
+  <td>target_net 8.5%→10% 리니어 보간</td>
+  <td>Joiner × 2 (최대 10%)</td>
+</tr>
+</table>
+
+<pre>
+// v5 적립률 계산 코드 (Consumer + Admin 동기화)
+const REWARD_MODES = {
+  default: {
+    name: '디폴트', desc: '3단계 티어 — 상시 적용',
+    getRate(n) {
+      if (n <= 4) return { joiner: 5.50, creator: 6.00 };
+      if (n <= 6) return { joiner: 5.75, creator: 6.50 };
+      return { joiner: 6.00, creator: 7.00 };
+    }
+  },
+  spot: {
+    name: '스팟', desc: '6단계 리니어 — 이벤트 기간',
+    getRate(n) {
+      const j = 5.0 + Math.max(0, n - 3) * 0.2;
+      const c = 5.5 + Math.max(0, n - 3) * 0.4;
+      return { joiner: +j.toFixed(2), creator: +c.toFixed(2) };
+    }
+  },
+  hotspot: {
+    name: '핫스팟', desc: 'Creator 보너스 극대화',
+    getRate(n) {
+      const target_net = 8.5 + (n - 3) * ((10 - 8.5) / 5);
+      const j = target_net / (1 + 1); // 단순화
+      const c = Math.min(j * 2, 10);
+      return { joiner: +j.toFixed(2), creator: +c.toFixed(2) };
+    }
+  }
+};
+
+// Firestore 실시간 구독 — Admin에서 모드 변경 시 Consumer 즉시 반영
+function subscribeRewardMode() {
+  onSnapshot(doc(db, 'settings', 'rewardMode'), snap => {
+    const data = snap.data();
+    _activeRewardMode = data?.mode || 'default';
+  });
+}
+</pre>
+
+<h3>1-2c. TP Cap (v5 신규)</h3>
+<p><strong>TP_CAP: 100,000 TP (= RM 1,000)</strong> — 포인트 적립 상한. 총 적립 포인트가 100,000 TP에 도달하면 추가 적립 중단.</p>
+<table>
+<tr><th>조건</th><th>UI 반영</th></tr>
+<tr><td>totalPoints &lt; TP_CAP</td><td>정상 적립. Rewards 탭에 진행 바 표시.</td></tr>
+<tr><td>totalPoints ≥ TP_CAP</td><td>"한도 도달 🎉" 넛지 표시. "포인트를 사용하면 다시 적립할 수 있어" 안내.</td></tr>
+</table>
+
+<h3>1-3. 설계 원칙</h3>
+<p><strong>① 폐쇄 루프:</strong> 모든 주문·결제·정산이 Tapik 내부에서 완결. 외부 POS·배달앱 의존 제로.</p>
+<p><strong>② 실시간 우선:</strong> Firestore onSnapshot 기반. 주문 상태·Room 멤버·적립률·대기열 — 모두 실시간 구독. 폴링 제로.</p>
+<p><strong>③ Room 퍼스트:</strong> Room은 선택 기능이 아닌 핵심 바이럴 엔진. 모든 주문 플로우에 Room 진입점 존재. 최소 3명.</p>
+<p><strong>④ 태블릿 네이티브:</strong> 머천트 앱은 Lenovo Tab M7 (7인치, 1024×600) 전용 설계. 터치 타겟 최소 48px.</p>
+<p><strong>⑤ 오프라인 그레이스:</strong> Firestore 오프라인 캐시 + 복구 시 자동 동기화.</p>
+<p><strong>⑥ 동적 인센티브:</strong> 적립률을 고정하지 않고 Admin이 실시간 전환 가능한 3모드 체계. 시장 반응에 따라 즉시 조정.</p>
+
+<h3>1-4. v3 → v4 → v5 핵심 변경</h3>
+<table>
+<tr><th>영역</th><th>v3 (기존)</th><th>v4 (재설계)</th><th class="new">v5 (Firebase 전환)</th></tr>
+<tr><td>POS</td><td>POS 연동 · 영수증 QR 스캔</td><td>완전 제거. Tapik 폐쇄 루프</td><td>v4 동일</td></tr>
+<tr><td>배달앱</td><td>GrabFood/Foodpanda/ShopeeFood</td><td>제거. 픽업 전용</td><td>v4 동일</td></tr>
+<tr><td>서버</td><td>Node + PostgreSQL</td><td>Node + PG + WebSocket</td><td class="new">Firebase (서버리스) — Auth + Firestore</td></tr>
+<tr><td>인증</td><td>JWT + 전화번호</td><td>JWT + OTP</td><td class="new">Firebase Auth + Google Sign-In</td></tr>
+<tr><td>실시간</td><td>폴링</td><td>WebSocket</td><td class="new">Firestore onSnapshot + BroadcastChannel</td></tr>
+<tr><td>수수료</td><td>8%</td><td>10% (10%/12%)</td><td>v4 동일</td></tr>
+<tr><td>Room 최소</td><td>—</td><td>2명</td><td class="new">3명 (콜드스타트 임계점 상향)</td></tr>
+<tr><td>Room 상태</td><td>—</td><td>WAITING→LOCKED→ACTIVE→CLOSED</td><td class="new">waiting→ready→ordering→all_paid→closing→deleted (6단계)</td></tr>
+<tr><td>포인트</td><td>일률 5%</td><td>고정 solo 5% / joiner 6% / creator 8%</td><td class="new">동적 3모드 (Default/Spot/Hotspot) — 인원 수 기반</td></tr>
+<tr><td>포인트 저장</td><td>서버 DB</td><td>서버 DB</td><td class="new">Firestore users/{uid} 실시간 영속</td></tr>
+<tr><td>포인트 상한</td><td>없음</td><td>없음</td><td class="new">TP_CAP 100,000 (= RM 1,000)</td></tr>
+<tr><td>Private Room</td><td>—</td><td>친구 관계 기반 (연락처 퍼미션)</td><td class="new">비밀번호 입장 (연락처 퍼미션 불필요)</td></tr>
+<tr><td>Creator 이탈</td><td>—</td><td>자유 취소</td><td class="new">방폭 — Creator는 waiting 외 이탈 불가</td></tr>
+<tr><td>paidMembers</td><td>—</td><td>없음</td><td class="new">Room별 결제 완료 멤버 추적 (체크마크 UI)</td></tr>
+<tr><td>홈 상단</td><td>—</td><td>Room 초대 배너</td><td class="new">적응형 "나의 현황" (주문 미니 + 룸 미니 + 재주문)</td></tr>
+<tr><td>대기열</td><td>—</td><td>하드코딩</td><td class="new">Firestore 실시간 — ORDERED+PREPARING 주문 수 기반 ETA 자동 계산</td></tr>
+</table>
+
+<!-- ================================================================== -->
+<h2 id="s2"><span class="section-num">2</span> 글로벌 상태 머신 & 이벤트 버스</h2>
+
+<h3>2-1. 주문 상태 머신 (Order State Machine)</h3>
+<div class="state-machine">
+                        ┌─────────────────────────────────────────────┐
+                        │            ORDER STATE MACHINE              │
+                        └─────────────────────────────────────────────┘
+
+  [CREATED] ──consumer.pay()──▶ [PAID] ──consumer.placeOrder()──▶ [ORDERED]
+                                  │                                    │
+                                  │ consumer.cancel()                  │ merchant.accept()
+                                  ▼                                    ▼
+                              [CANCELLED]                         [PREPARING]
+                              (환불 처리)                              │
+                                                                       │ merchant.markReady()
+                                                                       ▼
+                                                                   [READY]
+                                                                       │
+                                                                       │ merchant.scanQR()
+                                                                       │   OR consumer.showQR()
+                                                                       ▼
+                                                                  [PICKED_UP]
+                                                                       │
+                                                                       │ auto: points credited
+                                                                       ▼
+                                                                  [COMPLETED]
+
+  타임아웃 규칙:
+  • PAID → 24시간 내 ORDERED 안 하면 → 자동 CANCELLED + 전액 환불
+  • ORDERED → 5분 내 merchant.accept() 없으면 → 알림 재전송 + 7분 후 자동 CANCELLED
+  • READY → 60분 내 PICKED_UP 안 하면 → NO_SHOW 처리 (환불 없음, 포인트 미적립)
+</div>
+
+<h3>2-2. Room 상태 머신 (v5 — 6단계)</h3>
+<div class="callout-red callout">
+<strong>v5 핵심 변경:</strong> v4의 4단계(WAITING→LOCKED→ACTIVE→CLOSED)를 6단계로 세분화. ROOM_MIN 2→3. paidMembers 추적. Creator 방폭 정책 추가.
+</div>
+<div class="state-machine">
+                        ┌──────────────────────────────────────────────────────────┐
+                        │              ROOM STATE MACHINE (v5 — 6단계)              │
+                        └──────────────────────────────────────────────────────────┘
+
+  creator.createRoom()
+        │
+        ▼
+  [WAITING] ───── min 3명 참여 ────▶ [READY] ──── Creator activateOrdering() ────▶ [ORDERING]
+     │                                   │                                            │
+     │ creator.cancel()                  │ (Joiner: 대기만)                           │ 전원 markMemberPaid()
+     │ (waiting에서만 가능)               │                                            ▼
+     ▼                                   │                                       [ALL_PAID]
+  [DELETED]                              │                                            │
+                                         │                                            │ auto: 전원 PICKED_UP
+                                         │                                            ▼
+                                         │                                       [CLOSING]
+                                         │                                            │
+                                         │                                            │ auto 또는 수동
+                                         │                                            ▼
+                                         │                                       [DELETED]
+                                         │
+                                         └── 모든 Joiner 이탈 시 ──▶ [CLOSING] ──▶ [DELETED]
+
+  ⚠️ Creator 방폭: Creator는 waiting 상태에서만 Room 취소(삭제) 가능.
+     ready 이후에는 Creator가 Room을 떠날 수 없음.
+     모든 Joiner가 먼저 떠나야 Room이 closing → deleted 전환.
+
+  Firestore 쿼리: status IN ['waiting', 'ready', 'ordering', 'all_paid', 'closing']
+  (deleted는 쿼리에서 제외 — 아카이브 전용)
+</div>
+
+<h4>Room 상태별 동작 상세</h4>
+<table>
+<tr><th>상태</th><th>진입 조건</th><th>가능한 액션</th><th>자동 전환</th></tr>
+<tr>
+  <td><span class="tag tag-gray">waiting</span></td>
+  <td>Creator가 Room 생성</td>
+  <td>Joiner 참여/이탈. Creator 취소(삭제) 가능.</td>
+  <td>멤버 수 ≥ ROOM_MIN(3) → <strong>ready</strong>로 자동 전환</td>
+</tr>
+<tr>
+  <td><span class="tag tag-blue">ready</span></td>
+  <td>최소 인원 충족</td>
+  <td>Creator만 "주문 시작" 버튼 활성. Joiner는 대기.</td>
+  <td>—</td>
+</tr>
+<tr>
+  <td><span class="tag tag-amber">ordering</span></td>
+  <td>Creator가 activateOrdering() 호출</td>
+  <td>각 멤버가 개별 주문. "주문하기" 버튼 활성. 결제 완료 시 paidMembers에 추가.</td>
+  <td>전원 결제 완료 → <strong>all_paid</strong></td>
+</tr>
+<tr>
+  <td><span class="tag tag-green">all_paid</span></td>
+  <td>모든 멤버 결제 완료</td>
+  <td>주문 처리 대기. Merchant에서 처리.</td>
+  <td>전원 PICKED_UP → <strong>closing</strong></td>
+</tr>
+<tr>
+  <td><span class="tag tag-purple">closing</span></td>
+  <td>전원 픽업 완료 OR 모든 Joiner 이탈</td>
+  <td>포인트 정산. Creator가 "Room 종료" 가능.</td>
+  <td>—</td>
+</tr>
+<tr>
+  <td><span class="tag tag-red">deleted</span></td>
+  <td>Room 종료 또는 Creator 취소</td>
+  <td>없음. 아카이브 상태.</td>
+  <td>—</td>
+</tr>
+</table>
+
+<h4>paidMembers 추적 (v5 신규)</h4>
+<pre>
+// Firestore Room 문서 구조
+{
+  id: 'room_abc',
+  storeId: 'feeka',
+  creatorId: 'user_123',
+  members: ['user_123', 'user_456', 'user_789'],
+  paidMembers: ['user_123', 'user_456'],  // ← v5 신규: 결제 완료 멤버
+  status: 'ordering',
+  rewardMode: 'default',  // 생성 시 활성 모드 스냅샷
+  password: '1234',        // Private Room이면 비밀번호 (선택)
+  createdAt: Timestamp
+}
+</pre>
+
+<h3>2-3. 이벤트 버스 — 크로스앱 전파 매트릭스</h3>
+<table>
+<tr><th>이벤트</th><th>발생 앱</th><th>서버 처리</th><th>Consumer 영향</th><th>Merchant 영향</th><th>Admin 영향</th></tr>
+<tr>
+  <td><code>order.paid</code></td><td>Consumer</td>
+  <td>PG 결제 확인, 주문 PAID 저장, 정산 큐 등록</td>
+  <td>선결제 확인 화면 전환, "지금 주문 넣기" 버튼 활성</td>
+  <td>대시보드 "선결제 대기" 카운트 +1</td>
+  <td>실시간 GMV +, 전환율 퍼널 업데이트</td>
+</tr>
+<tr>
+  <td><code>order.placed</code></td><td>Consumer</td>
+  <td>주문 ORDERED 전환, 머천트에 WS push</td>
+  <td>주문 상태 화면 ORDERED 표시</td>
+  <td>🔔 알림음 + 주문큐에 신규 카드, 진동</td>
+  <td>주문 모니터 피드 추가</td>
+</tr>
+<tr>
+  <td><code>order.accepted</code></td><td>Merchant</td>
+  <td>주문 PREPARING 전환, ETA 설정</td>
+  <td>상태 → PREPARING, ETA 카운트다운 시작</td>
+  <td>카드 "준비 중" 전환, 타이머 시작</td>
+  <td>평균 수락 시간 메트릭 업데이트</td>
+</tr>
+<tr>
+  <td><code>order.ready</code></td><td>Merchant</td>
+  <td>주문 READY 전환, QR 코드 생성</td>
+  <td>🔔 푸시 "주문 준비 완료!", QR 코드 활성</td>
+  <td>카드 "픽업 대기" 전환, QR 스캐너 활성</td>
+  <td>평균 준비 시간 메트릭 업데이트</td>
+</tr>
+<tr>
+  <td><code>order.pickedUp</code> <span class="tag tag-green">v5</span></td><td>Merchant → BroadcastChannel</td>
+  <td>PICKED_UP 전환 → Consumer에서 creditPoints() 트리거.<br><em>v5: Firestore users/{uid}에 영속 저장. 동적 적립률 적용. creditedOrdersRef로 중복 방지.</em></td>
+  <td>🔔 "+{pts} TP 적립!", 완료 화면, 리뷰 프롬프트</td>
+  <td>카드 제거, 오늘 완료 건수 +1</td>
+  <td>전환율 최종 단계 업데이트, 정산 반영</td>
+</tr>
+<tr>
+  <td><code>order.cancelled</code></td><td>Consumer/System</td>
+  <td>환불 트리거, 포인트 롤백, 정산 큐 제거</td>
+  <td>취소 확인 화면, 환불 안내</td>
+  <td>주문큐에서 제거, 취소 알림</td>
+  <td>취소율 메트릭, 환불 모니터</td>
+</tr>
+<tr>
+  <td><code>room.created</code></td><td>Consumer</td>
+  <td>Room 생성, 공유 링크 생성, 타이머 시작</td>
+  <td>Room 대기 화면, 공유 버튼 활성</td>
+  <td>—</td>
+  <td>Room 생성 카운트 +1</td>
+</tr>
+<tr>
+  <td><code>room.joined</code></td><td>Consumer</td>
+  <td>참여자 추가, 인원 체크</td>
+  <td>전 멤버 실시간 참여자 리스트 업데이트</td>
+  <td>—</td>
+  <td>Room 평균 인원 메트릭</td>
+</tr>
+<tr>
+  <td><code>room.ready</code> <span class="tag tag-green">v5</span></td><td>System (Firestore)</td>
+  <td>멤버 수 ≥ 3 도달 → waiting→ready 자동 전환</td>
+  <td>"Room 준비 완료! Creator가 주문 시작할 때까지 대기"</td>
+  <td>—</td>
+  <td>Room 전환율 업데이트</td>
+</tr>
+<tr>
+  <td><code>room.ordering</code> <span class="tag tag-green">v5</span></td><td>Consumer (Creator)</td>
+  <td>Creator가 activateOrdering() → ready→ordering 전환</td>
+  <td>전원에게 "주문 시작! 각자 주문을 넣어" 안내</td>
+  <td>—</td>
+  <td>—</td>
+</tr>
+<tr>
+  <td><code>room.memberPaid</code> <span class="tag tag-green">v5</span></td><td>Consumer</td>
+  <td>멤버 결제 완료 → paidMembers에 추가. 전원 결제 시 all_paid.</td>
+  <td>전원에게 "✓ {이름} 결제 완료" + paidMembers 체크마크</td>
+  <td>—</td>
+  <td>—</td>
+</tr>
+<tr>
+  <td><code>points.credited</code> <span class="tag tag-green">v5</span></td><td>System (Firestore)</td>
+  <td>동적 적립률로 포인트 계산, Firestore users/{uid} 영속 저장. TP_CAP 체크.</td>
+  <td>포인트 적립 애니메이션 + creditedOrdersRef 중복 방지</td>
+  <td>대시보드 포인트 발급 합계 업데이트</td>
+  <td>포인트 부채 총계 업데이트</td>
+</tr>
+<tr>
+  <td><code>settlement.processed</code></td><td>System (월요일)</td>
+  <td>주간 정산 계산, 이체 요청</td>
+  <td>—</td>
+  <td>🔔 "정산 완료 RM X" 알림, 정산 탭 업데이트</td>
+  <td>정산 대시보드 업데이트</td>
+</tr>
+</table>
+
+<h3>2-4. Firestore 실시간 구독 구조 (v5 — WS 대체)</h3>
+<pre>
+// v5: WebSocket → Firestore onSnapshot 전환
+
+Firestore 컬렉션 구독 패턴:
+
+  Consumer:
+    onSnapshot(collection('orders'), where('userId','==',uid))     — 본인 주문 상태
+    onSnapshot(collection('rooms'), where('members','array-contains',uid))  — 참여 Room
+    onSnapshot(doc('users', uid))                                  — 포인트 잔액 실시간
+    onSnapshot(doc('settings', 'rewardMode'))                      — 적립률 모드 변경
+    onSnapshot(collection('orders'), where('storeId','==',sid),    — 매장 대기열 (ORDERED+PREPARING)
+              where('status','in',['ORDERED','PREPARING']))
+
+  Merchant:
+    onSnapshot(collection('orders'), where('storeId','==',sid))    — 주문큐 실시간
+    BroadcastChannel('tapik-orders')                               — Consumer↔Merchant 크로스탭
+
+  Admin:
+    onSnapshot(collection('orders'))                               — 전체 주문 모니터
+    onSnapshot(collection('rooms'))                                — Room 대시보드
+    onSnapshot(doc('settings', 'rewardMode'))                      — 적립률 모드 현황
+    BroadcastChannel('tapik-orders')                               — 크로스탭 이벤트
+
+크로스앱 동기화:
+  BroadcastChannel('tapik-orders') — 주문 상태 변경 이벤트
+  BroadcastChannel('tapik-rooms')  — Room 상태 변경 이벤트
+  payload: { type: 'ORDER_STATUS', orderId, status, storeId, ... }
+</pre>
+
+<!-- ================================================================== -->
+<h2 id="s3"><span class="section-num">3</span> Consumer App — 화면별 버튼별 설계</h2>
+
+<div class="callout-blue callout">
+<strong>Consumer 탭 구조 (v5):</strong> Home · Order · Room · Rewards · Me — 5탭. Firebase Auth + Google 로그인. Firestore 실시간 연동.
+</div>
+
+<!-- ============ 3-1 HOME ============ -->
+<h3>3-1. Home 탭</h3>
+
+<div class="screen-box">
+<h4>📱 Home — 화면 구성 (v5)</h4>
+<p>상단부터: 인사 헤더 → <span class="new">적응형 "나의 현황" 섹션</span> → Right Now 히어로 카드 → 근처 매장 리스트 → 친구 피드</p>
+
+<h4>① 인사 헤더</h4>
+<table>
+<tr><th>요소</th><th>표시 내용</th><th>탭 시 동작</th></tr>
+<tr>
+  <td>프로필 아바타</td>
+  <td>이니셜 원형 뱃지 + 레벨 테두리 (L1=회색, L2=은, L3=금)</td>
+  <td>→ Me 탭 전환</td>
+</tr>
+<tr>
+  <td>"안녕, {이름}" 텍스트</td>
+  <td>시간대별 인사 + 닉네임</td>
+  <td>—</td>
+</tr>
+<tr>
+  <td>알림 벨 아이콘</td>
+  <td>미읽음 카운트 뱃지 (빨간 원)</td>
+  <td>→ 알림 리스트 시트. <br><strong>서버:</strong> <code>GET /notifications?unread=true</code><br><strong>효과:</strong> 읽음 처리 → 뱃지 카운트 감소</td>
+</tr>
+<tr>
+  <td>포인트 잔액 칩</td>
+  <td>"{totalPoints} TP" 노란 라운드 칩</td>
+  <td>→ Rewards 탭 전환</td>
+</tr>
+</table>
+
+<h4>② Right Now 히어로 카드 (가로 스크롤) — v5: 실시간 대기열</h4>
+<p>가맹점이 등록한 실시간 광고판 카드. 유형: <code>wait</code>(대기열 알림), <code>offpeak</code>(저피크 할인), <code>clearance</code>(마감 할인), <code>event</code>(이벤트)</p>
+<div class="callout-green callout">
+<strong>v5 변경:</strong> <code>wait</code> 카드의 대기 인원/시간이 <strong>Firestore 실시간 구독</strong>으로 자동 계산됨. 하드코딩 제거.
+<br>계산식: <code>ahead = count(ORDERED+PREPARING orders for storeId)</code>
+<br><code>batches = ceil(ahead / PARALLEL_CAPACITY)</code> (PARALLEL_CAPACITY = 3)
+<br><code>waitMin = [batches × 10, batches × 12]</code> (PREP_TIME_MIN=10, PREP_TIME_MAX=12)
+<br>결과: "지금 앞 {ahead}명 · 약 {waitMin[0]}~{waitMin[1]}분"
+</div>
+<table>
+<tr><th>카드 유형</th><th>탭 시 동작</th><th>클라이언트</th><th>서버</th></tr>
+<tr>
+  <td><code>wait</code></td>
+  <td>→ 해당 매장 상세 화면</td>
+  <td>매장 ID로 네비게이션</td>
+  <td><code>POST /analytics/card-tap {cardId, userId}</code> — CTR 집계</td>
+</tr>
+<tr>
+  <td><code>offpeak</code></td>
+  <td>→ 해당 매장 메뉴 화면 (할인 뱃지 표시)</td>
+  <td>매장 ID + 프로모 ID 전달</td>
+  <td>동일 CTR 집계 + 프로모 유효성 검증</td>
+</tr>
+<tr>
+  <td><code>clearance</code></td>
+  <td>→ 해당 메뉴 아이템 바로 장바구니 추가 확인</td>
+  <td>매장 ID + 메뉴 ID + 할인율 전달</td>
+  <td>재고 검증 <code>GET /stores/{id}/menu/{menuId}/stock</code></td>
+</tr>
+</table>
+<div class="callout">
+<strong>Merchant 크로스앱:</strong> 카드 CTR·전환율이 Merchant 대시보드 "Ad Board 성과" 섹션에 실시간 반영.
+</div>
+
+<h4>③ 적응형 "나의 현황" 섹션 (v5 — Room 초대 배너 대체)</h4>
+<div class="callout-green callout">
+<strong>v5 변경:</strong> v4의 Room 초대 배너를 제거하고, 사용자 상태에 따라 자동으로 적응하는 "나의 현황" 섹션으로 교체. Firestore 실시간 구독 기반.
+</div>
+
+<p><strong>4가지 적응 모드:</strong></p>
+<table>
+<tr><th>모드</th><th>조건</th><th>레이아웃</th></tr>
+<tr>
+  <td><span class="tag tag-blue">Both</span></td>
+  <td>활성 주문 + 참여 Room 둘 다 있음</td>
+  <td>2열 그리드: 왼쪽 OrderMini + 오른쪽 RoomMini</td>
+</tr>
+<tr>
+  <td><span class="tag tag-amber">Order Only</span></td>
+  <td>활성 주문만 있음 (Room 없음)</td>
+  <td>전체 너비 OrderMini</td>
+</tr>
+<tr>
+  <td><span class="tag tag-purple">Room Only</span></td>
+  <td>참여 Room만 있음 (활성 주문 없음)</td>
+  <td>전체 너비 RoomMini</td>
+</tr>
+<tr>
+  <td><span class="tag tag-gray">Reorder</span></td>
+  <td>활성 주문도 Room도 없음</td>
+  <td>ReorderCard — 마지막 주문 매장 "다시 주문하기" 카드</td>
+</tr>
+</table>
+
+<h4>OrderMini 컴포넌트</h4>
+<table>
+<tr><th>요소</th><th>표시</th><th>데이터 소스</th></tr>
+<tr><td>매장명</td><td>"Feeka Coffee"</td><td>Firestore order.storeId → STORES</td></tr>
+<tr><td>상태 뱃지</td><td>ORDERED / PREPARING / READY (색상 코딩)</td><td>Firestore onSnapshot</td></tr>
+<tr><td>예상 대기</td><td>"~12분 · 앞 2명"</td><td>Firestore 실시간 대기열 계산</td></tr>
+<tr><td>탭 시</td><td>→ Order 탭 전환</td><td>—</td></tr>
+</table>
+
+<h4>RoomMini 컴포넌트</h4>
+<table>
+<tr><th>요소</th><th>표시</th><th>데이터 소스</th></tr>
+<tr><td>매장명</td><td>Room 매장</td><td>Firestore room.storeId</td></tr>
+<tr><td>상태 뱃지</td><td>waiting / ready / ordering (색상 코딩)</td><td>Firestore onSnapshot</td></tr>
+<tr><td>멤버 수</td><td>"{N}/{ROOM_MAX}명"</td><td>Firestore room.members.length</td></tr>
+<tr><td>탭 시</td><td>→ Room 탭 전환</td><td>—</td></tr>
+</table>
+
+<h4>ReorderCard 컴포넌트 (폴백)</h4>
+<table>
+<tr><th>요소</th><th>표시</th><th>탭 시</th></tr>
+<tr><td>마지막 주문 매장</td><td>"{매장명}에서 다시 주문할래?" + 매장 로고</td><td>→ 해당 매장 상세 화면</td></tr>
+</table>
+
+<pre>
+// Firestore 실시간 구독 — joinedRoom 감지
+onSnapshot(
+  query(collection(db, 'rooms'),
+    where('status', 'in', ['waiting','ready','ordering','all_paid','closing'])
+  ),
+  snap => {
+    const myRoom = snap.docs.find(d => d.data().members?.includes(currentUser.uid));
+    setJoinedRoom(myRoom ? { id: myRoom.id, ...myRoom.data() } : null);
+  }
+);
+</pre>
+
+<h4>④ 근처 매장 리스트</h4>
+<table>
+<tr><th>요소</th><th>탭 시 동작</th><th>서버</th></tr>
+<tr>
+  <td>매장 카드 (이미지 + 이름 + 거리 + 별점 + 대기 시간)</td>
+  <td>→ 매장 상세 화면</td>
+  <td><code>GET /stores?lat={}&lng={}&radius=5km</code></td>
+</tr>
+<tr>
+  <td>"Room 모집 중" 뱃지 (매장 카드 위)</td>
+  <td>→ 매장 상세 + Room 참여 가능 표시</td>
+  <td>매장에 활성 Room 있으면 서버가 <code>activeRoomCount</code> 필드 포함</td>
+</tr>
+<tr>
+  <td>검색 바</td>
+  <td>키보드 오픈, 매장명/메뉴명 검색</td>
+  <td><code>GET /stores/search?q={query}</code> (디바운스 300ms)</td>
+</tr>
+<tr>
+  <td>필터 칩 (가까운순 · 인기순 · 할인중 · Room 있는 곳)</td>
+  <td>리스트 재정렬</td>
+  <td>클라이언트 사이드 정렬 (초기 로드 데이터 내) 또는 서버 쿼리 파라미터</td>
+</tr>
+</table>
+
+<h4>⑤ 친구 피드</h4>
+<table>
+<tr><th>요소</th><th>탭 시 동작</th><th>서버</th></tr>
+<tr>
+  <td>친구 활동 카드 ("{이름}이 {매장}에서 결제")</td>
+  <td>→ 해당 매장 상세 화면</td>
+  <td><code>GET /social/friend-feed?limit=10</code></td>
+</tr>
+<tr>
+  <td>Room 활동 카드 ("{이름}이 Room 열었어")</td>
+  <td>→ Room 참여 시트</td>
+  <td>피드에 <code>type: 'room_created'</code> 포함</td>
+</tr>
+</table>
+</div>
+
+<!-- ============ 3-2 STORE DETAIL ============ -->
+<h3>3-2. 매장 상세 화면</h3>
+
+<div class="screen-box">
+<h4>📱 매장 상세 — 화면 구성</h4>
+<p>사진 갤러리 → 매장 정보 → 액션 버튼 행 → 메뉴 리스트 → 리뷰</p>
+
+<h4>① 사진 갤러리 (상단 Hero)</h4>
+<table>
+<tr><th>동작</th><th>클라이언트</th><th>서버</th></tr>
+<tr><td>좌우 스와이프</td><td>사진 캐러셀 전환, 인디케이터 업데이트</td><td>—</td></tr>
+<tr><td>사진 탭</td><td>풀스크린 갤러리 모달</td><td>—</td></tr>
+</table>
+
+<h4>② 매장 정보 섹션</h4>
+<p>매장명, 카테고리, 별점, 리뷰 수, 영업시간, 주소, 거리, 현재 대기 인원</p>
+<table>
+<tr><th>요소</th><th>탭 시</th><th>서버</th></tr>
+<tr><td>별점 영역</td><td>→ 리뷰 섹션으로 스크롤</td><td>—</td></tr>
+<tr><td>주소</td><td>→ 네이티브 지도 앱 열기 (딥링크)</td><td>—</td></tr>
+<tr><td>전화번호</td><td>→ 전화 앱 열기</td><td>—</td></tr>
+<tr><td>"영업 중" / "마감"</td><td>→ 영업시간 바텀시트</td><td><code>GET /stores/{id}/hours</code></td></tr>
+</table>
+
+<h4>③ 액션 버튼 행</h4>
+<table>
+<tr><th>버튼</th><th>클라이언트</th><th>서버</th><th>크로스앱</th></tr>
+<tr>
+  <td>❤️ "찜하기"</td>
+  <td>하트 토글 애니메이션, 로컬 상태 즉시 반영</td>
+  <td><code>POST /stores/{id}/favorite</code> 또는 <code>DELETE</code></td>
+  <td>—</td>
+</tr>
+<tr>
+  <td>📤 "공유"</td>
+  <td>OS 공유 시트 (매장 딥링크 + 짧은 설명)</td>
+  <td><code>POST /analytics/share {storeId, channel}</code></td>
+  <td>공유 받은 유저가 앱 설치 시 → Admin 바이럴 계수 메트릭</td>
+</tr>
+<tr>
+  <td>🚪 <span class="new">"Room 열기"</span></td>
+  <td>→ Room 생성 플로우 진입 (섹션 6 참조)</td>
+  <td><code>POST /rooms {storeId, creatorId}</code></td>
+  <td>친구에게 Room 초대 알림 발송</td>
+</tr>
+</table>
+
+<h4>④ 메뉴 리스트</h4>
+<table>
+<tr><th>요소</th><th>탭 시</th><th>서버</th></tr>
+<tr>
+  <td>메뉴 아이템 카드</td>
+  <td>→ 메뉴 상세 바텀시트 (설명, 재료, 페어링, 알레르겐)</td>
+  <td>로컬 캐시 (매장 진입 시 일괄 로드)</td>
+</tr>
+<tr>
+  <td>"담기" 버튼 (+)</td>
+  <td>장바구니에 추가, 하단 장바구니 바 노출, 수량 +1</td>
+  <td>클라이언트 로컬 state. 서버 호출 없음.</td>
+</tr>
+<tr>
+  <td>수량 조절 (- / +)</td>
+  <td>장바구니 수량 변경. 0이면 아이템 제거.</td>
+  <td>클라이언트 로컬</td>
+</tr>
+<tr>
+  <td>카테고리 탭 (음료 · 조식 · 식사)</td>
+  <td>해당 카테고리 섹션으로 스크롤</td>
+  <td>—</td>
+</tr>
+</table>
+
+<h4>⑤ 하단 장바구니 바</h4>
+<p>아이템 1개 이상 담기면 하단에 슬라이드업 등장: "{N}개 메뉴 · RM {total}" + "주문하러 가기" 버튼</p>
+<table>
+<tr><th>버튼</th><th>클라이언트</th><th>서버</th></tr>
+<tr>
+  <td>"주문하러 가기"</td>
+  <td>→ 체크아웃 화면. 장바구니 데이터 전달.</td>
+  <td>메뉴 가격/재고 유효성 검증: <code>POST /orders/validate {items[]}</code></td>
+</tr>
+</table>
+
+<h4>⑥ 리뷰 섹션</h4>
+<table>
+<tr><th>요소</th><th>탭 시</th><th>서버</th></tr>
+<tr>
+  <td>리뷰 카드</td>
+  <td>→ 리뷰 상세 (풀텍스트 + 사진)</td>
+  <td>—</td>
+</tr>
+<tr>
+  <td>"도움이 됐어요"</td>
+  <td>좋아요 토글</td>
+  <td><code>POST /reviews/{id}/helpful</code></td>
+</tr>
+<tr>
+  <td>"리뷰 전체 보기"</td>
+  <td>→ 리뷰 전체 목록 화면</td>
+  <td><code>GET /stores/{id}/reviews?page=1</code></td>
+</tr>
+</table>
+</div>
+
+<!-- ============ 3-3 CHECKOUT ============ -->
+<h3>3-3. 체크아웃 (선결제) 화면</h3>
+
+<div class="screen-box">
+<h4>📱 체크아웃 — 화면 구성</h4>
+<p>주문 요약 → Room 옵션 → 결제 수단 선택 → 포인트 사용 → 결제 버튼</p>
+
+<h4>① 주문 요약</h4>
+<table>
+<tr><th>요소</th><th>표시</th><th>계산 로직</th></tr>
+<tr><td>메뉴 리스트</td><td>아이템명 × 수량 · RM {basePrice × qty}</td><td>로컬 장바구니 데이터</td></tr>
+<tr><td>소계 (Subtotal)</td><td>RM {base}</td><td><code>sum(basePrice × qty)</code></td></tr>
+<tr><td>서비스료 (5%)</td><td>RM {serviceFee}</td><td><code>Math.round(base × 0.05 × 100) / 100</code></td></tr>
+<tr><td>포인트 할인</td><td>-RM {pointsUsed} (적용 시)</td><td>사용자 입력, max = min(잔액, total)</td></tr>
+<tr><td><strong>합계</strong></td><td><strong>RM {total}</strong></td><td><code>base + serviceFee - pointsUsed</code></td></tr>
+<tr><td>적립 예정 포인트 <span class="tag tag-green">v5</span></td><td>"+{pointsTP} TP (solo 5% / Room 동적 {joiner%}/{creator%})"<br><em>적립률은 활성 모드 + Room 인원 수에 따라 실시간 계산</em></td><td><code>calcOrder(basePrice, qty, roomRole, roomMemberCount)</code><br>→ REWARD_MODES[activeMode].getRate(N)</td></tr>
+</table>
+
+<h4>② Room 옵션 (v5 — 동적 적립률)</h4>
+<table>
+<tr><th>요소</th><th>동작</th><th>서버 (Firestore)</th><th>크로스앱</th></tr>
+<tr>
+  <td>"혼자 주문" 토글 (기본)</td>
+  <td>solo 모드. 포인트 5% 표시.</td>
+  <td>—</td>
+  <td>—</td>
+</tr>
+<tr>
+  <td>"Room 만들기" 토글</td>
+  <td>Room 생성 모드. 포인트율 <span class="new">동적 표시 (활성 모드 + 예상 인원 기반)</span>.</td>
+  <td>Firestore <code>addDoc(collection(db,'rooms'), {...})</code><br>Room status: waiting. paidMembers: []. rewardMode: 현재 활성 모드.</td>
+  <td>BroadcastChannel 이벤트</td>
+</tr>
+<tr>
+  <td>"기존 Room 참여" (활성 Room 있을 때)</td>
+  <td>Room 목록 표시. 선택하면 joiner로 참여. 포인트율 <span class="new">동적 계산</span>.</td>
+  <td>Firestore query: rooms where storeId == X AND status IN ['waiting','ready']</td>
+  <td>참여 시 Firestore onSnapshot → 전 멤버 실시간 반영</td>
+</tr>
+</table>
+
+<h4>③ 결제 수단 선택</h4>
+<table>
+<tr><th>옵션</th><th>탭 시</th><th>서버</th></tr>
+<tr><td>FPX (온라인 뱅킹)</td><td>은행 선택 드롭다운 노출</td><td><code>GET /payment/fpx/banks</code></td></tr>
+<tr><td>Touch 'n Go eWallet</td><td>TnG 앱 딥링크 준비</td><td>—</td></tr>
+<tr><td>Boost</td><td>Boost 앱 딥링크 준비</td><td>—</td></tr>
+<tr><td>신용/직불카드</td><td>카드 입력 폼 또는 저장된 카드 선택</td><td><code>GET /payment/cards</code> (저장된 카드 목록)</td></tr>
+<tr><td>포인트 전액 사용</td><td>포인트 잔액 ≥ total이면 결제수단 불필요</td><td>—</td></tr>
+</table>
+
+<h4>④ 포인트 사용 슬라이더</h4>
+<table>
+<tr><th>동작</th><th>클라이언트</th><th>서버</th></tr>
+<tr><td>슬라이더 조절</td><td>사용 TP 변경 → 합계 실시간 재계산</td><td>—</td></tr>
+<tr><td>"전액 사용" 버튼</td><td>잔액 전체 적용</td><td>—</td></tr>
+</table>
+
+<h4>⑤ "RM {total} 결제하기" 버튼</h4>
+<table>
+<tr><th>단계</th><th>처리</th></tr>
+<tr>
+  <td>1. 클라이언트</td>
+  <td>버튼 비활성화 + 로딩 스피너. 결제 요청 패킷 구성.</td>
+</tr>
+<tr>
+  <td>2. 서버 <code>POST /orders</code></td>
+  <td>
+    a) 메뉴 가격/재고 최종 검증<br>
+    b) 포인트 잔액 검증 + 차감 (사용 시)<br>
+    c) PG에 결제 요청 (<code>iPay88.createPayment()</code>)<br>
+    d) PG 리다이렉트 URL 반환
+  </td>
+</tr>
+<tr>
+  <td>3. PG 플로우</td>
+  <td>네이티브 웹뷰에서 PG 결제 페이지 → 은행/이월렛 인증 → 콜백</td>
+</tr>
+<tr>
+  <td>4. 서버 콜백 <code>POST /payment/callback</code></td>
+  <td>
+    a) PG 서명 검증<br>
+    b) 주문 상태 → <span class="highlight">PAID</span><br>
+    c) Room이면 Room 상태 업데이트 (멤버 결제 완료 마킹)<br>
+    d) <code>order.paid</code> 이벤트 발행 → WS 전파<br>
+    e) 정산 큐에 트랜잭션 등록
+  </td>
+</tr>
+<tr>
+  <td>5. 클라이언트</td>
+  <td>→ <strong>선결제 확인 화면</strong> 전환 (PAID 상태)</td>
+</tr>
+</table>
+
+<div class="callout-red callout">
+<strong>결제 실패 시:</strong> PG 콜백 status ≠ success → 에러 화면 "결제에 실패했어. 다시 시도해줘." + "다시 시도" 버튼 + "취소" 버튼. 포인트 차감 롤백.
+</div>
+</div>
+
+<!-- ============ 3-4 PREPAID CONFIRM (PAID) ============ -->
+<h3>3-4. 선결제 확인 화면 (PAID 상태)</h3>
+
+<div class="screen-box">
+<h4>📱 선결제 확인 — 결제 완료 직후</h4>
+<p>결제 확인 + "지금 주문 넣기" 액션. 선결제 모델의 핵심 전환점.</p>
+
+<table>
+<tr><th>요소</th><th>표시</th><th>동작</th></tr>
+<tr>
+  <td>매장명 + 메뉴 요약</td>
+  <td>"{매장} · {메뉴명} × {qty}"</td>
+  <td>—</td>
+</tr>
+<tr>
+  <td>결제 금액</td>
+  <td>"RM {total} 결제 완료 ✓"</td>
+  <td>—</td>
+</tr>
+<tr>
+  <td>유효 시간</td>
+  <td>"24시간 내에 주문을 넣어야 해" + 카운트다운</td>
+  <td>—</td>
+</tr>
+<tr>
+  <td>Room 상태 (Room일 때)</td>
+  <td>참여자 아바타 + "{N}/{min}명 결제 완료" 프로그레스</td>
+  <td>WS로 실시간 업데이트</td>
+</tr>
+</table>
+
+<h4>"지금 주문 넣기" 버튼</h4>
+<table>
+<tr><th>단계</th><th>처리</th></tr>
+<tr>
+  <td>1. 클라이언트</td>
+  <td>버튼 탭 → 확인 바텀시트 "주문을 매장에 전송할까?"</td>
+</tr>
+<tr>
+  <td>2. "전송" 탭</td>
+  <td><code>POST /orders/{id}/place</code></td>
+</tr>
+<tr>
+  <td>3. 서버</td>
+  <td>
+    a) 주문 상태 → <span class="highlight">ORDERED</span><br>
+    b) 매장 영업시간 검증 (마감이면 거부 + 안내)<br>
+    c) <code>order.placed</code> 이벤트 → Merchant 태블릿 WS push<br>
+    d) ETA 초기값 설정 (매장 평균 준비 시간 기반)
+  </td>
+</tr>
+<tr>
+  <td>4. 클라이언트</td>
+  <td>→ <strong>주문 상태 화면</strong> 전환</td>
+</tr>
+<tr>
+  <td>5. Merchant 태블릿</td>
+  <td>🔔 알림음 + 진동 + 주문큐에 신규 카드 팝업</td>
+</tr>
+</table>
+
+<h4>"취소" 버튼</h4>
+<table>
+<tr><th>단계</th><th>처리</th></tr>
+<tr>
+  <td>1. 클라이언트</td>
+  <td>"정말 취소할까? 환불은 1-3 영업일 소요" 확인 다이얼로그</td>
+</tr>
+<tr>
+  <td>2. 확인 탭</td>
+  <td><code>POST /orders/{id}/cancel {reason}</code></td>
+</tr>
+<tr>
+  <td>3. 서버</td>
+  <td>
+    a) PAID 상태 검증 (ORDERED 이후면 취소 불가)<br>
+    b) PG 환불 요청<br>
+    c) 사용 포인트 복원<br>
+    d) Room이면: 해당 멤버 제거, 최소 인원 미달 시 전원 solo 전환<br>
+    e) <code>order.cancelled</code> 이벤트
+  </td>
+</tr>
+</table>
+</div>
+
+<!-- ============ 3-5 ORDER STATUS ============ -->
+<h3>3-5. 주문 상태 화면</h3>
+
+<div class="screen-box">
+<h4>📱 주문 상태 — 실시간 트래킹</h4>
+
+<table>
+<tr><th>상태</th><th>화면 표시</th><th>가능한 액션</th></tr>
+<tr>
+  <td><span class="tag tag-blue">ORDERED</span></td>
+  <td>"매장에서 주문 확인 중..." + 스피너<br>매장명 · 메뉴 · 결제금액</td>
+  <td>없음 (대기)</td>
+</tr>
+<tr>
+  <td><span class="tag tag-amber">PREPARING</span></td>
+  <td>"준비 중! 약 {eta}분 남음" + 프로그레스 바 + 카운트다운<br>"매장이 만들기 시작했어"</td>
+  <td>없음 (대기)</td>
+</tr>
+<tr>
+  <td><span class="tag tag-green">READY</span></td>
+  <td>🎉 "준비 완료! 매장에서 QR을 보여줘"<br><strong>QR 코드 대형 표시</strong> (화면 중앙)<br>QR 데이터: <code>{orderId}:{signature}:{timestamp}</code></td>
+  <td>"QR 보여주기" 버튼 → QR 확대 + 밝기 최대</td>
+</tr>
+<tr>
+  <td><span class="tag tag-purple">PICKED_UP</span> <span class="tag tag-green">v5</span></td>
+  <td>✅ "픽업 완료!"<br>"+ {pointsTP} TP 적립됨" 포인트 적립 애니메이션<br>Room이면: "Room 보너스! {activeMode} 모드 — creator {X%} / joiner {Y%}"<br><em>v5: Firestore users/{uid}에 영속 저장. creditedOrdersRef로 중복 방지.</em></td>
+  <td>"리뷰 남기기" 버튼, "홈으로" 버튼</td>
+</tr>
+</table>
+
+<h4>QR 코드 생성 & 검증 프로토콜</h4>
+<pre>
+// QR 생성 (서버, order.ready 이벤트 시)
+const qrPayload = {
+  orderId: "ORD-xxxx",
+  ts: Date.now(),
+  sig: HMAC_SHA256(orderId + ts, SERVER_SECRET)
+};
+const qrString = base64url(JSON.stringify(qrPayload));
+
+// QR 검증 (서버, merchant.scanQR 시)
+1. base64url 디코드 → JSON 파싱
+2. ts가 60분 이내인지 검증
+3. HMAC_SHA256(orderId + ts, SERVER_SECRET) === sig 검증
+4. 주문 상태가 READY인지 검증
+5. 통과 → PICKED_UP 전환 + 포인트 적립
+</pre>
+
+<h4>"리뷰 남기기" 버튼</h4>
+<table>
+<tr><th>단계</th><th>처리</th></tr>
+<tr>
+  <td>클라이언트</td>
+  <td>리뷰 작성 바텀시트: 별점 (1-5) + 텍스트 + 사진 첨부 (최대 3장)</td>
+</tr>
+<tr>
+  <td>서버</td>
+  <td><code>POST /reviews {orderId, storeId, rating, text, photos[]}</code><br>사진은 S3 업로드 후 URL 저장</td>
+</tr>
+<tr>
+  <td>크로스앱</td>
+  <td>Merchant: 대시보드 리뷰 섹션에 신규 리뷰 알림<br>Admin: 매장 별점 평균 재계산</td>
+</tr>
+</table>
+</div>
+
+<!-- ============ 3-6 ORDER TAB ============ -->
+<h3>3-6. Order 탭</h3>
+
+<div class="screen-box">
+<h4>📱 Order 탭 — 세그먼트: 진행 중 · 히스토리</h4>
+
+<h4>① 진행 중 (Active)</h4>
+<p>PAID / ORDERED / PREPARING / READY 상태 주문 카드 리스트. WS로 실시간 상태 업데이트.</p>
+<table>
+<tr><th>카드 요소</th><th>탭 시</th></tr>
+<tr><td>주문 카드 전체</td><td>→ 주문 상태 화면 (3-5)</td></tr>
+<tr><td>상태 뱃지</td><td>현재 상태 표시 (색상 코딩)</td></tr>
+</table>
+
+<h4>② 히스토리 (History)</h4>
+<p>PICKED_UP / COMPLETED / CANCELLED / NO_SHOW 주문. 최신순 정렬.</p>
+<table>
+<tr><th>카드 요소</th><th>탭 시</th><th>서버</th></tr>
+<tr><td>주문 카드</td><td>→ 주문 상세 바텀시트 (메뉴, 금액, 포인트, 시간)</td><td>로컬 캐시 (페이지네이션 <code>GET /orders?page=N</code>)</td></tr>
+<tr><td>"다시 주문" 버튼</td><td>→ 해당 매장 메뉴 화면 + 동일 아이템 장바구니 자동 추가</td><td><code>GET /stores/{id}/menu</code> + 재고/가격 검증</td></tr>
+<tr><td>"리뷰" 버튼 (미작성 시)</td><td>→ 리뷰 작성 바텀시트</td><td>—</td></tr>
+</table>
+</div>
+
+<!-- ============ 3-7 ROOM TAB (NEW) ============ -->
+<h3>3-7. Room 탭 (v5 — 6단계 상태 머신 + 비밀번호)</h3>
+
+<div class="screen-box">
+<h4>📱 Room 탭 — 상단 2탭: 🌐 Public · 🔒 Private</h4>
+<p>Room은 토글이 아니라 <strong>2개의 독립 탭</strong>으로 분리. 각각 다른 접근 방식.</p>
+
+<div class="callout-purple callout">
+<strong>Public Room:</strong> 누구나 생성 · 누구나 참여. 위치 기반 — 근처 매장의 열린 Room 탐색. <code>위치 정보 퍼미션 필수.</code><br>
+<strong>Private Room (v5):</strong> 비밀번호로 입장 제어. 연락처 퍼미션 불필요. Creator가 Room 생성 시 비밀번호 설정 → 공유 → Joiner가 비밀번호 입력하여 참여.
+</div>
+
+<h4>탭 ① — 🌐 Public Room</h4>
+<p>세그먼트: 내 활성 Room · 근처 Room 찾기</p>
+
+<table>
+<tr><th>섹션</th><th>내용</th><th>서버</th></tr>
+<tr>
+  <td><strong>내 활성 Public Room</strong></td>
+  <td>내가 참여 중인 Public Room 카드 리스트 (WAITING/LOCKED/ACTIVE). 매장명 · creator · 참여자 아바타 · 상태 · 남은 시간.</td>
+  <td><code>GET /rooms?userId={}&type=public&active=true</code></td>
+</tr>
+<tr>
+  <td><strong>근처 Public Room</strong></td>
+  <td>반경 5km 내 WAITING 상태 Public Room. 매장명 · creator 닉네임 · 현재/최소/최대 인원 · 남은 시간 · 거리.</td>
+  <td><code>GET /rooms?lat={}&lng={}&type=public&status=WAITING</code><br>⚠️ 위치 퍼미션 OFF면 → "위치를 켜면 근처 Room을 볼 수 있어" 안내 + 설정 이동 버튼</td>
+</tr>
+</table>
+
+<table>
+<tr><th>버튼</th><th>클라이언트</th><th>서버</th><th>크로스앱</th></tr>
+<tr>
+  <td>"Public Room 만들기" (+)</td>
+  <td>→ 매장 선택 → 메뉴 → 체크아웃 (roomType: public, roomRole: creator)</td>
+  <td><code>POST /rooms {storeId, creatorId, type: 'public'}</code></td>
+  <td>근처 유저의 Public Room 리스트에 노출. 위치 기반 푸시 (옵트인 유저).</td>
+</tr>
+<tr>
+  <td>Room 카드 탭 → "참여하기"</td>
+  <td>→ 매장 메뉴 화면 (Room 뱃지, joiner 포인트 6% 표시)</td>
+  <td><code>POST /rooms/{id}/join {userId}</code></td>
+  <td>전 멤버에게 WS push "{이름} 참여!"</td>
+</tr>
+<tr>
+  <td>"공유" 아이콘</td>
+  <td>딥링크 공유 시트 (WhatsApp/Telegram/복사)</td>
+  <td><code>POST /rooms/{id}/share-link</code></td>
+  <td>—</td>
+</tr>
+</table>
+
+<h4>탭 ② — 🔒 Private Room (v5 — 비밀번호 방식)</h4>
+<p>세그먼트: 내 활성 Room · 비밀번호 입장</p>
+
+<div class="callout-green callout">
+<strong>v5 변경:</strong> 친구 관계 + 연락처 퍼미션 → <strong>비밀번호</strong>로 간소화. Creator가 Room 생성 시 4자리 비밀번호 설정. Joiner는 비밀번호 입력하여 참여.
+</div>
+
+<table>
+<tr><th>섹션</th><th>내용</th><th>Firestore</th></tr>
+<tr>
+  <td><strong>내 활성 Private Room</strong></td>
+  <td>내가 참여 중인 Private Room 카드 리스트.</td>
+  <td>Firestore: rooms where members array-contains uid AND password != null</td>
+</tr>
+<tr>
+  <td><strong>비밀번호 입장</strong></td>
+  <td>Room ID + 비밀번호 입력 → 검증 → 참여</td>
+  <td>클라이언트에서 Room 문서 조회 → password 필드 대조</td>
+</tr>
+</table>
+
+<table>
+<tr><th>버튼</th><th>클라이언트</th><th>Firestore</th><th>크로스앱</th></tr>
+<tr>
+  <td>"Private Room 만들기" (+)</td>
+  <td>→ 매장 선택 → <span class="new">비밀번호 4자리 입력</span> → 메뉴 → 체크아웃<br>비밀번호를 친구에게 직접 공유 (카톡/텔레그램 등)</td>
+  <td><code>addDoc(rooms, { ..., password: '1234', type: 'private' })</code></td>
+  <td>BroadcastChannel 이벤트</td>
+</tr>
+<tr>
+  <td>"비밀번호로 참여"</td>
+  <td>Room ID 선택 → 🔒 비밀번호 입력 모달 → 일치 시 참여</td>
+  <td>Room 문서 조회 → <code>password === input</code> 검증 → members 배열에 추가</td>
+  <td>Firestore onSnapshot → 전 멤버 실시간 반영</td>
+</tr>
+</table>
+
+<h4>공통 — Room 히스토리</h4>
+<p>두 탭 모두 하단에 "히스토리" 토글. CLOSED/EXPIRED/CANCELLED Room.</p>
+<table>
+<tr><th>카드 요소</th><th>표시</th></tr>
+<tr><td>Room 요약 카드</td><td>🌐/🔒 뱃지 · 매장 · 인원 · 총 주문액 · 내 포인트 적립량 · 날짜</td></tr>
+</table>
+
+<div class="callout-purple callout">
+<strong>Room 상세 화면은 섹션 6에서 전체 플로우 정의.</strong> 생성 → 공유 → 참여 → 결제 → 주문 → 픽업 → 포인트까지.
+</div>
+</div>
+
+<!-- ============ 3-8 REWARDS TAB ============ -->
+<h3>3-8. Rewards 탭</h3>
+
+<div class="screen-box">
+<h4>📱 Rewards — 포인트 잔액 · 매장별 포인트 · 퀘스트 · 리워드 샵</h4>
+
+<h4>① 포인트 헤더</h4>
+<table>
+<tr><th>요소</th><th>표시</th><th>탭 시</th></tr>
+<tr><td>총 포인트</td><td>"{totalPoints} TP" 대형 숫자 + 애니메이션</td><td>—</td></tr>
+<tr><td>레벨 뱃지</td><td>L1 Newbie / L2 Regular / L3 Local</td><td>→ 레벨 설명 바텀시트</td></tr>
+<tr><td>레벨 프로그레스 바</td><td>현재 → 다음 레벨 진행률</td><td>—</td></tr>
+</table>
+
+<p><strong>레벨 기준 (v5 — TP 기반):</strong></p>
+<table>
+<tr><th>레벨</th><th>조건</th><th>혜택</th></tr>
+<tr><td>L1 Newbie</td><td>totalPoints &lt; 500 TP</td><td>기본 포인트율 (solo 5%)</td></tr>
+<tr><td>L2 Regular</td><td>500 ≤ totalPoints &lt; 5,000 TP</td><td>퀘스트 해금, 리워드 샵 접근</td></tr>
+<tr><td>L3 Local</td><td>totalPoints ≥ 5,000 TP</td><td>프리미엄 리워드, Room 우선 참여</td></tr>
+</table>
+<div class="callout callout-purple">
+<strong>TP Cap 진행 바 (v5):</strong> Rewards 탭 상단에 TP Cap 진행 바 표시.<br>
+• <code>progress = totalPoints / TP_CAP × 100</code><br>
+• 100% 도달 시: "한도 도달 🎉 포인트를 사용하면 다시 적립할 수 있어" 넛지 표시.
+</div>
+
+<h4>② 매장별 포인트</h4>
+<table>
+<tr><th>요소</th><th>탭 시</th><th>서버</th></tr>
+<tr><td>매장 로우 (매장명 · 포인트 잔액)</td><td>→ 해당 매장의 리워드 상세 (사용 가능한 보상 목록)</td><td><code>GET /rewards/store/{storeId}</code></td></tr>
+</table>
+
+<h4>③ 퀘스트 (L2+)</h4>
+<table>
+<tr><th>퀘스트 카드</th><th>표시</th><th>탭 시</th><th>서버</th></tr>
+<tr>
+  <td>주간 퀘스트</td>
+  <td>제목 · 프로그레스 바 · 보상 TP</td>
+  <td>→ 퀘스트 상세 (조건 설명 + 진행 현황)</td>
+  <td><code>GET /quests?userId={}&active=true</code></td>
+</tr>
+<tr>
+  <td>"보상 받기" 버튼 (완료 시)</td>
+  <td>—</td>
+  <td>→ 포인트 적립 애니메이션</td>
+  <td><code>POST /quests/{id}/claim</code> → 포인트 적립</td>
+</tr>
+</table>
+
+<h4>④ 리워드 샵 (L2+)</h4>
+<table>
+<tr><th>아이템</th><th>탭 시</th><th>서버</th><th>크로스앱</th></tr>
+<tr>
+  <td>리워드 카드 (음료 무료 · 할인 쿠폰 등)</td>
+  <td>→ 리워드 상세 바텀시트 + "교환" 버튼</td>
+  <td>—</td>
+  <td>—</td>
+</tr>
+<tr>
+  <td>"교환" 버튼</td>
+  <td>확인 다이얼로그 → 포인트 차감 → 교환권 발급</td>
+  <td><code>POST /rewards/{id}/redeem</code> → 포인트 차감, 교환권 생성</td>
+  <td>Merchant: 해당 매장에 교환권 발급 알림 (정산 시 Tapik 부담)</td>
+</tr>
+</table>
+</div>
+
+<!-- ============ 3-9 ME TAB ============ -->
+<h3>3-9. Me 탭</h3>
+
+<div class="screen-box">
+<h4>📱 Me — 프로필 · 결제수단 · 친구 · 리워드 교환권 · 설정</h4>
+
+<table>
+<tr><th>섹션/버튼</th><th>탭 시</th><th>서버</th></tr>
+<tr>
+  <td>프로필 카드 (아바타 + 이름 + 레벨)</td>
+  <td>→ 프로필 편집 화면 (닉네임, 프로필 사진)</td>
+  <td><code>PUT /users/{id}/profile</code></td>
+</tr>
+<tr>
+  <td>결제 수단 관리</td>
+  <td>→ 저장된 카드 목록. 추가/삭제/기본 설정.</td>
+  <td><code>GET /payment/cards</code>, <code>POST /payment/cards</code>, <code>DELETE /payment/cards/{id}</code></td>
+</tr>
+<tr>
+  <td>리워드 교환권</td>
+  <td>→ 보유 교환권 목록 (리워드 포인트 교환 + 프로모 수령)</td>
+  <td><code>GET /rewards/redeemed?userId={}</code></td>
+</tr>
+<tr>
+  <td>친구</td>
+  <td>→ 친구 목록 화면</td>
+  <td><code>GET /social/friends</code></td>
+</tr>
+<tr>
+  <td style="padding-left:24px">친구 추가 (연락처 초대)</td>
+  <td>→ 연락처 접근 → SMS/WhatsApp 초대 링크</td>
+  <td><code>POST /social/invite {phone, channel}</code></td>
+</tr>
+<tr>
+  <td style="padding-left:24px">친구 프로필 탭</td>
+  <td>→ 친구의 최근 활동 · 공통 매장 · Room 같이하기 버튼</td>
+  <td><code>GET /social/friends/{id}/activity</code></td>
+</tr>
+<tr>
+  <td>알림 설정</td>
+  <td>→ 알림 종류별 on/off (주문 상태, Room, 프로모, 친구 활동)</td>
+  <td><code>PUT /users/{id}/notifications</code></td>
+</tr>
+<tr>
+  <td>언어 설정</td>
+  <td>BM · EN · 中文 전환</td>
+  <td><code>PUT /users/{id}/locale</code></td>
+</tr>
+<tr>
+  <td>고객센터</td>
+  <td>→ FAQ + 실시간 채팅</td>
+  <td>Zendesk/Intercom 위젯</td>
+</tr>
+<tr>
+  <td>로그아웃</td>
+  <td>확인 다이얼로그 → 토큰 삭제 → 로그인 화면</td>
+  <td><code>POST /auth/logout</code> (리프레시 토큰 무효화)</td>
+</tr>
+</table>
+</div>
+
+<!-- ================================================================== -->
+<h2 id="s4"><span class="section-num">4</span> Merchant Tablet App — 화면별 버튼별 설계</h2>
+
+<div class="callout">
+<strong>디바이스:</strong> Lenovo Tab M7 (7인치, 1024×600). 터치 타겟 최소 48×48px. 글씨 최소 14px. 가로 모드 고정.
+<br><strong>탭 구조 (v5):</strong> 주문큐 · 매출/정산 · 메뉴 · 고객 · Ad Board · 설정 — 6탭. Firestore 실시간 연동.
+<br><span class="removed">기존 삭제: Dashboard(WhatsApp), Delivery, P&L(POS 기반)</span>
+</div>
+
+<!-- ============ 4-1 ORDER QUEUE ============ -->
+<h3>4-1. 주문큐 (메인 화면)</h3>
+
+<div class="screen-box">
+<h4>📟 주문큐 — 칸반 보드 레이아웃</h4>
+<p>가로 3열: <span class="tag tag-blue">신규</span> · <span class="tag tag-amber">준비 중</span> · <span class="tag tag-green">픽업 대기</span></p>
+
+<h4>열 ①: 신규 (ORDERED)</h4>
+<table>
+<tr><th>카드 요소</th><th>표시</th></tr>
+<tr><td>주문 번호</td><td>"#TO-{번호}" 대형 텍스트</td></tr>
+<tr><td>고객명</td><td>소비자 닉네임 (첫 방문이면 🆕 뱃지)</td></tr>
+<tr><td>메뉴 리스트</td><td>아이템명 × 수량</td></tr>
+<tr><td>주문 시각</td><td>"12:38" + 경과 시간 "3분 전"</td></tr>
+<tr><td>Room 뱃지</td><td>Room 주문이면 "🚪 Room #{id}" 뱃지 + 멤버 수</td></tr>
+</table>
+
+<table>
+<tr><th>버튼</th><th>클라이언트</th><th>서버</th><th>Consumer 영향</th><th>Admin 영향</th></tr>
+<tr>
+  <td>"수락" (큰 초록 버튼)</td>
+  <td>카드 → 준비 중 열로 이동 애니메이션. 확인음.</td>
+  <td><code>POST /orders/{id}/accept {estMinutes}</code><br>→ 상태 PREPARING, ETA 설정</td>
+  <td>WS push → 상태 화면 "준비 중" + ETA 표시</td>
+  <td>수락 시간 메트릭 업데이트</td>
+</tr>
+<tr>
+  <td>"거절" (작은 빨간 버튼)</td>
+  <td>거절 사유 선택 바텀시트 (재료 소진 · 마감 · 기타)</td>
+  <td><code>POST /orders/{id}/reject {reason}</code><br>→ 상태 CANCELLED, 환불 트리거</td>
+  <td>🔔 "매장에서 주문을 거절했어" + 환불 안내</td>
+  <td>거절률 메트릭, 이상 탐지 (거절 급증 시 알림)</td>
+</tr>
+</table>
+
+<h4>열 ②: 준비 중 (PREPARING)</h4>
+<table>
+<tr><th>카드 요소</th><th>표시</th></tr>
+<tr><td>타이머</td><td>수락 후 경과 시간 (빨간색이면 ETA 초과)</td></tr>
+<tr><td>메뉴 체크리스트</td><td>각 아이템 옆 체크박스 (내부 용도, 진행 추적)</td></tr>
+</table>
+
+<table>
+<tr><th>버튼</th><th>클라이언트</th><th>서버</th><th>Consumer 영향</th></tr>
+<tr>
+  <td>"준비 완료" (큰 노란 버튼)</td>
+  <td>카드 → 픽업 대기 열로 이동. QR 스캐너 영역 활성.</td>
+  <td><code>POST /orders/{id}/ready</code><br>→ 상태 READY, QR 코드 생성</td>
+  <td>🔔 푸시 "준비 완료! QR을 보여줘" + QR 코드 활성</td>
+</tr>
+</table>
+
+<h4>열 ③: 픽업 대기 (READY)</h4>
+<table>
+<tr><th>카드 요소</th><th>표시</th></tr>
+<tr><td>QR 스캐너 프롬프트</td><td>"고객 QR을 스캔하세요" + 카메라 아이콘</td></tr>
+<tr><td>대기 시간</td><td>READY 후 경과 시간 (60분 초과 시 빨간 경고)</td></tr>
+</table>
+
+<table>
+<tr><th>버튼/동작</th><th>클라이언트</th><th>서버</th><th>Consumer 영향</th></tr>
+<tr>
+  <td>"QR 스캔" (카메라 버튼)</td>
+  <td>카메라 뷰파인더 오버레이 → QR 인식</td>
+  <td><code>POST /orders/{id}/verify-qr {qrPayload}</code><br>→ 서명 검증 → 상태 PICKED_UP → 포인트 적립</td>
+  <td>✅ 완료 화면 + 포인트 적립 애니메이션</td>
+</tr>
+<tr>
+  <td>"수동 확인" (QR 불가 시)</td>
+  <td>주문번호 입력 → 확인 다이얼로그</td>
+  <td><code>POST /orders/{id}/manual-pickup {staffPin}</code><br>→ 직원 PIN 검증 → PICKED_UP</td>
+  <td>동일</td>
+</tr>
+<tr>
+  <td>NO_SHOW (60분 초과)</td>
+  <td>자동 또는 수동 "노쇼 처리" 버튼</td>
+  <td><code>POST /orders/{id}/no-show</code><br>→ 환불 없음, 포인트 미적립, 정산은 정상</td>
+  <td>"픽업 시간이 지났어" 알림</td>
+</tr>
+</table>
+
+<h4>상단 바</h4>
+<table>
+<tr><th>요소</th><th>표시</th><th>탭 시</th></tr>
+<tr><td>오늘 요약</td><td>"오늘 {completedCount}건 · RM {todayGross}"</td><td>→ 매출/정산 탭</td></tr>
+<tr><td>알림 아이콘</td><td>미읽음 뱃지</td><td>→ 알림 리스트 (시스템 공지, 정산 알림 등)</td></tr>
+<tr><td>온/오프 토글</td><td>"주문 받기" 스위치</td><td>OFF → "주문 일시 중단. 새 주문 안 받음." 서버에 매장 상태 전송. Consumer 앱에서 매장 "일시 중단" 표시.</td></tr>
+</table>
+</div>
+
+<!-- ============ 4-2 SALES / SETTLEMENT ============ -->
+<h3>4-2. 매출/정산 탭</h3>
+
+<div class="screen-box">
+<h4>📟 매출/정산 — Tapik 채널 전용 데이터</h4>
+<p>POS 없으므로 Tapik 주문만 집계. 기간 선택: 오늘 · 이번 주 · 이번 달</p>
+
+<h4>① KPI 카드 행</h4>
+<table>
+<tr><th>카드</th><th>계산 로직</th></tr>
+<tr><td>총 매출 (GMV)</td><td><code>sum(order.total)</code> — 소비자가 결제한 총액 (서비스료 포함)</td></tr>
+<tr><td>수수료</td><td><code>sum(order.total × MERCHANT_COMM)</code></td></tr>
+<tr><td>실수령</td><td><code>GMV - 수수료</code></td></tr>
+<tr><td>주문 건수</td><td><code>count(orders where status = PICKED_UP or COMPLETED)</code></td></tr>
+<tr><td>평균 주문액</td><td><code>GMV / 건수</code></td></tr>
+<tr><td>포인트 발급</td><td><code>sum(order.pointsTP)</code> — 참고 지표 (Tapik 부담)</td></tr>
+</table>
+
+<h4>② 정산 내역</h4>
+<table>
+<tr><th>요소</th><th>표시</th><th>탭 시</th></tr>
+<tr>
+  <td>주간 정산 카드</td>
+  <td>"W{주차} 정산: RM {amount} · {date} 이체"<br>상태: 대기 · 처리 중 · 완료</td>
+  <td>→ 정산 상세: 일별 매출, 수수료, 공제, 이체액, 이체 계좌</td>
+</tr>
+</table>
+
+<pre>
+정산 계산 로직 (매주 월요일):
+  grossGMV       = sum(orders[Mon-Sun].total)
+  commission     = grossGMV × MERCHANT_COMM
+  pointsSubsidy  = 0  (포인트는 Tapik 부담, 매장 공제 아님)
+  refunds        = sum(cancelled_orders.total)
+  netSettlement  = grossGMV - commission - refunds
+  → 매장 계좌로 이체
+</pre>
+
+<h4>③ 메뉴별 분석</h4>
+<table>
+<tr><th>요소</th><th>표시</th><th>탭 시</th></tr>
+<tr>
+  <td>메뉴 랭킹 테이블</td>
+  <td>메뉴명 · 판매 수량 · 매출 · 추세 (↑↓→)</td>
+  <td>→ 메뉴 상세 (시간대별 판매 분포)</td>
+</tr>
+</table>
+
+<h4>④ 거래 내역</h4>
+<table>
+<tr><th>요소</th><th>표시</th><th>탭 시</th></tr>
+<tr>
+  <td>거래 로우</td>
+  <td>시각 · 주문번호 · 고객명 · 메뉴 · 금액 · 상태</td>
+  <td>→ 거래 상세 드로어 (전체 계산 내역: base, serviceFee, commission, points, net)</td>
+</tr>
+<tr>
+  <td>필터</td>
+  <td>날짜 범위 · 상태 (완료/취소/노쇼)</td>
+  <td>리스트 필터링</td>
+</tr>
+</table>
+</div>
+
+<!-- ============ 4-3 MENU ============ -->
+<h3>4-3. 메뉴 관리 탭</h3>
+
+<div class="screen-box">
+<h4>📟 메뉴 — CRUD + 재고 관리</h4>
+
+<table>
+<tr><th>버튼/동작</th><th>클라이언트</th><th>서버</th><th>Consumer 영향</th></tr>
+<tr>
+  <td>"메뉴 추가" (+)</td>
+  <td>메뉴 등록 폼: 이름(BM/EN/中) · 가격 · 카테고리 · 설명 · 사진 · 알레르겐</td>
+  <td><code>POST /stores/{id}/menu {item}</code></td>
+  <td>Consumer 앱 메뉴 리스트에 즉시 반영</td>
+</tr>
+<tr>
+  <td>메뉴 아이템 탭</td>
+  <td>→ 편집 폼 (동일 필드)</td>
+  <td><code>PUT /stores/{id}/menu/{menuId}</code></td>
+  <td>가격 변경 시 Consumer 장바구니에 "가격이 변경됐어" 알림</td>
+</tr>
+<tr>
+  <td>"일시 품절" 토글</td>
+  <td>아이템 비활성화 (회색 처리)</td>
+  <td><code>PATCH /stores/{id}/menu/{menuId} {active: false}</code></td>
+  <td>Consumer 앱에서 해당 메뉴 "품절" 표시, 주문 불가</td>
+</tr>
+<tr>
+  <td>"삭제" (스와이프)</td>
+  <td>확인 다이얼로그 → 목록에서 제거</td>
+  <td><code>DELETE /stores/{id}/menu/{menuId}</code> (soft delete)</td>
+  <td>Consumer 앱 메뉴에서 제거</td>
+</tr>
+<tr>
+  <td>사진 변경</td>
+  <td>카메라 또는 갤러리에서 선택 → 크롭</td>
+  <td><code>POST /upload/image</code> → S3 → URL 저장</td>
+  <td>Consumer 앱 메뉴 이미지 업데이트</td>
+</tr>
+<tr>
+  <td>순서 변경 (드래그)</td>
+  <td>메뉴 아이템 드래그 앤 드롭으로 순서 재배치</td>
+  <td><code>PUT /stores/{id}/menu/reorder {order[]}</code></td>
+  <td>Consumer 앱 메뉴 순서 반영</td>
+</tr>
+</table>
+</div>
+
+<!-- ============ 4-4 CUSTOMERS ============ -->
+<h3>4-4. 고객 탭</h3>
+
+<div class="screen-box">
+<h4>📟 고객 — 5세그먼트 뷰 (Tapik 주문 고객만)</h4>
+<p>세그먼트: <span class="tag tag-purple">VIP</span> <span class="tag tag-green">성장</span> <span class="tag tag-blue">신규</span> <span class="tag tag-amber">이탈위험</span> <span class="tag tag-red">휴면</span></p>
+
+<h4>세그먼트 기준</h4>
+<table>
+<tr><th>세그먼트</th><th>조건</th><th>자동 액션</th></tr>
+<tr><td>VIP</td><td>최근 30일 방문 10회+ AND 총 지출 상위 10%</td><td>—</td></tr>
+<tr><td>성장</td><td>최근 30일 방문 3-9회 AND 방문 빈도 증가 추세</td><td>—</td></tr>
+<tr><td>신규</td><td>첫 주문 후 14일 이내</td><td>—</td></tr>
+<tr><td>이탈위험</td><td>VIP/성장이었으나 최근 14일 미방문</td><td>Admin에 알림</td></tr>
+<tr><td>휴면</td><td>30일+ 미방문</td><td>—</td></tr>
+</table>
+
+<table>
+<tr><th>요소</th><th>탭 시</th><th>서버</th></tr>
+<tr>
+  <td>고객 카드</td>
+  <td>→ 고객 상세: 방문 횟수, 총 지출, 평균 주문액, 단골 메뉴, 최근 타임라인, Room 참여 이력</td>
+  <td><code>GET /stores/{id}/customers/{customerId}</code></td>
+</tr>
+<tr>
+  <td>검색</td>
+  <td>이름/전화번호 검색</td>
+  <td><code>GET /stores/{id}/customers?q={query}</code></td>
+</tr>
+</table>
+</div>
+
+<!-- ============ 4-5 AD BOARD ============ -->
+<h3>4-5. Ad Board 탭</h3>
+
+<div class="screen-box">
+<h4>📟 Ad Board — Right Now 카드 관리</h4>
+<p>Consumer Home의 "Right Now" 히어로 카드를 매장에서 직접 관리.</p>
+
+<table>
+<tr><th>버튼/동작</th><th>클라이언트</th><th>서버</th><th>Consumer 영향</th></tr>
+<tr>
+  <td>"카드 만들기" (+)</td>
+  <td>카드 유형 선택 (대기열/저피크할인/마감할인/이벤트) → 폼 입력 → 실시간 미리보기</td>
+  <td><code>POST /stores/{id}/ad-cards {card}</code></td>
+  <td>Consumer Home Right Now 섹션에 카드 즉시 노출</td>
+</tr>
+<tr>
+  <td>기존 카드 편집</td>
+  <td>→ 편집 폼</td>
+  <td><code>PUT /stores/{id}/ad-cards/{cardId}</code></td>
+  <td>Consumer 앱 실시간 반영</td>
+</tr>
+<tr>
+  <td>카드 삭제</td>
+  <td>확인 후 제거</td>
+  <td><code>DELETE /stores/{id}/ad-cards/{cardId}</code></td>
+  <td>Consumer 앱에서 즉시 제거</td>
+</tr>
+<tr>
+  <td>"자동 대기열" 토글</td>
+  <td>현재 준비 중 주문 수 기반으로 자동 "지금 앞 N명" 카드 생성</td>
+  <td><code>PATCH /stores/{id}/settings {autoQueueCard: true}</code><br>서버가 주문큐 변경 시 자동 카드 업데이트</td>
+  <td>Consumer: 실시간 대기 상황 노출</td>
+</tr>
+</table>
+
+<h4>성과 지표 (각 카드)</h4>
+<table>
+<tr><th>지표</th><th>계산</th></tr>
+<tr><td>노출 수</td><td>Consumer Home에서 뷰포트 진입 카운트</td></tr>
+<tr><td>탭 수</td><td>카드 탭 카운트</td></tr>
+<tr><td>CTR</td><td>탭 / 노출 × 100</td></tr>
+<tr><td>전환</td><td>카드 탭 후 실제 결제까지 도달한 건수</td></tr>
+<tr><td>전환율</td><td>전환 / 탭 × 100</td></tr>
+</table>
+</div>
+
+<!-- ============ 4-6 SETTINGS ============ -->
+<h3>4-6. 설정 탭</h3>
+
+<div class="screen-box">
+<h4>📟 설정 — 매장 운영 설정</h4>
+
+<table>
+<tr><th>항목</th><th>동작</th><th>서버</th><th>Consumer 영향</th></tr>
+<tr>
+  <td>영업시간 관리</td>
+  <td>요일별 오픈/클로즈 시간 설정</td>
+  <td><code>PUT /stores/{id}/hours</code></td>
+  <td>Consumer 매장 상세 영업시간 반영. 마감 시 주문 불가.</td>
+</tr>
+<tr>
+  <td>직원 관리</td>
+  <td>직원 추가/수정/삭제. PIN 설정. 권한 (환불/할인).</td>
+  <td><code>POST/PUT/DELETE /stores/{id}/staff</code></td>
+  <td>—</td>
+</tr>
+<tr>
+  <td>정산 계좌</td>
+  <td>은행 선택 · 계좌번호 · 수취인명 입력/변경</td>
+  <td><code>PUT /stores/{id}/payout-account</code></td>
+  <td>—</td>
+</tr>
+<tr>
+  <td>프로모션 관리</td>
+  <td>프로모 생성/편집/종료. 유형: 할인, 리워드, 신규 고객.</td>
+  <td><code>POST/PUT /stores/{id}/promotions</code></td>
+  <td>Consumer: 해당 매장 메뉴에 할인 뱃지 표시</td>
+</tr>
+<tr>
+  <td>알림 설정</td>
+  <td>알림음 · 진동 · 볼륨 조절. WhatsApp 다이제스트 on/off.</td>
+  <td><code>PUT /stores/{id}/notification-settings</code></td>
+  <td>—</td>
+</tr>
+<tr>
+  <td>태블릿 정보</td>
+  <td>디바이스 ID · 앱 버전 · 서버 연결 상태 · 마지막 동기화 시각</td>
+  <td>—</td>
+  <td>—</td>
+</tr>
+<tr>
+  <td>오프라인 큐</td>
+  <td>네트워크 끊김 시 미전송 주문 상태변경 목록 표시. 수동 재전송 버튼.</td>
+  <td>복구 시 <code>POST /orders/batch-sync {queue[]}</code></td>
+  <td>Consumer에게 지연된 상태 변경 일괄 전파</td>
+</tr>
+</table>
+</div>
+
+<!-- ================================================================== -->
+<h2 id="s5"><span class="section-num">5</span> Admin App — 화면별 버튼별 설계</h2>
+
+<div class="callout-blue callout">
+<strong>Admin 탭 구조 (v5):</strong> Overview · 매장 · 소비자 · 트랜잭션 · Room · 정산 · 이상탐지 — 7탭. Firestore 실시간 연동.
+<br><span class="removed">기존 삭제: Pipeline (세일즈 칸반), Diagnosis (AI 진단) — MVP 후순위로 이동</span>
+<br><span class="new">v5 신규: 적립률 모드 설정 (Default/Spot/Hotspot 실시간 전환). Firestore settings/rewardMode 문서 직접 업데이트.</span>
+</div>
+
+<!-- ============ 5-1 OVERVIEW ============ -->
+<h3>5-1. Overview 탭</h3>
+
+<div class="screen-box">
+<h4>🖥️ Overview — 전체 비즈니스 헬스</h4>
+
+<h4>① KPI 카드 행</h4>
+<table>
+<tr><th>카드</th><th>계산</th><th>클릭 시</th></tr>
+<tr><td>GMV (오늘/주/월)</td><td><code>sum(all_orders.total)</code></td><td>→ 트랜잭션 탭 (필터: 해당 기간)</td></tr>
+<tr><td>Tapik Revenue</td><td><code>sum(merchantComm) - sum(pointsRM) - sum(gatewayFee)</code></td><td>→ 정산 탭</td></tr>
+<tr><td>MRR</td><td><code>sum(merchant_monthly_commission)</code> 최근 30일</td><td>→ MRR 트렌드 차트</td></tr>
+<tr><td>활성 매장</td><td><code>count(merchants where last_order < 7 days)</code></td><td>→ 매장 탭</td></tr>
+<tr><td>활성 소비자 (WAU)</td><td><code>count(consumers where last_order < 7 days)</code></td><td>→ 소비자 탭</td></tr>
+<tr><td>Room 전환율</td><td><code>room_orders / total_orders × 100</code></td><td>→ Room 탭</td></tr>
+</table>
+
+<h4>② 코호트 히트맵</h4>
+<p>가입 주차별 리텐션 히트맵. 주차(W0~W8+) × 코호트(가입 주). 색상: 진한 초록(높은 리텐션) → 빨강(낮은 리텐션).</p>
+<table>
+<tr><th>동작</th><th>처리</th></tr>
+<tr><td>셀 호버/탭</td><td>해당 코호트+주차의 상세 수치 툴팁: "W07 코호트 · W3 · 80% (12/15명)"</td></tr>
+<tr><td>코호트 유형 토글</td><td>소비자 리텐션 ↔ 매장 리텐션 전환</td></tr>
+</table>
+
+<h4>③ 실시간 주문 피드</h4>
+<p>최근 주문 스트림. WS로 실시간 추가.</p>
+<table>
+<tr><th>요소</th><th>표시</th><th>클릭 시</th></tr>
+<tr><td>주문 로우</td><td>시각 · 매장 · 소비자 · 메뉴 · 금액 · 상태 · Room 여부</td><td>→ 트랜잭션 상세 드로어</td></tr>
+</table>
+
+<h4>④ AI Insights 패널</h4>
+<p>서버에서 일 1회 계산하는 자동 인사이트 리스트.</p>
+<table>
+<tr><th>인사이트 유형</th><th>예시</th><th>트리거</th></tr>
+<tr><td>이상 매장</td><td>"Kedai Makan Aminah: 6일째 주문 0건. Health 42."</td><td>3일+ 무주문 매장</td></tr>
+<tr><td>성장 매장</td><td>"Feeka: 이번 주 GMV +25%. Room 전환율 38%."</td><td>주간 GMV 성장률 상위 10%</td></tr>
+<tr><td>소비자 트렌드</td><td>"Room 주문 비율 이번 주 22% → 28%. 바이럴 계수 1.3."</td><td>Room 비율 5%p+ 변동</td></tr>
+</table>
+</div>
+
+<!-- ============ 5-2 MERCHANTS ============ -->
+<h3>5-2. 매장 탭</h3>
+
+<div class="screen-box">
+<h4>🖥️ 매장 — 로스터 + 건강 점수</h4>
+
+<h4>매장 로스터 테이블</h4>
+<table>
+<tr><th>컬럼</th><th>설명</th></tr>
+<tr><td>매장명</td><td>클릭 → 매장 상세 페이지</td></tr>
+<tr><td>지역</td><td>area + district</td></tr>
+<tr><td>수수료 티어</td><td>온보딩/코어(10%) · 프리미엄(12%)</td></tr>
+<tr><td>상태</td><td>Active · At Risk · Churned</td></tr>
+<tr><td>월 매출</td><td>이번 달 GMV</td></tr>
+<tr><td>건강 점수</td><td>0-100 (아래 공식)</td></tr>
+<tr><td>마지막 활동</td><td>최근 주문 처리 시각</td></tr>
+</table>
+
+<h4>건강 점수 계산</h4>
+<pre>
+healthScore = (
+  orderFrequency   × 0.3  // 일 평균 주문수 / 목표
+  + acceptRate     × 0.2  // 수락률 (거절 제외)
+  + avgPrepTime    × 0.2  // 평균 준비 시간 vs 카테고리 평균
+  + customerReturn × 0.2  // 재방문률
+  + menuFreshness  × 0.1  // 최근 30일 메뉴 업데이트 여부
+) × 100
+</pre>
+
+<h4>매장 상세 페이지 (드릴다운)</h4>
+<table>
+<tr><th>섹션</th><th>내용</th></tr>
+<tr><td>KPI 요약</td><td>GMV · 주문수 · 평균 준비시간 · 수락률 · 건강점수 추이</td></tr>
+<tr><td>매출 차트</td><td>일별/주별 GMV 라인 차트</td></tr>
+<tr><td>메뉴 성과</td><td>메뉴별 판매량 · 매출 · 마진 테이블</td></tr>
+<tr><td>고객 분포</td><td>5세그먼트 파이 차트 + 리스트</td></tr>
+<tr><td>Room 지표</td><td>Room 주문 비율 · 평균 Room 크기 · Room 통한 신규 고객</td></tr>
+<tr><td>정산 내역</td><td>주간 정산 리스트 (금액, 상태)</td></tr>
+<tr><td>거래 내역</td><td>최근 거래 테이블 (검색/필터 가능)</td></tr>
+</table>
+
+<table>
+<tr><th>액션 버튼</th><th>서버</th><th>효과</th></tr>
+<tr><td>"수수료 티어 변경"</td><td><code>PUT /admin/merchants/{id}/tier</code></td><td>다음 정산부터 적용</td></tr>
+<tr><td>"상태 변경" (Active/Suspended)</td><td><code>PUT /admin/merchants/{id}/status</code></td><td>Suspended → Consumer 앱에서 매장 비노출</td></tr>
+<tr><td>"WhatsApp 다이제스트 발송"</td><td><code>POST /admin/merchants/{id}/send-digest</code></td><td>매장 오너에게 수동 다이제스트 발송</td></tr>
+</table>
+</div>
+
+<!-- ============ 5-3 CONSUMERS ============ -->
+<h3>5-3. 소비자 탭</h3>
+
+<div class="screen-box">
+<h4>🖥️ 소비자 — 퍼널 + 행동 패턴</h4>
+
+<h4>① 전환 퍼널</h4>
+<table>
+<tr><th>단계</th><th>정의</th></tr>
+<tr><td>앱 설치</td><td>설치 이벤트 (AppsFlyer/Firebase)</td></tr>
+<tr><td>회원가입</td><td>전화번호 인증 완료</td></tr>
+<tr><td>첫 매장 탐색</td><td>매장 상세 화면 진입</td></tr>
+<tr><td>첫 장바구니</td><td>메뉴 아이템 1개+ 장바구니 추가</td></tr>
+<tr><td>첫 결제</td><td>주문 상태 PAID 도달</td></tr>
+<tr><td>첫 픽업</td><td>PICKED_UP 도달</td></tr>
+<tr><td>재방문 (7일 내)</td><td>2회째 PICKED_UP</td></tr>
+</table>
+<p>각 단계 간 전환율 표시. 클릭 → 해당 단계에서 이탈한 유저 리스트.</p>
+
+<h4>② 시간대별 패턴</h4>
+<p>히트맵: 요일 × 시간대 매트릭스. 색상 = 주문 밀도.</p>
+
+<h4>③ 지역 분포</h4>
+<p>소비자 주소 기반 클러스터 맵.</p>
+
+<h4>④ 소비자 상세 (클릭 드릴다운)</h4>
+<table>
+<tr><th>섹션</th><th>내용</th></tr>
+<tr><td>프로필</td><td>이름 · 레벨 · 가입일 · 마지막 활동</td></tr>
+<tr><td>주문 히스토리</td><td>전체 주문 리스트 (매장, 메뉴, 금액, 상태)</td></tr>
+<tr><td>포인트 잔액</td><td>총 적립 · 총 사용 · 현재 잔액 · 매장별 잔액</td></tr>
+<tr><td>Room 히스토리</td><td>참여/생성한 Room 리스트 · 역할 · 포인트 보너스</td></tr>
+<tr><td>행동 지표</td><td>방문 빈도 · 평균 주문액 · 선호 매장 · 선호 시간대</td></tr>
+</table>
+</div>
+
+<!-- ============ 5-4 TRANSACTIONS ============ -->
+<h3>5-4. 트랜잭션 모니터 탭</h3>
+
+<div class="screen-box">
+<h4>🖥️ 트랜잭션 — 전체 주문 모니터링</h4>
+
+<h4>① 상단 지표</h4>
+<table>
+<tr><th>지표</th><th>계산</th></tr>
+<tr><td>오늘 GMV</td><td><code>sum(today_orders.total)</code></td></tr>
+<tr><td>오늘 Tapik Net</td><td><code>sum(merchantComm - pointsRM - gatewayFee)</code></td></tr>
+<tr><td>주문 수</td><td><code>count(today_orders)</code></td></tr>
+<tr><td>전환율 (결제→픽업)</td><td><code>pickedUp / paid × 100</code></td></tr>
+</table>
+
+<h4>② 실시간 주문 피드</h4>
+<p>WS 기반 실시간 스트림. 새 주문 = 상단에 슬라이드인 애니메이션.</p>
+
+<h4>③ 검색/필터 테이블</h4>
+<table>
+<tr><th>필터</th><th>옵션</th></tr>
+<tr><td>날짜 범위</td><td>달력 피커</td></tr>
+<tr><td>매장</td><td>드롭다운 (전체/특정 매장)</td></tr>
+<tr><td>상태</td><td>PAID/ORDERED/PREPARING/READY/PICKED_UP/CANCELLED/NO_SHOW</td></tr>
+<tr><td>Room 여부</td><td>전체 / Room만 / Solo만</td></tr>
+<tr><td>금액 범위</td><td>min-max 슬라이더</td></tr>
+</table>
+
+<h4>④ 거래 상세 드로어 (로우 클릭)</h4>
+<table>
+<tr><th>필드</th><th>내용</th></tr>
+<tr><td>주문 ID</td><td>ORD-xxxx</td></tr>
+<tr><td>소비자</td><td>이름 + ID (링크 → 소비자 상세)</td></tr>
+<tr><td>매장</td><td>이름 + ID (링크 → 매장 상세)</td></tr>
+<tr><td>메뉴</td><td>아이템 × 수량 리스트</td></tr>
+<tr><td>금액 분해</td><td>basePrice · serviceFee · total · merchantComm · pointsRM · gatewayFee · tapikNet</td></tr>
+<tr><td>Room 정보</td><td>Room ID · 역할 (solo/joiner/creator) · 포인트율</td></tr>
+<tr><td>상태 타임라인</td><td>각 상태 전환 시각 (PAID 12:30 → ORDERED 12:38 → PREPARING 12:39 → ...)</td></tr>
+<tr><td>환불</td><td>환불 여부 · 사유 · 처리 시각</td></tr>
+</table>
+</div>
+
+<!-- ============ 5-5 ROOM TAB ============ -->
+<h3>5-5. Room 탭 (NEW — v4)</h3>
+
+<div class="screen-box">
+<h4>🖥️ Room — 바이럴 엔진 전용 대시보드</h4>
+
+<h4>① Room KPI 카드</h4>
+<table>
+<tr><th>지표</th><th>계산</th></tr>
+<tr><td>총 Room 수 (기간)</td><td><code>count(rooms)</code></td></tr>
+<tr><td>성공 Room (CLOSED)</td><td><code>count(rooms where status=CLOSED)</code></td></tr>
+<tr><td>Room 전환율</td><td><code>CLOSED / total × 100</code></td></tr>
+<tr><td>평균 Room 크기</td><td><code>avg(room.memberCount)</code></td></tr>
+<tr><td>Room GMV 비율</td><td><code>room_order_GMV / total_GMV × 100</code></td></tr>
+<tr><td>바이럴 계수</td><td><code>room_new_users_acquired / room_creators</code></td></tr>
+<tr><td>Creator 포인트 총액</td><td><code>sum(creator_points)</code> — Creator CAC</td></tr>
+<tr><td>Room 통한 신규 유저</td><td><code>count(users where first_order.room != null)</code></td></tr>
+</table>
+
+<h4>② Room 히스토리 테이블</h4>
+<table>
+<tr><th>컬럼</th><th>내용</th></tr>
+<tr><td>Room ID</td><td>클릭 → Room 상세 드로어</td></tr>
+<tr><td>매장</td><td>매장명</td></tr>
+<tr><td>Creator</td><td>생성자 이름</td></tr>
+<tr><td>인원</td><td>최종 인원 / 최대</td></tr>
+<tr><td>총 GMV</td><td>Room 내 전체 주문 합계</td></tr>
+<tr><td>상태</td><td>CLOSED / EXPIRED / CANCELLED</td></tr>
+<tr><td>생성 시각</td><td>—</td></tr>
+</table>
+
+<h4>③ Room 상세 드로어</h4>
+<p>멤버 리스트 (이름, 역할, 주문액, 포인트, 상태) + Room 타임라인 (생성→참여→잠금→주문→픽업→종료)</p>
+
+<h4>④ Room 분석 차트</h4>
+<table>
+<tr><th>차트</th><th>내용</th></tr>
+<tr><td>일별 Room 생성 추이</td><td>라인 차트</td></tr>
+<tr><td>Room 크기 분포</td><td>히스토그램 (2명, 3명, 4명, ...)</td></tr>
+<tr><td>시간대별 Room 생성</td><td>바 차트 (아침/점심/오후/저녁)</td></tr>
+<tr><td>매장별 Room 인기도</td><td>랭킹 테이블</td></tr>
+</table>
+</div>
+
+<!-- ============ 5-6 SETTLEMENT ============ -->
+<h3>5-6. 정산 탭 (NEW — v4)</h3>
+
+<div class="screen-box">
+<h4>🖥️ 정산 — 주간 정산 관리</h4>
+
+<h4>① 정산 서머리</h4>
+<table>
+<tr><th>지표</th><th>계산</th></tr>
+<tr><td>이번 주 총 GMV</td><td><code>sum(week_orders.total)</code></td></tr>
+<tr><td>총 수수료 수입</td><td><code>sum(merchantComm)</code></td></tr>
+<tr><td>총 포인트 비용</td><td><code>sum(pointsRM)</code></td></tr>
+<tr><td>총 PG 비용</td><td><code>sum(gatewayFee)</code></td></tr>
+<tr><td>Tapik Net Revenue</td><td><code>수수료 - 포인트 - PG</code></td></tr>
+<tr><td>총 정산 이체액</td><td><code>sum(netSettlement per merchant)</code></td></tr>
+</table>
+
+<h4>② 매장별 정산 테이블</h4>
+<table>
+<tr><th>컬럼</th><th>내용</th></tr>
+<tr><td>매장명</td><td>클릭 → 매장 정산 상세</td></tr>
+<tr><td>주간 GMV</td><td>해당 매장 주간 매출</td></tr>
+<tr><td>수수료 티어</td><td>10% / 12%</td></tr>
+<tr><td>수수료 금액</td><td>GMV × 티어</td></tr>
+<tr><td>환불 공제</td><td>취소 주문 금액</td></tr>
+<tr><td>이체액</td><td>GMV - 수수료 - 환불</td></tr>
+<tr><td>이체 상태</td><td>대기 · 처리중 · 완료 · 실패</td></tr>
+</table>
+
+<table>
+<tr><th>액션</th><th>서버</th><th>효과</th></tr>
+<tr><td>"일괄 이체 실행"</td><td><code>POST /admin/settlements/{weekId}/execute</code></td><td>은행 API로 일괄 이체 요청. 각 매장 상태 → 처리중.</td></tr>
+<tr><td>"수동 재시도" (실패 건)</td><td><code>POST /admin/settlements/{id}/retry</code></td><td>해당 건만 재이체.</td></tr>
+<tr><td>"정산 보고서 다운로드"</td><td><code>GET /admin/settlements/{weekId}/report</code></td><td>CSV/PDF 다운로드</td></tr>
+</table>
+
+<h4>③ 정산 상세 (매장 드릴다운)</h4>
+<pre>
+┌─────────────────────────────────────────┐
+│ Lim Kopitiam · W16 정산 (2026-04-14~20) │
+├─────────────────────────────────────────┤
+│ 총 GMV:           RM 3,240.00           │
+│ 수수료 (10%):     -RM 324.00            │
+│ 환불 (2건):       -RM 16.80             │
+│ ─────────────────────────────           │
+│ 이체액:           RM 2,899.20           │
+│ 이체 계좌:        Maybank ****4567      │
+│ 이체 상태:        ✅ 완료 (04-21 09:00)  │
+├─────────────────────────────────────────┤
+│ 일별 상세:                               │
+│  월: 42건 · RM 504                       │
+│  화: 38건 · RM 456                       │
+│  수: 51건 · RM 612                       │
+│  목: 44건 · RM 528                       │
+│  금: 47건 · RM 564                       │
+│  토: 33건 · RM 396                       │
+│  일: 15건 · RM 180                       │
+└─────────────────────────────────────────┘
+</pre>
+</div>
+
+<!-- ============ 5-7 ANOMALY ============ -->
+<h3>5-7. 이상탐지 탭</h3>
+
+<div class="screen-box">
+<h4>🖥️ 이상탐지 — 룰 엔진 + 인시던트</h4>
+
+<h4>① 탐지 규칙</h4>
+<table>
+<tr><th>규칙 ID</th><th>조건</th><th>심각도</th><th>자동 액션</th></tr>
+<tr><td>A-01</td><td>매장 3일+ 무주문</td><td>🟡 경고</td><td>Admin 알림 + 매장 WhatsApp</td></tr>
+<tr><td>A-02</td><td>매장 거절률 &gt; 20% (1일)</td><td>🟠 주의</td><td>Admin 알림</td></tr>
+<tr><td>A-03</td><td>매장 평균 준비시간 &gt; 30분 (1일)</td><td>🟡 경고</td><td>Admin 알림</td></tr>
+<tr><td>A-04</td><td>소비자 취소율 &gt; 30% (7일)</td><td>🟡 경고</td><td>플래그 (사기 의심)</td></tr>
+<tr><td>A-05</td><td>정산 이체 실패</td><td>🔴 긴급</td><td>Admin 즉시 알림 + Slack</td></tr>
+<tr><td>A-06</td><td>VIP 고객 14일+ 미방문</td><td>🟡 경고</td><td>매장에 이탈위험 알림</td></tr>
+<tr><td>A-07</td><td>시간당 주문 급증 (평균 × 3 이상)</td><td>🟠 주의</td><td>Admin 알림 (서버 부하 모니터)</td></tr>
+<tr><td>A-08</td><td>Room EXPIRED 비율 &gt; 60% (7일)</td><td>🟡 경고</td><td>Room UX 개선 필요 플래그</td></tr>
+</table>
+
+<h4>② 인시던트 리스트</h4>
+<table>
+<tr><th>요소</th><th>표시</th><th>클릭 시</th></tr>
+<tr><td>인시던트 카드</td><td>규칙 ID · 대상 (매장/소비자) · 심각도 · 발생 시각 · 상태 (열림/해결)</td><td>→ 인시던트 상세 + 관련 데이터 링크</td></tr>
+<tr><td>"해결" 버튼</td><td>—</td><td>상태 → 해결 + 코멘트 입력</td></tr>
+</table>
+</div>
+
+<!-- ================================================================== -->
+<h2 id="s6"><span class="section-num">6</span> Room 프로토콜 — v5 전체 재설계</h2>
+
+<div class="callout-purple callout">
+<strong>Room 2종 (v5):</strong><br>
+🌐 <strong>Public Room</strong> — 누구나 생성 · 누구나 참여 · 위치 기반 탐색<br>
+🔒 <strong>Private Room</strong> — 비밀번호 입장 · 연락처 퍼미션 불필요<br>
+Firestore <code>rooms</code> 컬렉션에 실시간 저장. <code>password</code> 필드 존재 여부로 Public/Private 구분.
+</div>
+
+<div class="callout-red callout">
+<strong>v5 Room 핵심 변경:</strong><br>
+① <strong>상태 머신 6단계:</strong> waiting → ready → ordering → all_paid → closing → deleted<br>
+② <strong>ROOM_MIN = 3:</strong> 최소 인원 2→3 상향 (콜드스타트 임계점)<br>
+③ <strong>paidMembers:</strong> 결제 완료 멤버 배열로 개별 추적 + 체크마크 UI<br>
+④ <strong>Creator 방폭:</strong> Creator는 waiting에서만 취소 가능. ready 이후 이탈 불가.<br>
+⑤ <strong>자동 전환:</strong> joinRoom → 3명 충족 시 자동 waiting→ready. 전원 결제 시 자동 ordering→all_paid.<br>
+⑥ <strong>동적 적립률:</strong> Room 생성 시 활성 모드 스냅샷 저장 → 해당 모드 + 인원 수로 적립률 계산.
+</div>
+
+<h3>6-1. Room 생성 플로우 (Creator)</h3>
+<table>
+<tr><th>단계</th><th>화면</th><th>클라이언트</th><th>Firestore</th><th>크로스앱</th></tr>
+<tr>
+  <td>1. 진입</td>
+  <td>매장 상세 "Room 열기" 버튼 OR Room 탭 "+" 버튼</td>
+  <td>Room 유형 선택: 🌐 Public / 🔒 Private</td>
+  <td>—</td>
+  <td>—</td>
+</tr>
+<tr>
+  <td>2. 설정</td>
+  <td>Room 설정 화면:<br>
+  • 최대 인원 (3-8)<br>
+  • 🔒 Private: 비밀번호 4자리 입력<br>
+  • 메시지 입력 (선택)</td>
+  <td>로컬 state. Private: createPassword state.</td>
+  <td>—</td>
+  <td>—</td>
+</tr>
+<tr>
+  <td>3. Room 생성</td>
+  <td>"Room 열기" 확인 버튼</td>
+  <td>Firestore Room 문서 생성</td>
+  <td>
+<pre>addDoc(collection(db, 'rooms'), {
+  storeId, creatorId: uid,
+  members: [uid],
+  paidMembers: [],
+  status: 'waiting',
+  rewardMode: _activeRewardMode,
+  password: privateMode ? input : null,
+  createdAt: serverTimestamp()
+})</pre>
+  </td>
+  <td>BroadcastChannel('tapik-rooms') 이벤트</td>
+</tr>
+<tr>
+  <td>4. 공유</td>
+  <td>Room 대기 화면: 참여자 리스트 + 상태 뱃지<br>
+  🌐 Public: Room 탭에 자동 노출<br>
+  🔒 Private: "비밀번호: {XXXX}를 친구에게 공유해"</td>
+  <td>Firestore onSnapshot으로 실시간 멤버 업데이트</td>
+  <td>—</td>
+  <td>Firestore 실시간 → 모든 Consumer에 Room 리스트 업데이트</td>
+</tr>
+<tr>
+  <td>5. 대기 (waiting)</td>
+  <td>참여자 실시간 업데이트. "최소 3명 필요"</td>
+  <td>onSnapshot on Room 문서</td>
+  <td>멤버 ≥ 3 시 자동 status → 'ready'</td>
+  <td>전 멤버에게 상태 변경 실시간 반영</td>
+</tr>
+<tr>
+  <td>6. 활성화 (ready)</td>
+  <td>Creator에게만 "주문 시작" 버튼 활성. Joiner는 "Creator 대기중" 메시지.</td>
+  <td>Creator가 activateOrdering() 호출</td>
+  <td>status → 'ordering'</td>
+  <td>전원에게 "주문 시작!" 알림</td>
+</tr>
+</table>
+
+<h3>6-2. Room 참여 플로우 (Joiner)</h3>
+<table>
+<tr><th>단계</th><th>화면</th><th>클라이언트</th><th>Firestore</th></tr>
+<tr>
+  <td>1. 진입</td>
+  <td>🌐 Public: Room 탭 리스트에서 선택<br>
+  🔒 Private: "비밀번호 입장" → 비밀번호 입력 모달</td>
+  <td>Room 카드 탭 또는 비밀번호 검증</td>
+  <td>Room 문서 조회 → 🔒이면 password 대조</td>
+</tr>
+<tr>
+  <td>2. 참여</td>
+  <td>"참여하기" 버튼</td>
+  <td>joinRoom() 함수 호출</td>
+  <td>
+<pre>// members 배열에 수동 추가 (arrayUnion 대신)
+const snap = await getDoc(roomRef);
+const members = snap.data().members || [];
+if (!members.includes(uid)) {
+  members.push(uid);
+  await updateDoc(roomRef, { members });
+}
+// 자동 전환: members.length >= ROOM_MIN → status: 'ready'
+</pre>
+  </td>
+</tr>
+<tr>
+  <td>3. 주문 (ordering 상태)</td>
+  <td>Creator가 활성화하면 "주문하기" 버튼 활성</td>
+  <td>각자 메뉴 선택 → 결제</td>
+  <td>결제 완료 시 markMemberPaid(uid) → paidMembers에 추가</td>
+</tr>
+<tr>
+  <td>4. 완료</td>
+  <td>전원 결제 완료 → all_paid → 픽업 대기</td>
+  <td>주문 상태 화면으로 전환</td>
+  <td>전원 PICKED_UP → status: 'closing'</td>
+</tr>
+</table>
+
+<h3>6-3. Room 상태 전환 & 트리거</h3>
+<table>
+<tr><th>이벤트</th><th>조건</th><th>Firestore 처리</th><th>전체 멤버 영향</th></tr>
+<tr>
+  <td><code>waiting → ready</code></td>
+  <td>members.length ≥ ROOM_MIN (3)</td>
+  <td>자동 전환: joinRoom() 내에서 체크 → updateDoc({status: 'ready'})</td>
+  <td>"Room 준비 완료! Creator가 주문 시작을 기다려" + 상태 뱃지 변경</td>
+</tr>
+<tr>
+  <td><code>ready → ordering</code></td>
+  <td>Creator가 "주문 시작" 버튼 탭</td>
+  <td>activateOrdering() → updateDoc({status: 'ordering'})</td>
+  <td>전원에게 "주문 시작! 각자 주문을 넣어" + 주문 버튼 활성</td>
+</tr>
+<tr>
+  <td><code>ordering → all_paid</code></td>
+  <td>paidMembers.length === members.length</td>
+  <td>markMemberPaid() 내에서 체크 → updateDoc({status: 'all_paid'})</td>
+  <td>전원에게 "전원 결제 완료! ✓" + 주문 처리 대기</td>
+</tr>
+<tr>
+  <td><code>all_paid → closing</code></td>
+  <td>전원 PICKED_UP 완료</td>
+  <td>updateDoc({status: 'closing'})</td>
+  <td>"Room 완료! 포인트 적립 중..."</td>
+</tr>
+<tr>
+  <td><code>closing → deleted</code></td>
+  <td>Creator "Room 종료" 또는 자동</td>
+  <td>destroyRoom() → updateDoc({status: 'deleted'})</td>
+  <td>Room 아카이브. 히스토리에서 확인 가능.</td>
+</tr>
+</table>
+
+<h3>6-4. Room 엣지케이스 (v5)</h3>
+<table>
+<tr><th>케이스</th><th>처리</th></tr>
+<tr>
+  <td><strong>Creator 방폭</strong> <span class="tag tag-red">v5 신규</span></td>
+  <td>Creator는 <strong>waiting 상태에서만</strong> Room 취소(삭제) 가능. ready 이후에는 이탈 불가. "방장은 나갈 수 없어!" 토스트. 모든 Joiner가 먼저 떠나야 Creator가 Room 종료 가능.</td>
+</tr>
+<tr>
+  <td>Joiner 이탈 (자유)</td>
+  <td>leaveRoom() → members에서 제거. 이탈 후 members.length < ROOM_MIN이면 → 자동 ready→waiting 다운그레이드 (구현에 따라 유지 또는 다운그레이드). 모든 Joiner 이탈 → status: 'closing'.</td>
+</tr>
+<tr>
+  <td>PICKED_UP 후 자동 이탈</td>
+  <td>주문 픽업 완료 시 자동으로 Room에서 이탈. 마지막 멤버 이탈 시 closing → deleted.</td>
+</tr>
+<tr>
+  <td>30분 타임아웃 (waiting)</td>
+  <td>최소 인원 미달 시 Room → deleted. 참여자 각자 solo 전환.</td>
+</tr>
+<tr>
+  <td>비밀번호 불일치 (Private Room)</td>
+  <td>"비밀번호가 틀려!" 토스트. 참여 거부. 재입력 가능.</td>
+</tr>
+<tr>
+  <td>한 멤버 NO_SHOW</td>
+  <td>해당 멤버만 NO_SHOW 처리. 다른 멤버 포인트율은 유지 (Room 인원 수 기반).</td>
+</tr>
+</table>
+
+<h3>6-5. Room Firestore 스키마</h3>
+<pre>
+// Firestore: rooms/{roomId}
+{
+  storeId:      'feeka',
+  creatorId:    'user_abc',
+  members:      ['user_abc', 'user_def', 'user_ghi'],   // 참여 멤버 uid 배열
+  paidMembers:  ['user_abc', 'user_def'],                // 결제 완료 멤버 (v5)
+  status:       'ordering',                               // 6단계 중 하나
+  rewardMode:   'default',                                // 생성 시 활성 모드 스냅샷
+  password:     '1234',                                   // Private Room (null이면 Public)
+  createdAt:    Timestamp
+}
+
+// Firestore 쿼리 — 활성 Room 목록
+query(collection(db, 'rooms'),
+  where('status', 'in', ['waiting', 'ready', 'ordering', 'all_paid', 'closing'])
+)
+</pre>
+
+<h3>6-6. Room 공유 링크 형식</h3>
+<pre>
+https://tapik.my/room/{roomId}?ref={creatorId}
+
+딥링크 처리:
+1. 앱 설치됨 → 앱 열림 → Room 참여 확인 시트
+2. 앱 미설치 → 앱스토어/플레이스토어 → 설치 후 Room 참여 시트 (디퍼드 딥링크)
+3. ref 파라미터로 바이럴 트래킹 (누가 초대했는지)
+4. Private Room이면 비밀번호 입력 프롬프트 자동 노출
+</pre>
+
+<!-- ================================================================== -->
+<h2 id="s7"><span class="section-num">7</span> 알림 & 푸시 매트릭스</h2>
+
+<table>
+<tr><th>이벤트</th><th>Consumer Push</th><th>Merchant 태블릿</th><th>Admin</th><th>WhatsApp</th></tr>
+<tr><td>주문 접수 (ORDERED)</td><td>—</td><td>🔔 알림음 + 진동 + 카드 팝업</td><td>피드 추가</td><td>—</td></tr>
+<tr><td>준비 시작 (PREPARING)</td><td>"매장에서 만들기 시작했어! ~{eta}분"</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>준비 완료 (READY)</td><td>"준비 완료! 매장에서 QR을 보여줘 🎉"</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>픽업 완료 (PICKED_UP)</td><td>"+{points} TP 적립! 맛있게 먹어 ✨"</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>주문 거절</td><td>"아쉽지만 매장이 주문을 받을 수 없대. 환불 진행 중."</td><td>—</td><td>거절률 알림</td><td>—</td></tr>
+<tr><td>주문 취소</td><td>"주문이 취소됐어. 환불은 1-3 영업일."</td><td>"주문 #{id} 취소됨"</td><td>취소 모니터</td><td>—</td></tr>
+<tr><td>Room 초대</td><td>"{이름}이 {매장}에서 Room 열었어! 같이 갈래?"</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>Room 참여</td><td>"{이름}이 Room에 참여했어!"</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>Room 확정 (LOCKED)</td><td>"Room 확정! 주문을 넣자 🚪"</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>Room 만료</td><td>"Room 시간 초과. Solo 모드로 전환됐어."</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>정산 완료</td><td>—</td><td>"이번 주 정산 완료! RM {amount} 이체됨 ✅"</td><td>정산 대시보드</td><td>"[Tapik] W{n} 정산 RM {amt} 이체 완료"</td></tr>
+<tr><td>일일 다이제스트</td><td>—</td><td>—</td><td>—</td><td>"어제 매출 RM {x} · {n}건 · 신규 {m}명..."</td></tr>
+<tr><td>이상 탐지</td><td>—</td><td>—</td><td>🔴 인시던트 알림</td><td>긴급 시 Slack 연동</td></tr>
+</table>
+
+<!-- ================================================================== -->
+<h2 id="s8"><span class="section-num">8</span> 데이터/정산 프로토콜 (앱 내 반영)</h2>
+
+<h3>8-1. 데이터 수집 지점 (v5 — Firestore)</h3>
+<p>모든 데이터는 Firestore에 실시간 저장. POS 의존 제로. 서버리스.</p>
+<table>
+<tr><th>데이터 단위</th><th>수집 시점</th><th>필드</th></tr>
+<tr><td>주문 (Order)</td><td>PAID 생성 시</td><td>orderId, userId, storeId, items[], basePrice, serviceFee, total, roomId, roomRole, paymentMethod, timestamps{paid,ordered,accepted,ready,pickedUp}</td></tr>
+<tr><td>매장 (Store)</td><td>온보딩 시 + 실시간</td><td>storeId, name, area, category, menu[], hours[], staff[], commTier, payoutAccount, settings</td></tr>
+<tr><td>소비자 (Consumer)</td><td>가입 시 + 행동 시</td><td>userId, name, phone, level, points{total,byStore}, orders[], rooms[], friends[], locale</td></tr>
+<tr><td>Room</td><td>생성 시 + 상태 변경 시</td><td>roomId, storeId, creatorId, members[], status, createdAt, lockedAt, closedAt, isPublic</td></tr>
+<tr><td>포인트 (Points)</td><td>적립/사용 시</td><td>txId, userId, storeId, orderId, type(earned/spent/expired), amount, rate, roomRole</td></tr>
+</table>
+
+<h3>8-2. 정산 주기 & 계산</h3>
+<pre>
+정산 주기: 매주 월요일 09:00 MYT
+
+정산 배치 처리:
+1. 대상 기간 주문 조회 (전주 월~일, status IN [PICKED_UP, COMPLETED, NO_SHOW])
+2. 매장별 집계:
+   grossGMV     = sum(order.total)
+   refunds      = sum(CANCELLED orders.total)  // PAID→CANCELLED only
+   commission   = grossGMV × merchant.commTier
+   netPayout    = grossGMV - commission - refunds
+3. 정산 레코드 생성 + 이체 요청
+4. 이체 완료 확인 후 상태 업데이트
+5. Merchant WhatsApp + 앱 알림
+</pre>
+
+<!-- ================================================================== -->
+<h2 id="s9"><span class="section-num">9</span> 에러 핸들링 & 엣지케이스</h2>
+
+<table>
+<tr><th>시나리오</th><th>Consumer 처리</th><th>Merchant 처리</th><th>서버 처리</th></tr>
+<tr>
+  <td>결제 중 네트워크 끊김</td>
+  <td>"결제를 확인할 수 없어. 잠시 후 다시 확인해줘." + 자동 재시도 3회</td>
+  <td>—</td>
+  <td>PG 콜백 대기. 5분 내 미응답 시 PG에 상태 조회. 결제됐으면 PAID 전환.</td>
+</tr>
+<tr>
+  <td>태블릿 오프라인 중 주문 접수</td>
+  <td>상태 화면 "매장 연결 대기 중..." (ORDERED 유지)</td>
+  <td>오프라인 배너 표시. 복구 시 밀린 주문 일괄 수신.</td>
+  <td>주문 큐에 보관. 태블릿 WS 재접속 시 일괄 push.</td>
+</tr>
+<tr>
+  <td>메뉴 가격 변경 (결제 직전)</td>
+  <td>"가격이 변경됐어. 새 가격: RM X. 계속할까?"</td>
+  <td>—</td>
+  <td><code>POST /orders/validate</code>에서 가격 불일치 감지 → 409 반환</td>
+</tr>
+<tr>
+  <td>메뉴 품절 (결제 직전)</td>
+  <td>"아쉽지만 {메뉴}가 품절이야." + 대체 메뉴 추천</td>
+  <td>—</td>
+  <td>재고 검증 실패 → 409 반환</td>
+</tr>
+<tr>
+  <td>동시 결제 (동일 한정 메뉴)</td>
+  <td>먼저 결제 완료한 쪽 성공. 늦은 쪽 "이미 품절됐어."</td>
+  <td>—</td>
+  <td>DB 트랜잭션 + 비관적 락 (SELECT FOR UPDATE)</td>
+</tr>
+<tr>
+  <td>QR 스캔 실패 (손상/만료)</td>
+  <td>—</td>
+  <td>"QR 인식 실패. 수동 확인을 이용해주세요." + 수동 확인 버튼</td>
+  <td>QR 서명 불일치 또는 만료 → 403 반환</td>
+</tr>
+<tr>
+  <td>이중 결제 (PG 중복 콜백)</td>
+  <td>—</td>
+  <td>—</td>
+  <td>idempotency key로 중복 감지. 두 번째 콜백 무시. 로그 기록.</td>
+</tr>
+<tr>
+  <td>정산 이체 실패</td>
+  <td>—</td>
+  <td>"정산 이체가 지연되고 있어. Tapik에서 처리 중이야."</td>
+  <td>A-05 인시던트 생성. 3회 자동 재시도 후 수동 처리 플래그.</td>
+</tr>
+</table>
+
+<!-- ================================================================== -->
+<h2 id="s10"><span class="section-num">10</span> API 엔드포인트 매핑</h2>
+
+<h3>10-1. Consumer API</h3>
+<table>
+<tr><th>Method</th><th>Endpoint</th><th>설명</th><th>호출 화면</th></tr>
+<tr class="api-row"><td>GET</td><td>/stores</td><td>근처 매장 목록</td><td>Home</td></tr>
+<tr class="api-row"><td>GET</td><td>/stores/{id}</td><td>매장 상세</td><td>매장 상세</td></tr>
+<tr class="api-row"><td>GET</td><td>/stores/{id}/menu</td><td>메뉴 목록</td><td>매장 상세</td></tr>
+<tr class="api-row"><td>GET</td><td>/stores/search</td><td>매장/메뉴 검색</td><td>Home</td></tr>
+<tr class="api-row"><td>POST</td><td>/orders/validate</td><td>장바구니 유효성</td><td>체크아웃 진입</td></tr>
+<tr class="api-row"><td>POST</td><td>/orders</td><td>주문 생성 + 결제</td><td>체크아웃</td></tr>
+<tr class="api-row"><td>POST</td><td>/orders/{id}/place</td><td>"지금 주문 넣기"</td><td>선결제 확인</td></tr>
+<tr class="api-row"><td>POST</td><td>/orders/{id}/cancel</td><td>주문 취소</td><td>선결제 확인/주문상태</td></tr>
+<tr class="api-row"><td>GET</td><td>/orders</td><td>주문 목록 (진행+히스토리)</td><td>Order 탭</td></tr>
+<tr class="api-row"><td>POST</td><td>/rooms</td><td>Room 생성</td><td>체크아웃/매장상세</td></tr>
+<tr class="api-row"><td>POST</td><td>/rooms/{id}/join</td><td>Room 참여</td><td>Home/Room탭</td></tr>
+<tr class="api-row"><td>GET</td><td>/rooms</td><td>활성/공개 Room 목록</td><td>Room 탭</td></tr>
+<tr class="api-row"><td>POST</td><td>/rooms/{id}/share-link</td><td>공유 링크 생성</td><td>Room 대기</td></tr>
+<tr class="api-row"><td>GET</td><td>/rewards/store/{id}</td><td>매장별 리워드</td><td>Rewards 탭</td></tr>
+<tr class="api-row"><td>POST</td><td>/rewards/{id}/redeem</td><td>리워드 교환</td><td>Rewards 탭</td></tr>
+<tr class="api-row"><td>GET</td><td>/quests</td><td>퀘스트 목록</td><td>Rewards 탭</td></tr>
+<tr class="api-row"><td>POST</td><td>/quests/{id}/claim</td><td>퀘스트 보상 수령</td><td>Rewards 탭</td></tr>
+<tr class="api-row"><td>GET</td><td>/notifications</td><td>알림 목록</td><td>알림 시트</td></tr>
+<tr class="api-row"><td>GET</td><td>/social/friends</td><td>친구 목록</td><td>Me 탭</td></tr>
+<tr class="api-row"><td>GET</td><td>/social/friend-feed</td><td>친구 피드</td><td>Home</td></tr>
+<tr class="api-row"><td>POST</td><td>/social/invite</td><td>친구 초대</td><td>Me 탭</td></tr>
+<tr class="api-row"><td>POST</td><td>/reviews</td><td>리뷰 작성</td><td>주문 완료</td></tr>
+<tr class="api-row"><td>POST</td><td>/stores/{id}/favorite</td><td>찜 토글</td><td>매장 상세</td></tr>
+<tr class="api-row"><td>PUT</td><td>/users/{id}/profile</td><td>프로필 수정</td><td>Me 탭</td></tr>
+<tr class="api-row"><td>GET</td><td>/payment/cards</td><td>저장된 카드</td><td>체크아웃/Me</td></tr>
+<tr class="api-row"><td>GET</td><td>/rewards/redeemed</td><td>보유 교환권</td><td>Me 탭</td></tr>
+</table>
+
+<h3>10-2. Merchant API</h3>
+<table>
+<tr><th>Method</th><th>Endpoint</th><th>설명</th><th>호출 화면</th></tr>
+<tr class="api-row"><td>GET</td><td>/merchant/orders</td><td>주문큐 (상태별)</td><td>주문큐</td></tr>
+<tr class="api-row"><td>POST</td><td>/orders/{id}/accept</td><td>주문 수락</td><td>주문큐</td></tr>
+<tr class="api-row"><td>POST</td><td>/orders/{id}/reject</td><td>주문 거절</td><td>주문큐</td></tr>
+<tr class="api-row"><td>POST</td><td>/orders/{id}/ready</td><td>준비 완료</td><td>주문큐</td></tr>
+<tr class="api-row"><td>POST</td><td>/orders/{id}/verify-qr</td><td>QR 스캔 검증</td><td>주문큐</td></tr>
+<tr class="api-row"><td>POST</td><td>/orders/{id}/manual-pickup</td><td>수동 픽업 확인</td><td>주문큐</td></tr>
+<tr class="api-row"><td>POST</td><td>/orders/{id}/no-show</td><td>노쇼 처리</td><td>주문큐</td></tr>
+<tr class="api-row"><td>GET</td><td>/merchant/sales</td><td>매출 데이터</td><td>매출/정산</td></tr>
+<tr class="api-row"><td>GET</td><td>/merchant/settlements</td><td>정산 내역</td><td>매출/정산</td></tr>
+<tr class="api-row"><td>GET</td><td>/stores/{id}/customers</td><td>고객 목록</td><td>고객 탭</td></tr>
+<tr class="api-row"><td>CRUD</td><td>/stores/{id}/menu</td><td>메뉴 관리</td><td>메뉴 탭</td></tr>
+<tr class="api-row"><td>CRUD</td><td>/stores/{id}/ad-cards</td><td>Ad Board 관리</td><td>Ad Board</td></tr>
+<tr class="api-row"><td>PUT</td><td>/stores/{id}/hours</td><td>영업시간</td><td>설정</td></tr>
+<tr class="api-row"><td>CRUD</td><td>/stores/{id}/staff</td><td>직원 관리</td><td>설정</td></tr>
+<tr class="api-row"><td>PUT</td><td>/stores/{id}/settings</td><td>매장 설정</td><td>설정</td></tr>
+<tr class="api-row"><td>POST</td><td>/orders/batch-sync</td><td>오프라인 큐 동기화</td><td>설정</td></tr>
+</table>
+
+<h3>10-3. Admin API</h3>
+<table>
+<tr><th>Method</th><th>Endpoint</th><th>설명</th><th>호출 화면</th></tr>
+<tr class="api-row"><td>GET</td><td>/admin/overview</td><td>KPI 데이터</td><td>Overview</td></tr>
+<tr class="api-row"><td>GET</td><td>/admin/cohort</td><td>코호트 데이터</td><td>Overview</td></tr>
+<tr class="api-row"><td>GET</td><td>/admin/merchants</td><td>매장 로스터</td><td>매장</td></tr>
+<tr class="api-row"><td>GET</td><td>/admin/merchants/{id}</td><td>매장 상세</td><td>매장 드릴다운</td></tr>
+<tr class="api-row"><td>PUT</td><td>/admin/merchants/{id}/tier</td><td>수수료 티어 변경</td><td>매장 상세</td></tr>
+<tr class="api-row"><td>GET</td><td>/admin/consumers</td><td>소비자 목록</td><td>소비자</td></tr>
+<tr class="api-row"><td>GET</td><td>/admin/consumers/{id}</td><td>소비자 상세</td><td>소비자 드릴다운</td></tr>
+<tr class="api-row"><td>GET</td><td>/admin/transactions</td><td>전체 거래</td><td>트랜잭션</td></tr>
+<tr class="api-row"><td>GET</td><td>/admin/rooms</td><td>Room 데이터</td><td>Room</td></tr>
+<tr class="api-row"><td>GET</td><td>/admin/settlements</td><td>정산 목록</td><td>정산</td></tr>
+<tr class="api-row"><td>POST</td><td>/admin/settlements/{id}/execute</td><td>일괄 이체</td><td>정산</td></tr>
+<tr class="api-row"><td>GET</td><td>/admin/anomalies</td><td>인시던트 목록</td><td>이상탐지</td></tr>
+<tr class="api-row"><td>PUT</td><td>/admin/anomalies/{id}/resolve</td><td>인시던트 해결</td><td>이상탐지</td></tr>
+</table>
+
+<!-- ================================================================== -->
+<h2 id="s11"><span class="section-num">11</span> v3 → v4 → v5 제거/변경 매핑</h2>
+
+<h3>11-1. 제거 항목</h3>
+<table>
+<tr><th>항목</th><th>v3 위치</th><th>v4 처리</th></tr>
+<tr><td class="removed">영수증 QR 스캔 모드</td><td>Consumer: 매장 상세 → QR 스캔 버튼</td><td>제거. Tapik 선결제 → 태블릿 전송 → QR 픽업 폐쇄 루프로 대체.</td></tr>
+<tr><td class="removed">POS Insights</td><td>Merchant: Dashboard → POS 연동 데이터</td><td>제거. Tapik 자체 매출/정산 탭으로 대체.</td></tr>
+<tr><td class="removed">배달앱 통합 탭</td><td>Merchant: Delivery 탭 (GrabFood/Foodpanda/ShopeeFood)</td><td>제거. Tapik은 픽업 전용. "포스기와는 영영 안녕" — 배달앱도 안녕.</td></tr>
+<tr><td class="removed">배달 플랫폼 수수료 비교</td><td>Merchant: Dashboard → 채널별 수수료</td><td>제거. 단일 채널(Tapik) 매출만 표시.</td></tr>
+<tr><td class="removed">POS Legacy/Modern 구분</td><td>Admin: 매장 로스터 → posType/posVendor</td><td>제거. 전용 태블릿 단일 디바이스.</td></tr>
+<tr><td class="removed">Pipeline (세일즈 칸반)</td><td>Admin: Pipeline 탭</td><td>MVP 후순위 이동. SNS 4채널 콜드스타트로 대체.</td></tr>
+<tr><td class="removed">AI Diagnosis (자동 진단)</td><td>Admin: Diagnosis 탭</td><td>MVP 후순위 이동. 이상탐지 룰 엔진으로 간소화.</td></tr>
+</table>
+
+<h3>11-2. 변경 항목</h3>
+<table>
+<tr><th>항목</th><th>v3</th><th>v4</th><th class="new">v5</th></tr>
+<tr><td>Consumer 탭 수</td><td>4탭</td><td>5탭 (Home/Order/Room/Rewards/Me)</td><td>v4 동일</td></tr>
+<tr><td>Merchant 탭 수</td><td>8탭</td><td>6탭</td><td>v4 동일</td></tr>
+<tr><td>Admin 탭 수</td><td>7탭</td><td>7탭</td><td>7탭 + 적립률 모드 설정 패널</td></tr>
+<tr><td>수수료율</td><td>8% 단일</td><td>티어: 10%/12%</td><td>v4 동일</td></tr>
+<tr><td>포인트율</td><td>5% 일률</td><td>고정 solo 5%/joiner 6%/creator 8%</td><td class="new">동적 3모드 (Default/Spot/Hotspot) — 인원 수 기반</td></tr>
+<tr><td>서버 아키텍처</td><td>Node+PG</td><td>Node+PG+WS</td><td class="new">Firebase (서버리스) — Auth+Firestore</td></tr>
+<tr><td>인증</td><td>JWT</td><td>JWT+OTP</td><td class="new">Firebase Auth + Google Sign-In</td></tr>
+<tr><td>실시간 통신</td><td>폴링</td><td>WebSocket</td><td class="new">Firestore onSnapshot + BroadcastChannel</td></tr>
+<tr><td>Room 최소 인원</td><td>—</td><td>2명</td><td class="new">3명</td></tr>
+<tr><td>Room 상태 머신</td><td>—</td><td>4단계 (WAITING→LOCKED→ACTIVE→CLOSED)</td><td class="new">6단계 (waiting→ready→ordering→all_paid→closing→deleted)</td></tr>
+<tr><td>Private Room</td><td>—</td><td>친구 관계 기반</td><td class="new">비밀번호 입장</td></tr>
+<tr><td>포인트 저장</td><td>서버 DB</td><td>서버 DB</td><td class="new">Firestore users/{uid} 영속</td></tr>
+<tr><td>홈 상단</td><td>—</td><td>Room 초대 배너</td><td class="new">적응형 "나의 현황"</td></tr>
+</table>
+
+<h3>11-3. 신규 항목 (v4에서 추가)</h3>
+<table>
+<tr><th>항목</th><th>위치</th><th>설명</th></tr>
+<tr><td>Room 탭</td><td>Consumer</td><td>활성 Room · 히스토리 · Room 찾기</td></tr>
+<tr><td>Room 생성/참여 플로우</td><td>Consumer</td><td>체크아웃에서 Room 토글, 딥링크 참여</td></tr>
+<tr><td>주문큐 칸반</td><td>Merchant</td><td>3열 칸반 (신규/준비중/픽업대기)</td></tr>
+<tr><td>매출/정산 탭</td><td>Merchant</td><td>Tapik 전용 매출 + 주간 정산 내역</td></tr>
+<tr><td>Room 대시보드</td><td>Admin</td><td>Room KPI · 히스토리 · 바이럴 계수</td></tr>
+<tr><td>정산 관리</td><td>Admin</td><td>매장별 정산 · 일괄 이체 · 보고서</td></tr>
+<tr><td>이상탐지 룰 엔진</td><td>Admin</td><td>8개 규칙 기반 자동 모니터링</td></tr>
+</table>
+
+<h3>11-4. v5 신규 항목</h3>
+<table>
+<tr><th>항목</th><th>위치</th><th>설명</th></tr>
+<tr><td class="new">Firebase Auth + Google Sign-In</td><td>Consumer</td><td>OTP 제거. Google 로그인으로 즉시 인증. signInWithPopup(GoogleAuthProvider).</td></tr>
+<tr><td class="new">Firestore 실시간 구독</td><td>전 앱</td><td>onSnapshot 기반. 주문·Room·포인트·적립률 모두 실시간. WS 제거.</td></tr>
+<tr><td class="new">BroadcastChannel 크로스앱</td><td>전 앱</td><td>'tapik-orders' + 'tapik-rooms' 채널로 같은 브라우저 탭 간 실시간 이벤트.</td></tr>
+<tr><td class="new">동적 적립률 3모드</td><td>Admin → Consumer 동기화</td><td>Default/Spot/Hotspot. Firestore settings/rewardMode 실시간 전환.</td></tr>
+<tr><td class="new">Room 6단계 상태 머신</td><td>Consumer Room 탭</td><td>waiting→ready→ordering→all_paid→closing→deleted. 자동 전환 포함.</td></tr>
+<tr><td class="new">paidMembers 추적</td><td>Consumer Room</td><td>Room별 결제 완료 멤버 배열. 체크마크 UI.</td></tr>
+<tr><td class="new">Creator 방폭</td><td>Consumer Room</td><td>Creator는 waiting에서만 취소 가능. ready 이후 이탈 불가.</td></tr>
+<tr><td class="new">Private Room 비밀번호</td><td>Consumer Room</td><td>친구 관계 → 비밀번호 입장. 연락처 퍼미션 불필요.</td></tr>
+<tr><td class="new">TP Cap 100,000</td><td>Consumer Rewards</td><td>포인트 적립 상한. 한도 도달 시 넛지.</td></tr>
+<tr><td class="new">Firestore 포인트 영속</td><td>Consumer</td><td>users/{uid}에 totalPoints, pointsByStore 영속. creditPoints() + 중복 방지.</td></tr>
+<tr><td class="new">실시간 매장 대기열</td><td>Consumer Home</td><td>Firestore ORDERED+PREPARING 주문 수 기반 ETA 자동 계산.</td></tr>
+<tr><td class="new">적응형 "나의 현황"</td><td>Consumer Home</td><td>주문 미니 + 룸 미니 + 재주문 폴백. 4가지 적응 모드.</td></tr>
+<tr><td class="new">적립률 모드 설정</td><td>Admin</td><td>3모드 선택 카드 + 실시간 요율 테이블 + "적립 모드 적용" 버튼.</td></tr>
+<tr><td class="new">주문큐 정렬 수정</td><td>Merchant</td><td>먼저 들어온 주문이 위로. elapsed 기반 내림차순 정렬.</td></tr>
+</table>
+
+<!-- ================================================================== -->
+<h2 id="s12"><span class="section-num">12</span> 퍼미션 모델 & 첫 실행 온보딩</h2>
+
+<h3>12-1. 앱 퍼미션 매트릭스</h3>
+<table>
+<tr><th>퍼미션</th><th>용도</th><th>필수/선택</th><th>미허용 시 영향</th></tr>
+<tr>
+  <td><strong>위치 정보</strong> (GPS)</td>
+  <td>근처 매장 탐색, Public Room 위치 기반 검색</td>
+  <td><span class="tag tag-red">필수</span> (핵심 기능)</td>
+  <td>매장 리스트 표시 불가, Public Room 탐색 불가. 수동 지역 선택 폴백 제공.</td>
+</tr>
+<tr>
+  <td><strong>연락처</strong> (전화번호)</td>
+  <td>친구 자동 매칭 (Tapik 유저 탐색)</td>
+  <td><span class="tag tag-gray">선택</span> <span class="tag tag-green">v5 완화</span></td>
+  <td><span class="new">v5: Private Room이 비밀번호 방식으로 전환되어 연락처 퍼미션 불필요.</span> 친구 수동 추가만 가능.</td>
+</tr>
+<tr>
+  <td><strong>카메라</strong></td>
+  <td>QR 코드 스캔 (미래 확장용), 프로필 사진, 리뷰 사진</td>
+  <td><span class="tag tag-amber">선택</span></td>
+  <td>QR은 화면 표시 방식이라 Consumer에선 불필요. 사진 촬영만 제한.</td>
+</tr>
+<tr>
+  <td><strong>알림</strong> (Push)</td>
+  <td>주문 상태 변경, Room 초대, 프로모</td>
+  <td><span class="tag tag-red">강력 권장</span></td>
+  <td>주문 상태 실시간 알림 불가. 앱 내에서만 확인 가능.</td>
+</tr>
+<tr>
+  <td><strong>갤러리</strong> (사진 라이브러리)</td>
+  <td>리뷰 사진 첨부, 프로필 사진</td>
+  <td><span class="tag tag-gray">선택</span></td>
+  <td>사진 첨부 불가</td>
+</tr>
+</table>
+
+<h3>12-2. 첫 실행 온보딩 플로우</h3>
+<table>
+<tr><th>단계</th><th>화면</th><th>처리</th></tr>
+<tr>
+  <td>1. 스플래시</td>
+  <td>Tapik 로고 + "Tap · Pick · Go" 1.5초</td>
+  <td>—</td>
+</tr>
+<tr>
+  <td>2. 가치 소개 (3 슬라이드)</td>
+  <td>① "선결제하고 줄 안 서" ② "포인트로 다 돌려받아" ③ "Room으로 같이 가면 더 많이"</td>
+  <td>스와이프 또는 "건너뛰기"</td>
+</tr>
+<tr>
+  <td>3. <span class="new">Google 로그인 (v5)</span></td>
+  <td><span class="removed">전화번호 입력 → OTP 6자리 → 인증 완료</span><br>
+  <span class="new">"Google로 시작하기" 버튼 → Google Sign-In 팝업 → Firebase Auth 인증 완료</span></td>
+  <td><span class="removed"><code>POST /auth/otp/send</code> → <code>POST /auth/otp/verify</code></span><br>
+  <span class="new"><code>signInWithPopup(auth, new GoogleAuthProvider())</code> → Firebase uid 발급</span></td>
+</tr>
+<tr>
+  <td>4. 프로필 설정</td>
+  <td>닉네임 입력 (필수) + 프로필 사진 (선택)</td>
+  <td><code>POST /users/profile</code></td>
+</tr>
+<tr>
+  <td>5. 퍼미션 동의</td>
+  <td>한 화면에서 일괄 설명 + 동의:<br>
+  ✅ 위치 정보 — "근처 맛집을 찾기 위해"<br>
+  ✅ 알림 — "주문 준비되면 바로 알려줄게"<br>
+  ☐ 연락처 — "친구와 Private Room 만들기 위해" (선택)<br>
+  각 항목 옆 "왜 필요해?" 링크 → 상세 설명 바텀시트</td>
+  <td>OS 네이티브 퍼미션 다이얼로그 순차 트리거. 거부 시 해당 기능 제한 안내.</td>
+</tr>
+<tr>
+  <td>6. 이용약관 & 개인정보 동의</td>
+  <td>"이용약관" + "개인정보 처리방침" 전문 링크 + 체크박스 동의<br>
+  <strong>면책 조항 포함 항목:</strong><br>
+  · 위치 정보 수집·이용 (근처 매장 탐색, Public Room)<br>
+  · 연락처 정보 접근 (친구 매칭 목적, 서버 저장 안 함 — 해시 비교만)<br>
+  · 결제 정보 처리 (PG 위탁, Tapik 직접 보관 안 함)<br>
+  · 포인트 정책 (유효기간, 환불 불가, 변경 가능)<br>
+  · 주문 취소·환불 정책<br>
+  · Room 이용 약관 (타임아웃, solo 전환, 포인트율 변경 가능)</td>
+  <td><code>POST /users/consent {terms: true, privacy: true, version: '1.0'}</code></td>
+</tr>
+<tr>
+  <td>7. 완료 → Home</td>
+  <td>"준비 완료! 🎉" → Home 탭 진입</td>
+  <td>온보딩 완료 플래그 저장</td>
+</tr>
+</table>
+
+<!-- ================================================================== -->
+<h2 id="s13"><span class="section-num">13</span> i18n 아키텍처</h2>
+
+<h3>13-1. 설계 원칙</h3>
+<p><strong>현재:</strong> 한국어(KR)로 개발 중 (심사용). <strong>최종:</strong> 영어(EN) + 바하사 말레이(BM) + 중문(ZH) 지원. 한국어 버전은 별도 유지.</p>
+<p><strong>구현 방식:</strong> 모든 UI 텍스트를 하드코딩하지 않고, i18n 키-밸류 구조로 관리.</p>
+
+<h3>13-2. 언어 파일 구조</h3>
+<pre>
+/locales
+  /en.json    — English (기본)
+  /ms.json    — Bahasa Malaysia
+  /zh.json    — 中文
+  /ko.json    — 한국어 (개발/심사용)
+
+키 네이밍 컨벤션:
+  "home.greeting"          → "Hey, {name}"
+  "order.status.preparing" → "Preparing! ~{eta} min left"
+  "room.public.title"      → "Public Rooms"
+  "room.private.title"     → "Private Rooms"
+  "checkout.pay_button"    → "Pay RM {total}"
+  "points.earned"          → "+{points} TP earned!"
+</pre>
+
+<h3>13-3. 메뉴/매장 다국어</h3>
+<table>
+<tr><th>데이터</th><th>처리</th></tr>
+<tr><td>매장명</td><td>원어 유지 (Feeka Coffee Roasters, Lim Kopitiam — 고유명사)</td></tr>
+<tr><td>메뉴명</td><td>Merchant가 입력 시 BM + EN 병기. <code>{name_bm, name_en}</code></td></tr>
+<tr><td>메뉴 설명</td><td>동일. Merchant 입력 시 2개 언어 필드.</td></tr>
+<tr><td>리뷰</td><td>원문 유지 (자동 번역 옵션 추후 검토)</td></tr>
+</table>
+
+<h3>13-4. 프로토타입 적용</h3>
+<p>프로토타입(tapik_prototype.html)은 현재 한국어. i18n 구조를 반영해 <code>t('key')</code> 함수 기반으로 빌드. 언어 전환은 Me 탭 → 설정에서 가능. 제출 시 EN 버전 별도 생성.</p>
+
+<!-- ================================================================== -->
+<h2 id="s14"><span class="section-num">14</span> Merchant 데이터 범위 확정</h2>
+
+<h3>14-1. Tapik 채널 전용</h3>
+<div class="callout-red callout">
+<strong>확정:</strong> Merchant 태블릿에는 <strong>Tapik 채널 매출만</strong> 표시. Walk-in 현금, DuitNow, 배달앱 등 비-Tapik 매출은 표시하지 않는다. POS가 없으므로 외부 데이터를 받을 수 없고, 수동 입력도 제공하지 않는다.
+</div>
+
+<p><strong>이유:</strong></p>
+<p>① POS 제공사가 데이터를 안 준다 — 피봇 사유 그 자체.</p>
+<p>② 수동 입력은 매장 사장님에게 부담 → 태블릿 앱의 "쉽고 빠름" 가치 훼손.</p>
+<p>③ Tapik 채널만 정확하게 보여주는 게 데이터 신뢰도 확보에 유리.</p>
+
+<p><strong>매장 사장님 관점:</strong> "오늘 Tapik으로 얼마 벌었나?" = 태블릿에서 확인. "오늘 전체 매출?" = 기존 방식대로 (현금 세기, 은행 앱 확인). Tapik이 성장하면 전체 매출 중 Tapik 비중이 자연스럽게 올라가므로, 장기적으로 태블릿이 사실상의 매출 대시보드가 된다.</p>
+
+<hr class="divider">
+
+<div class="callout-green callout">
+<strong>이 문서의 범위:</strong> Tapik v5 앱 전체 — Consumer 5탭, Merchant Tablet 6탭, Admin 7탭의 모든 화면, 모든 버튼, 모든 인터랙션에 대한 클라이언트→Firestore→크로스앱 로직을 정의했다.<br><br>
+<strong>v5 핵심:</strong> Firebase Auth + Firestore 서버리스 아키텍처, Room 6단계 상태 머신(waiting→ready→ordering→all_paid→closing→deleted), 동적 적립률 3모드(Default/Spot/Hotspot), paidMembers 추적, Creator 방폭, Private Room 비밀번호, TP Cap 100,000, 실시간 매장 대기열, 적응형 "나의 현황" 홈 섹션.<br><br>
+Room은 Public/Private 2탭, Private은 비밀번호 입장. 위치 퍼미션 확정, 연락처 퍼미션 완화. 첫 실행 온보딩 7단계(Google 로그인), i18n 아키텍처, 면책 조항까지 포함. API 엔드포인트 60개+ (Firestore 직접 연동으로 REST 엔드포인트 감소), 이상탐지 규칙 8개.
+<br><br>
+<strong>빌드 완료:</strong> Consumer v5 · Merchant v5 · Admin v5 — 3개 앱 Firebase 연동 완료. BroadcastChannel 크로스앱 동기화 확인.
+</div>
+
+</main>
+</body>
+</html>

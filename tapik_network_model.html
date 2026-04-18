@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Tapik 수익 모델 v3 — 시간 절약 프리미엄 + 포인트 경제</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; background: #fff; color: #1f2937; line-height: 1.7; font-size: 15px; }
+  .container { max-width: 960px; margin: 0 auto; padding: 48px 40px; }
+  h1 { font-size: 26px; color: #111827; margin: 0 0 4px; }
+  .subtitle { color: #6b7280; font-size: 13px; margin: 0 0 32px; }
+  h2 { font-size: 21px; color: #111827; margin-top: 44px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 2px solid #111827; }
+  h3 { font-size: 16px; color: #1f2937; margin-top: 26px; margin-bottom: 8px; }
+  h4 { font-size: 14px; color: #374151; margin-top: 18px; margin-bottom: 6px; }
+  p { margin: 8px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 18px; font-size: 13px; }
+  th, td { padding: 9px 12px; border: 1px solid #e5e7eb; text-align: left; vertical-align: top; }
+  th { background: #f9fafb; font-weight: 600; color: #374151; font-size: 11px; text-transform: uppercase; letter-spacing: 0.03em; }
+  .callout { background: #f8fafc; border-left: 4px solid #6366f1; padding: 14px 18px; border-radius: 0 10px 10px 0; margin: 14px 0; font-size: 13.5px; }
+  .callout-warn { border-left-color: #ef4444; background: #fef2f2; }
+  .callout-ok { border-left-color: #22c55e; background: #f0fdf4; }
+  .tag { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 10px; font-weight: 700; }
+  .tag-ok { background: #d1fae5; color: #065f46; }
+  .tag-warn { background: #fef3c7; color: #92400e; }
+  .tag-danger { background: #fee2e2; color: #7f1d1d; }
+  .flow-box { background: #f0f4ff; border: 2px solid #c7d2fe; border-radius: 12px; padding: 20px; margin: 16px 0; }
+  .flow-arrow { text-align: center; font-size: 20px; color: #6366f1; margin: 8px 0; }
+  ul, ol { margin: 6px 0; padding-left: 20px; }
+  li { margin: 3px 0; }
+  .mono { font-family: "SF Mono", "Fira Code", monospace; font-size: 12px; background: #f3f4f6; padding: 2px 6px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Tapik 수익 모델 v4 — 시간 절약 프리미엄 + 포인트 경제</h1>
+<p class="subtitle">시간 절약 프리미엄 + 5% 서비스료 + 10% 가맹점 수수료 (코어) · 2026-04-17 · 캡틴 확정</p>
+
+<!-- ===================== 1. BNM 규제 결론 ===================== -->
+<h2 id="bnm">1. BNM 규제 — 통합 포인트 합법성 확인</h2>
+
+<div class="callout callout-ok">
+<strong>결론: Tapik 네트워크 내 통합 포인트는 BNM 라이선스 불필요</strong><br><br>
+2024년 BNM <strong>Limited Purpose Electronic Money Exemption Order [P.U.A 463/2024]</strong>에 의거:<br>
+"Limited purpose EMI"에는 <strong>"e-money used in a closed-loop network (e.g., a network of merchants)"</strong> 및 <strong>"cash rewards or loyalty points"</strong>가 포함되며, 이는 BNM 규제 대상에서 <strong>완전 면제</strong>.<br><br>
+<strong>Tapik 적용</strong>: Tapik 파트너 가맹점 네트워크 내에서만 사용 가능한 통합 포인트 = "closed-loop network of merchants" = 면제 대상.<br>
+<strong>선례</strong>: BonusLink (540만 회원, Shell·AmBank·Parkson 네트워크)이 동일 구조로 운영 중.<br><br>
+<strong>금지선</strong>: 포인트 → 현금 환전, Tapik 네트워크 외부 사용 시 면제 자격 상실 → 라이선스 필요 (자본금 RM 1M~5M).
+</div>
+
+<table>
+  <tr>
+    <th>구조</th>
+    <th>BNM 판정</th>
+    <th>Tapik 적용</th>
+  </tr>
+  <tr>
+    <td>단일 매장 포인트 (Starbucks Rewards)</td>
+    <td><span class="tag tag-ok">면제</span></td>
+    <td>이전 설계 (폐기)</td>
+  </tr>
+  <tr>
+    <td><strong>가맹점 네트워크 통합 포인트</strong></td>
+    <td><span class="tag tag-ok">면제</span> (closed-loop network)</td>
+    <td><strong>캡틴 구상 = 이것</strong></td>
+  </tr>
+  <tr>
+    <td>범용 e-wallet (TnG, GrabPay)</td>
+    <td><span class="tag tag-danger">라이선스 필요</span></td>
+    <td>해당 없음</td>
+  </tr>
+</table>
+
+
+<!-- ===================== 2. 수익 모델 v4 ===================== -->
+<h2 id="model">2. 수익 모델 v4 — 시간 절약 프리미엄 + 포인트 환원</h2>
+
+<div class="callout callout-ok">
+<strong>모델 핵심</strong>: 소비자가 편의(선주문·즉시 픽업)에 대해 5% 서비스료를 지불하고, 그 5%가 포인트로 100% 환원된다. 가맹점은 10% 수수료(코어)를 Tapik에 지불한다. Payment Gateway를 통해 Tapik은 자금을 직접 만지지 않는다.
+</div>
+
+<h3>2.1 참여자와 인센티브 (v4)</h3>
+
+<table>
+  <tr>
+    <th style="width:18%">참여자</th>
+    <th style="width:25%">역할</th>
+    <th style="width:25%">인센티브</th>
+    <th>비용 부담</th>
+  </tr>
+  <tr>
+    <td><strong>소비자</strong></td>
+    <td>앱으로 선주문 + 선결제. 매장에서 QR 픽업</td>
+    <td>대기시간 0. 5% 서비스료 전액 포인트 환원. 크로스 가맹점 포인트 사용</td>
+    <td>메뉴가 + 5% 서비스료 (포인트로 돌아옴)</td>
+  </tr>
+  <tr>
+    <td><strong>가맹점</strong></td>
+    <td>주문 접수 → 조리 → QR 확인 후 제공</td>
+    <td>추가 매출 (5% 프리미엄 포함). 서빙·좌석·설거지 비용 절감. 거래 없으면 비용 0</td>
+    <td>Tapik 수수료 10% 코어 (거래 발생 시에만)</td>
+  </tr>
+  <tr>
+    <td><strong>Tapik (본사)</strong></td>
+    <td>플랫폼 운영. 주문·결제·포인트 관리</td>
+    <td>가맹점 수수료 10%에서 포인트(5%)·게이트웨이(~1.2%) 차감 후 순수익</td>
+    <td>포인트 지급 비용 + 게이트웨이 수수료</td>
+  </tr>
+</table>
+
+<h3>2.2 거래 흐름 (v4 Transaction Flow)</h3>
+
+<div class="flow-box">
+<strong>Step 1 — 소비자가 앱에서 주문</strong><br>
+소비자 앱 → 근처 가맹점 선택 → 메뉴 선택 → 주문 확인<br>
+<span class="mono">나시르막 RM 10.00 + 즉시 준비 서비스료 5% RM 0.50 = 합계 RM 10.50</span>
+
+<div class="flow-arrow">↓</div>
+
+<strong>Step 2 — 결제 (Payment Gateway)</strong><br>
+FPX / DuitNow / TnG / GrabPay 선택 → 결제 승인<br>
+<span class="mono">RM 10.50 → Payment Gateway 에스크로 계좌 도착. Tapik 계좌를 경유하지 않음.</span>
+
+<div class="flow-arrow">↓</div>
+
+<strong>Step 3 — 가맹점 POS에 주문 전송</strong><br>
+결제 완료 즉시 가맹점 POS/태블릿에 주문 티켓 자동 전송<br>
+가맹점 조리 시작. 예상 완료 시간 소비자 앱에 표시
+
+<div class="flow-arrow">↓</div>
+
+<strong>Step 4 — 픽업 & QR 검증</strong><br>
+소비자 도착 → 앱 QR 코드 제시 → 가맹점 POS/태블릿으로 스캔<br>
+<span class="mono">서버 검증: orderID + userID + timestamp 해시 → 1회 사용 후 무효화</span>
+
+<div class="flow-arrow">↓</div>
+
+<strong>Step 5 — 정산 & 포인트 적립</strong><br>
+<span class="mono">
+Gateway가 자동 분배 (T+1~T+3일):<br>
+  가맹점 정산: RM 10.50 - RM 1.05 (수수료 10%) = RM 9.45<br>
+  Tapik 수수료: RM 1.05<br>
+  Gateway 수수료: ~RM 0.28 (Tapik 몫에서 차감)<br>
+<br>
+소비자 포인트: +50P (RM 0.50 상당) 즉시 적립<br>
+Tapik 순수익: RM 1.05 - RM 0.50 - RM 0.28 = RM 0.27~0.50 (Gateway별 상이)
+</span>
+</div>
+
+<h3>2.3 수익 분배 구조 (v4)</h3>
+
+<table>
+  <tr>
+    <th>항목</th>
+    <th>누가 부담</th>
+    <th>얼마</th>
+    <th>설명</th>
+  </tr>
+  <tr>
+    <td><strong>5% 서비스료</strong></td>
+    <td>소비자</td>
+    <td>메뉴가의 5%</td>
+    <td>"즉시 준비 서비스료" 명목. 전액 포인트로 환원되므로 소비자 실질 부담 = 0</td>
+  </tr>
+  <tr>
+    <td><strong>Tapik 수수료</strong></td>
+    <td>가맹점</td>
+    <td>총 결제액의 10% (코어)</td>
+    <td>거래 발생 시에만. 월정액 없음. GrabFood 픽업 20% 대비 1/2 수준</td>
+  </tr>
+  <tr>
+    <td><strong>포인트 비용</strong></td>
+    <td>Tapik (수수료에서 차감)</td>
+    <td>서비스료 전액 (결제액의 ~4.76%)</td>
+    <td>소비자 5% 서비스료를 포인트로 변환. Tapik 수수료 수입에서 충당</td>
+  </tr>
+  <tr>
+    <td><strong>Gateway 수수료</strong></td>
+    <td>Tapik (수수료에서 차감)</td>
+    <td>~1.0~1.5% + 건당 RM 0.10~0.30</td>
+    <td>Payment Gateway 이용료. Gateway 선택이 마진에 결정적</td>
+  </tr>
+</table>
+
+<h3>2.4 가맹점 비교 분석</h3>
+
+<table>
+  <tr>
+    <th style="width:25%">비교 항목</th>
+    <th>매장 직접 판매</th>
+    <th>GrabFood 픽업</th>
+    <th><strong>Tapik v4 픽업</strong></th>
+  </tr>
+  <tr>
+    <td>소비자 지불 (RM 10 메뉴)</td>
+    <td>RM 10.00</td>
+    <td>RM 12.00~12.50 (+20%)</td>
+    <td><strong>RM 10.50 (+5%)</strong></td>
+  </tr>
+  <tr>
+    <td>가맹점 실수령</td>
+    <td>RM 10.00</td>
+    <td>RM 9.60 (수수료 20% 적용)</td>
+    <td><strong>RM 9.45</strong></td>
+  </tr>
+  <tr>
+    <td>서빙·좌석·설거지 비용</td>
+    <td>RM 1.50~2.60</td>
+    <td>RM 0 (픽업)</td>
+    <td><strong>RM 0 (픽업)</strong></td>
+  </tr>
+  <tr>
+    <td>가맹점 실질 마진</td>
+    <td>RM 10.00 - 비용</td>
+    <td>RM 9.60 (좌석비 절감)</td>
+    <td><strong>RM 9.45 (좌석비 절감)</strong></td>
+  </tr>
+  <tr>
+    <td>플랫폼 수수료율</td>
+    <td>0%</td>
+    <td>20%</td>
+    <td><strong>10% (코어)</strong></td>
+  </tr>
+  <tr>
+    <td>소비자 혜택</td>
+    <td>없음</td>
+    <td>픽업 편의</td>
+    <td><strong>시간 절약 + 포인트 적립</strong></td>
+  </tr>
+</table>
+
+
+<!-- ===================== 3. 포인트 경제 설계 ===================== -->
+<h2 id="points">3. Tapik 통합 포인트 경제 설계</h2>
+
+<h3>3.1 포인트 발행 & 사용 규칙</h3>
+
+<table>
+  <tr>
+    <th style="width:25%">항목</th>
+    <th>규칙</th>
+  </tr>
+  <tr>
+    <td><strong>포인트 단위</strong></td>
+    <td>1 Tapik Point = RM 0.10 가치. <span class="mono">100 TP = RM 10</span></td>
+  </tr>
+  <tr>
+    <td><strong>적립 경로</strong></td>
+    <td>
+      ① <strong>선주문 서비스료</strong>: 메뉴가 5% 서비스료 전액 포인트 환원 · RM 10.50 주문 → 50 TP (핵심 적립 경로)<br>
+      ② <strong>추천 보상</strong>: 친구 첫 구매 시 양쪽 50 TP (1회성)<br>
+      ③ <strong>미션/챌린지</strong>: 월간 "5곳 방문" 뱃지 50 TP 등 (v2)<br>
+      ④ <strong>룸마스터 보너스</strong>: 그룹 룸 개설 시 추가 포인트 (v1.5)
+    </td>
+  </tr>
+  <tr>
+    <td><strong>사용 범위</strong></td>
+    <td><strong>Tapik 파트너 가맹점 어디서든 사용 가능</strong> (통합 closed-loop). 가맹점 A에서 적립 → 가맹점 B에서 사용 OK.</td>
+  </tr>
+  <tr>
+    <td><strong>사용 방식</strong></td>
+    <td>결제 시 포인트 차감 (100 TP 이상부터). 선결제 시 포인트 부분 결합 가능.</td>
+  </tr>
+  <tr>
+    <td><strong>유효 기간</strong></td>
+    <td>적립일로부터 12개월. 3개월 미사용 시 알림. 만료 30일 전 재알림.</td>
+  </tr>
+  <tr>
+    <td><strong>현금 환전</strong></td>
+    <td><strong>불가</strong> (BNM 면제 조건 유지). 타인 양도도 불가.</td>
+  </tr>
+  <tr>
+    <td><strong>포인트 정산 (가맹점)</strong></td>
+    <td>소비자가 가맹점 B에서 포인트 사용 → Tapik이 가맹점 B에 포인트 상당액 정산. <strong>포인트 비용은 Tapik이 부담</strong> (수수료 수익으로 충당).</td>
+  </tr>
+</table>
+
+<h3>3.2 할인 이벤트 참여 시 포인트 되돌림 구조</h3>
+
+<p>캡틴 구상: "할인 이벤트 참여 시, 할인되는 만큼 포인트로 적립해주는 구조"</p>
+
+<div class="callout">
+<strong>시나리오</strong>: Lim Kopitiam이 "점심 Lunch Set RM 14 → 10% 할인 RM 12.60" 이벤트 등록.<br><br>
+<strong>소비자 입장</strong>: RM 12.60 결제 + <strong>14 Tapik 포인트 적립</strong> (할인분 RM 1.40 상당)<br>
+→ 소비자는 할인도 받고 포인트도 얻음 → <strong>더블 인센티브</strong><br><br>
+<strong>비용 구조</strong>:<br>
+• 할인 RM 1.40 → 가맹점 부담 (자발적 프로모 비용)<br>
+• 포인트 14 TP (= RM 1.40 가치) → <strong>누가 부담?</strong>
+</div>
+
+<h4>포인트 비용 부담 방안 3가지</h4>
+
+<table>
+  <tr>
+    <th style="width:8%">안</th>
+    <th style="width:22%">구조</th>
+    <th>장점</th>
+    <th>단점</th>
+    <th style="width:12%">추천도</th>
+  </tr>
+  <tr>
+    <td><strong>A</strong></td>
+    <td><strong>가맹점 부담</strong><br>할인 비용 + 포인트 비용 모두 가맹점</td>
+    <td>Tapik 재무 건전성 유지. 가맹점이 프로모 전체를 자기 비용으로 집행.</td>
+    <td>가맹점 부담 과중 (할인 10% + 포인트 10% = 실질 20% 비용). <strong>가맹점이 거부할 가능성 높음.</strong></td>
+    <td><span class="tag tag-danger">비추</span></td>
+  </tr>
+  <tr>
+    <td><strong>B</strong></td>
+    <td><strong>Tapik 부담</strong><br>할인은 가맹점, 포인트는 Tapik 수수료에서 차감</td>
+    <td>가맹점 부담 최소화. 가맹점은 "할인"만 비용, Tapik이 "포인트 적립"이라는 부가 가치 제공.</td>
+    <td>Tapik 수수료 수익이 포인트 지급에 잠식. <strong>초기 적자 불가피</strong> (수수료 5% 받고 포인트 10% 지급하면 역마진).</td>
+    <td><span class="tag tag-warn">조건부</span></td>
+  </tr>
+  <tr>
+    <td><strong>C</strong></td>
+    <td><strong>분담 구조 (추천)</strong><br>할인: 가맹점 부담<br>포인트: 가맹점 "광고비" 명목으로 할인분의 50% 추가 부담 → Tapik이 포인트로 전환 지급</td>
+    <td>가맹점은 "할인 + 광고비"로 이해 (배달앱 30% 대비 훨씬 저렴). Tapik은 광고비 수취로 포인트 재원 확보. 양측 부담 분산.</td>
+    <td>가맹점에게 "할인 비용 + 광고비"를 설명해야 하는 영업 복잡성. 그러나 GrabFood 30% 대비 "총 15%"라는 비교 논리로 극복 가능.</td>
+    <td><span class="tag tag-ok">추천</span></td>
+  </tr>
+</table>
+
+<h4>안 C 상세 수치 예시</h4>
+
+<div class="flow-box">
+<strong>Lim Kopitiam 점심 이벤트 (안 C 적용)</strong><br><br>
+<span class="mono">
+정가: RM 14.00<br>
+할인 10%: -RM 1.40 (가맹점 부담)<br>
+소비자 결제: RM 12.60<br>
+<br>
+가맹점 추가 "광고비": 할인분의 50% = RM 0.70<br>
+→ Tapik이 이 RM 0.70을 7 Tapik 포인트로 변환해 소비자에게 지급<br>
+<br>
+Tapik 수수료: RM 12.60 × 5% = RM 0.63<br>
+<br>
+<strong>최종 정산:</strong><br>
+가맹점 수취: RM 12.60 - RM 0.63 (수수료) - RM 0.70 (광고비) = RM 11.27<br>
+가맹점 총 비용: RM 14.00 - RM 11.27 = RM 2.73 (정가의 19.5%)<br>
+→ GrabFood 30% 대비 10%p 이상 저렴<br>
+<br>
+소비자 혜택: RM 1.40 할인 + 7 TP (≈ RM 0.70 가치) = 총 RM 2.10 혜택 (15%)<br>
+<br>
+Tapik 수취: RM 0.63 (수수료) — 포인트 비용은 가맹점 광고비로 커버<br>
+</span>
+</div>
+
+
+<!-- ===================== 4. 룸 기능 — 선택적 소셜 레이어 ===================== -->
+<h2 id="influencer">4. 룸(Room) 기능 — v1 MVP 핵심 + 포인트 차등 (v1)</h2>
+
+<div class="callout">
+<strong>위치 변경</strong>: v4 모델에서 룸은 <strong>콜드스타트의 바이럴 엔진</strong>으로 재위치.<br>
+<strong>v1 MVP에 포함</strong>. 개인 주문 + 룸이 동시 지원. Room joiner/creator 포인트 차등으로 추천/공유 인센티브 극대화.
+</div>
+
+<h3>4.1 룸의 역할 재정의</h3>
+
+<table>
+  <tr>
+    <th style="width:25%">항목</th>
+    <th>기존 (v1.5)</th>
+    <th>변경 후 (v4)</th>
+  </tr>
+  <tr>
+    <td><strong>룸의 위치</strong></td>
+    <td>선택적 소셜 레이어. v1.5 후속</td>
+    <td><strong>v1 MVP 핵심</strong>. 콜드스타트 바이럴 엔진</td>
+  </tr>
+  <tr>
+    <td><strong>경제 모델 역할</strong></td>
+    <td>개인 주문으로 완결, 룸은 부가 기능</td>
+    <td>개인 5% 기본 + 룸 통해 포인트 차등 → 추천/공유 최적화</td>
+  </tr>
+  <tr>
+    <td><strong>콜드스타트 영향</strong></td>
+    <td>1명만 써도 가능</td>
+    <td>1명이 2명 초대 → 포인트 차등으로 지수적 성장</td>
+  </tr>
+</table>
+
+<h3>4.2 룸 기능 설계 (v4 — v1 MVP)</h3>
+
+<table>
+  <tr>
+    <th style="width:22%">기능</th>
+    <th>설명</th>
+  </tr>
+  <tr>
+    <td><strong>그룹 주문</strong></td>
+    <td>직장 동료·친구끼리 한 룸에서 각자 메뉴 선택 → 일괄 주문. 결제는 각자 또는 1인 대표 결제</td>
+  </tr>
+  <tr>
+    <td><strong>포인트 차등 (핵심)</strong></td>
+    <td>Solo 5% (단독), Room joiner 6%, Room creator 8%. 룸에 초대할수록 더 많은 포인트. 추천/공유의 자연스러운 인센티브</td>
+  </tr>
+  <tr>
+    <td><strong>포인트 몰아주기</strong></td>
+    <td>룸 참여자들이 자신의 포인트를 자유롭게 분배. "오늘은 네 생일이니까 내 포인트 너한테" 등 소셜 요소</td>
+  </tr>
+  <tr>
+    <td><strong>미니게임 (제비뽑기·사다리타기)</strong></td>
+    <td>룸 마스터를 정하거나, 포인트 분배를 게임으로 결정. 소셜 커머스의 재미 요소</td>
+  </tr>
+</table>
+
+<div class="callout">
+<strong>캡틴 인사이트</strong>: "지인들끼리라면, 제비뽑기나 사다리타기 같은 미니게임으로 룸 마스터를 정할 수 있게도 할 수 있고. 자신들이 받을 포인트를 더 받고 덜받고를 자유롭게 정해서 지인에게 몰아주기 하는 것도 재미의 한 요소."
+</div>
+
+<h3>4.3 릴리스 로드맵</h3>
+
+<table>
+  <tr>
+    <th style="width:15%">버전</th>
+    <th>범위</th>
+    <th>핵심 기능</th>
+  </tr>
+  <tr>
+    <td><strong>v1 (MVP)</strong></td>
+    <td>개인 선주문 + 룸</td>
+    <td>앱 선주문 → 5% 서비스료 + 포인트 차등(5/6/8%) → 룸 초대 → QR 픽업. 콜드스타트 바이럴 최적화</td>
+  </tr>
+  <tr>
+    <td><strong>v1.5</strong></td>
+    <td>소셜 고도화</td>
+    <td>포인트 몰아주기, 미니게임(제비뽑기), 룸 랭킹, 인플루언서 협업</td>
+  </tr>
+  <tr>
+    <td><strong>v2</strong></td>
+    <td>네트워크 효과</td>
+    <td>크로스 가맹점 포인트 사용, 소셜 랭킹, 추천 보상, 프리미엄 구독</td>
+  </tr>
+</table>
+
+
+<!-- ===================== 5. 유닛 이코노믹스 — v4 모델 ===================== -->
+<h2 id="unit">5. 유닛 이코노믹스 — v4 모델</h2>
+
+<h3>5.1 거래당 수익 시뮬레이션 (Gateway 고정비 RM 0.15 기준, 10% 코어 수수료)</h3>
+
+<p>Revenue Monster 또는 Billplz 저고정비 상품 기준</p>
+
+<table>
+  <tr>
+    <th>메뉴가</th>
+    <th>소비자 결제</th>
+    <th>가맹점 수수료 (10%)</th>
+    <th>포인트 (5%)</th>
+    <th>Gateway (~1.2%+RM0.15)</th>
+    <th>Tapik 순이익</th>
+  </tr>
+  <tr>
+    <td>RM 12 (기준)</td>
+    <td>RM 12.60</td>
+    <td>RM 1.26</td>
+    <td>-RM 0.60</td>
+    <td>-RM 0.28</td>
+    <td><strong>+RM 0.38</strong></td>
+  </tr>
+  <tr>
+    <td>RM 15</td>
+    <td>RM 15.75</td>
+    <td>RM 1.58</td>
+    <td>-RM 0.75</td>
+    <td>-RM 0.30</td>
+    <td><strong>+RM 0.53</strong></td>
+  </tr>
+  <tr>
+    <td>RM 20</td>
+    <td>RM 21.00</td>
+    <td>RM 2.10</td>
+    <td>-RM 1.00</td>
+    <td>-RM 0.35</td>
+    <td><strong>+RM 0.75</strong></td>
+  </tr>
+  <tr>
+    <td>RM 30</td>
+    <td>RM 31.50</td>
+    <td>RM 3.15</td>
+    <td>-RM 1.50</td>
+    <td>-RM 0.48</td>
+    <td><strong>+RM 1.17</strong></td>
+  </tr>
+  <tr>
+    <td>RM 50</td>
+    <td>RM 52.50</td>
+    <td>RM 5.25</td>
+    <td>-RM 2.50</td>
+    <td>-RM 0.73</td>
+    <td><strong>+RM 2.02</strong></td>
+  </tr>
+</table>
+
+<div class="callout callout-ok">
+<strong>저고정비 Gateway 사용 시 RM 12 거래부터 흑자 (RM 0.38/건).</strong><br>
+평균 객단가 RM 15 가정 시 건당 순이익 RM 0.53. 일 15건/가맹점이면 월 RM 239.5/가맹점 (v3 대비 3배+ 향상).
+</div>
+
+<h3>5.2 가맹점별 월간 시뮬레이션</h3>
+
+<p>Kopitiam 기준 (일 230명, 월 매출 RM 75,000, 평균 객단가 RM 15)</p>
+
+<table>
+  <tr>
+    <th style="width:35%">항목</th>
+    <th style="width:15%">보수</th>
+    <th style="width:15%">기대</th>
+    <th>산출 근거</th>
+  </tr>
+  <tr>
+    <td>Tapik 경유 일 주문</td>
+    <td>15건</td>
+    <td>30건</td>
+    <td>전체 고객의 6~13%</td>
+  </tr>
+  <tr>
+    <td>Tapik 경유 월 거래액</td>
+    <td>RM 6,750</td>
+    <td>RM 13,500</td>
+    <td>일 15~30건 × RM 15 × 30일</td>
+  </tr>
+  <tr>
+    <td>가맹점 수수료 (10%)</td>
+    <td>RM 675</td>
+    <td>RM 1,350</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>포인트 비용 (5%)</td>
+    <td>-RM 337</td>
+    <td>-RM 675</td>
+    <td>서비스료 전액</td>
+  </tr>
+  <tr>
+    <td>Gateway 비용</td>
+    <td>-RM 148</td>
+    <td>-RM 296</td>
+    <td>1.2% + 건당 RM 0.15</td>
+  </tr>
+  <tr style="background:#f0fdf4;">
+    <td><strong>Tapik 순수익/가맹점/월</strong></td>
+    <td><strong>RM 190</strong></td>
+    <td><strong>RM 379</strong></td>
+    <td></td>
+  </tr>
+</table>
+
+<h3>5.3 스케일 시나리오</h3>
+
+<table>
+  <tr>
+    <th>시나리오</th>
+    <th>가맹점 수</th>
+    <th>일 주문/가맹점</th>
+    <th>MRR</th>
+    <th>ARR</th>
+  </tr>
+  <tr>
+    <td>파일럿 (6개월)</td>
+    <td>50</td>
+    <td>15건</td>
+    <td>RM 4,750</td>
+    <td>RM 57K</td>
+  </tr>
+  <tr>
+    <td>성장 (12개월)</td>
+    <td>200</td>
+    <td>20건</td>
+    <td>RM 37,600</td>
+    <td>RM 451K</td>
+  </tr>
+  <tr>
+    <td>확장 (24개월)</td>
+    <td>500</td>
+    <td>25건</td>
+    <td>RM 142,500</td>
+    <td>RM 1.71M</td>
+  </tr>
+  <tr>
+    <td>성숙 (36개월)</td>
+    <td>1,500</td>
+    <td>30건</td>
+    <td>RM 570,000</td>
+    <td>RM 6.84M</td>
+  </tr>
+</table>
+
+<div class="callout">
+<strong>v3 대비 v4</strong>: v3 (8% 수수료)는 ARR RM 1.6M으로 추정했으나, v4 (10% 수수료 + 룸 포인트 차등)는 <strong>ARR RM 6.84M (3배 향상)</strong>.<br>
+<strong>핵심 드라이버</strong>: ① 10% 코어 수수료 × RM 12 기준가 → 건당 순이익 3배 향상 ② 룸 포인트 차등(5/6/8%)으로 바이럴 가속화 ③ v1 MVP에 룸 포함 → 초기 성장 모멘텀 확보.
+</div>
+
+
+<!-- ===================== 6. 캡틴 결정 현황 — 미해결 논점 ===================== -->
+<h2 id="open">6. 캡틴 결정 현황 — 미해결 논점</h2>
+
+<table>
+  <tr>
+    <th style="width:5%">#</th>
+    <th style="width:30%">논점</th>
+    <th>결정/선택지</th>
+    <th style="width:15%">상태</th>
+  </tr>
+  <tr style="background:#f0fdf4;">
+    <td>1</td>
+    <td><strong>수수료율</strong></td>
+    <td><strong>가맹점 10% (코어)</strong> (v4 확정). 거래 발생 시에만 부과. 월정액 없음.</td>
+    <td><span class="tag tag-ok">확정</span></td>
+  </tr>
+  <tr style="background:#f0fdf4;">
+    <td>2</td>
+    <td><strong>포인트 발행 구조</strong></td>
+    <td><strong>소비자 5% 서비스료 → 포인트 100% 환원</strong>. Tapik 자비 부담 아닌, 소비자 지불분에서 충당.</td>
+    <td><span class="tag tag-ok">확정</span></td>
+  </tr>
+  <tr style="background:#f0fdf4;">
+    <td>3</td>
+    <td><strong>광고비(Plan C)</strong></td>
+    <td><strong>폐기</strong>. 포함 시 GrabFood와 동일 부담 19.5%. v3에서 불필요.</td>
+    <td><span class="tag tag-ok">폐기 확정</span></td>
+  </tr>
+  <tr style="background:#f0fdf4;">
+    <td>4</td>
+    <td><strong>세일즈 포지셔닝</strong></td>
+    <td><strong>"시간 절약 레이어"</strong>. 할인 플랫폼이 아닌, 편의에 대한 프리미엄 → 포인트 환원.</td>
+    <td><span class="tag tag-ok">확정</span></td>
+  </tr>
+  <tr style="background:#f0fdf4;">
+    <td>5</td>
+    <td><strong>룸(Room) 기능 위치</strong></td>
+    <td><strong>v1 MVP 핵심. 포인트 차등(Solo 5%, Joiner 6%, Creator 8%)</strong>. 콜드스타트 바이럴 엔진으로 재위치.</td>
+    <td><span class="tag tag-ok">확정</span></td>
+  </tr>
+  <tr>
+    <td>6</td>
+    <td><strong>포인트 가치</strong>: 1TP = RM 0.10 vs RM 0.05 vs RM 0.01</td>
+    <td>이전 추천: 1TP = RM 0.10. v3에서 서비스료 5%가 곧 포인트이므로 1:1 매핑 (RM 0.50 서비스료 = 50P). 별도 교환비율 불필요할 수 있음.</td>
+    <td><span class="tag tag-warn">재검토 필요</span></td>
+  </tr>
+  <tr>
+    <td>7</td>
+    <td><strong>포인트 정산 주기</strong></td>
+    <td>이전 추천: 주 1회. Gateway 정산 주기(T+1~T+3)와 연동 검토 필요.</td>
+    <td><span class="tag tag-warn">미결</span></td>
+  </tr>
+  <tr>
+    <td>8</td>
+    <td><strong>SaaS 구독 유지 여부</strong></td>
+    <td>v3가 순수 거래 수수료 모델이므로, SaaS 완전 폐지가 자연스러움. AI 인사이트 등 프리미엄은 v2에서 재도입 검토.</td>
+    <td><span class="tag tag-warn">미결</span></td>
+  </tr>
+  <tr>
+    <td>9</td>
+    <td><strong>결제 게이트웨이 선택</strong></td>
+    <td>Billplz (최저 고정비 RM 0.10) vs Revenue Monster (RM 0.15, API 우수). 소액 거래 마진에 결정적. 실사 필요.</td>
+    <td><span class="tag tag-warn">미결</span></td>
+  </tr>
+  <tr>
+    <td>10</td>
+    <td><strong>콜드스타트 구체 전략</strong></td>
+    <td><strong>확정 (2026-04-17)</strong>: POS 파트너 2만+ 가맹점 네트워크 = BD 채널 그 자체. 영수증 QR · 식탁 QR · POS 화면 안내 · "5% 적립" 자연 유입. 개인 주문 기반 → 1명만 써도 거래 발생. 마케팅 비용 0. 추가 비용은 별도 검토.</td>
+    <td><span class="tag tag-ok">확정</span></td>
+  </tr>
+</table>
+
+
+<!-- ===================== 8. 포인트 규제 & 리스크 관리 ===================== -->
+<h2 id="regulation">8. 포인트 규제 & 리스크 관리 — 자체 규제 프레임워크</h2>
+
+<h3>8.1 BNM 면제 상태에서의 자체 규제 필요성</h3>
+
+<div class="callout callout-warn">
+<strong>핵심</strong>: P.U.A 463/2024에 의해 Tapik 포인트는 BNM 관할 외. BNM이 강제하는 상한선·이전 제한·준비금 규정이 <strong>없다</strong>.<br>
+이것은 "자유"가 아니라 <strong>"안전망도 없다"</strong>는 뜻.<br><br>
+BNM이 원래 Limited Purpose EMI에 설계했던 기준 (유저당 RM 250, 총 발행량 RM 100만)은 면제령으로 효력 상실.<br>
+그러나 <strong>Consumer Protection Act 1999 (Act 599) Part IIIA "불공정 약관"</strong> 조항은 여전히 적용.<br>
+따라서 Tapik이 <strong>자체 T&C(이용약관)로 규제 프레임워크를 구축</strong>해야 함.
+</div>
+
+<h3>8.2 유저당 포인트 잔액 상한</h3>
+
+<table>
+  <tr>
+    <th style="width:25%">항목</th>
+    <th>결정</th>
+  </tr>
+  <tr>
+    <td><strong>잔액 상한</strong></td>
+    <td><strong>10,000 TP = RM 1,000</strong> (≈ KRW 310,000)<br>
+    캡틴 판단: RM 250은 초기 부스팅에 너무 적음. RM 1,000이면 충분한 적립 여유 + 재무 통제 가능.<br>
+    상한 도달 시: 신규 적립 중단 알림 → "사용 후 적립" 전환 또는 자동 쿠폰 변환 유도.</td>
+  </tr>
+  <tr>
+    <td><strong>유동성 풀(Reserve)</strong></td>
+    <td>포인트 대량 사용 시 <strong>가맹점이 아닌 Tapik 본사가 정산</strong>.<br>
+    가맹점은 포인트 결제를 수락만 하고, Tapik이 해당 금액을 정산 주기에 맞춰 지급.<br>
+    Tapik 본사에 <strong>미상환 포인트 총량 대비 준비금(Reserve Fund)</strong> 적립 필수.<br>
+    초기 비율: 분기별 미상환 총량의 10% (차후 데이터 기반 조정).</td>
+  </tr>
+  <tr>
+    <td><strong>포인트 만료(Rolling Expiry)</strong></td>
+    <td>BNM 관할 밖이므로 만료 기간 설정은 Tapik 재량. <span class="tag tag-ok">규제 없음</span><br>
+    <strong>마지막 활동일 기준 12개월</strong> (Rolling). 활동 = 적립 또는 사용.<br>
+    BonusLink는 36개월 고정 만료. Tapik은 활동 시 리셋이므로 CPA 불공정 약관 분쟁 소지 최소화.<br>
+    만료 3개월 전 앱 알림 + 30일 전 재알림.</td>
+  </tr>
+</table>
+
+<h3>8.3 P2P 이전 금지 & 대체 선물 메커니즘</h3>
+
+<div class="callout callout-warn">
+<strong>원칙: 비양도, 비매매</strong><br>
+BonusLink 선례를 따름. 포인트는 타인에게 이전·판매·양도 불가. 사망 시 유족 이전은 Tapik 재량.<br><br>
+<strong>이유</strong>: P2P 이전이 가능해지면 포인트가 사실상의 결제/송금 수단 → P.U.A 463/2024 면제 범위 이탈 → BNM 라이선스 필요.<br>
+글로벌 데이터: P2P 이전 가능한 포인트 프로그램은 단일채널 대비 <strong>2.5배 더 사기 공격</strong>을 받음.
+</div>
+
+<h4>비즈니스 로직에 반영할 대체 선물 메커니즘 3가지</h4>
+
+<table>
+  <tr>
+    <th style="width:5%">#</th>
+    <th style="width:22%">메커니즘</th>
+    <th>작동 방식</th>
+    <th style="width:15%">규제 상태</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td><strong>쿠폰 선물</strong></td>
+    <td>포인트로 쿠폰 교환 → 쿠폰(QR/코드)을 타인에게 공유.<br>포인트 자체는 이동하지 않고, <strong>상품(쿠폰)이 이동</strong>.</td>
+    <td><span class="tag tag-ok">안전</span></td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td><strong>그룹딜 공유</strong></td>
+    <td>인플루언서가 그룹딜 링크 공유 → 참여자 각자 자기 포인트 적립.<br>이미 설계된 네트워크 모델과 일치.</td>
+    <td><span class="tag tag-ok">안전</span></td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td><strong>선물 카드 교환</strong></td>
+    <td>포인트로 Tapik 선물카드(고정금액) 구매 → 타인에게 전달.<br>선물카드는 수령인이 Tapik 계정에 등록 후 사용.</td>
+    <td><span class="tag tag-ok">안전</span></td>
+  </tr>
+</table>
+
+<h3>8.4 포인트 제도 허점 & 방어 전략</h3>
+
+<table>
+  <tr>
+    <th style="width:20%">리스크</th>
+    <th style="width:35%">시나리오</th>
+    <th>방어책</th>
+    <th style="width:12%">T&C 반영</th>
+  </tr>
+  <tr>
+    <td><strong>포인트 파밍<br>(Points Farming)</strong></td>
+    <td>가짜 계정 대량 생성 → 신규가입 보너스(50 TP) 수확 → 한 계정으로 몰기 시도</td>
+    <td>P2P 이전 차단으로 1차 방어. 같은 기기/전화번호 다중 계정 탐지. 신규 보너스는 첫 구매 완료 후 지급 (가입만으로 X).</td>
+    <td><span class="tag tag-warn">필수</span></td>
+  </tr>
+  <tr>
+    <td><strong>포인트 세탁<br>(Points Laundering)</strong></td>
+    <td>도난 카드로 구매 → 포인트 적립 → 포인트로 상품 교환</td>
+    <td><strong>결제 취소/환불 시 포인트 즉시 회수</strong>. 차지백 발생 시 해당 계정 적립분 전액 동결. 이상 거래 탐지(비정상적 고액·고빈도 구매 패턴).</td>
+    <td><span class="tag tag-warn">필수</span></td>
+  </tr>
+  <tr>
+    <td><strong>가치 변동 분쟁<br>(Devaluation Risk)</strong></td>
+    <td>Tapik이 1 TP = RM 0.10 → RM 0.05로 갑자기 변경</td>
+    <td>T&C에 명시: <strong>가치 변경 시 30일 사전 고지</strong>. 기존 적립분은 <strong>변경 후 6개월간 구가치 적용</strong>. CPA 1999 Part IIIA (불공정 약관) 위반 방지.</td>
+    <td><span class="tag tag-warn">필수</span></td>
+  </tr>
+  <tr>
+    <td><strong>만료 불공정 분쟁</strong></td>
+    <td>소비자가 "기간 너무 짧다"며 CPA 불공정 약관으로 문제 제기</td>
+    <td>Rolling expiry (활동 시 리셋)이므로 "적극 사용자는 만료되지 않는" 구조. BonusLink 36개월 고정 대비 오히려 유리. 만료 전 충분한 알림 (3개월 + 30일 전).</td>
+    <td><span class="tag tag-ok">방어됨</span></td>
+  </tr>
+  <tr>
+    <td><strong>가맹점 이탈 시<br>포인트 보장</strong></td>
+    <td>가맹점 A 탈퇴 → A에서 적립한 포인트 사용 불가?</td>
+    <td>통합 포인트이므로 가맹점 탈퇴와 무관하게 <strong>다른 가맹점에서 사용 가능</strong>. T&C에 "포인트는 Tapik 네트워크 전체에서 유효" 명시. 특정 가맹점에 귀속되지 않음.</td>
+    <td><span class="tag tag-ok">방어됨</span></td>
+  </tr>
+  <tr>
+    <td><strong>크로스 가맹점 재정거래<br>(Arbitrage)</strong></td>
+    <td>가맹점 A의 높은 할인 이벤트에서 포인트 대량 적립 → 가맹점 B에서 전액 사용</td>
+    <td>포인트 적립률은 Tapik이 통제 (가맹점별 자율 설정 불가). 이벤트 포인트는 별도 "보너스 TP"로 분리, 사용 시 비율 제한 가능 (예: 결제액의 최대 30%까지 포인트 사용).</td>
+    <td><span class="tag tag-warn">필수</span></td>
+  </tr>
+  <tr>
+    <td><strong>미상환 포인트<br>재무 부담</strong></td>
+    <td>발행 총량이 쌓이면서 Tapik 재무제표상 부채 증가</td>
+    <td>미상환 포인트 준비금(Reserve Fund): 분기별 미상환 총량의 <strong>최소 10%</strong> 적립 (차후 조정). Rolling expiry로 자연 소멸 유도. 분기별 breakage rate(미사용 소멸 비율) 모니터링.</td>
+    <td><span class="tag tag-warn">필수</span></td>
+  </tr>
+</table>
+
+<h3>8.5 예상 분쟁 시나리오 & 대응</h3>
+
+<table>
+  <tr>
+    <th style="width:5%">#</th>
+    <th style="width:28%">시나리오</th>
+    <th style="width:15%">발생 확률</th>
+    <th>대응 전략</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td><strong>가맹점 포인트 정산 지연</strong><br>소비자가 포인트로 결제했는데 가맹점이 Tapik으로부터 정산을 못 받음</td>
+    <td><span class="tag tag-danger">높음</span><br>(초기 현금흐름 취약 시)</td>
+    <td>Reserve Fund에서 즉시 정산. 정산 주기를 주 1회로 고정하고 T&C에 명시. 지연 시 가맹점에 이자 보상 조항 검토.</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td><strong>소비자 포인트 소멸 항의</strong><br>"나는 12개월 동안 바빴을 뿐인데 포인트가 사라졌다"</td>
+    <td><span class="tag tag-warn">중간</span></td>
+    <td>Rolling expiry + 충분한 알림으로 1차 방어. 고객센터 재량으로 1회 한정 포인트 복원 (grace period 30일). T&C에 복원 불가 원칙 + 예외 재량 조항 병기.</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td><strong>포인트 가치 변경 후 집단 반발</strong><br>초기 1 TP = RM 0.10이 지속 불가능해져서 조정 시</td>
+    <td><span class="tag tag-warn">중간</span><br>(스케일 후)</td>
+    <td>30일 사전 고지 + 기존 적립분 6개월 유예. 변경 시 "포인트 → 쿠폰 일괄 전환" 옵션 제공. CPA 불공정 약관 판정 방지가 핵심.</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td><strong>인플루언서가 피라미드 의혹 제기당함</strong><br>KPDN 또는 소비자 단체가 "Tapik은 피라미드 아닌가" 문의</td>
+    <td><span class="tag tag-ok">낮음</span><br>(1단계 원칙 준수 시)</td>
+    <td>1단계 보상만, 거래 기반(모집 X), 본인 구매 실적 필수 — 이 3가지를 문서화하고 KPDN에 사전 설명 가능한 compliance pack 준비.</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td><strong>BNM이 면제 기준을 강화</strong><br>P.U.A 463/2024가 개정되어 "네트워크 통합 포인트"에 새 조건 부과</td>
+    <td><span class="tag tag-ok">낮음</span><br>(단기 2~3년)</td>
+    <td>자체 규제를 이미 BNM 수준(잔액 상한, 준비금, 비이전)으로 운영 중이면 신규 규제에도 즉시 대응 가능. 오히려 자발적 compliance가 BNM 신뢰 확보에 유리.</td>
+  </tr>
+</table>
+
+<h3>8.6 T&C(이용약관)에 반드시 포함할 6가지 자체 규제 조항</h3>
+
+<table>
+  <tr>
+    <th style="width:5%">#</th>
+    <th style="width:28%">조항</th>
+    <th>내용</th>
+    <th style="width:12%">상태</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td><strong>유저당 포인트 잔액 상한</strong></td>
+    <td>10,000 TP (= RM 1,000). 상한 도달 시 신규 적립 중단 알림, "사용 후 적립" 전환.</td>
+    <td><span class="tag tag-ok">캡틴 확정</span></td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td><strong>P2P 이전 금지</strong></td>
+    <td>포인트 비양도·비매매. 사망 시 유족 이전은 Tapik 재량. 대체: 쿠폰 선물 / 그룹딜 공유 / 선물카드 교환.</td>
+    <td><span class="tag tag-ok">캡틴 확정</span></td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td><strong>결제 취소/환불 시 포인트 즉시 회수</strong></td>
+    <td>차지백·환불·주문 취소 시 해당 거래로 적립된 포인트 전액 즉시 회수. 이미 사용한 경우 마이너스 잔액 허용.</td>
+    <td><span class="tag tag-warn">반영 예정</span></td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td><strong>포인트 가치 변경 조건</strong></td>
+    <td>변경 시 30일 사전 고지. 기존 적립분은 변경 후 6개월간 구가치 적용. 변경 빈도 연 1회 이하.</td>
+    <td><span class="tag tag-warn">반영 예정</span></td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td><strong>Rolling Expiry</strong></td>
+    <td>마지막 활동일(적립 또는 사용) 기준 12개월. 만료 3개월 전 + 30일 전 알림.</td>
+    <td><span class="tag tag-warn">반영 예정</span></td>
+  </tr>
+  <tr>
+    <td>6</td>
+    <td><strong>미상환 포인트 준비금</strong></td>
+    <td>분기별 미상환 총량의 최소 10% 준비금 적립. 차후 데이터 기반 비율 조정.</td>
+    <td><span class="tag tag-warn">반영 예정</span></td>
+  </tr>
+</table>
+
+<div class="callout">
+<strong>면책 조항 작성 필요</strong><br>
+위 6개 조항 외에, 별도 <strong>면책 조항(Disclaimer)</strong>을 T&C에 포함해야 함:<br>
+① Tapik 포인트는 법적 화폐가 아니며 현금 환전 불가<br>
+② Tapik은 프로그램을 사전 고지 후 변경·중단할 권리를 보유<br>
+③ 시스템 오류로 인한 포인트 오적립은 Tapik이 소급 정정 가능<br>
+④ 가맹점 개별 행위(서비스 품질 등)에 대해 Tapik은 책임 제한<br>
+⑤ 불법·부정 이용 적발 시 포인트 몰수 + 계정 정지 가능<br><br>
+<strong>차후 작업</strong>: 정식 T&C 문서 및 면책 조항은 법률 검토 후 별도 문서로 작성 필요.
+</div>
+
+
+<!-- ===================== 7. product_brief.html 수정 필요 사항 ===================== -->
+<h2 id="brief-update">7. product_brief.html 수정 필요 사항 (v3 반영)</h2>
+
+<table>
+  <tr>
+    <th style="width:30%">현재 기술</th>
+    <th style="width:30%">수정 내용</th>
+    <th>이유</th>
+  </tr>
+  <tr>
+    <td>"결제 순간을 동네 단골 경제로 전환"</td>
+    <td><strong>"시간 절약 프리미엄으로 독립 F&B 선주문·픽업 인프라 구축"</strong></td>
+    <td>포지셔닝 전환: 단골 경제 → 시간 절약 레이어</td>
+  </tr>
+  <tr>
+    <td>"매장별 closed-loop 포인트"</td>
+    <td><strong>"Tapik 네트워크 closed-loop 통합 포인트. 5% 서비스료 전액 포인트 환원"</strong></td>
+    <td>매장별 → 네트워크 통합 + 포인트 재원 명시</td>
+  </tr>
+  <tr>
+    <td>수익축: 가맹점 SaaS 월 구독 + Pass v3</td>
+    <td><strong>수익축: 가맹점 거래 수수료 10% (거래 발생 시에만). 월정액 없음</strong></td>
+    <td>SaaS → 순수 거래 수수료 모델로 전환</td>
+  </tr>
+  <tr>
+    <td>"쿠폰 공동구매" / "그룹 딜"</td>
+    <td><strong>"개인 선주문 + QR 픽업" (기본) + "그룹 룸" (v1.5 선택)</strong></td>
+    <td>그룹 필수 → 개인 기본으로 전환. 콜드스타트 허들 제거</td>
+  </tr>
+  <tr>
+    <td>"할인 플랫폼" 프레이밍</td>
+    <td><strong>"시간 절약 플랫폼" — 배달앱 프리미엄의 1/3 수준으로 즉시 픽업 제공</strong></td>
+    <td>할인 → 편의. 가맹점 마진 압박 제거</td>
+  </tr>
+</table>
+
+<p style="color:#9ca3af; font-size:12px; margin-top:40px; border-top:1px solid #e5e7eb; padding-top:14px;">
+  이 문서는 v3 모델 확정 기준 (2026-04-17). 캡틴(Gabriel) 확인 후 product_brief.html 반영 예정.
+</p>
+
+</div>
+</body>
+</html>

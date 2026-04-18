@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tapik — Interactive Demo Guide</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    line-height: 1.75;
+    font-size: 14px;
+  }
+  .layout { display:flex; min-height:100vh; }
+
+  /* SIDEBAR */
+  aside {
+    position:fixed; left:0; top:0; width:240px; height:100vh;
+    background:#1e293b; border-right:1px solid #334155;
+    padding:24px 14px; overflow-y:auto; z-index:100;
+  }
+  aside h1 { font-size:14px; color:#fbbf24; margin-bottom:2px; font-weight:700; }
+  aside .meta { font-size:11px; color:#94a3b8; margin-bottom:18px; padding-bottom:12px; border-bottom:1px solid #334155; }
+  aside .section-label {
+    font-size:10px; color:#64748b; text-transform:uppercase;
+    font-weight:700; letter-spacing:0.08em; margin:16px 6px 6px;
+  }
+  aside nav a {
+    display:block; padding:5px 10px; color:#cbd5e1; text-decoration:none;
+    border-radius:6px; font-size:12px; margin-bottom:1px; transition:background 0.15s;
+  }
+  aside nav a:hover { background:#334155; color:#f8fafc; }
+  aside .back-link {
+    display:inline-block; margin-top:16px; padding:6px 12px; font-size:11px;
+    color:#94a3b8; border:1px solid #334155; border-radius:6px; text-decoration:none;
+  }
+  aside .back-link:hover { color:#f8fafc; border-color:#64748b; }
+
+  /* MAIN */
+  main { margin-left:240px; padding:40px 56px; max-width:900px; }
+  h1.page-title { font-size:28px; color:#f8fafc; margin-bottom:6px; }
+  .page-sub { color:#94a3b8; font-size:13px; margin-bottom:36px; padding-bottom:16px; border-bottom:1px solid #334155; }
+  h2 { font-size:20px; color:#fbbf24; margin:44px 0 16px; padding-bottom:8px; border-bottom:2px solid #334155; }
+  h3 { font-size:15px; color:#38bdf8; margin:24px 0 10px; }
+  h4 { font-size:13px; color:#a78bfa; margin:16px 0 8px; font-weight:600; }
+  p { margin:8px 0; }
+  a { color:#38bdf8; text-decoration:none; }
+  a:hover { text-decoration:underline; }
+  ul, ol { padding-left:20px; }
+  li { margin:5px 0; }
+
+  /* COMPONENTS */
+  .alert {
+    background:#1e293b; border:2px solid #fbbf24; border-radius:10px;
+    padding:16px 20px; margin:20px 0;
+  }
+  .alert-title { font-size:13px; font-weight:700; color:#fbbf24; margin-bottom:6px; }
+  .alert-blue { border-color:#38bdf8; }
+  .alert-blue .alert-title { color:#38bdf8; }
+  .alert-green { border-color:#4ade80; }
+  .alert-green .alert-title { color:#4ade80; }
+  .alert-purple { border-color:#a78bfa; }
+  .alert-purple .alert-title { color:#a78bfa; }
+  .alert-gray { border-color:#64748b; }
+  .alert-gray .alert-title { color:#94a3b8; }
+
+  .step {
+    background:#1e293b; border:1px solid #334155; border-radius:10px;
+    padding:16px 20px; margin:14px 0; border-left:4px solid #38bdf8;
+    transition:border-color 0.2s;
+  }
+  .step:hover { border-color:#475569; border-left-color:#fbbf24; }
+  .step-num {
+    display:inline-flex; align-items:center; justify-content:center;
+    width:24px; height:24px; border-radius:50%; background:#fbbf24;
+    color:#0f172a; font-size:12px; font-weight:800; margin-right:8px;
+  }
+  .step-title { font-size:14px; font-weight:700; color:#f8fafc; display:inline; }
+  .step p { font-size:13px; color:#cbd5e1; margin-top:8px; }
+
+  .tag {
+    display:inline-block; font-size:10px; font-weight:700;
+    padding:2px 8px; border-radius:20px; margin-right:4px;
+  }
+  .tag-live { background:#4ade8020; color:#4ade80; border:1px solid #4ade8040; }
+  .tag-mock { background:#94a3b820; color:#94a3b8; border:1px solid #94a3b840; }
+  .tag-sync { background:#38bdf820; color:#38bdf8; border:1px solid #38bdf840; }
+
+  table { border-collapse:collapse; width:100%; margin:14px 0; font-size:13px; }
+  th, td { border:1px solid #334155; padding:8px 12px; text-align:left; vertical-align:top; }
+  th { background:#1e293b; color:#f8fafc; font-weight:600; font-size:12px; }
+  td { color:#cbd5e1; }
+  tr:nth-child(even) td { background:#1e293b40; }
+
+  .fix { color:#4ade80; font-weight:600; }
+  .pain { color:#f87171; font-weight:600; }
+  .neutral { color:#fbbf24; font-weight:600; }
+
+  ::-webkit-scrollbar { width:8px; }
+  ::-webkit-scrollbar-track { background:#0f172a; }
+  ::-webkit-scrollbar-thumb { background:#334155; border-radius:4px; }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<aside>
+  <h1>Tapik Demo Guide</h1>
+  <div class="meta">Interactive Walkthrough</div>
+  <nav>
+    <div class="section-label">Setup</div>
+    <a href="#before-you-start">Before You Start</a>
+    <a href="#two-tab-setup">Two-Tab Setup</a>
+
+    <div class="section-label">Consumer App</div>
+    <a href="#c-login">1. Login</a>
+    <a href="#c-home">2. Home Screen</a>
+    <a href="#c-store">3. Store & Menu</a>
+    <a href="#c-cart">4. Cart & Checkout</a>
+    <a href="#c-order">5. Order Tracking</a>
+    <a href="#c-merchant-flow">6. Merchant Side</a>
+    <a href="#c-pickup">7. Pickup & Points</a>
+    <a href="#c-room">8. Room</a>
+    <a href="#c-rewards">9. Rewards</a>
+    <a href="#c-settings">10. Language & Settings</a>
+
+    <div class="section-label">Merchant App</div>
+    <a href="#m-overview">Overview</a>
+    <a href="#m-features">Feature Guide</a>
+
+    <div class="section-label">Admin App</div>
+    <a href="#a-overview">Overview</a>
+    <a href="#a-features">Feature Guide</a>
+  </nav>
+  <a href="index.html" class="back-link">← Back to Home</a>
+</aside>
+
+<main>
+
+<h1 class="page-title">Tapik Interactive Demo Guide</h1>
+<p class="page-sub">Follow this guide step-by-step to experience the full order flow across Consumer and Merchant apps in real time.</p>
+
+<!-- ===== BEFORE YOU START ===== -->
+<section id="before-you-start">
+  <h2>Before You Start</h2>
+
+  <div class="alert">
+    <div class="alert-title">⚠ IMPORTANT: Two-Tab Setup Required</div>
+    <p>Tapik's Consumer and Merchant apps communicate in real time via <strong>BroadcastChannel API</strong>. To see the full experience — orders appearing on the merchant side, status changes reflecting back on the consumer side — you must <strong>open both apps in the same browser</strong>.</p>
+  </div>
+
+  <div class="step" id="two-tab-setup">
+    <span class="step-num">1</span>
+    <div class="step-title">Open Consumer App</div>
+    <p>Open <a href="consumer.html" target="_blank">Consumer App</a> in a new tab. This is your primary view — the customer's mobile experience.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-num">2</span>
+    <div class="step-title">Open Merchant App (side by side)</div>
+    <p>Open <a href="merchant.html" target="_blank">Merchant App</a> in another tab. Then arrange both tabs side by side (Windows: <code>Win+←</code> / <code>Win+→</code>, Mac: drag to screen edge). The Merchant app simulates a Lenovo Tab M7 tablet in landscape mode — the device merchants would actually use.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-num">3</span>
+    <div class="step-title">Verify Connection</div>
+    <p>In the Merchant app, check the header area — you should see a <span class="fix">green indicator</span> showing "Consumer Online." This confirms BroadcastChannel is working and both apps can communicate.</p>
+  </div>
+
+  <div class="alert alert-blue">
+    <div class="alert-title">💡 What You'll Experience</div>
+    <p>When you place an order in the Consumer app, it appears instantly in the Merchant app's order queue. When the merchant accepts, prepares, and marks ready — the Consumer app updates in real time. No page refresh needed. This is the core of Tapik: a direct line between customer and kitchen, no middleman.</p>
+  </div>
+</section>
+
+<!-- ===== CONSUMER APP WALKTHROUGH ===== -->
+<section>
+  <h2>Consumer App — Step-by-Step Walkthrough</h2>
+
+  <p>The Consumer app is built as a mobile-first progressive web app inside a phone-frame simulation. All core flows — from login to order pickup — are fully functional with Firebase backend.</p>
+
+  <!-- LOGIN -->
+  <h3 id="c-login">Step 1: Login with Google</h3>
+  <div class="step">
+    <span class="step-num">1</span>
+    <div class="step-title">Tap "Start with Google"</div>
+    <p>The app uses Firebase Authentication with Google Sign-In. Tap the button, select your Google account, and you're in. Your profile (name, photo) is pulled from your Google account automatically.</p>
+    <p><span class="tag tag-live">LIVE</span> Firebase Auth — real authentication, your account is created in Firestore.</p>
+  </div>
+
+  <!-- HOME -->
+  <h3 id="c-home">Step 2: Explore the Home Screen</h3>
+  <div class="step">
+    <span class="step-num">2</span>
+    <div class="step-title">Browse the Home Tab</div>
+    <p>After login, you land on the <strong>Home</strong> tab. Here you'll see:</p>
+    <p><strong>Nearby Stores</strong> — A list of F&B merchants. Each card shows the store name, cuisine type, distance, rating, and <strong>live queue status</strong> (e.g., "3 ahead · ~9 min"). Queue numbers are calculated in real time from actual orders in Firestore.</p>
+    <p><strong>"Right Now" Cards</strong> — A horizontal carousel showing live deals: queue alerts, spot discounts (2× points during off-peak), and hot deals (clearance items with 3× points).</p>
+    <p><strong>Friend Feed</strong> — Shows where friends are eating. <span class="tag tag-mock">MOCK DATA</span></p>
+  </div>
+
+  <!-- STORE & MENU -->
+  <h3 id="c-store">Step 3: Enter a Store & Browse Menu</h3>
+  <div class="step">
+    <span class="step-num">3</span>
+    <div class="step-title">Tap any store card (e.g., "Feeka Coffee Roasters")</div>
+    <p>The store detail view opens, showing:</p>
+    <p><strong>Store Info</strong> — Operating status (Open/Closed), rating, distance, current queue. A cover photo area with Favorite and Share buttons.</p>
+    <p><strong>Menu Items</strong> — Each item shows name, description, price (RM), and an Add (+) button. Items are categorized but displayed in a single scrollable list.</p>
+    <p><strong>"Room" Button</strong> — Opens the Room creation flow (covered in Step 8).</p>
+    <p>👉 <strong>Try it:</strong> Add 2–3 items to your cart. You'll see a floating cart bar appear at the bottom showing item count and total.</p>
+  </div>
+
+  <!-- CART & CHECKOUT -->
+  <h3 id="c-cart">Step 4: Cart & Checkout</h3>
+  <div class="step">
+    <span class="step-num">4</span>
+    <div class="step-title">Tap the cart bar at the bottom</div>
+    <p>The checkout screen shows your order summary:</p>
+    <p><strong>Item List</strong> — Each item with quantity controls (−/+) and line total.</p>
+    <p><strong>Subtotal</strong> — Sum of all items at menu price.</p>
+    <p><strong>Service Fee (5%)</strong> — This is the core of Tapik's model. The 5% fee is charged to the consumer, and 100% of it is returned as loyalty points (TP).</p>
+    <p><strong>Points to Earn</strong> — Dynamically calculated based on your role:
+      Solo order = 5% back, Room Joiner = 6%, Room Creator = 8% (up to 10% in Hotspot mode).</p>
+    <p><strong>Payment Method</strong> — Displays Touch 'n Go eWallet. <span class="tag tag-mock">UI ONLY</span> No actual payment processing.</p>
+    <p>👉 <strong>Try it:</strong> Tap <strong>"Pay & Pre-order"</strong> to place your order.</p>
+  </div>
+
+  <!-- ORDER TRACKING -->
+  <h3 id="c-order">Step 5: Order Tracking (Pre-paid State)</h3>
+  <div class="step">
+    <span class="step-num">5</span>
+    <div class="step-title">Your order is now placed</div>
+    <p>After payment, you enter the <strong>Order</strong> tab automatically. Your order appears as a "Pre-paid" card with two options:</p>
+    <p><strong>"Order Now"</strong> — Sends the order to the merchant immediately. The order status changes to ORDERED and appears in the Merchant app's queue.</p>
+    <p><strong>"Save for Later"</strong> — Keeps the prepaid order for up to 24 hours. You can submit it when you're ready (e.g., pre-pay at 11 AM, send to kitchen at 12 PM).</p>
+    <p>👉 <strong>Try it:</strong> Tap <strong>"Order Now"</strong> and immediately look at the Merchant app tab.</p>
+    <p><span class="tag tag-sync">REAL-TIME SYNC</span> The order should appear in the Merchant app's "New" column within 1–2 seconds.</p>
+  </div>
+
+  <!-- MERCHANT SIDE -->
+  <h3 id="c-merchant-flow">Step 6: Switch to Merchant App (Process the Order)</h3>
+  <div class="alert alert-green">
+    <div class="alert-title">🔄 Now switch to the Merchant App tab</div>
+    <p>This is where the magic happens. You'll process the order from the merchant's perspective, and watch the Consumer app update in real time.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-num">6a</span>
+    <div class="step-title">Accept the Order (Merchant App)</div>
+    <p>In the Merchant app's <strong>Orders</strong> tab, you'll see the new order in the <strong>"New"</strong> column. Tap <strong>"Accept"</strong>. The order moves to the <strong>"Preparing"</strong> column with a preparation checklist.</p>
+    <p>👉 <strong>Look at the Consumer app:</strong> The order status changes from "ORDERED" to "PREPARING" with an animated transition.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-num">6b</span>
+    <div class="step-title">Mark Ready (Merchant App)</div>
+    <p>When "preparation is complete," tap <strong>"Ready"</strong> in the Merchant app. The order moves to the <strong>"Awaiting Pickup"</strong> column.</p>
+    <p>👉 <strong>Look at the Consumer app:</strong> Status changes to "READY" — a QR code grid appears for pickup verification.</p>
+  </div>
+
+  <!-- PICKUP -->
+  <h3 id="c-pickup">Step 7: Pickup & Points Earned</h3>
+  <div class="step">
+    <span class="step-num">7</span>
+    <div class="step-title">Complete Pickup (Merchant App)</div>
+    <p>In the Merchant app, tap <strong>"QR Pickup"</strong> (simulates scanning the customer's QR code). The order status changes to <strong>PICKED_UP</strong>.</p>
+    <p>👉 <strong>Look at the Consumer app:</strong></p>
+    <p>• The order shows <strong>"PICKED UP ✓"</strong> with a celebration animation.</p>
+    <p>• <strong>Points (TP) are automatically credited</strong> to your account — check the Rewards tab to see your updated balance.</p>
+    <p>• A review prompt appears — you can leave a star rating and optional comment.</p>
+    <p><span class="tag tag-live">LIVE</span> Points are written to Firestore in real time. The entire flow — order to pickup to points — is fully functional.</p>
+  </div>
+
+  <div class="alert alert-blue">
+    <div class="alert-title">✅ You just completed the full Tapik order cycle</div>
+    <p><strong>Consumer pre-pays → Merchant receives → Prepares → Ready → Pickup → Points earned.</strong> All synced in real time across two browser tabs, backed by Firebase Firestore. No page refreshes, no polling — pure real-time architecture.</p>
+  </div>
+
+  <!-- ROOM -->
+  <h3 id="c-room">Step 8: Room — Group Ordering</h3>
+  <div class="step">
+    <span class="step-num">8</span>
+    <div class="step-title">Create or Join a Room</div>
+    <p>Go to the <strong>Room</strong> tab in the Consumer app. Rooms are Tapik's social ordering feature — multiple people order together from the same store and everyone earns boosted points.</p>
+    <p><strong>Create Room:</strong></p>
+    <p>• Choose a store, set room type (Public or Private with password), set member limit (2–8).</p>
+    <p>• Your room appears in the live room list. Other users can see and join Public rooms.</p>
+    <p>• As Creator, you control when ordering begins ("Activate Ordering") and can destroy the room.</p>
+    <p><strong>Room State Machine:</strong></p>
+    <p>Waiting → Ready (min members met) → Ordering → All Paid → Closing → Deleted</p>
+    <p><strong>Points Boost:</strong> Creator earns 8% (vs. solo 5%), Joiners earn 6%. In Hotspot mode, Creator can earn up to 10%.</p>
+    <p><span class="tag tag-live">LIVE</span> Full Firestore CRUD — rooms are created, joined, and destroyed in real time. Auto-expires after 30 min if minimum members aren't met.</p>
+  </div>
+
+  <!-- REWARDS -->
+  <h3 id="c-rewards">Step 9: Rewards & Points</h3>
+  <div class="step">
+    <span class="step-num">9</span>
+    <div class="step-title">Check Your Points</div>
+    <p>Go to the <strong>Rewards</strong> tab to see:</p>
+    <p><strong>Total TP Balance</strong> — Your accumulated loyalty points. Shows a progress bar toward the TP Cap (100,000 TP = RM 1,000 maximum).</p>
+    <p><strong>Level System</strong> — L1 Newbie → L2 Regular (500+ TP) → L3 Local (5,000+ TP). Level determines access to future features.</p>
+    <p><strong>By-Store Breakdown</strong> — Shows how many points you've earned at each store. <span class="tag tag-live">LIVE</span></p>
+    <p><strong>Quests</strong> — Achievement-style missions (visit 3 stores, try a new cafe, join a room). <span class="tag tag-mock">MOCK DATA</span></p>
+    <p><strong>Rewards Shop</strong> — Catalog of redeemable rewards (free coffee, coupons, kaya toast). <span class="tag tag-mock">MOCK DATA</span></p>
+  </div>
+
+  <!-- SETTINGS -->
+  <h3 id="c-settings">Step 10: Language Toggle & Settings</h3>
+  <div class="step">
+    <span class="step-num">10</span>
+    <div class="step-title">Switch Language</div>
+    <p>Go to the <strong>Me</strong> tab and tap the language toggle (EN/KO). The entire app switches between English and Korean instantly — 500+ translation keys covering all UI text.</p>
+    <p><span class="tag tag-sync">REAL-TIME SYNC</span> Language change propagates to the Merchant and Admin apps via BroadcastChannel — all three apps switch language simultaneously.</p>
+  </div>
+</section>
+
+<!-- ===== MERCHANT APP ===== -->
+<section>
+  <h2 id="m-overview">Merchant App — Overview</h2>
+
+  <div class="alert alert-purple">
+    <div class="alert-title">📋 A Note on Merchant App</div>
+    <p>The Merchant app's <strong>core order management flow is fully functional</strong> — receiving, accepting, preparing, and completing orders all work with Firebase and BroadcastChannel. However, analytics dashboards, customer data, and business settings currently display <strong>mock/placeholder data</strong> as these features are planned for future development phases. The descriptions below indicate which features are live vs. mock.</p>
+  </div>
+
+  <p>The Merchant app is rendered inside a <strong>Lenovo Tab M7 tablet frame</strong> (landscape, 1024×600px) — simulating the actual device that merchants would use in-store.</p>
+
+  <h3 id="m-features">Feature Guide by Tab</h3>
+
+  <table>
+    <tr>
+      <th>Tab</th>
+      <th>Purpose</th>
+      <th>What to Try</th>
+      <th>Status</th>
+    </tr>
+    <tr>
+      <td><strong>Orders</strong></td>
+      <td>Kanban-style order queue — New / Preparing / Awaiting Pickup columns</td>
+      <td>Place an order from the Consumer app and watch it appear here. Accept → Prepare → Ready → QR Pickup. Each action updates the Consumer app in real time.</td>
+      <td><span class="tag tag-live">LIVE</span></td>
+    </tr>
+    <tr>
+      <td><strong>Sales</strong></td>
+      <td>Daily KPIs — GMV, Tapik commission (10%), net payout, average order value. Menu item ranking by sales count. Weekly settlement history.</td>
+      <td>View the dashboard to understand the merchant's revenue perspective. Note: Tapik takes 10% commission, pays out 90% to the merchant.</td>
+      <td><span class="tag tag-mock">MOCK</span></td>
+    </tr>
+    <tr>
+      <td><strong>Menu</strong></td>
+      <td>Menu item list with active/inactive toggle and "sold today" counters.</td>
+      <td>Toggle items on/off to see how merchants would manage daily menu availability.</td>
+      <td><span class="tag tag-mock">MOCK</span></td>
+    </tr>
+    <tr>
+      <td><strong>Customers</strong></td>
+      <td>Customer segmentation — VIP, Growth, New, At Risk, Inactive. Shows visit frequency, favorites, last visit date.</td>
+      <td>Browse segments to understand the CRM vision: merchants can see who their regulars are, what they order, and who's at risk of churning.</td>
+      <td><span class="tag tag-mock">MOCK</span></td>
+    </tr>
+    <tr>
+      <td><strong>Ad Board</strong></td>
+      <td>"Right Now" card manager — create/view ad cards that appear on the Consumer app's home screen. Shows impressions, taps, CTR, conversions.</td>
+      <td>See how merchants would create promotional cards (spot deals, hot deals) to drive traffic during off-peak hours.</td>
+      <td><span class="tag tag-mock">MOCK</span></td>
+    </tr>
+    <tr>
+      <td><strong>Settings</strong></td>
+      <td>Business hours, staff management, account/payment info, promos, notifications, tablet info, offline queue status.</td>
+      <td>Browse settings categories — each shows the intended configuration options for merchants.</td>
+      <td><span class="tag tag-mock">MOCK</span></td>
+    </tr>
+  </table>
+</section>
+
+<!-- ===== ADMIN APP ===== -->
+<section>
+  <h2 id="a-overview">Admin App — Overview</h2>
+
+  <div class="alert alert-purple">
+    <div class="alert-title">📋 A Note on Admin App</div>
+    <p>The Admin app serves as Tapik's internal operations dashboard. It is primarily built with <strong>mock/placeholder data</strong> to demonstrate the intended analytics and management capabilities. The <strong>live order feed</strong> and <strong>reward mode settings</strong> are the only fully functional features connected to Firebase. All other metrics, charts, and tables show representative sample data.</p>
+  </div>
+
+  <p>The Admin app uses a <strong>dark theme</strong> dashboard layout designed for the Tapik operations team.</p>
+
+  <h3 id="a-features">Feature Guide by Tab</h3>
+
+  <table>
+    <tr>
+      <th>Tab</th>
+      <th>Purpose</th>
+      <th>What to See</th>
+      <th>Status</th>
+    </tr>
+    <tr>
+      <td><strong>Overview</strong></td>
+      <td>Platform-wide KPIs (GMV, MRR, WAU, room conversion), cohort retention heatmap, AI-generated insights, and a live order feed.</td>
+      <td>The <strong>Live Feed</strong> section shows real orders flowing through the system — place an order from Consumer and watch it appear here.</td>
+      <td><span class="tag tag-live">LIVE FEED</span> <span class="tag tag-mock">KPIs MOCK</span></td>
+    </tr>
+    <tr>
+      <td><strong>Merchants</strong></td>
+      <td>Merchant table — 7 sample stores with health scores (color-coded), commission tiers (10–12%), monthly GMV, accept rates, prep times.</td>
+      <td>Browse to understand how Tapik would monitor merchant performance and identify at-risk stores.</td>
+      <td><span class="tag tag-mock">MOCK</span></td>
+    </tr>
+    <tr>
+      <td><strong>Consumers</strong></td>
+      <td>Conversion funnel (Install → Signup → First Order → Repeat 7d) and order pattern heatmap by hour × day.</td>
+      <td>The heatmap reveals lunch (12–13h) and morning (08–09h) peaks — validates Tapik's core timing hypothesis.</td>
+      <td><span class="tag tag-mock">MOCK</span></td>
+    </tr>
+    <tr>
+      <td><strong>Transactions</strong></td>
+      <td>Order log with status filter. Shows order ID, customer, store, amount, room assignment, timestamp.</td>
+      <td>Filter by status (ORDERED / PREPARING / READY / PICKED_UP) to see how transaction monitoring would work.</td>
+      <td><span class="tag tag-mock">MOCK</span></td>
+    </tr>
+    <tr>
+      <td><strong>Room</strong></td>
+      <td>Room analytics — total rooms, success rate, average members, GMV per room. Room history table.</td>
+      <td>Review room metrics to understand the group ordering feature's business impact.</td>
+      <td><span class="tag tag-mock">MOCK</span></td>
+    </tr>
+    <tr>
+      <td><strong>Settlement</strong></td>
+      <td>Weekly settlement summary — GMV, commission, points issued, gateway fees, net revenue, and per-merchant payout breakdown.</td>
+      <td>See how Tapik's 3.5% unit economics (10% comm − 5% points − 1.5% gateway) flow through to actual settlement.</td>
+      <td><span class="tag tag-mock">MOCK</span></td>
+    </tr>
+    <tr>
+      <td><strong>Anomalies</strong></td>
+      <td>Alert system — flags for no orders, churn risk, long prep times, unusual patterns.</td>
+      <td>View alert samples to understand operational monitoring intent.</td>
+      <td><span class="tag tag-mock">MOCK</span></td>
+    </tr>
+    <tr>
+      <td><strong>Settings</strong></td>
+      <td><strong>Reward Mode Selector</strong> — Switch between Default (5%), Spot Deal (2× points, off-peak), and Hotspot (3× points, limited time).</td>
+      <td>👉 <strong>Try it:</strong> Change the reward mode here, then check the Consumer app — the points calculation on checkout will reflect the new mode in real time.</td>
+      <td><span class="tag tag-live">LIVE</span></td>
+    </tr>
+  </table>
+</section>
+
+<!-- ===== TECH SUMMARY ===== -->
+<section>
+  <h2>Technical Summary</h2>
+
+  <table>
+    <tr>
+      <th>Component</th>
+      <th>Technology</th>
+      <th>Details</th>
+    </tr>
+    <tr>
+      <td><strong>Architecture</strong></td>
+      <td>Single-file HTML + React 18 + Babel</td>
+      <td>No build step. Each app is one .html file. Open in browser = running app.</td>
+    </tr>
+    <tr>
+      <td><strong>Backend</strong></td>
+      <td>Firebase Firestore (serverless)</td>
+      <td>Real-time NoSQL database. All order data, user profiles, room states, and reward settings live here.</td>
+    </tr>
+    <tr>
+      <td><strong>Authentication</strong></td>
+      <td>Firebase Auth (Google Sign-In)</td>
+      <td>One-tap login. User profile synced to Firestore on first sign-in.</td>
+    </tr>
+    <tr>
+      <td><strong>Cross-App Sync</strong></td>
+      <td>BroadcastChannel API</td>
+      <td>Browser-native. Consumer ↔ Merchant ↔ Admin communicate order events and language changes without server round-trips.</td>
+    </tr>
+    <tr>
+      <td><strong>Localization</strong></td>
+      <td>Custom i18n (601 keys)</td>
+      <td>English + Korean. Language persists in localStorage, syncs across all apps.</td>
+    </tr>
+    <tr>
+      <td><strong>Code Volume</strong></td>
+      <td>5,168 lines total</td>
+      <td>Consumer: 2,757 / Merchant: 1,013 / Admin: 1,398</td>
+    </tr>
+  </table>
+</section>
+
+</main>
+</div>
+</body>
+</html>

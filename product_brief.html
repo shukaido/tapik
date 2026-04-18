@@ -1,0 +1,1818 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>ShardLab Senior PO Task — Product Brief</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    background: #ffffff;
+    color: #1f2937;
+    line-height: 1.7;
+    font-size: 15px;
+  }
+  .container { display: flex; min-height: 100vh; }
+
+  aside {
+    width: 260px;
+    background: #f9fafb;
+    border-right: 1px solid #e5e7eb;
+    padding: 28px 20px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    flex-shrink: 0;
+  }
+  aside h1 {
+    font-size: 15px;
+    margin: 0 0 4px 0;
+    color: #111827;
+    line-height: 1.4;
+  }
+  aside .meta {
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 22px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  aside nav a {
+    display: block;
+    padding: 8px 12px;
+    color: #374151;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 13.5px;
+    margin-bottom: 3px;
+  }
+  aside nav a:hover { background: #e5e7eb; }
+  aside nav a.pending { color: #9ca3af; font-style: italic; }
+  aside nav a.done { color: #059669; font-weight: 500; }
+  aside nav .section-label {
+    font-size: 11px;
+    color: #9ca3af;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    margin: 16px 10px 6px;
+  }
+
+  main {
+    flex: 1;
+    padding: 48px 60px;
+    max-width: 920px;
+  }
+  h1.doc-title {
+    font-size: 28px;
+    margin: 0 0 6px 0;
+    color: #111827;
+  }
+  p.doc-subtitle {
+    color: #6b7280;
+    font-size: 14px;
+    margin: 0 0 32px 0;
+  }
+  h2 {
+    font-size: 24px;
+    color: #111827;
+    margin-top: 48px;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #111827;
+  }
+  h3 {
+    font-size: 18px;
+    color: #1f2937;
+    margin-top: 32px;
+    margin-bottom: 10px;
+  }
+  h4 {
+    font-size: 15px;
+    color: #374151;
+    margin-top: 22px;
+    margin-bottom: 8px;
+  }
+  p { margin: 12px 0; }
+
+  .callout {
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin: 18px 0;
+    font-size: 14.5px;
+  }
+  .callout.tldr { background: #f0fdf4; border-left: 4px solid #10b981; }
+  .callout.key  { background: #eff6ff; border-left: 4px solid #3b82f6; }
+  .callout.warn { background: #fffbeb; border-left: 4px solid #f59e0b; }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 14px 0;
+    font-size: 13.5px;
+  }
+  th, td {
+    border: 1px solid #e5e7eb;
+    padding: 10px 14px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { background: #f3f4f6; font-weight: 600; color: #111827; }
+  tr:nth-child(even) td { background: #fafafa; }
+
+  ul, ol { padding-left: 24px; }
+  li { margin: 6px 0; }
+
+  code {
+    background: #f3f4f6;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12.5px;
+    color: #be185d;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .tag-done { background: #d1fae5; color: #065f46; }
+  .tag-wip  { background: #fef3c7; color: #92400e; }
+  .tag-pend { background: #e5e7eb; color: #4b5563; }
+
+  .updated-heading {
+    background: linear-gradient(to right, #fef3c7 0%, rgba(254,243,199,0) 60%);
+    padding-left: 14px !important;
+    margin-left: -14px;
+    border-left: 4px solid #f59e0b !important;
+  }
+  .update-stamp {
+    display: inline-block;
+    background: #f59e0b;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 10px;
+    margin-left: 10px;
+    vertical-align: middle;
+  }
+  .update-stamp .ustamp-time {
+    font-weight: 400;
+    opacity: 0.85;
+    margin-left: 4px;
+    font-size: 10px;
+  }
+  .nav-new {
+    display: inline-block;
+    background: #ef4444;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 3px;
+    margin-left: 6px;
+    vertical-align: middle;
+    letter-spacing: 0.04em;
+    animation: pulse-new 2s ease-in-out infinite;
+  }
+  .nav-new.seen { display: none !important; }
+  @keyframes pulse-new {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
+  }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .stat-card {
+    background: #f9fafb;
+    padding: 14px 16px;
+    border-radius: 8px;
+    border-left: 3px solid #3b82f6;
+  }
+  .stat-card .stat-num {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111827;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .stat-card .stat-label {
+    font-size: 12px;
+    color: #6b7280;
+    line-height: 1.4;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<aside>
+  <h1>ShardLab Senior PO Task<br>Product Brief</h1>
+  <div class="meta">
+    작성 시작: 2026-04-15 01:30 KST<br>
+    최종 업데이트: 2026-04-17 KST<br>
+    v4 방향: <strong>전용 태블릿 독립 운영 + 10% 코어 수수료 + 포인트 환원</strong><br>
+    제품명: <strong>Tapik</strong>
+  </div>
+  <nav>
+    <div class="section-label">요약</div>
+    <a href="#tldr" class="done">TL;DR<span class="nav-new" data-update-id="2026-04-15-01-pb-tldr">NEW</span></a>
+
+    <div class="section-label">과제 제출물</div>
+    <a href="#part-1" class="done">Part 1 · 기회 발굴<span class="nav-new" data-update-id="2026-04-15-01-pb-part1">NEW</span></a>
+    <a href="#part-2" class="done">Part 2 · 타겟 유저·문제 정의<span class="nav-new" data-update-id="2026-04-15-02-pb-part2">NEW</span></a>
+    <a href="#part-3" class="done">Part 3 · 프로덕트 전략·우선순위<span class="nav-new" data-update-id="2026-04-15-03-pb-part3">NEW</span></a>
+    <a href="#part-4" class="done">Part 4 · 프로토타입 · AI 활용<span class="nav-new" data-update-id="2026-04-15-03-pb-part4">NEW</span></a>
+    <a href="#part-5" class="done">Part 5 · 프로덕트 스펙<span class="nav-new" data-update-id="2026-04-15-05-pb-part5">NEW</span></a>
+    <a href="#part-6" class="done">Part 6 · 검증·실행 계획<span class="nav-new" data-update-id="2026-04-15-05-pb-part6">NEW</span></a>
+    <a href="#part-7" class="done">Part 7 · 요약·차별화·다음 단계<span class="nav-new" data-update-id="2026-04-15-07-pb-part7">NEW</span></a>
+
+    <div class="section-label">참조</div>
+    <a href="market_research.html">market_research.html</a>
+    <a href="shardlab_research.html">shardlab_research.html</a>
+    <a href="ai-log.md">ai-log.md</a>
+    <a href="tapik_prototype.html" class="done"><strong>▶ tapik_prototype.html</strong><span class="nav-new" data-update-id="2026-04-15-04-proto">NEW</span></a>
+  </nav>
+</aside>
+
+<main>
+
+<h1 class="doc-title">ShardLab — Product Brief</h1>
+<p class="doc-subtitle">Senior Product Owner Interview Task · 2026-04 · Submitted by Gabriel</p>
+
+<!-- ===================== TL;DR ===================== -->
+<h2 id="tldr" class="updated-heading">TL;DR <span class="update-stamp">2026-04-15 작성<span class="ustamp-time">01:30 KST</span></span></h2>
+
+<div class="callout tldr">
+<p style="margin-top:0"><strong>제품 한 줄</strong>: 말레이시아 2만+ POS 네트워크를 활용해 <strong>선주문·즉시 픽업의 시간 절약 경험을 독립 F&B에 이식</strong>하는 소비자 리워드·픽업 레이어.</p>
+
+<p><strong>타겟</strong>: Klang Valley M40 도시 직장인 25~35세 · 독립 카페·Kopitiam·소형 식당 가맹점.</p>
+
+<p><strong>v1 핵심 3개 축 (v4 모델 반영)</strong> <span style="font-size:12px;color:#6b7280">(2026-04-17 v4 모델 확정 반영 · POS 완전 분리, 전용 태블릿 독립 운영)</span>:</p>
+<ol style="margin:8px 0 12px 20px">
+<li><strong>선주문·즉시 픽업</strong> — 앱 선주문 + 선결제(Payment Gateway) → Tapik 가맹점 전용 태블릿에 자동 수신 → QR 픽업 · <strong>독립 F&amp;B 2만+ 매장 최초 Mobile Order 인프라</strong> (POS와 완전 분리)</li>
+<li><strong>시간 절약 리워드</strong> — 5% 즉시 준비 서비스료 → 포인트 100% 환원 · Tapik 네트워크 closed-loop 통합 포인트 (BNM P.U.A 463/2024 면제)</li>
+<li><strong>Right Now 발견 레이어</strong> — 홈 상단 Hero 캐러셀 · 웨이팅+저피크 정보 · 근처 가맹점 탐색</li>
+</ol>
+<p style="font-size:13px;color:#6b7280;margin-top:4px"><strong>v1.5</strong>: 그룹 룸 (포인트 몰아주기, 미니게임, 룸마스터 보너스) · <strong>v2</strong>: 크로스 가맹점 포인트 사용, 소셜 랭킹, 가맹점 대시보드 AI 인사이트</p>
+
+<p><strong>수익 모델 (v4 확정)</strong>:</p>
+<ul style="margin:4px 0 12px 20px">
+<li><strong>가맹점 거래 수수료 — 10% 가맹점 수수료 (코어)</strong> · 온보딩 3개월 10% (온보딩) → 코어 10% → 프리미엄 12%. 거래 발생 시에만. 월정액 없음. GrabFood 20% 픽업 대비 절반. 거래 없으면 비용 0</li>
+<li><strong>소비자 5% 서비스료 → 포인트 전액 환원</strong> — 소비자 체감 "같은 가격 + 포인트 보너스". 배달앱 프리미엄(15~20%)의 1/3 수준</li>
+<li>결제: Payment Gateway(iPay88/Billplz/Revenue Monster) 경유. Tapik 자금 비경유. BNM 금융 라이선스 불필요</li>
+</ul>
+
+<p><strong>Tapik 전용 태블릿 독립 운영</strong>: Lenovo Tab M7 (RM 398) 가맹점 전용 태블릿을 Tapik 서버에 직접 연결 (POS 완전 분리). 소비자 앱 ↔ Tapik 서버 ↔ 가맹점 전용 태블릿 폐쇄 루프. GrabFood가 Sunmi V2s로 검증한 모델. 선결제 Pickup은 현재 말레이시아 독립 F&amp;B 영역에 <strong>경쟁자 부재</strong> (테마파크·공항·항공에만 queue-skip 서비스 존재).</p>
+
+<p style="margin-bottom:0"><strong>12주 목표</strong>: TTDI + PJ SS2 + Bangsar 50 가맹점 · 소비자 500명 · 일 평균 10건+/가맹점 선주문 · 포인트 사용 전환율 30%+ · 재방문 리프트 15%.</p>
+</div>
+
+<!-- ===================== Part 1 ===================== -->
+<h2 id="part-1" class="updated-heading">Part 1 — 기회 발굴 <span class="update-stamp">2026-04-15 작성<span class="ustamp-time">01:30 KST</span></span></h2>
+
+<h3>1.1 시장 맥락 — 한눈 통계</h3>
+
+<div class="stat-grid">
+  <div class="stat-card"><span class="stat-num">USD 14.75B</span><span class="stat-label">말레이 F&amp;B 시장 (2025)<br>→ USD 27.5B 2030 · CAGR 13.26%</span></div>
+  <div class="stat-card"><span class="stat-num">136,453</span><span class="stat-label">전국 F&amp;B outlet<br>DOSM Economic Census 2023</span></div>
+  <div class="stat-card"><span class="stat-num">73.52%</span><span class="stat-label">독립 가맹점 (by value)<br>Mordor Intelligence 2025</span></div>
+  <div class="stat-card"><span class="stat-num">28.2%</span><span class="stat-label">Klang Valley outlet 비중<br>38,474 outlets</span></div>
+  <div class="stat-card"><span class="stat-num">30억 건</span><span class="stat-label">DuitNow QR 거래 (2025)<br>+244% YoY · PayNet</span></div>
+  <div class="stat-card"><span class="stat-num">64%</span><span class="stat-label">e-wallet 사용률<br>Adyen Index 2024</span></div>
+</div>
+
+<p>말레이시아 F&amp;B 시장은 <strong>구조적으로 독립 가맹점(73.5%)이 지배</strong>하고 있고, 결제는 <strong>QR·e-wallet으로 빠르게 디지털화(64% e-wallet, DuitNow +244% YoY)</strong>되고 있다. 그런데 이 두 축이 교차하는 지점에 <strong>거대한 공백</strong>이 있다 — 결제가 디지털로 일어나는 순간에도 독립 가맹점 소비자는 어떤 리워드·혜택·발견 체험도 받지 못한다.</p>
+
+<h4 style="margin-top:18px">파일럿 지역 인구 (보수 추정 · 2026-04-15 06:30 갱신)</h4>
+<table>
+<tr><th>지역</th><th>거주 인구</th><th>출처/근거</th><th>신뢰도</th></tr>
+<tr><td>TTDI</td><td>약 30,000</td><td><a href="https://en.wikipedia.org/wiki/Taman_Tun_Dr._Ismail">Wikipedia TTDI</a> · 공식 확정</td><td>★★★ 높음</td></tr>
+<tr><td>PJ SS2 · Damansara Utama</td><td>약 15,000</td><td>Petaling Jaya 전체 807,879(MBPJ 2024) · 51개 section 평균값 추정</td><td>★ 추정 · OpenDOSM 재확인 필요</td></tr>
+<tr><td>Bangsar (KL)</td><td>약 30,000-40,000</td><td><a href="https://en.wikipedia.org/wiki/Bangsar">Wikipedia Bangsar</a> · 민족 비율만 공식 (Malays 61%·Chinese 24%·Indians 15%) · 인구 일반 인용 범위</td><td>★ 추정</td></tr>
+<tr><td><strong>합계</strong></td><td><strong>약 75,000-85,000</strong></td><td>이전 추정 150,000에서 50% 하향 보정</td><td>—</td></tr>
+</table>
+<p class="note"><strong>한계 명시</strong>: SS2·Bangsar 단독 공식 인구 데이터 부재. OpenDOSM API 레벨 파고들어 재확인이 Phase 2 과제. 보수 75,000으로 유닛 이코노믹스 계산 시 Pass v4 파일럿 MRR RM 2,250 (10% 커미션 · 이전 RM 1,940의 1.16배 증가) — 개선된 수치로 재산정.</p>
+
+<h3>1.2 발견한 소비자 문제 — 4개 신호</h3>
+
+<p>노이즈에서 걸러낸 4개만:</p>
+
+<h4>① 로열티 파편화 피로 <span class="tag tag-wip">Category B 미인지 페인</span></h4>
+<p>소비자는 10+개 로열티 앱을 관리하며 각 앱에 소액 포인트가 분산된다. 환원 조건·만료·교환 규칙이 앱마다 달라 <strong>실제 환원율이 매우 낮다</strong>. 연구(Agent D/F 종합)에 따르면 이 마찰은 "정상화된 불편(Category B)"으로 고착되어 소비자가 공개적으로 불만을 표하지 않지만, 실질 가치 손실이 크다.</p>
+
+<h4>② 오프라인 적립 마찰 — 독립 가게는 원천 배제</h4>
+<p>기존 로열티 프로그램(BonusLink·GrabRewards·은행 카드 리워드)은 소비자가 <strong>결제 후 별도 QR 스캔·앱 열기</strong>를 요구한다. 대다수가 귀찮아 적립을 포기한다. 더 큰 문제는 이 프로그램들 자체가 <strong>체인·프랜차이즈 중심</strong>이라 독립 73.5%는 구조적 배제 — 동네 Kopitiam·카페에서는 리워드 자체가 존재하지 않는다.</p>
+
+<h4>③ 동네 매장 투명성 부재</h4>
+<p>"지금 이 가게 빈자리 있나?" "오늘 할인 있나?" "단골 혜택이 있나?" — 소비자는 현장 도착 후 확인해야 알 수 있다. Hai Di Lao 한 달 전 예약 마감처럼 인기 매장은 <strong>사전 정보 부재로 헛걸음·긴 대기</strong> 반복. Eatigo·Chope은 프리미엄 레스토랑만 커버한다.</p>
+
+<h4>④ 배달 수수료의 양면 손실</h4>
+<p>GrabFood·Foodpanda 수수료 25~35%가 소비자 가격에 전가된다(매장 RM 12 → 배달 RM 15). 가맹점은 마진 반토막, 소비자는 비싼 가격. <strong>양측 모두 손해</strong>이지만 대안이 없어 관성으로 유지된다. "배달 말고 직접 방문하면 더 싸다"는 정보가 소비자에게 닿지 않는다.</p>
+
+<h3>1.3 왜 지금 · 왜 말레이시아 · 왜 Klang Valley</h3>
+
+<table>
+  <tr><th>타이밍 요인</th><th>내용</th><th>기회 함의</th></tr>
+  <tr><td><strong>결제 인프라 성숙</strong></td><td>DuitNow QR 거래 8.7억(2024) → 30억(2025) +244% · e-wallet 64% 사용 · TnG 94% 점유</td><td>결제 트리거가 임계점 돌파 — POS·e-wallet 연동 리워드 가능 환경</td></tr>
+  <tr><td><strong>e-Invoicing 규제 테일윈드</strong></td><td>LHDN Phase 4A (2026.01) 시행 — RM 1M~5M 매출 F&amp;B 가맹점 전자세금계산서 의무화</td><td>가맹점이 POS 통합을 <strong>강제로 고려</strong>하는 시점. 번들 영업 최적기</td></tr>
+  <tr><td><strong>체인 vs 독립 양극화</strong></td><td>ZUS Coffee 743점포(Q4 2025), 체인 CAGR 12.98%. 독립 가맹점 단골 경제 차단</td><td>독립 가맹점이 <strong>리워드 인프라 없이는 체인에 밀린다</strong> — 지금 안 돌아오면 5년 내 공백 메워질 것</td></tr>
+  <tr><td><strong>Klang Valley 집중</strong></td><td>F&amp;B outlet 28.2% (38,474) · 시장 가치 38% · 3,160만 명 가구 M40 3.16M 중 1/4 추정</td><td>지리·소득·디지털 리터러시 모두 최적. 단일 집중 가능</td></tr>
+</table>
+
+<h3>1.4 Tapik 전용 태블릿 · 폐쇄 루프 독립 운영</h3>
+
+<p>v4 업데이트: POS 통합 대신 Tapik 전용 태블릿(Lenovo Tab M7, RM 398) 독립 운영으로 전환. 핵심 기능별 구현 방식:</p>
+
+<table>
+  <tr><th>핵심 기능</th><th>구현 방식 (v4)</th><th>장점</th></tr>
+  <tr><td><strong>결제 완료 → 자동 리워드 적립</strong></td><td>Tapik 서버 결제 신호 → 전용 태블릿 수신 · 정산</td><td>POS 의존 제거 · 모든 데이터 Tapik이 직접 관리</td></tr>
+  <tr><td><strong>실시간 매장 빈자리·대기 시간</strong></td><td>Tapik 주문 흐름 데이터 → 태블릿이 수집 · 클라우드 동기화</td><td>정확한 실시간 정보 · POS 구형 기기 호환 필요 없음</td></tr>
+  <tr><td><strong>가맹점 마진 투명성 → 직접 주문 정산</strong></td><td>Tapik이 모든 거래 수집·정산 · 선결제 기반</td><td>간결한 정산 구조 · 분쟁 최소화</td></tr>
+  <tr><td>예약·할인 쿠폰</td><td>Tapik 앱 + 태블릿 동기화</td><td>POS 호환성 불필요</td></tr>
+</table>
+
+<div class="callout key">
+<strong>v4 독보성</strong>: 기존 로열티·예약 앱들은 "<strong>가맹점이 자발적으로 POS 통합</strong>"을 전제로 실패했다. Tapik v4는 가맹점이 이미 보유한 POS와 완전히 분리된 전용 태블릿 운영으로, 모든 핵심 기능을 독립 실행 가능하게 한다. GrabFood Sunmi V2s 검증 사례 기반. 가맹점은 RM 398 태블릿만 배치 — 기술 학습곡선 최소화, 기존 POS 유지.
+</div>
+
+<h3>1.5 경쟁 분석 — 왜 기존 플레이어가 실패하는가</h3>
+
+<table>
+  <tr><th>플레이어</th><th>규모·강점</th><th>구조적 실패 지점</th></tr>
+  <tr>
+    <td><strong>BonusLink</strong></td>
+    <td>14.9M 회원 · Shell·AmBank·Parkson 연합</td>
+    <td>Coalition 모델은 파트너 가맹점 엄격 요구(복수 매장·연간 거래량·IT 통합). 포인트 발행 비용 매출의 0.5~1% 부담. <strong>독립 1개 가게는 구조적으로 수용 불가</strong>. KL F&amp;B 파트너 200곳 모두 체인</td>
+  </tr>
+  <tr>
+    <td><strong>GrabRewards</strong></td>
+    <td>GrabPay 17M+ 사용자 · Grab 생태계</td>
+    <td>Grab 플랫폼 수수료 25~35% 감수해야 접근. 가맹점 마진 압박 → 가격 전가 → 소비자 가격 상승 악순환. <strong>생태계 밖 독립 가게는 아예 리워드 대상 아님</strong></td>
+  </tr>
+  <tr>
+    <td><strong>Eatigo · Chope · TableApp</strong></td>
+    <td>아시아 4,500~13,000 레스토랑 예약</td>
+    <td>프리미엄 레스토랑 중심. 가맹점이 자발적으로 앱 등록·디지털 리터러시 요구. <strong>동네 Kopitiam·hawker는 등록 자체 불가</strong>. 리워드는 예약당 포인트로 결제 자동 적립 없음</td>
+  </tr>
+  <tr>
+    <td><strong>Maybank Treats · CIMB Deals</strong></td>
+    <td>은행 카드 리워드 프로그램</td>
+    <td>카드 발급 필수. 독립 F&amp;B는 카드 수수료 3% 부담 꺼려 POS만 받는 경우 다수 → 리워드 망 연결 안 됨</td>
+  </tr>
+  <tr>
+    <td><strong>ShopBack</strong></td>
+    <td>45M 사용자 · 2024.08 GHL 제휴로 오프라인 QR 캐시백 시도</td>
+    <td><strong>2026.03 ShopBack Pay 말레이 중단</strong>. 오프라인 확장 실질 포기 신호. 이커머스 제휴 커미션 모델이 오프라인 F&amp;B 매출 규모에 부합 안 함</td>
+  </tr>
+  <tr>
+    <td>Pixalink · Avocado Loyalty</td>
+    <td>QR 스탬프 카드 SaaS</td>
+    <td>POS 외부 시스템. 가맹점이 <strong>두 인터페이스 병행 운영</strong>(POS + 로열티 앱) 부담. 자동 적립 아닌 수동 QR 스캔. 소비자 커버리지 작음</td>
+  </tr>
+  <tr>
+    <td>Foodpanda · GrabFood</td>
+    <td>배달 시장 합산 ~90%</td>
+    <td>배달 플랫폼이지 리워드 플랫폼 아님. 수수료 25~35%로 가맹점·소비자 양측 부담</td>
+  </tr>
+</table>
+
+<h4>공통 실패 지점 — 구조적 진단</h4>
+<p>전부 <strong>"가맹점이 자발적으로 등록·통합"</strong>을 전제로 한다. 독립 73.5%는 이 단계에서 구조적으로 탈락한다:</p>
+<ul>
+  <li>체인·프랜차이즈는 자본·인력이 있어 등록 가능 — 리워드 커버됨</li>
+  <li>독립 가게는 자본·인력·디지털 리터러시 부족 — 리워드에서 배제</li>
+  <li>결과: 리워드 시장이 체인 중심으로만 성장, 73.5% 공백 지속</li>
+</ul>
+
+<p><strong>POS 내장 솔루션만이 이 구조적 장벽을 제거한다</strong> — 가맹점은 이미 POS를 매일 사용 중이고, 추가 등록·학습·인터페이스 부담 없이 리워드 층이 얹힌다. POS 파트너의 기존 BD 채널이 이 레이어를 자동 유통.</p>
+
+<h3>1.6 핵심 기회 선언</h3>
+
+<div class="callout key">
+<p style="margin-top:0"><strong>시장 구조가 만들어내는 3중 기회</strong>:</p>
+<ol>
+  <li><strong>결제 시점 자동 리워드</strong> — 독립 가맹점 73.5% 공백 정면 공략. 영수증 QR 스캔(구포스기) + 결제 웹훅 자동(신형 POS) 이원 구조</li>
+  <li><strong>가맹점 통합 대시보드</strong> — 매장·배달 3개 앱·e-wallet·현금 통합 + 현금흐름 자동 분개. 가맹점이 마진·매출·단골 구조를 처음으로 한눈에</li>
+  <li><strong>실시간 빈자리·할인 가시성</strong> — "지금 근처 여유 있는 가게" 위치 기반 소비자 유입 훅. 저매출 시간대 자동 전단지로 수요-공급 매칭 (배달앱 수수료 양면 손실은 가맹점 대시보드 · 직접 주문 할인으로 부가 연결, Part 3 참조)</li>
+</ol>
+<p style="margin-bottom:0">이 3개 기능이 통합될 때 단일 내러티브가 성립한다 — <strong>"결제 순간을 동네 단골 경제로 전환하는 레이어"</strong>. 타겟 유저·페인포인트 구체화는 Part 2, 기능 우선순위·트레이드오프는 Part 3에서 전개한다.</p>
+</div>
+
+<h3>1.7 경쟁 위협 감수 인지</h3>
+<ul>
+  <li><strong>POS 파트너 직접 개발 가능성</strong>: 중기 리스크 — 계약 조항·데이터 독점성·속도로 대응. Part 6 위험 가정 #1</li>
+  <li><strong>Grab·Touch 'n Go 진입</strong>: 수천만 기존 유저 보유. 공백 영역(독립 73.5%)은 이들 비용 구조와 불일치 → 단기 진입 가능성 낮음</li>
+  <li><strong>BonusLink 확장</strong>: Coalition 모델 자체가 독립 가맹점 수용 구조 결여. 확장 시도 시 우리 모델 카피 필요 → 시간 우위 있음</li>
+</ul>
+
+<!-- ===================== Part 2~6 자리표시자 ===================== -->
+<h2 id="part-2" class="updated-heading">Part 2 — 타겟 유저·문제 정의 <span class="update-stamp">2026-04-15 작성<span class="ustamp-time">02:30 KST</span></span></h2>
+
+<p>Part 1에서 정의한 기회를 실제 사람의 삶에서 재검증한다. 과제 평가 기준 "'젊은 직장인' 아닌 정확히 누구인가 · 공감의 깊이 · Part 1과 논리 연결". 소비자 · 가맹점 각 1명 <strong>primary persona</strong>로 깊이 집중 (넓이보다 깊이). 기능적 마찰과 함께 <strong>감정적 비용</strong>까지 명시.</p>
+
+<h3>2.1 타겟 세그먼트 정의 — 정량 경계</h3>
+
+<h4>소비자 세그먼트 · "KL M40 상위 도시 직장인 25~35세"</h4>
+<table>
+  <tr><th>축</th><th>경계</th><th>근거</th></tr>
+  <tr><td>지리</td><td>Klang Valley 중 <strong>TTDI · PJ SS2 Damansara Utama · Bangsar</strong> 생활권</td><td>Section 10.12·10.13 교차 검증</td></tr>
+  <tr><td>나이</td><td>25~35세</td><td>Section 1.6 세대별 디지털 리터러시 · e-wallet 네이티브</td></tr>
+  <tr><td>가구 소득</td><td>M40 상위 <strong>RM 5,858~10,970/월</strong></td><td>DOSM HIES 2024 업데이트 (2025-10) <span class="tag tag-h">H</span></td></tr>
+  <tr><td>직업</td><td>화이트칼라 (IT · 금융 · 컨설팅 · 서비스)</td><td>점심 의례 가장 강한 직군</td></tr>
+  <tr><td>외식 빈도</td><td>점심 주 4+회 매장 · 저녁 배달 주 2+회</td><td>Section 1.1 · M40 월 RM 1,300~1,800 F&amp;B 지출</td></tr>
+  <tr><td>디지털</td><td>e-wallet 3+개 병행 (TnG + GrabPay + 기타)</td><td>Section 2.3 점유율</td></tr>
+  <tr><td>결혼 상태</td><td>싱글 or 신혼 노키즈</td><td>외식 빈도 최대 구간</td></tr>
+  <tr><td>규모 추정</td><td>KV 약 35만 개인 (ASSUMPTION)</td><td>KV M40 가구 수 × 경계 비율 · 공식 통계 없음</td></tr>
+</table>
+
+<h4>가맹점 세그먼트 · "KV Tier 1 독립 F&amp;B · 점주 1인 의사결정형"</h4>
+<table>
+  <tr><th>축</th><th>경계</th></tr>
+  <tr><td>지리</td><td>TTDI · PJ SS2 · Bangsar 중심 (반경 30km)</td></tr>
+  <tr><td>유형</td><td>독립 Kopitiam · Mom-and-pop café · 소형 독립 식당 (Section 7.6 Tier 1)</td></tr>
+  <tr><td>업력</td><td>5년+ (안정성·신뢰)</td></tr>
+  <tr><td>의사결정</td><td>점주 1인 / 가족 경영</td></tr>
+  <tr><td>POS</td><td>보유 (IRS · StoreHub · Eats365 등 혼재)</td></tr>
+  <tr><td>연매출</td><td>RM 500k~2M</td></tr>
+  <tr><td>배달 앱</td><td>2+개 사용 중</td></tr>
+  <tr><td>자체 리워드</td><td>없음</td></tr>
+  <tr><td>규모 추정</td><td>KV Tier 1 약 11,000~14,400 · POS 파트너 접점 1,800~3,400 (Section 10.4)</td></tr>
+</table>
+
+<h3>2.2 소비자 Primary Persona — <strong>Wei Ming Tan</strong></h3>
+
+<div class="callout key">
+<strong>한 줄 요약</strong>: TTDI 거주 · Bangsar South 테크 회사 29세 소프트웨어 엔지니어. 매주 같은 동네 카페·Kopitiam 반복 방문하지만 어느 앱도 그를 단골로 기억하지 않는 "익명 M40 도시인".
+</div>
+
+<h4>프로필</h4>
+<ul>
+  <li><strong>나이·성별·민족</strong>: 29세 · 남성 · 중국계 말레이시아인</li>
+  <li><strong>거주</strong>: TTDI 임대 콘도 (RM 2,500/월) · 부모는 Petaling Jaya 근교 거주</li>
+  <li><strong>직장</strong>: Bangsar South Mercu UEM 소재 로컬 테크 회사 소프트웨어 엔지니어 (Grab Tech · AirAsia Tech 또는 유사 SaaS 기업)</li>
+  <li><strong>학력</strong>: Sunway 또는 Monash Malaysia 컴퓨터공학</li>
+  <li><strong>소득</strong>: 가구 월 RM 8,500 (M40 상위) · 개인 실수령 약 RM 7,200</li>
+  <li><strong>가족</strong>: 싱글 · 2년째 여자친구 (같은 업계) · 주말 가족 dim sum 문화 유지</li>
+  <li><strong>언어</strong>: 영어 (주) · 만다린 (가족) · 말레이 (회화)</li>
+  <li><strong>교통</strong>: Proton Saga 자가용 · Grab 보조</li>
+</ul>
+
+<h4>평일 일상 루틴</h4>
+<table>
+  <tr><th>시간</th><th>행동</th></tr>
+  <tr><td>06:30</td><td>기상 · 짧은 운동 10분</td></tr>
+  <tr><td>07:15</td><td>TTDI Plaza 인근 Kopitiam takeaway: roti canai + teh tarik (RM 6) · DuitNow QR 결제</td></tr>
+  <tr><td>08:30</td><td>Bangsar South 출근</td></tr>
+  <tr><td>09:00~12:30</td><td>업무 · Slack·Jira</td></tr>
+  <tr><td>12:30~14:00</td><td><strong>점심 피크</strong>: TTDI 또는 Bangsar 근처 카페 (평균 지출 RM 25~35)</td></tr>
+  <tr><td>14:00~19:00</td><td>업무</td></tr>
+  <tr><td>19:00~20:30</td><td>귀가 · 저녁. 주 3회 동네 식당 직접 방문 · 주 2회 GrabFood · 주 2회 자가 요리</td></tr>
+  <tr><td>20:30~23:00</td><td>넷플릭스 · 게임 · 주 2회 헬스장</td></tr>
+</table>
+
+<h4>F&amp;B 소비 패턴 (월 기준)</h4>
+<ul>
+  <li>점심 외식 주 5회 = 월 ~22회 × RM 28 평균 = <strong>RM 600</strong></li>
+  <li>저녁 외식 주 3회 = 월 ~13회 × RM 32 = <strong>RM 420</strong></li>
+  <li>저녁 배달 주 2회 = 월 ~9회 × RM 35 = <strong>RM 315</strong></li>
+  <li>주말 외식 · 카페 = <strong>RM 350</strong></li>
+  <li><strong>월 총 외식 지출: 약 RM 1,685 (월소득의 ~19.8%)</strong></li>
+</ul>
+
+<h4>현재 사용 도구</h4>
+<table>
+  <tr><th>범주</th><th>주 사용</th><th>보조</th></tr>
+  <tr><td>e-wallet</td><td>Touch 'n Go (대중교통·QR 결제)</td><td>GrabPay · Boost</td></tr>
+  <tr><td>결제</td><td>DuitNow QR · CIMB 신용카드</td><td>현금 (비상시만)</td></tr>
+  <tr><td>배달</td><td>GrabFood</td><td>Foodpanda (프로모션 시)</td></tr>
+  <tr><td>리워드</td><td>BonusLink (5년 가입, 최근 1년 환원 0회)</td><td>GrabRewards · ShopBack (철수 후 포기)</td></tr>
+</table>
+
+<h4>현재 임시방편 (Workarounds)</h4>
+<ol>
+  <li><strong>리워드 적립</strong>: 기억나면 QR 스캔 · 대부분 건너뜀 · BonusLink 앱은 2개월 한 번 확인 · "지금 몇 점인지도 모름"</li>
+  <li><strong>지출 추적</strong>: 즉시 영수증 버림 · 월말 신용카드 명세서만 확인 (세분화 불가능)</li>
+  <li><strong>단골 가게</strong>: TTDI 로컬 카페 Feeka를 주 4회 3년째. 바리스타 Alex와 인사하지만 멤버십·스탬프 없음. 스타벅스 Rewards는 가끔 체크</li>
+  <li><strong>배달 vs 매장 의사결정</strong>: 가격 차 5 RM 이상 · 피곤 정도 · 날씨로 결정</li>
+  <li><strong>동료 더치페이</strong>: DuitNow P2P 즉시 송금 · 월 8~12회 발생</li>
+</ol>
+
+<h4>핵심 페인포인트 3개 (기능 + 감정)</h4>
+
+<div class="callout warn">
+<strong>페인 1 — 리워드 파편화 피로</strong>
+<p><strong>기능적 마찰</strong>: 5~7개 리워드 앱 가입. BonusLink 2,400점 · GrabRewards 4,150점 · Maybank Treats 소액. 환원 기준·유효기간·교환 규칙이 앱마다 다름. 실질 환원 경험 거의 없음.</p>
+<p><strong>감정적 비용</strong>: <em>"분명 내가 꽤 썼다는 느낌은 있는데 실감나는 혜택이 없다. BonusLink 5년째 써도 한 번도 의미 있는 redemption 못 했다. 어딘가에 사라진 느낌. 약간 찜찜하지만 너무 잔일이라 포기."</em></p>
+</div>
+
+<div class="callout warn">
+<strong>페인 2 — 동네 단골 가게와의 무관계</strong>
+<p><strong>기능적 마찰</strong>: 3년간 Feeka 주 4회 방문 (연 약 200회 · 연 지출 RM 8,000). 바리스타 Alex는 얼굴 인식하지만 이름·선호·생일·단골 등급 없음. 이 가게만의 혜택 제로.</p>
+<p><strong>감정적 비용</strong>: <em>"여긴 내가 동네의 일부인데, 여긴 내가 단골인지도 모른다. '그냥 자주 오는 사람'으로만 남는 느낌. 체인 스타벅스는 오히려 Rewards로 나를 인정해준다. 아이러니."</em></p>
+</div>
+
+<div class="callout warn">
+<strong>페인 3 — 배달 플랫폼 수수료 불신</strong>
+<p><strong>기능적 마찰</strong>: 동일 메뉴 매장 RM 22 · GrabFood RM 27 · 배달비 별도. 3~5 링깃 차이가 수수료·프로모션·플랫폼 마진 중 어디로 가는지 불명확.</p>
+<p><strong>감정적 비용</strong>: <em>"3~5 링깃이 어디로 가는지 모른다. 내가 좋아하는 Feeka 주인 Andrew가 이걸 감당하는 건지, 플랫폼이 빨아가는 건지. 찜찜해서 매장 선호. 근데 비 오는 날·피곤한 날은 어쩔 수 없이 배달."</em></p>
+</div>
+
+<h4>시나리오 — 월요일 12:40</h4>
+<p>Wei Ming이 Slack 스탠드업 끝내고 동료 Aiden과 TTDI Plaza까지 10분 걸어간다. 익숙한 Feeka 카페. 평소처럼 Iced Flat White (RM 14) + Smoked Salmon Bagel (RM 24) = <strong>RM 38</strong> 주문. DuitNow QR로 결제. 바리스타 Alex가 "Iced Flat White 오늘도요?" 묻고 Wei Ming은 "맞아요, Salmon Bagel도" — 여기까지가 그의 "단골 인증". 영수증은 테이블 구석에 버림. 엘리베이터에서 Aiden이 "BonusLink 스캔했어?" Wei Ming: "또 까먹었네. 근데 Feeka는 BonusLink 안 받을걸." 3년째 주 4회 RM 38. 연 RM 8,000 Feeka에 썼지만 포인트 누적·단골 혜택 <strong>0</strong>.</p>
+
+<h3>2.3 가맹점 Primary Persona — <strong>Auntie Siew Lim</strong></h3>
+
+<div class="callout key">
+<strong>한 줄 요약</strong>: PJ SS2 Jalan SS2/24에서 27년째 Kopitiam 3대 운영자. 매일 230명 손님 · 배달 앱 3개 수수료 28~30% · 단골 수천 명인데 이름 아무도 모름 · 이번 주 순이익이 얼마인지 본인도 정확히 모름.
+</div>
+
+<h4>프로필</h4>
+<ul>
+  <li><strong>나이·성별·민족</strong>: 52세 · 여성 · 중국계 말레이시아인</li>
+  <li><strong>가족</strong>: 남편 Uncle Chan (주방 보조) · 아들 Jason (26세 싱가포르 테크회사 엔지니어 · 연 1~2회 방문)</li>
+  <li><strong>거주</strong>: PJ Section 14 단독주택 (20년 거주)</li>
+  <li><strong>언어</strong>: 호카이엔 · 만다린 · 영어 · 말레이</li>
+  <li><strong>운영 업체</strong>: Lim Kopitiam · PJ SS2 Jalan SS2/24 · 1998년 부친에게 물려받음 (1960년대 할아버지 창업 · 3대째)</li>
+  <li><strong>건물</strong>: 자가 소유 (부친 유산) → <strong>임대료 0 · 경쟁 가게 대비 15%p 마진 우위</strong></li>
+  <li><strong>직원 4명</strong>: 남편 · 조카 Sook Ling 28세 (매장) · 주방 Kak Ramlah 15년 · Uncle Chong 12년 근속</li>
+  <li><strong>학력</strong>: 고등학교 · 20대 부친 가게 시작</li>
+</ul>
+
+<h4>비즈니스 프로필</h4>
+<table>
+  <tr><th>항목</th><th>내용</th></tr>
+  <tr><td>영업</td><td>화~일 07:00~18:00 · 월요일 휴무</td></tr>
+  <tr><td>메뉴</td><td>조식: 카야토스트 · 반숙계란 · 코피 오 · 테타릭 · 국수 / 점심: 치킨라이스 · 볶음국수 · 완탕면</td></tr>
+  <tr><td>가격대</td><td>RM 4~12 (저렴 · 동네 단골 대상)</td></tr>
+  <tr><td>평균 객단가</td><td>조식 RM 9 · 점심 RM 14</td></tr>
+  <tr><td>일 평균 손님</td><td>조식 120 · 점심 80 · 오후 30 = 230명</td></tr>
+  <tr><td>월 매출</td><td>약 RM 75,000 → 연 RM 900,000 (USD 228,000 @ 3.95)</td></tr>
+  <tr><td>영업이익 마진</td><td>약 20% (임대료 0 덕분) → 연 순이익 약 RM 180,000</td></tr>
+  <tr><td>배달 매출</td><td>월 약 RM 18,000 (전체 24%)</td></tr>
+  <tr><td>배달 수수료 평균</td><td>28~30% (3개 플랫폼 혼재)</td></tr>
+</table>
+
+<h4>현재 사용 도구</h4>
+<ul>
+  <li><strong>POS</strong>: IRS Software 15년 된 구형 · 영수증 프린터 정상 · 터치 단말기 1대</li>
+  <li><strong>배달</strong>: GrabFood (2년) · Foodpanda (1년) · ShopeeFood (6개월) — 태블릿 3대 각각 모니터링</li>
+  <li><strong>결제 수단 비중</strong>: 현금 50% · DuitNow QR 25% · TnG/GrabPay 15% · 기타 10%</li>
+  <li><strong>리워드</strong>: 없음 (과거 종이 스탬프 카드 1년 시도 후 포기 · 분실·관리 실패)</li>
+  <li><strong>부기</strong>: 외부 회계사 분기 1회 방문 · 평소엔 남편이 엑셀 수기</li>
+</ul>
+
+<h4>현재 임시방편 (Workarounds)</h4>
+<ol>
+  <li><strong>단골 인식</strong>: 얼굴 기억 · 이름·선호는 머릿속에만. 핵심 단골 20~30명 (Uncle Tan 매일 7:10 · 카야토스트+코피C) 정도만 기억</li>
+  <li><strong>배달 매출 정리</strong>: 일요일 저녁 남편이 3개 플랫폼 대시보드 로그인 · 주별 합계 엑셀 입력 · 수수료 세부는 월말만 확인</li>
+  <li><strong>매장 POS 일일 마감</strong>: POS 리포트 출력 · 현금/e-wallet 분리 수기 계산</li>
+  <li><strong>배달 주문 POS 연동</strong>: Sook Ling이 태블릿 모니터링 · POS에 "GrabFood RM 25" 수기 입력 (메뉴 세부 없음) · <strong>오류·누락 주 2~3건</strong></li>
+  <li><strong>현금 흐름 파악</strong>: 매월 말 은행 잔고로 대략 짐작. 정확 순이익은 분기 회계사 방문 시</li>
+  <li><strong>단골 비공식 혜택</strong>: 친한 손님에겐 수기 10% 할인 (메모리 기반 · 공식 정책 없음)</li>
+</ol>
+
+<h4>핵심 페인포인트 3개 (기능 + 감정)</h4>
+
+<div class="callout warn">
+<strong>페인 1 — 배달 수수료 복합 누수 + 마진 가시성 부재</strong>
+<p><strong>기능적 마찰</strong>: 3개 플랫폼 × 28~30% 수수료. 월 배달 매출 RM 18,000 × 평균 29% = <strong>월 RM 5,220 수수료 공제</strong>. 프로모션 비용 별도. 플랫폼별 실질 순이익 대략만 앎.</p>
+<p><strong>감정적 비용</strong>: <em>"27년 쌓은 가게 마진의 3분의 1을 얼굴도 모르는 앱이 가져간다. 안 쓰면 손님 안 오니까 못 끊는다. 무력감. 그 돈이 어디 어떻게 쓰이는지 전혀 모른다."</em></p>
+</div>
+
+<div class="callout warn">
+<strong>페인 2 — 단골과의 관계 부재 + 리워드 체계 자본 부재</strong>
+<p><strong>기능적 마찰</strong>: 27년 수천 명 단골 쌓였으나 이름·방문 빈도·좋아하는 메뉴 기록 없음. 이사 가면 알 수도 없음. 종이 스탬프 카드 실패 후 포기.</p>
+<p><strong>감정적 비용</strong>: <em>"Starbucks 바로 옆 ZUS Coffee 앱 다운로드 180만이라는데, 나는 종이 스탬프도 실패. 체인처럼 앱 만들 자본·인력은 없다. 27년 본 손님들을 나는 기억하는데 앱 하나 못 만든 게 부끄럽다."</em></p>
+</div>
+
+<div class="callout warn">
+<strong>페인 3 — 현금 흐름 가시성 부재</strong>
+<p><strong>기능적 마찰</strong>: 매장·배달 3개 앱·e-wallet·현금 4~5 경로 분산. 수기 집계. 이달 순이익 정확 수치 월말까지 불명.</p>
+<p><strong>감정적 비용</strong>: <em>"이번 주 어디서 얼마 들어오고 어디로 나가는지 사실 모른다. 은행 잔고 보면서 놀란다. 재료비 부족으로 허둥지둥 남편한테 카드 빌린 적도 있다. 27년 운영자인데 이런 기본을 모르고 있었다는 게 부끄럽다."</em></p>
+</div>
+
+<h4>시나리오 — 화요일 영업일 (월요일 휴무 후 첫날)</h4>
+<ul>
+  <li><strong>05:30</strong> 기상. Pasar Besar SS2 도매시장. 닭 8kg · 계란 100개 · 빵 15덩이 · 야채 모듬 · 현금 RM 820 결제</li>
+  <li><strong>06:30</strong> 매장 도착. 준비·청소</li>
+  <li><strong>07:00</strong> 오픈. 07:10 Uncle Tan 도착. Auntie Siew "카야토스트 코피C?" — Uncle Tan 끄덕. RM 8. 현금. 10년째 매일 같은 주문</li>
+  <li><strong>08:30 이전</strong> 조식 45명 · 매출 RM 420 (현금 60%·DuitNow 30%·e-wallet 10%)</li>
+  <li><strong>09:15</strong> 첫 GrabFood 주문. Sook Ling 태블릿 보고 POS에 "GrabFood RM 35" 수기 입력 · 메뉴 세부 입력 생략</li>
+  <li><strong>11:45~13:15</strong> 점심 러시. 75명 · 매출 RM 980</li>
+  <li><strong>14:00</strong> Auntie Siew POS 중간 리포트 출력 — 매장 매출 RM 1,450 표시 · 배달 앱 수수료·순매출 표시 안 됨</li>
+  <li><strong>18:00</strong> 마감. 현금 RM 880 금고 · DuitNow 정산 RM 420 은행 입금 · 배달 정산은 주 후반 대기</li>
+  <li><strong>18:30</strong> 집. 남편: "오늘 얼마 벌었어?" Auntie Siew: "RM 1,800 정도? 정확한 건 주말 엑셀 봐야." 27년 경영인데 일일 순이익 정확 답 불가</li>
+</ul>
+
+<h3>2.4 Part 1 기회 ↔ 페르소나 페인포인트 연결</h3>
+
+<table>
+  <tr><th>Part 1 문제</th><th>Wei Ming (소비자)</th><th>Auntie Siew (가맹점)</th><th>v3 핵심 해결</th></tr>
+  <tr><td>로열티 파편화 피로</td><td>페인 1 (BonusLink 5년 미환원)</td><td>페인 2 (리워드 자본 부재)</td><td>5% 서비스료 → 포인트 100% 환원 (매장 부담 0)</td></tr>
+  <tr><td>오프라인 적립 마찰</td><td>페인 2 (단골 무인식)</td><td>페인 2 (단골 이름 모름)</td><td>선주문 QR 픽업 → 자동 적립 + 단골 식별</td></tr>
+  <tr><td>매장 투명성 부재</td><td>신규 가게 방문 시 발생</td><td>페인 3 (현금 흐름 불명)</td><td>Payment Gateway 선결제 → 실시간 정산 가시성</td></tr>
+  <tr><td>배달 수수료 양면 손실</td><td>페인 3 (3~5RM 불신)</td><td>페인 1 (배달앱 20~29% 수수료 누수)</td><td>10% 가맹점 수수료 코어 (픽업 20% 대비 절반) + 선주문 직접 매출</td></tr>
+</table>
+
+<p>두 페르소나의 페인이 <strong>동일 플랫폼 단일 앱</strong>으로 해결되는 구조 — v1 제품 설계의 근거.</p>
+
+<h3>2.5 비타겟 명시 — 누구를 배제하는가</h3>
+
+<p>과제 평가 기준 "무엇을 만들지 않기로 했는가가 만들기로 한 것만큼 중요". v1 배제:</p>
+
+<ul>
+  <li><strong>관광객</strong> — 1회성 · 언어 장벽 · 해외 결제. Visit Malaysia 2026 무관</li>
+  <li><strong>B40 가구</strong> (월 &lt; RM 5,858) — 가격 민감도 극단 · BNPL 의존 · 파일럿 지역(TTDI·SS2·Bangsar) 비중 낮음</li>
+  <li><strong>T20 전용</strong> (월 &gt; RM 10,970) — Bangsar 일부 포함되나 주 타겟 아님. B 시나리오(Inner Circle) v2+ 이연. Section 10.16 참조</li>
+  <li><strong>가족 주말 외식</strong> — 주 타겟은 평일 직장인 반복 외식. 주말 가족은 자연 커버</li>
+  <li><strong>65세+ 디지털 소외 세대</strong> — 영수증 QR·앱 사용 어려움 (Agent I 60+ 인터넷 이용 3.4%)</li>
+  <li><strong>체인 F&amp;B 가맹점</strong> (Starbucks · ZUS · McDonald's) — 자체 앱 존재. 구조적 경쟁자</li>
+  <li><strong>Hawker center 스탠드</strong> — POS 파트너십 외 호커센터 관리 주체 별도 협상 필요 (Section 7.6 Tier 3 · v2+)</li>
+  <li><strong>Food truck · Ghost kitchen</strong> — 구조 불일치 (Section 7.6 Tier 4)</li>
+</ul>
+
+<h3>Part 2 요약</h3>
+<div class="callout tldr">
+<ul style="margin: 0;">
+  <li><strong>Wei Ming Tan</strong> (29세 TTDI IT 직장인) — 리워드 파편화 · 단골 무인식 · 배달 수수료 불신 = 월 RM 1,685 외식 지출 중 혜택 0</li>
+  <li><strong>Auntie Siew Lim</strong> (52세 PJ SS2 Kopitiam 27년) — 배달 수수료 29% 누수 · 단골 이름 모름 · 현금 흐름 불투명 = 3대 경영인데 일일 순이익 답 못 함</li>
+  <li>두 페르소나 모두 <strong>Part 1 POS 레버리지 3대 기능</strong>(선주문·즉시 픽업 + 5% 서비스료 포인트 환원 + 10% 저비용 수수료)으로 근본 해결</li>
+  <li>v1 배제 8개 그룹 명시 — "만들지 않기로 한 것"이 만들기로 한 것 이상으로 Part 3 전략을 단단하게 함</li>
+</ul>
+</div>
+
+<h2 id="part-3" class="updated-heading">Part 3 — 프로덕트 전략·우선순위 <span class="update-stamp">2026-04-15 작성<span class="ustamp-time">03:00 KST</span></span></h2>
+
+<p>Part 1 기회 + Part 2 페르소나 페인을 실제 제품 기능·출시 전략으로 변환. 평가 기준 "우선순위 및 트레이드오프 · POS 레버리지 · 비즈니스 실현 가능성 · Part 1~2와 일관성".</p>
+
+<h3>3.1 v1 제품 컨셉 — 한 문장</h3>
+
+<div class="callout tldr">
+<strong>"Klang Valley 독립 F&B에 선주문·즉시 픽업 인프라를 이식하는 시간 절약 레이어"</strong><br><br>
+앱으로 선주문하면 5% 서비스료가 포인트로 100% 환원. 가맹점은 10% 가맹점 수수료 (코어)만 내고 추가 매출을 얻는다. GrabFood 픽업 20% 대비 절반. 체인이 아닌 독립 73.5% 공백을 SNS 4채널(TikTok→Telegram→Facebook→WhatsApp) + Room 바이럴로 닫는다.
+</div>
+
+<h3>3.2 v1 Core 기능 — 우선순위와 트레이드오프 <span style="font-size:12px;color:#6b7280">(2026-04-15 06:30 · Core 3→4 확장)</span></h3>
+
+<table>
+  <tr><th>순위</th><th>기능</th><th>Part 1 연결</th><th>페르소나 연결</th><th>POS 필수성</th></tr>
+  <tr>
+    <td><strong>1 (리텐션 앵커)</strong></td>
+    <td><strong>자동 리워드 적립</strong><br>(신형 POS: 결제 웹훅 자동 · 구형: 영수증 QR 스캔)<br>Tapik 네트워크 통합 포인트 · 5% 서비스료 → 포인트 100% 환원</td>
+    <td>로열티 파편화·오프라인 적립 마찰</td>
+    <td>Wei Ming 페인 1·2 / Auntie Siew 페인 2</td>
+    <td><strong>필수</strong></td>
+  </tr>
+  <tr>
+    <td><strong>2 (시간 혁신)</strong></td>
+    <td><strong>선결제 Pickup</strong><br>앱 선주문 + Payment Gateway 선결제 → POS 티켓 자동 전송 → QR 픽업<br>독립 F&amp;B 2만+ 매장 최초 Mobile Order 인프라</td>
+    <td>줄서기 시간 낭비 · 픽업 인프라 부재</td>
+    <td>Wei Ming 점심 시간 압박 · Auntie Siew 피크 분산 니즈</td>
+    <td><strong>필수</strong> — POS 티켓 자동 발행</td>
+  </tr>
+  <tr>
+    <td><strong>3 (가맹점 가치)</strong></td>
+    <td><strong>가맹점 통합 대시보드</strong><br>매장·배달 3개·e-wallet·현금 통합 · 일·주·월 P&amp;L · 5 단골 세그먼트 · AI 진단</td>
+    <td>배달 수수료 양면 손실 · 현금 흐름 불투명</td>
+    <td>Auntie Siew 페인 1·3</td>
+    <td><strong>필수</strong> — POS + 배달 API</td>
+  </tr>
+  <tr>
+    <td><strong>4 (유입 훅)</strong></td>
+    <td><strong>Right Now 발견 레이어</strong><br>홈 상단 Hero 캐러셀 · 웨이팅 + 저피크 + 떨이 재고 통합 · 3단계 레벨 게이트로 알림 피로 관리</td>
+    <td>매장 투명성 부재 · 잉여 재고 폐기</td>
+    <td>Wei Ming 신규 탐색·점심 결정 · Auntie Siew 피크 외 수요 창출</td>
+    <td><strong>필수</strong> — POS 실시간 재고·테이블</td>
+  </tr>
+  <tr>
+    <td>v2 이연</td>
+    <td>주간 식사 플래너</td>
+    <td>행동 변화·네트워크 효과 리스크</td>
+    <td>—</td>
+    <td>—</td>
+  </tr>
+  <tr>
+    <td>v2 이연</td>
+    <td>배달 수수료 절감 공유 (소비자 가격 혜택 직결)</td>
+    <td>배달 플랫폼 우회</td>
+    <td>—</td>
+    <td>—</td>
+  </tr>
+</table>
+
+<h4>Core 4 간 상호 작용</h4>
+<ul>
+  <li><strong>리워드(1)</strong> = 리텐션 앵커 — "왜 이 앱 계속 쓰나"에 답 · 5% 서비스료 전액 포인트 환원 · 크로스 가맹점 통합 포인트</li>
+  <li><strong>선결제 Pickup(2)</strong> = 시간 혁신 · 앱 일일 구동 동기 · 캡틴 모델: "밥먹을 때마다 켜게 만드는 동력". <strong>v3 모델의 핵심 — 서비스료 + 포인트 환원의 거래 기반</strong></li>
+  <li><strong>대시보드(3)</strong> = 가맹점 세일즈 논리 — "왜 가맹점이 참여하나"에 답 · 27년 운영 Auntie Siew도 처음 Tapik 경유 순이익 답할 수 있게</li>
+  <li><strong>Right Now(4)</strong> = 신규 유입 훅 — "왜 소비자가 앱을 설치하나"에 답 ("300m 내 빈자리 · 즉시 픽업 가능")</li>
+  <li>네 축이 <strong>소비자 발견(4) → 선주문+서비스료(2) → 포인트 적립(1) → 가맹점 대시보드 가치 체감(3) → 가맹점 유지 → 더 많은 소비자 유입</strong> 선순환 형성</li>
+</ul>
+
+<h3>3.3 선결제 Pickup — 왜 핵심축으로 승격됐나</h3>
+
+<div class="callout key">
+<strong>핵심 논리</strong>: Tapik이 ShardLab 평가 기준 "단순 적립 모델이 아닌 직접 소비자 가치"에 답하는 가장 명확한 차별점. <strong>독립 F&amp;B 2만+ 매장 최초 Mobile Order 인프라</strong>로, 현재 말레이시아엔 Starbucks·FamilyMart 등 체인 자체 앱만 이 기능을 가진다. POS 통합 플랫폼 없이는 구조적으로 불가능.
+</div>
+
+<p><strong>경쟁 공백 검증</strong> (2026-04-15 WebSearch 스캔):</p>
+<ul>
+<li>F&amp;B queue-skip / Mobile Order 구독 서비스: 말레이시아 부재. 테마파크(Sunway Lagoon Quack Xpress), 공항(KLIA Fast Pass), 항공(AirAsia Fast Pass)에만 존재 <a href="https://sunwaylagoon.com/quack-xpress/">[출처]</a></li>
+<li>Grab·FoodPanda는 배달 중심. 픽업 선결제는 그들의 비즈니스 모델과 충돌 (배달비 수익원 침해)</li>
+<li>BonusLink·GrabRewards는 단순 적립 카드 — 픽업 인프라 없음</li>
+</ul>
+
+<p><strong>매장 카테고리별 적용 우선순위</strong> (말레이 주문 모델 혼재 고려):</p>
+<table>
+<tr><th>매장 카테고리</th><th>주문 모델</th><th>Tapik 효과</th><th>파일럿 우선도</th></tr>
+<tr><td>모던 카페 (Feeka류)</td><td>카운터 줄서기 · Starbucks 모델</td><td>★★★ 매우 강함</td><td>1순위</td></tr>
+<tr><td>카운터 주문 Kopitiam</td><td>좌석 잡기 → 카운터 주문·결제 → 음식 수령</td><td>★★ 강함 (포장 모드)</td><td>1순위</td></tr>
+<tr><td>테이크아웃 강한 Toast/포장 매장</td><td>포장 중심</td><td>★★★ 매우 강함</td><td>1순위</td></tr>
+<tr><td>Mamak·좌석 서빙</td><td>좌석 우선 · 직원이 주문 받으러 옴</td><td>★ 낮음</td><td>배제</td></tr>
+</table>
+
+<p><strong>가맹점 옵트인 구조</strong>: 가맹점 앱에서 선결제 유형 선택 (Pickup Only / Dine-in OK / Both). 매장 특성에 맞게 자율 설정. 모든 가맹점에 일괄 적용 X.</p>
+
+<p><strong>선결제 부가 혜택 0</strong>: 이전 설계의 "+20% 보너스" 철회. 선결제는 순수 시간 절약 혜택만. 금전 혜택 X. 이유: (a) +20% 근거 부재 (b) 가맹점 순수 현금 손실 (c) Agent P 판정 e-money 프리미엄 해석 리스크 (d) 시간 혜택 자체로 가치 충분.</p>
+
+<p>선결제 상태 기계·엣지 케이스 상세 = <code>shardlab_research.html</code> § <a href="shardlab_research.html#ux-v2-prepay">ux-v2-prepay</a> 참조.</p>
+
+<h3>3.4 수익 모델 <span style="font-size:12px;color:#6b7280">(2026-04-17 v4 확정 · 거래 수수료 티어 시스템)</span></h3>
+
+<div class="callout warn">
+<strong>핵심 전환 (v4 확정)</strong>: SaaS 구독 모델 폐기 → 순수 거래 수수료 모델 전환. Tapik Pass 폐기. 가맹점은 온보딩 3개월 10% → 코어 10% → 프리미엄 12% 티어 기반 수수료. 소비자는 5% "즉시 준비 서비스료"를 지불하되 전액 포인트로 환원. Payment Gateway를 통해 Tapik은 자금을 직접 만지지 않음 → BNM 금융 라이선스 불필요.
+</div>
+
+<h4>수익축 1 — 가맹점 거래 수수료 · 10% 코어 (주 수익)</h4>
+<table>
+  <tr><th>항목</th><th>내용</th></tr>
+  <tr><td>티어 구조</td><td><strong>온보딩 3개월 10% → 코어 10% → 프리미엄 12%</strong>. 거래량·재방문율·평점 기반 자동 진급</td></tr>
+  <tr><td>부과 시점</td><td><strong>Tapik 경유 거래 발생 시에만</strong>. 월정액 없음. 거래 0건이면 비용 0</td></tr>
+  <tr><td>코어 수수료율</td><td><strong>총 결제액의 10%</strong> (표준)</td></tr>
+  <tr><td>비교</td><td>GrabFood 픽업 20% · Fave 1.5% (결제만, 캐시백 별도) · Tapik 코어 10% (포인트 재원 포함)</td></tr>
+  <tr><td>가맹점 설득 논리</td><td>"우리가 5% 추가 매출(서비스료)을 만들어줌 → 10% 중 5%는 그 추가분. 실질 부담 5%. GrabFood 픽업 20% 절반"</td></tr>
+  <tr><td>정산</td><td>Payment Gateway가 자동 분배. T+1~T+3일 가맹점 계좌 입금. Tapik 계좌 비경유</td></tr>
+</table>
+
+<h4>수익축 2 — 소비자 5% 서비스료 → 포인트 100% 환원</h4>
+<table>
+  <tr><th>항목</th><th>내용</th></tr>
+  <tr><td>명목</td><td><strong>"즉시 준비 서비스료"</strong> — 줄 안 서고, 주문 후 바로 받는 편의 대가</td></tr>
+  <tr><td>비율</td><td>메뉴가의 5%</td></tr>
+  <tr><td>환원</td><td>전액 Tapik 포인트로 즉시 적립. 소비자 실질 추가 부담 = 0</td></tr>
+  <tr><td>소비자 프레이밍</td><td>GrabFood 방식 채택 — "앱 가격은 원래 좀 비싸다" 소비자 학습 활용. 단, Tapik은 전액 포인트 환원하므로 배달앱과 차별화</td></tr>
+  <tr><td>비교</td><td>GrabFood 프리미엄 15~20% (환원 없음) vs Tapik 5% (전액 환원)</td></tr>
+</table>
+
+<h4>Tapik 순수익 구조 (v4 · 10% 코어 기준)</h4>
+<table>
+  <tr><th>항목</th><th>RM 12 메뉴 기준</th></tr>
+  <tr><td>소비자 결제</td><td>RM 12.60 (메뉴가 + 5% 서비스료)</td></tr>
+  <tr><td>가맹점 수수료 수입 (10%)</td><td>+RM 1.20</td></tr>
+  <tr><td>포인트 지급 비용 (5%)</td><td>-RM 0.60</td></tr>
+  <tr><td>Gateway 수수료 (~1.2% + RM 0.15)</td><td>-RM 0.31</td></tr>
+  <tr><td><strong>Tapik 순이익</strong></td><td><strong>+RM 0.30</strong> (이전 RM 0.06 대비 5배 증가)</td></tr>
+</table>
+
+<h4>스케일 시 ARR 예상</h4>
+<p>가맹점 1,500곳 · 일 25건/가맹점 · 평균 객단가 RM 15 → <strong>ARR ~RM 1.6M</strong>. v1 그룹딜 모델 대비 ARR 소폭 낮지만, 개인 주문 기반이라 <strong>콜드스타트 허들 근본적으로 제거</strong>.</p>
+
+<h4>배제된 수익 모델 · 이유 (v3 기준 재정리)</h4>
+<ul>
+  <li><strong>가맹점 SaaS 구독</strong>: v0~v2에서 시도 후 <strong>폐기</strong>. 거래 없이 고정비 부과 → 독립 가맹점 진입 장벽. "거래 없으면 비용 없다" 원칙으로 전환</li>
+  <li><strong>Tapik Pass "시간 구독"</strong>: v2에서 검토 후 <strong>폐기</strong>. 5% 서비스료 + 포인트 환원이 Pass 없이도 동일 가치 제공. 별도 구독 계층 불필요</li>
+  <li><strong>광고비 Plan C</strong>: <strong>폐기</strong>. 포함 시 가맹점 총 부담 19.5% = GrabFood와 동일 (coldstart_research.html E-6 참조)</li>
+  <li><strong>부스팅 광고</strong>: 배제 — 초기 유입자 0 상태에서 광고 가치 없음</li>
+  <li><strong>배달 중개 수수료</strong>: 배제 — v1에 배달 없음. 픽업 전용</li>
+  <li><strong>가맹점 컨설팅 교육비</strong>: v2+ 이연</li>
+</ul>
+
+<h3>3.5 Tapik 전용 태블릿 독립 운영 · v4 아키텍처</h3>
+
+<p>v4 업데이트: POS 통합 대신 Tapik 전용 태블릿 독립 운영. 핵심 기능별 구현:</p>
+
+<table>
+  <tr><th>v1 Core 기능</th><th>v4 구현 방식</th><th>독립성</th></tr>
+  <tr><td>결제 완료 → 자동 리워드 적립</td><td>Tapik 서버 결제 신호 → 전용 태블릿 수신</td><td>POS 완전 독립</td></tr>
+  <tr><td>매장 대기·빈자리 실시간 가시성</td><td>Tapik 주문 흐름 데이터 (수신·조리·픽업 상태)</td><td>POS 독립</td></tr>
+  <tr><td>가맹점 정산·P&L</td><td>Tapik 선결제 기반 자동 정산</td><td>POS 독립</td></tr>
+  <tr><td>픽업 큐 관리</td><td>태블릿 내장 주문·조리 상태 모니터링</td><td>POS 독립</td></tr>
+  <tr><td>가맹점 영업 유통</td><td>SNS 4채널(TikTok→Telegram→Facebook→WhatsApp) + Room 바이럴</td><td>POS 무관</td></tr>
+</table>
+
+<h4>3.5.1 "또 하나의 태블릿"이 산업 표준인 이유</h4>
+
+<p><strong>GrabFood Sunmi V2s 검증</strong>: GrabFood는 한국 Sunmi V2s 결제 단말을 배달 주문·픽업 전용으로 가맹점에 직접 배치. 기존 POS와 완전 분리. 왜? POS 통합 비용 >> 독립 태블릿 배치 비용. Lenovo Tab M7 (RM 398)은 초저가 진입점.</p>
+
+<p><strong>가맹점 관점</strong>: 기존 POS 유지 + Tapik 전용 태블릿 추가 ≈ "또 하나의 기계". 학습곡선 극히 짧음. 두 기계 모두 명확한 용도 (POS: 일반 거래 / 태블릿: Tapik 주문만).</p>
+
+<p><strong>Tapik 관점</strong>: POS API 버전 추적·호환성 유지 불필요. Tapik 전용 프로토콜로 모든 데이터 직접 수집·관리. 스케일 단계에서 기술 부채 0.</p>
+
+<h4>3.5.2 Tapik Merchant 앱: 태블릿 + 웹 대시보드 분리</h4>
+
+<p>가맹점용 UI는 두 계층:</p>
+
+<ol>
+  <li><strong>태블릿 (Lenovo Tab M7)</strong> — 픽업 큐 · 실시간 주문 알림 · 조리 상태 버튼 · QR 검증. 매장 카운터 고정</li>
+  <li><strong>웹 대시보드 (laptop/desktop 접근)</strong> — P&L · 고객 인사이트 · 광고판 설정 · 포인트 레포팅</li>
+</ol>
+
+<p>이 분리로 "또 하나의 기계"가 아닌 "목적 집중 기계"로 지각된다. 가맹점 저항 최소화.</p>
+
+<h3>3.6 v1에서 의도적으로 제외한 것</h3>
+
+<p>"무엇을 만들지 않기로 했는가"가 만들기로 한 것만큼 중요하다 (과제 명시). v1 배제:</p>
+
+<ol>
+  <li><strong>할랄 인증 필터·연동</strong> — 독립 가맹점 50~60% 무인증 운영 가능 · JAKIM API 공수 과다 · 구현 ROI 열위 (2026-04-14 확정 · Section 10.13)</li>
+  <li><strong>Web3·블록체인 UX 노출</strong> — BNM·SC 규제 · 샌드박스 12~24개월 · Blackbird·Starbucks Odyssey 교훈 "hide the chain"</li>
+  <li><strong>주간 식사 플래너</strong> — 행동 변화 + 네트워크 효과 + 운영 복잡도 3중 리스크. v2에서 "가장 위험한 가정"으로 검증 실험 설계 (Part 6)</li>
+  <li><strong>선결제 크레딧 (Option C)</strong> — 대시보드 학습 전 활성화 시 가맹점 혼란 · v1 후반(주차 9+) 옵트인 한정</li>
+  <li><strong>배달 경로</strong> — 라이더 풀·보험·산재 규제·음식 안전 복합. v2에서 GrabExpress·Lalamove·Delyva 등 서드파티 API 연계 검토</li>
+  <li><strong>체인 가맹점 커버</strong> — 자체 앱 보유 (ZUS 743점 · Starbucks 320점). 독립 73.5%에 집중</li>
+  <li><strong>Hawker stall 개별 커버</strong> — 호커센터 관리 주체 별도 협상. v2+</li>
+  <li><strong>B40·T20·관광객·65+ 세그먼트</strong> — Part 2.5 비타겟 참조</li>
+</ol>
+
+<h4>v2 로드맵 (참고)</h4>
+<table>
+  <tr><th>Phase</th><th>추가 기능</th><th>타이밍 조건</th></tr>
+  <tr><td>v1 (MVP)</td><td>개인 선주문 + 5% 서비스료 + 포인트 적립 + QR 픽업 + Right Now 발견</td><td>파일럿 50 가맹점 · 소비자 500명</td></tr>
+  <tr><td>v1.5 (6개월)</td><td>그룹 룸 (포인트 몰아주기·미니게임·룸마스터 보너스) · 가맹점 대시보드 강화</td><td>v1 가맹점 200+ · 소비자 3,000+</td></tr>
+  <tr><td>v2 (12~18개월)</td><td>크로스 가맹점 포인트 사용 · 소셜 랭킹 · 추천 보상 · 2차 지역 (Penang) · AI 인사이트</td><td>가맹점 500+ · 소비자 15,000+</td></tr>
+  <tr><td>v3 (24개월+)</td><td>배달 확장 · T20 Inner Circle · 국경 간 (SG-JB) · B2B 기업 식대</td><td>가맹점 1,500+ · ARR RM 1.6M+</td></tr>
+</table>
+
+<h3>3.7 콜드스타트 전략 — SNS 4채널 + Room 바이럴 <span style="font-size:12px;color:#6b7280">(2026-04-17 v4 확정)</span></h3>
+
+<div class="callout key">
+<strong>핵심</strong>: v4는 SNS 4채널(TikTok → Telegram → Facebook → WhatsApp) 기반 Room 창작자 바이럴. POS 파트너십 의존 제거. 소비자-중심 탑-다운 성장. 마케팅 예산 최소화. Room 포인트 차등화(Solo 5%, Joiner 6%, Creator 8%)로 창작자 인센티브.
+</div>
+
+<table>
+  <tr><th>채널</th><th>실행</th><th>소비자 접점</th></tr>
+  <tr><td><strong>영수증 하단 QR</strong></td><td>POS 영수증 프린터에 Tapik 포인트 QR 자동 인쇄. 기존 결제 흐름에 삽입 — 추가 행동 0</td><td>결제 직후 · 하루 수십~수백 건 자연 노출</td></tr>
+  <tr><td><strong>매장 식탁·카운터 QR</strong></td><td>테이블 스티커·메뉴판 옆 Tapik QR 비치. 대기 중·식사 중 자연 스캔</td><td>체류 시간 15~40분 · 스캔 유도 최적</td></tr>
+  <tr><td><strong>POS 결제 화면 안내</strong></td><td>신형 POS 결제 완료 화면에 "Tapik으로 5% 포인트 적립" 메시지 노출</td><td>결제 순간 주의력 최고 · 전환율 기대</td></tr>
+  <tr><td><strong>"5% 적립" 메시지</strong></td><td>점주가 구두·영수증·POS 화면으로 안내 "많이들 깔으세요"</td><td>신뢰도 높은 점주 직접 추천</td></tr>
+</table>
+
+<p><strong>왜 이것만으로 충분한가</strong>:</p>
+<ul>
+  <li>개인 주문 기반 → <strong>1명만 써도 거래 발생</strong> (그룹딜 모델의 "최소 2명" 콜드스타트 허들 제거)</li>
+  <li>POS 파트너 BD팀이 <strong>기존 가맹점 관계</strong>로 온보딩 → 콜드 아웃리치 대비 비용 1/10</li>
+  <li>5% 서비스료 100% 포인트 환원 → 소비자 첫 주문 즉시 가치 체험 (무료 체험 불필요)</li>
+  <li>마케팅 비용 없는 구조 → 가맹점 총 부담 8%로 유지 (광고비 포함 시 19.5% → GrabFood와 동일해지는 위험 방지)</li>
+</ul>
+
+<p><strong>추가 비용이 발생하는 시점</strong>: 자연 유입만으로 W5~6 소비자 50명 목표 미달 시, 가맹점 내 "첫 주문 더블 포인트" 인센티브 한시 운영 검토. 이 경우에도 Tapik 마진에서 차감 (가맹점 추가 부담 0).</p>
+
+<h3>3.8 제품 이름 제언</h3>
+
+<p>네이밍 원칙: (1) 2음절 내외 짧고 기억 쉬움 · (2) 말레이 다민족(중·말·인·영어) 모두 발음 가능 · (3) 동사화 가능 ("xx 했어?") · (4) 도메인 .my·.co 가능성 · (5) 과제 평가자(해시드·SCBX 한국인 포함)에게도 이해 가능.</p>
+
+<h4>후보 7개</h4>
+<table>
+  <tr><th>이름</th><th>어원·의미</th><th>장점</th><th>단점</th></tr>
+  <tr>
+    <td><strong>Balik</strong> ⭐</td>
+    <td>말레이어 "돌아가다·귀환"</td>
+    <td>단골 귀환 의미 직관 · 현지 감성 최강 · 2음절 · 동사화 쉬움 ("Balik 했어?")</td>
+    <td>영어권 이해 약함</td>
+  </tr>
+  <tr>
+    <td><strong>Tapik</strong> ⭐</td>
+    <td>"Tap" + "Pick/Pickup" 혼합 · 신조어</td>
+    <td>모던 · 글로벌 친화 · 결제 탭·픽업 직관 · 도메인 확보 가능성 높음</td>
+    <td>의미가 명시적이지 않음</td>
+  </tr>
+  <tr>
+    <td><strong>Kawan</strong></td>
+    <td>말레이어 "친구"</td>
+    <td>친근·따뜻 · 단골 관계 함의 · 발음 쉬움</td>
+    <td>기존 앱 유사명 검색 혼잡 가능</td>
+  </tr>
+  <tr>
+    <td><strong>Tumpang</strong></td>
+    <td>말레이어 "함께 머물다·얹혀가다"</td>
+    <td>고유 · Third Place 감성 · 가맹점+소비자 공유 함의</td>
+    <td>3음절 · 발음 약간 길음</td>
+  </tr>
+  <tr>
+    <td><strong>Siap</strong></td>
+    <td>말레이어 "준비 완료 · 됐다"</td>
+    <td>감탄사 느낌 · 픽업 맥락 자연 · 가볍고 친근</td>
+    <td>의미 다소 평범</td>
+  </tr>
+  <tr>
+    <td><strong>Regular</strong></td>
+    <td>영어 "단골"</td>
+    <td>의미 직관 · 글로벌 친화</td>
+    <td>흔한 단어 · 도메인·상표 확보 어려움</td>
+  </tr>
+  <tr>
+    <td><strong>Third</strong></td>
+    <td>영어 "Third Place"에서</td>
+    <td>컨셉 직결 · 세련됨</td>
+    <td>추상적 · 영어 위주</td>
+  </tr>
+</table>
+
+<h4>보조 PM 추천 순위</h4>
+<ol>
+  <li><strong>Balik</strong> — 문화적 뿌리 + "단골 귀환" 의미 + 동사화 + 짧음. 로컬 가맹점·M40 소비자에게 강한 감정 연결. Auntie Siew가 "Balik 앱으로 우리 Uncle Tan 기록 남겨요" 말할 때 자연스러움</li>
+  <li><strong>Tapik</strong> — 글로벌 확장 시 유리 · 결제 탭 직관. 과제 평가자(한국·태국·싱가포르)에게도 이해 가능</li>
+  <li><strong>Kawan</strong> — 친근 · 단골=친구 메타포. 단 상표 충돌 체크 필요</li>
+</ol>
+
+<h4>캡틴 결정 요청</h4>
+<p>위 7개 중 택1 또는 새 후보 제시. Part 4 (프로토타입) 착수 전 확정 권장 — 프로토타입 UI·로고에 반영. 결정 지연 시 Part 4 임시명 "<code>[App Name]</code>" 플레이스홀더로 진행 가능.</p>
+
+<h3>Part 3 요약</h3>
+<div class="callout tldr">
+<ul style="margin: 0;">
+  <li><strong>v1 컨셉</strong>: "Klang Valley 독립 F&B에 선주문·즉시 픽업 인프라를 이식하는 시간 절약 레이어"</li>
+  <li><strong>Core 3 축</strong>: 자동 리워드 적립(5% 서비스료 → 포인트 100% 환원) · 선결제 픽업(Payment Gateway) · Right Now 발견 레이어</li>
+  <li><strong>수익</strong>: 가맹점 거래 수수료 10% (거래 발생 시에만) + 소비자 5% 서비스료 → 포인트 환원. 월정액·Pass 없음</li>
+  <li><strong>POS 레버리지</strong>: Core 3 전부 POS 없이 구조적 불가능</li>
+  <li><strong>의도적 배제 8개</strong> 명시 — SaaS 구독·Pass 구독·광고비 Plan C 포함</li>
+  <li><strong>제품 이름</strong>: <strong>Tapik</strong> 확정</li>
+</ul>
+</div>
+<h2 id="part-4" class="updated-heading">Part 4 — 프로토타입 · AI 활용 과정 <span class="update-stamp">2026-04-15 작성<span class="ustamp-time">03:30 KST</span></span></h2>
+
+<p>과제 원문 Part 4는 두 부분 — <strong>4a 워킹 프로토타입 (인터랙티브 필수)</strong> + <strong>4b AI 활용 과정 문서화</strong>. 정적 목업은 평가 불가. 캡틴 확정 제품명 <strong>Tapik</strong> 기준으로 빌드.</p>
+
+<h3>4a. 워킹 프로토타입 <span style="font-size:12px;color:#6b7280">(2026-04-15 06:50 전면 재작성 · v2 IA + 플로팅 모달 철거 · 2026-04-17 v4 수익모델·태블릿 아키텍처 반영 진행 중)</span></h3>
+
+<h4>4.1 프로토타입 개요</h4>
+<table>
+  <tr><th>항목</th><th>내용</th></tr>
+  <tr><td>제품명</td><td><strong>Tapik</strong> — "Tap + Pickup" — 결제 한 번 탭하고 혜택 받아간다</td></tr>
+  <tr><td>형식</td><td>단일 React HTML 파일 (React 18 + Tailwind + Babel standalone CDN)</td></tr>
+  <tr><td>모드</td><td>Consumer (iPhone 4탭) · Merchant (iPad-first 5탭 · POS 중복 제거 후 축소) · Admin (데스크톱 6탭) — 상단 모드 전환</td></tr>
+  <tr><td>데이터</td><td>로컬 useState · mock 데이터 (Feeka·Lim Kopitiam·Hub Coffee 3개 매장)</td></tr>
+  <tr><td>상호 작용 필수</td><td>(a) 선주문 → 5% 서비스료 포함 결제 → QR 픽업 → 포인트 적립 → 가맹점 대시보드 실시간 반영 (b) Payment Gateway 결제 → 포인트 환원 → 본사 집계 (c) 가맹점 광고판 입력 → 소비자 Right Now Hero 즉시 노출</td></tr>
+  <tr><td>스택</td><td>React 18 · Tailwind CSS · 자체 SVG 아이콘 (Lucide 패턴) · 자체 SVG 차트 (라이브러리 미사용)</td></tr>
+  <tr><td>라이브 링크</td><td><code>tapik_prototype.html</code> · Phase B(완료) · Phase C(완료) · Phase D(완료) → <strong>v2 전면 재구축 진행 중</strong></td></tr>
+</table>
+
+<h4>4.2 v2 재구축 범위 (캡틴 결정 사항 반영)</h4>
+
+<table>
+<tr><th>변경 항목</th><th>이전 (v1 빌드)</th><th>v2 (재구축)</th></tr>
+<tr><td>Consumer IA</td><td>드래그 기반 · 상단 뒤로가기만</td><td><strong>하단 고정 4탭</strong> (홈·주문·리워드·마이) · 토스 패턴 · iOS 좌 가장자리 스와이프</td></tr>
+<tr><td>선결제</td><td>없음</td><td><strong>주문 탭 전체</strong> · 매장·메뉴 고정 쿠폰 · 지금 주문 발동 · 진행 중·예약됨·이력 서브탭</td></tr>
+<tr><td>홈 광고판</td><td>없음 (Tapik 특선 캐러셀만)</td><td><strong>Right Now Hero</strong> · 웨이팅+저피크+떨이 통합 캐러셀 · L2부터 노출</td></tr>
+<tr><td>레벨 시스템</td><td>티어(Bronze/Silver/Gold)만 표시</td><td><strong>3단계 (🌱 Newbie / ☕ Regular / 🔥 Insider)</strong> · 정보 게이트 전용 · 혜택 보상 X · 마이 탭 + 홈 작은 배지</td></tr>
+<tr><td>수익 모델</td><td>리워드 탭 안에 안내만</td><td><strong>v4 수익모델</strong> · 5% 서비스료 → 포인트 100% 환원 + 가맹점 10% 코어 수수료(온보딩 10→코어 10→프리미엄 12 티어) · Payment Gateway 선결제 <span style="font-size:11px;color:#dc2626">(v4 2026-04-17 확정 · 프로토타입 반영 진행 중)</span></td></tr>
+<tr><td>드릴다운 (Merchant·Admin)</td><td>플로팅 모달 (간단 요약)</td><td><strong>플로팅 모달 전면 철거</strong> · 풀페이지 라우팅 (/transactions, /mrr-movement, /cohort/:id) · 은행 앱 수준 거래 검색·필터·내보내기</td></tr>
+<tr><td>기간 토글</td><td>대시보드 한정</td><td><strong>전역 쿼리 상태</strong> · 모든 상세 페이지 공유 (?period=week)</td></tr>
+<tr><td>모달 사용</td><td>드릴다운·정보 표시 광범위</td><td><strong>확인 다이얼로그 전용</strong> · 품절 리젝 이유 선택 등 액션 컨펌만</td></tr>
+</table>
+
+<h4>4.3 v2 시연 시나리오 (3분)</h4>
+
+<h5>시나리오 A — Consumer · Wei Ming의 점심 <span style="font-size:11px;color:#6b7280">(v3 선주문·서비스료·포인트)</span></h5>
+<ol>
+  <li>홈 진입 — Right Now Hero "Feeka 지금 앞 2명·도보 5분" 카드 노출 (L2 Regular)</li>
+  <li>옆 카드: "Lim Kopitiam Kaya Toast 4개 남음 30% OFF" (L3 Insider 도달 시)</li>
+  <li>주문 탭 → 새 주문 → Lim Kopitiam → Kaya Toast Set RM 12 선택 → 5% 서비스료 RM 0.60 포함 총 RM 12.60 결제 (Payment Gateway · DuitNow)</li>
+  <li>결제 완료 → POS 티켓 자동 전송 + QR 픽업 코드 발급 + RM 0.60 포인트 적립 애니메이션</li>
+  <li>매장 도착 → QR 픽업 코드 제시 → 서버 검증 (HMAC-SHA256) → 즉시 수령</li>
+  <li>가맹점 모드 전환 → Auntie Siew 대시보드에 신규 주문 실시간 알림 + 단골 13회차 표시 + 10% 코어 수수료 자동 정산</li>
+</ol>
+
+<h5>시나리오 B — Merchant · Auntie Siew의 일일 점검 (iPad) <span style="font-size:12px;color:#6b7280">(2026-04-16 POS 통폐합 반영 업데이트)</span></h5>
+<ol>
+  <li>대시보드 — Tapik Daily Digest 카드 ("Ad Board 342 노출 → 47 클릭 · 선주문 8건 · 픽업 5건 완료")</li>
+  <li>Tapik 경유 매출 RM 274 카드 → P&L 탭 이동 (10% 코어 수수료 정산 상세)</li>
+  <li>픽업 큐 — 진행 중 2건 (조리 중 1·준비 완료 1) · "완료 처리" 버튼 → QR 수령 확인</li>
+  <li>Ad Board 성과 카드 CTR 13.7% → 광고판 탭 이동 → 14-15시 저피크 카드 새로 등록 (3필드 입력)</li>
+  <li>Tapik P&L 탭 → 유입(선주문 매출) / 비용(10% 수수료) / GrabFood 픽업 20% vs Tapik 10% 절약 비교 · ROI 인사이트</li>
+  <li>고객 인사이트 → Wei Ming T. 선주문 12건·포인트 잔액 RM 7.20·전환율 75% · WhatsApp 감사 메시지 발송</li>
+  <li><em>전체 매장 매출·거래 내역·설정은 StoreHub POS 앱에서 확인 (Tapik은 Tapik 고유 가치만 표시)</em></li>
+</ol>
+
+<h5>시나리오 C — Admin · 본사 콘솔 (데스크톱) <span style="font-size:11px;color:#6b7280">(v3 거래 수수료 기반)</span></h5>
+<ol>
+  <li>개요 탭 — 거래 수수료 수익 RM 6,840 (+15.5%) · 일일 주문 건수 트렌드 · Cohort 히트맵 6×9</li>
+  <li>수익 카드 클릭 → 가맹점별 거래 상세 (주문 건수·평균 객단가·10% 코어 수수료·5% 포인트 비용·순마진)</li>
+  <li>자동 진단 탭 → Kedai Makan Aminah Health Score 42 (HIGH 위험) → 강점·약점·개선안 + 예상 효과 % + "실행" 버튼</li>
+  <li>이상 감지 → 4건 발생 + Rule Engine 5개 (DUP_TX_3X, SPEED_8H 등)</li>
+</ol>
+
+<h4>4.4 화면 리스트 (v2 모듈) — 4탭 기준</h4>
+
+<table>
+  <tr><th>모드</th><th>탭/섹션</th><th>핵심 기능</th></tr>
+  <tr><td rowspan="4">Consumer<br>(iPhone 4탭)</td><td>🏠 홈</td><td>레벨 배지 · Right Now Hero (L2+) · 진행 중 주문 스택 · 카테고리 칩 · 근처 매장 · 친구 활동 (L2+) · Tapik 특선 (L3+)</td></tr>
+  <tr><td>🛒 주문</td><td>진행 중 (PREPARING/READY) · 예약됨 (쿠폰 보유) · 이력 풀페이지 · 새 주문 CTA</td></tr>
+  <tr><td>🎁 리워드</td><td>포인트 잔액 (5% 서비스료 환원 · 매장별 closed-loop) · 퀘스트 진행도 · 포인트 사용 내역</td></tr>
+  <tr><td>👤 마이</td><td>레벨 배지 + 다음 단계까지 · 단골 매장 · 결제수단 · 친구 · 언어</td></tr>
+  <tr><td rowspan="5">Merchant<br>(iPad 5탭)<br><em style="font-size:10px;color:#6b7280">POS 중복 제거</em></td><td>대시보드</td><td>Tapik Daily Digest (WhatsApp) · Tapik 경유 매출 카드 · Ad Board 성과 카드 · KPI 4 (선주문·픽업·신규고객·포인트) · 전환 퍼널 · 수수료 절약 비교 · 픽업 큐 실시간</td></tr>
+  <tr><td>광고판</td><td>Ad Board 카드 등록 (시간대·메뉴·할인율 3필드) · 활성/예약/종료 관리 · 소비자 앱 미리보기</td></tr>
+  <tr><td>픽업 · 배달</td><td><strong>Tapik 픽업 큐</strong> (진행 중 카드형 · 조리 중/준비 완료/QR수령 완료) + 배달 통합뷰 (플랫폼 3 수익성 비교 · 오더 리스트 · Tapik 픽업 전환 절약 배너)</td></tr>
+  <tr><td>고객 인사이트</td><td>Tapik 경유 고객만 · 선주문 건수/포인트 잔액 · 광고 클릭 귀인 · 선주문→재주문 전환율 · 정렬 4종</td></tr>
+  <tr><td>Tapik P&amp;L</td><td>Tapik 채널 경제성 — 유입(선주문 매출) / 비용(10% 수수료) / GrabFood 픽업 20% vs Tapik 10% 절약 비교 / ROI 인사이트 · <em style="font-size:10px">전체 매장 P&L은 POS 앱에서</em></td></tr>
+  <tr><td rowspan="6">Admin<br>(데스크톱 6탭)</td><td>개요</td><td>거래 수수료 수익/ARR/Churn/LTV · 가맹점별 거래 상세 · Cohort 히트맵 · 지역 분포 · AI Insights 4</td></tr>
+  <tr><td>가맹점</td><td>Health Score 정렬 · POS 타입·벤더·가입일·오너</td></tr>
+  <tr><td>자동 진단</td><td>가맹점별 강점/약점/개선안 + 예상 효과 % + 실행 버튼</td></tr>
+  <tr><td>소비자 패턴</td><td>전환 퍼널 5단계 · 매장 수 분포 · 24h Peak · 지역 분포</td></tr>
+  <tr><td>영업 파이프라인</td><td>Kanban 5 stages (Lead/Contacted/Demo/Negotiation/Won)</td></tr>
+  <tr><td>이상 감지</td><td>오늘 발생 + Rule Engine 5</td></tr>
+</table>
+
+<h4>4.5 v2 빌드 우선순위</h4>
+
+<p>72시간 제약 하 v2 재구축 (이미 v1 Phase B/C/D 완료된 ~3,000줄 베이스):</p>
+<ul>
+  <li><strong>MUST (반드시 작동)</strong>: Consumer 4탭 IA · 선주문 + 5% 서비스료 결제 + QR 픽업 + 포인트 적립 풀플로우 · Merchant 플로팅 모달 철거 → /transactions 풀페이지 · 광고판 가맹점 입력 + 소비자 Right Now 노출 동기화</li>
+  <li><strong>SHOULD</strong>: 포인트 잔액·사용 내역 · 레벨 배지 · 친구 피드 · POS 인사이트 풀 · 가맹점 10% 코어 수수료 정산 뷰</li>
+  <li><strong>COULD</strong>: 자동 진단 실행 버튼 결과 시뮬 · 영업 파이프라인 드래그 (현재는 시각화만)</li>
+</ul>
+<p>예상 코드 분량 (v2 재구축 후): ~4,500-5,000줄. v1 ~3,000줄 베이스 + Consumer 전면 재작성 + 플로팅 모달 철거. 재구축 공수: 4-6시간 (Claude Opus 4.6 + 1M context).</p>
+
+<h3>4b. AI 활용 과정 문서화 <span style="font-size:12px;color:#6b7280">(2026-04-15 07:50 v2 빌드 + 토론 결과 전면 반영)</span></h3>
+
+<h4>4.5 사용한 AI 툴 · 버전</h4>
+
+<table>
+  <tr><th>툴</th><th>버전</th><th>실제 사용</th></tr>
+  <tr><td><strong>Claude Opus 4.6 (1M context)</strong></td><td>Cowork mode · 2026-04 build</td><td>주 운영 모델 · 대화·의사결정·문서 작성·에이전트 오케스트레이션·프롬프트 설계·코드 리팩토링·전략 토론. 1M 컨텍스트로 70+ 턴 누적 대화 일관성 유지</td></tr>
+  <tr><td><strong>Claude Agent (general-purpose subagent)</strong></td><td>Cowork mode</td><td><strong>13회 발사</strong> — A~O (1차 시장 조사 6대) · G·H (최신 수치) · I·J·K (Kopitiam·모던 카페·교차) · L·M·N·O (선결제 규제·시장·BNM) · P·Q·R (Tapik Pass v3 검증) · Q 재발사 (Q1차 펑크)</td></tr>
+  <tr><td><strong>WebSearch · WebFetch</strong></td><td>Claude 내장</td><td>직접 호출 · Pass v3 검증 시 에이전트 대신 (말레이 최저임금·F&amp;B 대기 패턴·SS2/Bangsar 인구·queue-skip 시장 조사 5건 병렬)</td></tr>
+  <tr><td><strong>Babel parser (@babel/parser)</strong></td><td>최신 (npm 설치)</td><td>JSX 포함 prototype 코드 단계별 검증 · 매 빌드마다 syntax 통과 확인 강제</td></tr>
+  <tr><td><strong>Bash · Python3</strong></td><td>샌드박스 환경</td><td>대규모 코드 블록 (757줄) 삭제·플레이스홀더 삽입 등 Edit 도구 한계 우회</td></tr>
+  <tr><td>(미사용) Cursor · v0 · Bolt</td><td>—</td><td>Claude만으로 prototype 빌드 가능 확인 → 보조 도구 불필요</td></tr>
+</table>
+
+<h4>4.6 단계별 AI 활용 상세</h4>
+
+<table>
+  <tr><th>#</th><th>단계</th><th>AI 활용 목적</th><th>결과</th></tr>
+  <tr><td>1</td><td>과제 이해·분해</td><td>원문 8개 제약 추출 · 13개 작업 지침 수립 (캡틴 협의 후 14개로 확장)</td><td><code>guidelines.md</code> · <code>shardlab_research.html</code> 과제 개요</td></tr>
+  <tr><td>2</td><td>1차 시장 조사 (6대 병렬)</td><td>에이전트 A~F 동시 발사. 사회·금융·POS·페인포인트·Web3·갭 분석 커버</td><td><code>research_A~F.md</code> 16,000+ 단어 · 1차 자료 집합</td></tr>
+  <tr><td>3</td><td>최신 데이터 재수집</td><td>Agent G (2025-26 공식 수치) · Agent H (DOSM 세분화)</td><td>전국 F&amp;B outlet 60k 추정치 → <strong>136,453 공식 수치 대체</strong> · KV 28.2% 확정</td></tr>
+  <tr><td>4</td><td>교차 검증 3대</td><td>Agent I·J·K — Kopitiam·모던 카페·공통분모 독립 조사 후 상호 검증</td><td><strong>Bangsar T20 anomaly 발견</strong> → 파일럿 지역 추천 "Bangsar+TTDI" → "TTDI+PJ SS2+Bangsar 보조" 정정</td></tr>
+  <tr><td>5</td><td>규제·시장 검증 4대</td><td>Agent L·M·N·O — 선결제 규제·시장·BNM 공식 문서</td><td>BNM Limited Purpose E-Money Exemption 2024 확인 → closed-loop 단일 매장 포인트 안전성 입증</td></tr>
+  <tr><td>6</td><td>원점 재검증</td><td>캡틴 지적 "자연스러운 흐름이 최적인지" → Claude 대화로 타겟 8개 전수 검토 + B(T20) 시나리오 5개 + POS 레버리지 분해</td><td>A (M40 Third Place) 확정 · B v2+ 이연 · v1 핵심 3축 정의</td></tr>
+  <tr><td>7</td><td>페르소나·시나리오</td><td>Wei Ming Tan · Auntie Siew 구체 인물화 · 일상·임시방편·페인포인트·시나리오</td><td>Part 2 본문 2,500+ 단어 · 정량 경계 (월 RM 단위 지출 등)</td></tr>
+  <tr><td>8</td><td>v1 prototype 빌드 (Phase A/B/C/D)</td><td>Claude 단독 React 빌드 · 3 모드 × 6 탭 × 풀 시뮬레이션</td><td><code>tapik_prototype.html</code> v1 ~3,025줄 · Babel 검증 통과</td></tr>
+  <tr><td>9</td><td><strong>v2 IA 전면 재기획 토론 (5턴)</strong></td><td>캡틴 7대 지적 → 4탭 IA·선결제·B2B2C 메커니즘·플로팅 모달·레벨·Pass·가맹점 무료 등 전 영역 재토론</td><td>v3 핵심 결정 8건 (Decision Journal 6개 신규 엔트리)</td></tr>
+  <tr><td>10</td><td><strong>Tapik Pass 3축 교차 검증</strong></td><td>Agent P (규제·BNM·CPA·PDPA) · Agent Q (경쟁 벤치마크 · Q1차 펑크 후 재발사) · Agent R (소비자 WTP · 가입률 가격대 시뮬)</td><td>1차 RM 15 → 2차 RM 12.90 → <strong>v3 "시간 판매" 모델</strong> (주 2회 무료 + 5장 RM 10 + 월 RM 30) 확정. 혜택 5번 (파트너 매장 무료) 폐기 (P+R 합의)</td></tr>
+  <tr><td>11</td><td>WebSearch 직접 검증 5건</td><td>Agent 재투입 대신 직접 (말레이 최저임금·F&amp;B 대기·인구·queue-skip 시장)</td><td>최저임금 RM 8.72/h 확정 · F&amp;B 픽업 선결제 시장 공백 확인 · 파일럿 인구 75-85k 보수 보정 (이전 150k 50% 다운)</td></tr>
+  <tr><td>12</td><td><strong>v2 Phase 빌드 3단계 분할</strong></td><td>v2-A Consumer 전체 (4탭+선결제+Pass+레벨) · v2-B Merchant 모달 철거 + 광고판 입력 · v2-C Admin 풀페이지 5종 + Pass 모니터링</td><td>+931줄 (3,025 → 3,956) · 매 단계 Babel 검증 통과 · 모든 모달 철거</td></tr>
+  <tr><td>13</td><td>기획서 v2 동기화</td><td>product_brief Part 1·3·4·5·6 + shardlab_research UX v2/Pass v3 섹션 + ai-log 엔트리</td><td>3개 메인 문서 모두 v2 결정 사항 반영 완료</td></tr>
+  <tr><td>14</td><td>shardlab_research 종합 갱신</td><td>Decision Journal 14개 엔트리 누적 · v1 설계 맵 → v2 매핑 표 · Open Issues / Resolved 분리 · file index 갱신</td><td>2,037줄 · 메인 리서치 문서 최신화</td></tr>
+</table>
+
+<h4>4.7 예시 프롬프트 — 실제 사용 기록</h4>
+
+<p><strong>(1) 1차 시장 조사 · Agent F 발사 프롬프트 (발췌)</strong>:</p>
+<pre style="background:#f9fafb;border:1px solid #e5e7eb;padding:14px;border-radius:6px;font-size:12.5px;white-space:pre-wrap;">
+FACT-FIRST research for ShardLab B2C product strategy.
+Identify 8-12 specific, evidence-backed market gaps in
+Malaysian F&B and POS-driven consumer services.
+
+Strict rules:
+- Every claim MUST cite URL + publication date
+- Prefer 1st-party official sources (DOSM, BNM, PayNet, JAKIM, LHDN)
+- 2nd-party acceptable: Mordor, Euromonitor, The Edge, Fintech News Malaysia
+- Alternative data (reviews, forums, trends) ONLY if cross-verified
+- If data doesn't exist, SAY SO. Don't guess.
+
+For each gap provide:
+- Gap statement (1 sentence, specific)
+- Evidence (minimum 2 distinct sources with URLs)
+- Why it hasn't been filled
+- POS-triggered app addressability (yes/partial/no)
+- Demand magnitude estimate
+</pre>
+
+<p><strong>(2) Tapik Pass · Agent P (규제·법률) 발사 프롬프트 (발췌)</strong>:</p>
+<pre style="background:#f9fafb;border:1px solid #e5e7eb;padding:14px;border-radius:6px;font-size:12.5px;white-space:pre-wrap;">
+너는 Agent P (규제·법률 축) 역할이다. 말레이시아 B2C F&B 플랫폼
+"Tapik"의 구독 서비스 "Tapik Pass" (월 RM 15 단일 티어)를 검토.
+
+검토 질문 (필수 답변):
+1. BNM 규제: Limited Purpose Exemption 2024 저촉 여부?
+   특히 혜택 5 "파트너 매장 무료"가 e-money 영역인지?
+2. CPA 1999: 회원/비회원 차등 가격 허용 여부?
+3. PDPA 2010: Pass 가입 시 데이터 처리 범위?
+4. LHDN 세무: SST 6% 적용 의무?
+5. 자동 갱신 결제 규정 (쿨링오프·해지·환불)?
+6. 경쟁법: 가맹점 강제 할인 = price fixing?
+
+출력: 핵심 발견 Top 5 (URL 필수) · 혜택별 리스크 등급 H/M/L ·
+법적 권고 · 구조적 리스크 3개 · 다른 Agent와 충돌 예측
+
+제약: 추측 금지 · 공식 소스 5개 이상 · 한국어
+</pre>
+
+<p><strong>(3) Agent Q 재발사 타이트 지시 (Q1차 "웹 접근 없다" 변명 후)</strong>:</p>
+<pre style="background:#f9fafb;border:1px solid #e5e7eb;padding:14px;border-radius:6px;font-size:12.5px;white-space:pre-wrap;">
+이전 시도에서 "웹 실시간 접근 없어서 못한다"고 펑크 냈는데,
+이건 변명이다. Agent P와 Agent R은 동일 환경에서 WebSearch·
+WebFetch 도구로 공식 소스 10개+ 뽑아왔다. 너도 동일하게 가능.
+
+엄격한 지시:
+1. WebSearch·WebFetch 적극 사용. "접근 없다" 변명 금지.
+2. 공식 소스 확인 시도 → 실패 시 "공식 확인 불가"로 명시.
+3. 최종 보고서 제출. "옵션 A/B 중 선택해달라" 위임 금지.
+
+[검토 대상: Pass 2차안 RM 12.90, Lite RM 6.90 추가 옵션]
+
+실패는 재시도 없다. 이번에 제대로 한다.
+</pre>
+
+<p><strong>(4) Phase 빌드 분할 판단 프롬프트 (자체 의사결정)</strong>:</p>
+<pre style="background:#f9fafb;border:1px solid #e5e7eb;padding:14px;border-radius:6px;font-size:12.5px;white-space:pre-wrap;">
+3턴 분할 결정. 근거:
+- Consumer는 IA·라우팅·레벨·Pass·선결제 5개 신규 시스템 얽힘
+  → 한 묶음 (한 턴 ~2,000줄)
+- Merchant·Admin은 기존 베이스 유지하며 모달만 철거
+  → 별도 분리 (각 ~1,500줄, ~1,000줄)
+- 한 턴 2,000줄 넘어가면 디버깅·실수 위험
+- 매 단계 Babel parser 검증 강제
+
+Phase v2-A: Consumer 전체 (4탭+선결제+Pass+레벨)
+Phase v2-B: Merchant 모달 철거 + Transactions 풀페이지 + 광고판 입력
+Phase v2-C: Admin 풀페이지 5종 + Pass 모니터링 탭
+</pre>
+
+<h4>4.8 AI 결과 평가·수정·반복 (10항목)</h4>
+
+<ol>
+  <li><strong>즉시 수용 금지 + 7축 평가</strong>: 에이전트 산출물을 받자마자 출처수·최신성·1차비율·주장-근거·교차검증·반대관점·내부점검 7축으로 재평가</li>
+  <li><strong>감각 판단 철회</strong>: 초기 "매우 우수" 같은 감각 표현 사용 → 캡틴 지적으로 철회 · 명시적 기준표 재수립 · 지침 14 명문화</li>
+  <li><strong>팩트 충돌 4건 투명 공개</strong>: BonusLink 회원수·식품 배달 점유율·무슬림 비율·e-wallet 점유 — 모두 측정 방법 분리·1차 출처 우선</li>
+  <li><strong>교차 검증으로 이전 추천 정정</strong>: Agent K가 Bangsar T20 anomaly 발견 → 파일럿 지역 정정</li>
+  <li><strong>원점 재검증 수용</strong>: 캡틴 지적 → 타겟 8개 전수 재검토 → A 확정 · B v2+ 이연</li>
+  <li><strong>팩트 대체</strong>: 내 감각 추정 3개 → Agent H 공식 수치 확보 후 철회·대체</li>
+  <li><strong>Pass 1·2차안 폐기 + v3 부활</strong>: Agent P/Q/R 결과 → "할인 구독" 카테고리 실패 인정 → 캡틴의 "시간 판매" 카테고리 전환 수용 · 이전 RM 15·12.90 안 폐기</li>
+  <li><strong>유닛 이코노믹스 보수 보정</strong>: 인구 추정 150k → 75-85k (50% 다운) · Pass MRR RM 1,940 → RM 980 · 솔직한 수치로 재산정</li>
+  <li><strong>플로팅 모달 전면 철거</strong>: 캡틴 지적 → "은행 앱 수준 거래 검색 불가" 인정 → Phase v2-B/C에서 풀페이지 라우팅으로 전환 · 공통 라우팅 인프라 구축</li>
+  <li><strong>옵션 1 vs 2 선택 (현장 답사 검증)</strong>: Agent 1개 추가 투입 vs 기획서 명시 → 후자 채택 (Part 6 가설 4 명문화 · ROI 우선)</li>
+</ol>
+
+<h4>4.9 쉬웠던 것</h4>
+
+<ul>
+  <li><strong>병렬 리서치 속도</strong> — 13명 규모의 리서처를 1 PM 혼자 병렬 오케스트레이션. 전통 2~3주 시장 조사를 수 시간으로 축소</li>
+  <li><strong>문서 구조화·HTML 생성</strong> — 사이드바 네비·섹션 분할·표·callout 즉시 생성. 기획서 본문 2,000줄도 한 턴에 가능</li>
+  <li><strong>팩트 충돌 자동 감지</strong> — 여러 에이전트 결과 비교하는 "큐레이터" 역할에 탁월</li>
+  <li><strong>페르소나 시나리오 언어화</strong> — 감정 비용 표현 ("27년 봐온 손님들... 앱 하나 못 만든 게 부끄럽다")</li>
+  <li><strong>대규모 React prototype 빌드</strong> — Consumer 전체 833줄을 한 Edit 호출에 작성. 라우팅·상태관리·컴포넌트 분리 자동</li>
+  <li><strong>Babel 파서 자동 검증</strong> — Bash로 JSX 포함 코드 syntax 즉시 확인. 매 단계 안전성 보장</li>
+</ul>
+
+<h4>4.10 어려웠던 것</h4>
+
+<ul>
+  <li><strong>에이전트 맥락 전달·동기화</strong> — 각 에이전트 독립 세션. 매 발사 시 핵심 제약·평가 기준 처음부터 주입 필요. 누적 12+ 발사로 비용 증가</li>
+  <li><strong>감각 판단 위험</strong> — AI 대화가 자연스러워 근거 없는 판단이 "자연 합의"로 굳어지기 쉬움. 캡틴 주기적 지적 필수</li>
+  <li><strong>Agent 펑크 (Q 1차)</strong> — 에이전트가 "웹 접근 없다" 변명으로 과제 거부. 타이트 재지시 ("실패는 재시도 없다")로 강제 수행. 표준 발사 프롬프트에 강제 문구 기본 탑재 필요</li>
+  <li><strong>대규모 코드 블록 교체 (Edit 한계)</strong> — 757줄 일괄 삭제는 Edit 도구로 불가능. Bash + Python으로 우회 (마커 삽입 후 Edit). Edit + Read 캐시 불일치 발생</li>
+  <li><strong>Pass 모델 3차 반복</strong> — 1차 RM 15 단일 → 2차 RM 12.90 + Lite → 3차 "시간 판매" 모델. 캡틴 새 인사이트 ("시간을 판다") 없었으면 전체 폐기 위기</li>
+  <li><strong>v1 → v2 IA 전환 비용</strong> — Phase B/C/D로 v1 빌드 완료 후 캡틴 7대 지적 → 전면 재기획. v1 빌드 일부 폐기 · 5턴 토론 · 3턴 재빌드 · 기획서 동기화. 전체 ~10턴 소요</li>
+  <li><strong>72h 한계와 실서비스 경계</strong> — 캡틴이 보안·다중 앱·BNM 인증 등 실서비스 범위 질문 → 과제 범위와 구분 필요 · 장기 계획은 Decision Journal에만 기록</li>
+</ul>
+
+<h4>4.11 AI 의존 리스크·완화</h4>
+
+<table>
+  <tr><th>리스크</th><th>완화</th></tr>
+  <tr><td>환각 — 존재하지 않는 출처 인용</td><td>모든 URL·수치 재확인 · "NO DATA FOUND" 플래그 강제 · 1차 소스 우선</td></tr>
+  <tr><td>의견 편향 — 인기 의견 수렴</td><td>독립 에이전트 2~3대 동시 발사 후 교차 비교 (Pass v3 P/Q/R 사례)</td></tr>
+  <tr><td>감각 판단 감염</td><td>명시적 기준표 · 지침 14 · 캡틴 주기적 지적 · "매우 우수" 같은 표현 금지</td></tr>
+  <tr><td>산출물 무비판 수용</td><td>7축 평가 기준 의무화 · Pass 1·2차안 폐기 결정도 이 기준 적용 결과</td></tr>
+  <tr><td>장시간 대화 맥락 유실</td><td>핵심 결정은 HTML 문서로 외부 기록 · auto-memory 활용 · Decision Journal 14개 엔트리 누적</td></tr>
+  <tr><td>Agent 펑크·게으름</td><td>타이트 재지시 표준화 ("변명 금지·실패 재시도 없다") · WebSearch 직접 호출로 대체 가능</td></tr>
+  <tr><td>대규모 코드 빌드 시 syntax 오류</td><td>Babel parser 매 단계 검증 강제 · 한 턴 2,000줄 상한 분할 원칙</td></tr>
+  <tr><td>보수 추정 과장</td><td>인구·MRR 등 모든 추정치를 "보수" 기준으로 보정 · 솔직한 수치 우선 (Pass MRR RM 980 사례)</td></tr>
+</table>
+
+<h4>4.12 프로토타입 빌드 결과 ✅ Phase v2 완료</h4>
+<div class="callout tldr">
+<strong>파일</strong>: <code>tapik_prototype.html</code> (단일 React HTML · 3,956줄)<br>
+<strong>링크</strong>: <a href="tapik_prototype.html"><strong>▶ Tapik v2 프로토타입 열기</strong></a><br>
+<strong>스택</strong>: React 18 + Tailwind CSS + Babel standalone · CDN 로딩 · 로컬 state only · 라이브러리 미사용 (자체 SVG 차트)<br>
+<strong>v2 구현 범위</strong>:
+<ul style="margin:8px 0 0 0">
+  <li><strong>Consumer (4탭 IA · iPhone 프레임)</strong>: 홈 (레벨 배지·Right Now Hero·근처 매장·친구) · 주문 (선주문 + 5% 서비스료 결제 + QR 픽업 풀플로우·진행 중·이력) · 리워드 (포인트 잔액·퀘스트·사용 내역) · 마이 (프로필·결제수단·친구·설정)</li>
+  <li><strong>Merchant (7탭 · iPad-first 18-26px BM+EN)</strong>: 대시보드·손익 P&amp;L (10% 코어 수수료 정산)·배달·단골 (5세그먼트 + WhatsApp 캠페인)·메뉴 관리·<strong>광고판 (3필드 입력 → 실시간 소비자 미리보기)</strong>·설정. 모든 숫자 클릭 → /transactions 풀페이지 라우팅</li>
+  <li><strong>Admin (7탭 · 데스크톱)</strong>: 개요 (거래 수수료 수익/Cohort/Churn 카드 클릭 가능)·가맹점·자동 진단·소비자 패턴·<strong>거래 모니터링</strong>·파이프라인·이상 감지. 거래 상세·Cohort Detail·Churn Detail·Diagnosis Detail 4개 풀페이지 라우팅</li>
+  <li><strong>3 모드 간 Live state 연동</strong>: 광고판 가맹점 입력 → 소비자 Right Now 즉시 노출 · 선주문 결제 → POS 티켓 + QR 픽업 코드 → 매장 주문 자동 전송 · 모든 데이터 글로벌 state 공유</li>
+  <li><strong>모든 플로팅 모달 철거</strong>: 확인 다이얼로그만 모달 잔존 · 드릴다운은 풀페이지 라우팅</li>
+</ul>
+<strong>시연 동선 (3분)</strong>: Consumer 홈 진입 → Right Now Hero에서 Lim Kopitiam 떨이 카드 클릭 → 매장 상세 → 선주문 (메뉴 선택 → 5% 서비스료 포함 결제 → QR 픽업 코드 발급 + 포인트 적립) → 주문 탭 → QR 픽업 → Merchant 모드 전환 → 대시보드 실시간 알림 + Transactions 풀페이지 드릴다운 (10% 코어 수수료 정산) → 광고판 탭에서 새 카드 등록 → Consumer 모드 돌아와서 노출 확인 → Admin 거래 모니터링에서 수수료 수익 트렌드 확인
+</div>
+
+<h4>4.13 v1 → v2 진화 회고</h4>
+<table>
+  <tr><th>버전</th><th>구현 시점</th><th>특징</th><th>버려진 이유</th></tr>
+  <tr><td>v0 (목업)</td><td>~04-15 04:30</td><td>Consumer 5화면 + Merchant 6탭 + Admin 3탭 (단순)</td><td>플로팅 모달 위주 · IA 빈약 · 소비자 발견 레이어 부재</td></tr>
+  <tr><td>v1 (Phase A/B/C/D)</td><td>~04-15 05:00</td><td>tour·Login·Consumer 단순 5화면 + Merchant iPad 6탭 + Admin 6탭</td><td>캡틴 7대 지적: 드래그 IA·플로팅 모달·B2B2C 약함 등</td></tr>
+  <tr><td><strong>v2 (현행)</strong></td><td>~04-15 07:30</td><td>Consumer 4탭 토스 IA + 선결제 풀플로우 + Pass v3 + 레벨 게이트 + Merchant 7탭 (광고판 신규) + Admin 7탭 (Pass 모니터링 + 4 풀페이지)</td><td>현행 · 검증 통과</td></tr>
+</table>
+
+<h3>Part 4 요약</h3>
+<div class="callout tldr">
+<ul style="margin: 0;">
+  <li><strong>프로토타입 v2</strong>: <code>tapik_prototype.html</code> 단일 React HTML · 3,956줄 · 3 모드 (Consumer 4탭 + Merchant 7탭 + Admin 7탭) · 모든 모달 철거 · 라이브 state 연동 · Babel 검증 통과</li>
+  <li><strong>v2→v3 핵심</strong>: 선주문 + 5% 서비스료 + QR 픽업 + 포인트 환원 풀플로우 · Right Now Hero · 3단계 레벨 게이트 · 광고판 입력 UI · Transactions 풀페이지 · 거래 수수료 10% 정산 뷰 · Cohort·Churn·Diagnosis 풀페이지 4종</li>
+  <li><strong>AI 활용</strong>: Claude Opus 4.6 (1M context) + Claude Agent 13회 발사 + WebSearch 직접 5건 + Babel parser 매 단계 검증 + Bash·Python 코드 우회</li>
+  <li><strong>AI 활용 철학</strong>: 7축 평가 기준 · 즉시 수용 금지 · 교차 검증 · 감각 판단 철회 · 팩트 충돌 투명 공개 · 보수 추정 · 매 단계 syntax 검증</li>
+  <li><strong>쉬웠던 것</strong>: 13명 병렬 리서치 · 대규모 React 빌드 · HTML 문서 구조화 · 페르소나 언어화</li>
+  <li><strong>어려웠던 것</strong>: Agent 펑크 (Q 1차 변명) · 대규모 코드 교체 (757줄 Edit 한계) · v1→v2 IA 전환 비용 · Pass 모델 3차 반복</li>
+  <li><strong>v1 → v2 진화</strong>: 캡틴 7대 지적 → 5턴 토론 → 3턴 분할 빌드 → 기획서 동기화 (~10턴 소요)</li>
+</ul>
+</div>
+
+<h2 id="part-5" class="updated-heading">Part 5 — 프로덕트 스펙 <span class="update-stamp">2026-04-15 작성<span class="ustamp-time">04:45 KST</span></span></h2>
+
+<p>엔지니어·디자이너가 추가 논의 없이 바로 빌드 시작 가능한 수준으로 작성. 평가 기준 "완성도·개발자/디자이너 공감·지표 품질·앞선 파트와 일관성".</p>
+
+<h3>5.1 JTBD (Jobs To Be Done) 프레임</h3>
+
+<h4>Consumer JTBD (Wei Ming 관점)</h4>
+<table>
+  <tr><th>상황</th><th>동기</th><th>성공 결과</th></tr>
+  <tr><td>선주문 시</td><td>줄 안 서고 바로 받기 + 포인트 적립</td><td>시간 절약 + 5% 전액 포인트 환원</td></tr>
+  <tr><td>결제 직후</td><td>선주문 서비스료 5%가 포인트로 자동 적립</td><td>자동 적립 확인 · 누적 가치 시각화</td></tr>
+  <tr><td>점심 피크 11:45~12:30</td><td>지금 빈자리 있고 할인 중인 근처 가게 빠르게 찾기</td><td>대기·탐색 시간 절약 · 새 가게 발견</td></tr>
+  <tr><td>친구와 식사 후</td><td>빠르게 bill-split + DuitNow 송금</td><td>어색함 없이 정산 + 모두 적립</td></tr>
+  <tr><td>월말</td><td>내 리워드 잔액·만료 임박 확인</td><td>숨겨진 혜택 놓치지 않음</td></tr>
+</table>
+
+<h4>Merchant JTBD (Auntie Siew 관점)</h4>
+<table>
+  <tr><th>상황</th><th>동기</th><th>성공 결과</th></tr>
+  <tr><td>Tapik 주문 수신 시</td><td>추가 매출 수신 + 서빙 비용 절감</td><td>10% 코어 수수료이나 서빙비 절감으로 실질 마진 동등 이상</td></tr>
+  <tr><td>아침 오픈 직전</td><td>어제 순이익·오늘 예상 매출 한눈에</td><td>재료·인력 결정 기반 확보</td></tr>
+  <tr><td>GrabFood·FP·Shopee 동시 주문</td><td>모든 주문 하나 보드에 시간순, 수수료·순마진 자동</td><td>누락·오류 방지 + 플랫폼별 수익성 비교</td></tr>
+  <tr><td>단골 Uncle Tan 방문</td><td>그의 선호·방문 기록 확인</td><td>관계 기반 서비스 · 재방문 유지</td></tr>
+  <tr><td>오후 15:00 한산 시간</td><td>매출 끌어올릴 방법</td><td>저매출 전단지 자동 송출 · 인근 소비자 유입</td></tr>
+  <tr><td>월말 정산</td><td>배달 3개 앱 정산·수수료·실수령 정확히</td><td>부기·세무 신고 정확 데이터</td></tr>
+</table>
+
+<h3>5.2 핵심 유저 플로우 3개</h3>
+
+<h4>Flow A — Consumer 결제 · 자동 적립 · 재방문</h4>
+<pre style="background:#f9fafb;border:1px solid #e5e7eb;padding:12px;border-radius:6px;font-size:12px;line-height:1.6;">
+[앱 실행] → [홈: 근처 매장·Right Now Hero] → [매장 선택]
+  → [메뉴 선택 → 수량·옵션 확인]
+  → [결제: 메뉴가 RM 10 + 서비스료 5% RM 0.50 = RM 10.50]
+  → [FPX/DuitNow/TnG 결제 (Payment Gateway 경유)]
+  → [주문 완료 → POS 티켓 자동 전송 → 예상 완료 시간 표시]
+  → [+50P 포인트 즉시 적립 (서비스료 전액)]
+  → [매장 도착 → QR 코드 제시 → 수령]
+  → [홈 복귀 · 누적 포인트 반영]
+
+(재방문 시나리오)
+[다음날 앱 푸시: "Lim Kopitiam 오늘 Kaya Toast 바로 픽업 가능"]
+  → [선주문 → 포인트 추가 적립 → 크로스 가맹점 사용 가능]
+</pre>
+
+<h4>Flow B — Merchant POS 통합 · 통합 대시보드</h4>
+<pre style="background:#f9fafb;border:1px solid #e5e7eb;padding:12px;border-radius:6px;font-size:12px;line-height:1.6;">
+[매장 결제 (POS 기존 플로우)] → [POS 웹훅 Tapik 서버 수신]
+[배달 주문 (Grab/FP/Shopee API)] → [Tapik 서버 정규화·통합]
+[DuitNow QR 웹훅] → [결제 이벤트 저장]
+[현금 매출 (POS 일일 리포트)] → [수기 or POS 연동]
+  → [자동 분개 로직]
+  → [Merchant 대시보드]
+      ├ 오늘 매출 요약 (채널별·결제수단별)
+      ├ 배달 오더 통합 보드 (시간순·수수료·순마진)
+      ├ 현금흐름 (일/주/월 유입·유출·순현금)
+      └ 실시간 알림 (단골 방문·배달 접수·이상 패턴)
+</pre>
+
+<h4>Flow C — Merchant 단골 관리 · 리워드 발행</h4>
+<pre style="background:#f9fafb;border:1px solid #e5e7eb;padding:12px;border-radius:6px;font-size:12px;line-height:1.6;">
+[설정 → 적립 비율 RM 100당 1pt 등 조정]
+  → [소비자 결제 → 자동 포인트 발행]
+  → [포인트 부채 누적 (대시보드 추적)]
+  → [단골 Top 10 실시간 갱신]
+  → [특정 고객 방문 횟수·평균 객단가 확인]
+  → [커스텀 오퍼: "Uncle Tan 다음 방문 시 무료 커피"]
+  → [소비자 앱에 개인화 알림]
+</pre>
+
+<h3>5.3 유저 스토리 (v1 핵심만)</h3>
+
+<h4>Consumer</h4>
+<ol>
+  <li><strong>Google/Apple/이메일로 가입</strong> — 30초 내 완료 · PDPA 동의 명시</li>
+  <li>홈에서 <strong>반경 500m~3km 매장 3~5개 카드</strong> · 실시간 대기·할인 표시</li>
+  <li>매장 상세에서 <strong>내 단골 포인트 누적 확인</strong></li>
+  <li><strong>Tapik 결제 버튼</strong> — DuitNow QR 띄우고 결제 후 자동 적립</li>
+  <li>선결제 → 전용 태블릿 주문 전송 → QR 픽업 — <strong>POS 무관, Tapik 폐쇄 루프</strong></li>
+  <li>내 리워드 페이지 — <strong>매장별 잔액·만료 임박·누적 절약 금액</strong></li>
+  <li>더치페이 — 친구 3~5명 초대 · DuitNow 자동 송금 요청</li>
+  <li>푸시 알림 설정 (만료 임박·근처 단골 할인)</li>
+</ol>
+
+<h4>Merchant</h4>
+<ol>
+  <li>이메일+2FA 로그인 (가맹점 코드 사전 발급)</li>
+  <li>대시보드 홈 — <strong>오늘 총매출·배달 매출·발행 포인트</strong></li>
+  <li>배달 오더 보드 — <strong>3 플랫폼 시간순 · 수수료 자동 계산 · 상태 필터</strong></li>
+  <li>현금흐름 — 일/주/월 유입·유출·순현금</li>
+  <li>단골 Top 10 — 이름·방문횟수·평균객단가·최근방문</li>
+  <li>설정 — 적립 비율·저매출 전단지·POS 연동 상태</li>
+  <li>알림: 신규 배달 접수·단골 재방문·이상 패턴</li>
+</ol>
+
+<h4>Admin</h4>
+<ol>
+  <li>SSO (Google Workspace) + 2FA · VPN 제한</li>
+  <li>전체 가맹점 현황 (지역별·구독 tier별)</li>
+  <li>이상 거래 감지 (규칙 기반 v1, AI v2)</li>
+  <li>소비자 MAU·리워드 부채·수익 지표</li>
+  <li>가맹점 온보딩 파이프라인</li>
+</ol>
+
+<h3>5.4 데이터 · 상태 요구사항</h3>
+
+<h4>핵심 엔터티</h4>
+<table>
+  <tr><th>엔터티</th><th>주요 필드</th><th>관계</th></tr>
+  <tr><td><strong>User</strong> (Consumer)</td><td>id · auth_provider · google_sub · email · phone · name · created_at</td><td>→ Transaction · Reward · Reservation</td></tr>
+  <tr><td><strong>Merchant</strong></td><td>id · business_name · pos_partner · area · tier · subscription_id · owner_email · created_at</td><td>→ Transaction · DeliveryOrder · Subscription · ReceiptSignature</td></tr>
+  <tr><td><strong>Transaction</strong></td><td>id · user_id · merchant_id · amount · method · pos_tx_ref · source (pos_webhook/qr_scan) · created_at</td><td>→ Reward</td></tr>
+  <tr><td><strong>Reward</strong></td><td>id · user_id · merchant_id · transaction_id · points · type (earn/redeem/expire) · expires_at</td><td>— (immutable ledger)</td></tr>
+  <tr><td><strong>DeliveryOrder</strong></td><td>id · merchant_id · platform · platform_order_id · items · gross · fee · net · status</td><td>→ Merchant</td></tr>
+  <tr><td><strong>Reservation</strong> (v1.5)</td><td>id · user_id · merchant_id · pax · slot · status</td><td>→ Merchant</td></tr>
+  <tr><td><strong>Subscription</strong></td><td>id · merchant_id · tier · started_at · ends_at · status</td><td>→ Merchant</td></tr>
+  <tr><td><strong>AuditLog</strong></td><td>id · actor_type · actor_id · action · target · timestamp · ip · user_agent</td><td>감사 추적</td></tr>
+</table>
+
+<h4>주요 상태 머신 — Transaction</h4>
+<pre style="background:#f9fafb;border:1px solid #e5e7eb;padding:12px;border-radius:6px;font-size:12px;">
+created → signed (POS 서명 검증 통과) → rewarded (포인트 발행 완료)
+                ↓ 서명 실패
+              rejected (로그만 남김 · 소비자 알림)
+</pre>
+
+<h4>웹훅 보안 (POS 신호 수신 시)</h4>
+<ul>
+  <li>HMAC 서명 검증 (POS 파트너별 키)</li>
+  <li>IP 화이트리스트</li>
+  <li>멱등성 (동일 tx_ref 중복 처리 차단)</li>
+  <li>거래 시간 만료 (발행 후 24시간 내 스캔 유효)</li>
+  <li>이상 패턴 탐지 (동일 사용자 · 동일 가맹점 1시간 10회+ 차단)</li>
+</ul>
+
+<h3>5.5 성공 지표 (KPI) · 목표 수치</h3>
+
+<h4>North Star Metric</h4>
+<div class="callout key">
+<strong>WAR (Weekly Active Regulars)</strong> — 주 2회 이상 동일 가맹점 방문하며 Tapik으로 적립한 고유 소비자 수<br>
+12주 목표: <strong>500</strong>
+</div>
+
+<h4>Consumer KPI</h4>
+<table>
+  <tr><th>지표</th><th>12주 목표</th><th>측정 방법</th></tr>
+  <tr><td>D30 리텐션</td><td>40%+</td><td>가입 30일 후 재방문 비율</td></tr>
+  <tr><td>월 적립 횟수 / 활성 사용자</td><td>8회+</td><td>Transaction 테이블 집계</td></tr>
+  <tr><td>단골 가맹점 수 / 사용자</td><td>평균 2.5개+</td><td>Reward 테이블 · merchant_id 유니크 수</td></tr>
+  <tr><td>NPS</td><td>40+</td><td>인앱 설문 (주차 8·12)</td></tr>
+  <tr><td>포인트 사용 전환율</td><td>25%+</td><td>적립 후 6개월 내 포인트 사용 사용자</td></tr>
+  <tr><td><strong>선주문 사용 비율 (신규)</strong></td><td>30%+</td><td>전체 사용자 중 선주문으로 주문한 사용자</td></tr>
+  <tr><td><strong>서비스료 수용률 (신규)</strong></td><td>앱 주문 vs 매장 직접 비율 1:0.8 이상</td><td>선주문 거래액 / 매장 직접 주문 거래액</td></tr>
+  <tr><td><strong>일일 주문 건수 (신규)</strong></td><td>가맹점당 평균 10건+</td><td>일일 거래 데이터</td></tr>
+</table>
+
+<h4>Merchant KPI</h4>
+<table>
+  <tr><th>지표</th><th>12주 목표</th><th>측정 방법</th></tr>
+  <tr><td>가맹점당 주간 활성 소비자</td><td>평균 35명+</td><td>distinct user_id per merchant weekly</td></tr>
+  <tr><td>가맹점당 일일 선주문 건수</td><td>평균 10건+</td><td>daily transaction count via pre-order</td></tr>
+  <tr><td>단골 재방문 빈도 리프트</td><td>15%+ vs pre-Tapik baseline</td><td>before/after 비교 (파일럿 가맹점 self-compare)</td></tr>
+  <tr><td><strong>가맹점 실수령 만족도 (신규)</strong></td><td>80%+ (10% 코어 수수료 · 서빙비 절감으로 순익 동등 이상)</td><td>설문 · 재계약율로 간접 측정</td></tr>
+  <tr><td><strong>선결제 유효 카테고리 비중 (신규)</strong></td><td>60%+</td><td>모던 카페+카운터 Kopitiam+테이크아웃 / 전체 가맹점</td></tr>
+  <tr><td><strong>가맹점 광고판 활성률 (신규)</strong></td><td>40%+ 가맹점이 주 1회+ 게시</td><td>Right Now 카드 등록 가맹점 / 활성 가맹점</td></tr>
+</table>
+
+<h4>Business KPI</h4>
+<table>
+  <tr><th>지표</th><th>12주 목표</th><th>비고</th></tr>
+  <tr><td>총 선주문 거래액</td><td>RM 50,000+</td><td>Payment Gateway 경유 거래액 (Tapik은 수수료만 처리)</td></tr>
+  <tr><td>거래 수수료 MRR (10%)</td><td>RM 417+ (12주 선주문 거래액 누적)</td><td>선주문 거래액 × 10% 수수료 · v3 대비 1.25배 증가</td></tr>
+  <tr><td>서비스료 MRR (5% 전액 포인트)</td><td>RM 209+ (12주 선주문 거래액 누적)</td><td>선주문 거래액 × 5% 서비스료 (모두 포인트로 환원)</td></tr>
+  <tr><td>포인트 전환 비율</td><td>25%+ (발행 포인트 중 실제 사용 비율)</td><td>수익 인식 기준 (COGS 절감)</td></tr>
+  <tr><td>파일럿 지역 침투율 (Tier 1 중)</td><td>2%+</td><td>거주 인구 75-85k 기준</td></tr>
+  <tr><td>CAC (가맹점 획득 비용)</td><td>&lt; RM 500 (POS BD 레버리지 효과)</td><td>파일럿 무료라 회수 시점은 거래 수수료 누적 후</td></tr>
+  <tr><td><strong>스케일 시 ARR 예상 (가맹점 1,000)</strong></td><td>RM 10M (거래 수수료 10% + 5% 포인트)</td><td>월 평균 거래액 RM 100K/점포 × 가맹점 1,000 × 10% 기준</td></tr>
+</table>
+
+<h3>5.6 Known Open Questions</h3>
+<ol>
+  <li>영수증 QR 스캔률 가정 20~40% — 실제 파일럿 측정 전 불명 (BonusLink·Starbucks 프록시)</li>
+  <li>Merchant 구독 WTP (월 RM 150·250·400) — 초기 가정. 4주 무료 후 전환율로 검증</li>
+  <li>말레이 PDPA 자세한 동의 플로우 — 법무 리뷰 필요</li>
+  <li>정확한 POS 파트너 가맹점 수 · 업종 · 지역 분포 — 파트너 MOU 후 DB 조회</li>
+  <li>자동 적립만으로 단골 빈도 15%+ 리프트 입증 가능한가 — Part 6 핵심 실험</li>
+  <li>말레이 SNS 로그인 최적 조합 (Google + Apple + Facebook) — A/B 테스트 필요</li>
+  <li>배달 플랫폼 API 파트너십 기간 (Grab·Foodpanda) — 각각 3~6개월 심사</li>
+  <li>구형 POS 영수증 템플릿 수정 권한 — POS 공급자 협조 필요도</li>
+  <li>이상 거래 탐지 규칙 임계값 (1시간 10회 등) — 실데이터로 조정 필요</li>
+  <li>v1.5 선결제 옵트인 시 BNM Limited Purpose Exemption 세부 조건 — 법무 확정</li>
+</ol>
+
+<h3>Part 5 요약</h3>
+<div class="callout tldr">
+<ul style="margin:0">
+  <li><strong>JTBD</strong>: 소비자 4 · 가맹점 5 — 실제 상황·동기·결과로 프레이밍</li>
+  <li><strong>핵심 플로우 3</strong>: Consumer 결제→적립→재방문 · Merchant POS 통합→대시보드 · Merchant 단골→리워드</li>
+  <li><strong>유저 스토리</strong>: Consumer 8 · Merchant 7 · Admin 5</li>
+  <li><strong>데이터 모델</strong>: 8 엔터티 + 상태 머신 + 웹훅 보안 5가지</li>
+  <li><strong>North Star</strong>: WAR (주간 활성 단골) · 12주 목표 500명</li>
+  <li><strong>Open Questions</strong>: 10개 — 파일럿 데이터로 해소</li>
+</ul>
+</div>
+<h2 id="part-6" class="updated-heading">Part 6 — 검증·실행 계획 <span class="update-stamp">2026-04-15 작성<span class="ustamp-time">05:00 KST</span></span></h2>
+
+<p>평가 기준 "가설 기반 사고·실험 설계·리소스 인식·의사결정 프레임워크". 3개 위험 가정 · 각 실험 · 피벗/진행 기준 · 12주 로드맵 · AI 활용 포인트.</p>
+
+<h3>6.1 가장 위험한 가정 3개</h3>
+
+<div class="callout warn">
+<strong>가정 1 — BD 실행 가능성</strong><br>
+POS 파트너(IRS or StoreHub) BD 채널을 통해 Klang Valley Tier 1 가맹점 <strong>100곳을 12주 내 온보딩</strong>할 수 있다.
+</div>
+
+<div class="callout warn">
+<strong>가정 2 — 리텐션 효과</strong><br>
+자동 리워드 적립만으로 단골의 <strong>재방문 빈도가 15%+ 상승</strong>한다 (pre-Tapik baseline 대비).
+</div>
+
+<div class="callout warn">
+<strong>가정 3 — 거래 수수료 수용성 (v3 Payment Gateway 모델)</strong><br>
+선주문을 통한 거래에서 가맹점이 <strong>10% 코어 수수료 + 5% 서비스료 납부를 수용하고, 서빙비 절감으로 순익이 동등 이상</strong>이라고 판단한다. 파일럿 12주 후 가맹점 실수령 만족도 80%+ 목표.
+</div>
+
+<div class="callout warn">
+<strong>가정 4 — 선결제 Pickup 카테고리 적합성 (신규 · 캡틴 우려 반영)</strong><br>
+파일럿 모집 가맹점 중 <strong>모던 카페 + 카운터 주문 Kopitiam + 테이크아웃 매장 비중 60%+</strong> 확보 가능. Mamak·좌석 서빙 중심 매장 비율 30% 이하.<br>
+<em>Week 1 현장 스카우트 3일 (TTDI·SS2·Bangsar 각 1일) 필수. 미달 시 선결제 기능 2주 연기 + 가맹점 모집 전략 재조정.</em>
+</div>
+
+<div class="callout warn">
+<strong>가정 5 — 서비스료 5% + 포인트 전액 환원 메시지 수용성 (신규)</strong><br>
+소비자가 <strong>선주문 시 5% 서비스료 납부를 수용하고, 100% 포인트 환원이 충분한 가치</strong>라고 인식한다. 파일럿 6주 후 선주문 전환율 30%+ 달성을 목표로 포인트 사용 비율 (포인트 이중 사용 감소)로 검증.<br>
+<em>포인트 전환 비율 25% 미만이면 포인트 환원율 조정 또는 추가 인센티브 도입.</em>
+</div>
+
+<h3>6.2 각 가정 실험·지표·피벗 기준</h3>
+
+<h4>실험 1 — BD 온보딩 속도</h4>
+<table>
+  <tr><th>항목</th><th>내용</th></tr>
+  <tr><td>가설</td><td>POS 파트너 BD 팀 영업 지원 시 월 30~40 가맹점 온보딩 가능 (콜드 아웃리치 대비 3배 효율)</td></tr>
+  <tr><td>실험 설계</td><td>Week 1~2 MOU · Week 3 POS 파트너 영업 2명과 공동 영업 시작 · Week 4부터 온보딩 속도 주간 측정</td></tr>
+  <tr><td>지표</td><td>주간 신규 가맹점 수 · 영업 접점 대비 전환율 · 온보딩 소요 시간 (영업 미팅 → 계약)</td></tr>
+  <tr><td>진행 기준</td><td>Week 4~8 평균 월 30+ 가맹점 · 전환율 25%+</td></tr>
+  <tr><td>피벗 기준</td><td>Week 8까지 누적 50 가맹점 미만 · BD 모델 재설계 (직접 영업팀 채용 or 자체 파일럿)</td></tr>
+  <tr><td>완화 옵션</td><td>POS 파트너 2곳 (IRS + StoreHub) 동시 MOU · 백업 채널</td></tr>
+</table>
+
+<h4>실험 2 — 리텐션 리프트</h4>
+<table>
+  <tr><th>항목</th><th>내용</th></tr>
+  <tr><td>가설</td><td>자동 적립 + 누적 시각화 → 동일 소비자의 해당 가맹점 월 방문 빈도 <strong>15%+ 상승</strong> (pre-Tapik 기준 대비)</td></tr>
+  <tr><td>실험 설계</td><td>파일럿 가맹점 자체 비교 (before/after) · 가맹점당 pre-Tapik 6주 POS 데이터 baseline 확보 · Tapik 도입 후 6주 비교</td></tr>
+  <tr><td>지표</td><td>(a) 단골 소비자(주 1회+) 월 방문 빈도 · (b) 단골 소비자당 월 지출 · (c) 신규→단골 전환율</td></tr>
+  <tr><td>진행 기준</td><td>Week 10~12 측정 시 빈도 delta <strong>+15%+</strong> · 지출 delta +10%+</td></tr>
+  <tr><td>피벗 기준</td><td>delta &lt; 8% 시 리워드 구조 재설계 (포인트 → 캐시백 · 티어드 등급 · 등)</td></tr>
+  <tr><td>완화 옵션</td><td>v1 후반 주차 9~12에 "단골 Top 특별 오퍼" A/B 테스트 병행</td></tr>
+</table>
+
+<h4>실험 3 — 거래 수수료 + 포인트 환원 수용성</h4>
+<table>
+  <tr><th>항목</th><th>내용</th></tr>
+  <tr><td>가설</td><td>온보딩한 가맹점의 80%+ 이 10% 거래 수수료 납부를 수용하고 서빙비 절감으로 순익이 기존 대비 동등 이상이라고 인식</td></tr>
+  <tr><td>실험 설계</td><td>Week 3~4 파일럿 가맹점 25곳 선주문 기능 활성화 · Week 4~12 선주문 거래액 · 실수령액 (10% 수수료 차감 후) 추적 · 12주 후 정성 설문 (만족도·재계약 의향)</td></tr>
+  <tr><td>지표</td><td>가맹점 실수령액 (순 거래액) · 수수료 수용도 (설문) · 선주문 거래액 증가율 · 재계약율</td></tr>
+  <tr><td>진행 기준</td><td>실수령 만족도 80%+ (설문) · 주간 선주문 거래액 RM 2,000+ per 매장</td></tr>
+  <tr><td>피벗 기준</td><td>만족도 &lt;60% 시 수수료 구조 재검토 (10% → 8%, 또는 유료 대시보드 옵션 제거)</td></tr>
+  <tr><td>완화 옵션</td><td>초기 4주 5% 수수료로 인센티브 제공 · POS 품질 개선으로 매출 리프트 입증</td></tr>
+</table>
+
+<h3>6.3 12주 로드맵</h3>
+
+<table>
+  <tr><th>주차</th><th>목표 · 산출물</th><th>리소스</th><th>AI 활용 포인트</th></tr>
+  <tr>
+    <td><strong>W1~2</strong><br>개발 셋업</td>
+    <td>Monorepo · 공통 API spec · Supabase DB 스키마 · OAuth (Google/Apple) 구현 · CI/CD</td>
+    <td>Eng1 · PM</td>
+    <td>Cursor로 보일러플레이트 생성 · Claude로 API 계약 문서 자동화</td>
+  </tr>
+  <tr>
+    <td><strong>W1 (병행)</strong><br>현장 스카우트</td>
+    <td><strong>TTDI·SS2·Bangsar 3일 직접 답사</strong> · 모던 카페·카운터 주문 Kopitiam·테이크아웃 매장 카테고리별 인기 상위 매장 리스트 (지구당 20곳) · POS 벤더 추정 · 줄서기 vs 좌석 대기 비율 관찰 · 가맹점 1차 컨택</td>
+    <td>PM · BD 1 · 현지 자문 0.5</td>
+    <td>Instagram·Google Maps Popular Times 사전 스캔 · 답사 대상 우선순위 자동 정렬</td>
+  </tr>
+  <tr>
+    <td><strong>W3~4</strong><br>파일럿 준비</td>
+    <td>POS 파트너 MOU 확정 · 영수증 QR 템플릿 표준화 · TTDI 10·SS2 10·Bangsar 5 = 25 가맹점 MVP 온보딩 (선결제 유효 카테고리 60%+ 비중 확보 필수) · 점주 교육 자료 · 가맹점 앱에서 Pickup/Dine-in/Both opt-in 설정</td>
+    <td>Eng1 · PM · Des0.5 · POS 파트너 BD 2</td>
+    <td>Claude로 점주 교육 영상 스크립트 · 가맹점 영업 스크립트 자동 생성</td>
+  </tr>
+  <tr>
+    <td><strong>W5~6</strong><br>소프트 런칭</td>
+    <td>Consumer 앱 Android·iOS 베타 배포 · 25 가맹점 POS 연동 완료 · 초기 50 소비자 유치 (<strong>영수증 QR + 식탁 QR + POS 화면 안내</strong> — 별도 마케팅 비용 0)</td>
+    <td>Eng1 · PM</td>
+    <td>AI 챗봇으로 가맹점 지원 1차 대응 · 소비자 FAQ 자동화</td>
+  </tr>
+  <tr>
+    <td><strong>W7~8</strong><br>1차 확장 + 가정 1·2 초기 지표</td>
+    <td>TTDI 30 · SS2 30 · Bangsar 15 = 75 가맹점 · 소비자 300+ · <strong>Baseline vs post-Tapik 비교 시작</strong> · 실험 1·2 중간 리뷰</td>
+    <td>Eng1 · PM · POS BD · Des0.5</td>
+    <td>Claude로 실험 결과 분석·리포트 자동화</td>
+  </tr>
+  <tr>
+    <td><strong>W9~10</strong><br>개인화·전환 실험</td>
+    <td>단골 Top 대상 개인화 오퍼 A/B 테스트 · 저매출 시간 디지털 전단지 활성화 · Plus tier 구독 유도 · 실험 3 시작</td>
+    <td>Eng1 · PM</td>
+    <td>Claude로 세그먼트별 오퍼 카피 생성 · 가맹점 맞춤 대시보드 인사이트 자동 생성</td>
+  </tr>
+  <tr>
+    <td><strong>W11~12</strong><br>100 가맹점 도달 · v1.5 결정</td>
+    <td>100 가맹점 · 500 소비자 · WAR 500 도달 · 가정 1·2·3 최종 지표 · v1.5 로드맵 (선결제·2차 지역 확장·프리미엄 플랜) 확정</td>
+    <td>Eng1 · PM · POS BD</td>
+    <td>Claude로 투자자·파트너 업데이트 자료 자동 생성 · v1.5 기능 우선순위 분석</td>
+  </tr>
+</table>
+
+<h3>6.4 리스크·완화</h3>
+
+<table>
+  <tr><th>리스크</th><th>확률</th><th>영향</th><th>완화</th></tr>
+  <tr><td>POS 파트너 직접 경쟁 진입 (자체 리워드 앱 출시)</td><td>중</td><td>치명</td><td>MOU에 3년 독점·조기 해지 위약금 조항 · 데이터 독점성 명시</td></tr>
+  <tr><td>Grab/Foodpanda 수수료 인하 반격</td><td>중</td><td>중</td><td>v1 핵심 가치는 리워드·단골 관리 — 수수료 기반 경쟁 아님 · 가맹점 대시보드 대체불가</td></tr>
+  <tr><td>영수증 QR 스캔률 20% 미만 (소비자 귀찮음)</td><td>중~높음</td><td>높음</td><td>신형 POS 가맹점 우선 온보딩 (자동 적립) · 스캔 시 즉시 더블 포인트 인센티브 · 스캔 UX 1-tap 극단 단순화</td></tr>
+  <tr><td>PDPA 준수 미흡으로 소비자 항의</td><td>낮음</td><td>중</td><td>온보딩 동의 플로우 법무 리뷰 · 데이터 수집·저장·삭제 투명 문서화</td></tr>
+  <tr><td>가맹점 POS 변경 시 Tapik 연동 단절</td><td>중</td><td>중</td><td>POS 파트너 2곳 (IRS + StoreHub) · API 추상화로 다른 POS 확장 가능</td></tr>
+  <tr><td>엔지니어 1명 병목 (번아웃·이직)</td><td>낮음~중</td><td>치명</td><td>AI 코딩 활용 극대화 · 공통 UI·API·테스트 자동화 · 엔지니어 2인 확보 시점 앞당김</td></tr>
+</table>
+
+<h3>6.5 AI 툴 활용 포인트 (과제 평가 연결)</h3>
+
+<ul>
+  <li><strong>Claude</strong>: 아키텍처 결정·문서·API spec·실험 설계·결과 분석 · 전 단계</li>
+  <li><strong>Cursor·v0·Bolt</strong>: 코드 가속 (보일러플레이트·컴포넌트·테스트)</li>
+  <li><strong>Claude 에이전트 subagent</strong>: 정기 리서치 (경쟁사 모니터링·규제 변경 감지)</li>
+  <li><strong>AI 챗봇</strong>: 가맹점·소비자 1차 지원 자동화 (24/7)</li>
+  <li><strong>AI 카피 생성</strong>: 가맹점 영업 스크립트·소비자 푸시 알림·마케팅 자료</li>
+  <li><strong>AI 분석</strong>: A/B 테스트 결과·단골 세분화·이상 거래 탐지 (v2 LLM 기반)</li>
+</ul>
+
+<h3>6.6 12주 후 시점 "성공 모습"</h3>
+
+<div class="callout key">
+<strong>12주 끝 시점 (과제 "12주 후 성공 모습" 질문 정면 답변)</strong>:
+<ul style="margin:8px 0 0 0">
+  <li>✅ 100 가맹점 · 500 소비자 · WAR 500 달성</li>
+  <li>✅ 가정 1 검증 (BD 온보딩 속도) · 가정 2·3 지표 수집 완료</li>
+  <li>✅ 파일럿 가맹점 단골 재방문 빈도 +15% 리프트 입증</li>
+  <li>✅ 가맹점 일 10건+ 선주문 · 월 거래 수수료 수익 RM 18,000+ (전환율 30%+)</li>
+  <li>✅ SNS 4채널 바이럴 전환율 검증 (TikTok→Telegram→Facebook→WhatsApp)</li>
+  <li>✅ v1 Room 바이럴 지표 확인 — Room 전환율·참여율·creator 리텐션 · Mont Kiara·Subang Jaya 확장 근거</li>
+</ul>
+<strong>실패 시 피벗 결정</strong>: 리워드 구조 재설계 · 가격 구조 재검토 · 타겟 지역 재선정 (Part 6.2 피벗 기준 참조)
+</div>
+
+<h3>Part 6 요약</h3>
+<div class="callout tldr">
+<ul style="margin:0">
+  <li><strong>위험 가정 5</strong>: BD 온보딩 속도 · 리텐션 리프트 · <strong>거래 수수료 수용성 (v3 Payment Gateway)</strong> · <strong>선결제 카테고리 적합성 (신규)</strong> · <strong>서비스료 5% + 포인트 환원 메시지 수용성 (신규)</strong></li>
+  <li><strong>실험 설계</strong>: 각 가정마다 가설·지표·진행/피벗 기준 명시</li>
+  <li><strong>12주 로드맵</strong>: W1 현장 스카우트 (3일) · W1~2 셋업 · W3~4 파일럿 준비 (선결제 유효 카테고리 60%+ 비중 확보) · W5~6 소프트 런칭 · W7~8 확장+1차 지표 · W9~10 개인화 실험 · W11~12 100 가맹점+v1.5 결정</li>
+  <li><strong>리스크 6개</strong>: 각각 완화 전략 명시</li>
+  <li><strong>AI 툴 6개</strong>: 전 단계 활용 — Eng1 팀 제약 극복 핵심 수단</li>
+  <li><strong>12주 후 성공 모습</strong>: 과제 평가 기준 명시 질문 정면 답변</li>
+</ul>
+</div>
+
+<!-- ===================== Part 7 ===================== -->
+<h2 id="part-7" class="updated-heading">Part 7 — 요약 · 차별화 · 다음 단계 <span class="update-stamp">2026-04-15 신설<span class="ustamp-time">07:50 KST</span></span></h2>
+
+<p>과제 평가자에게 마지막 한 페이지로 핵심을 전달하는 것이 목적. 앞 6 파트의 결론을 응축하고, 경쟁 대비 차별화를 명시하고, 합격 후 첫 30일에 무엇을 할지 보여준다.</p>
+
+<h3 id="exec-summary">7.1 한 페이지 요약 (Executive Summary)</h3>
+
+<div class="callout tldr">
+<p style="margin-top:0"><strong>제품 한 줄</strong>: 말레이시아 독립 F&amp;B 2만+ 매장에서 선주문으로 줄을 없애고, 5% 서비스료를 100% 포인트로 환원하는 시간 절약 레이어.</p>
+
+<p><strong>왜 가능한가</strong>: ShardLab POS 파트너십이 Tapik의 4개 핵심축(자동 적립·선결제 픽업·가맹점 통합 대시보드·Right Now 발견 레이어) 모두에 구조적으로 필요. 경쟁자(BonusLink·GrabRewards·Foodpanda·Eatigo)는 POS 데이터 없이 동일 기능 구현 불가.</p>
+
+<p><strong>왜 지금</strong>: (a) 말레이 e-wallet 64% · DuitNow QR 30억 건/2025 · 결제 디지털화 임계점 · (b) 말레이 F&amp;B 픽업 선결제 시장 부재 (Sunway Lagoon·KLIA Fast Pass만 존재 · 독립 F&amp;B 영역 공백) · (c) e-Invoicing 의무화 2026.01 → 가맹점 디지털 적응 강제 시점.</p>
+
+<p><strong>왜 우리</strong>: ShardLab의 SCBX-해시드 동남아 핀테크 베팅 + POS 파트너 BD 채널이 여기 합쳐지는 유일 지점. 가맹점 자발적 등록 장벽 제거가 결정적.</p>
+
+<p style="margin-bottom:0"><strong>12주 검증 목표</strong>: 100 가맹점 · 500 소비자 · 단골 재방문 +15%p · 선주문 사용 비율 30%+ · 선결제 유효 카테고리 60%+. 이 5개 모두 통과 시 v1.5 (가맹점 1,000곳 확장) 진입.</p>
+</div>
+
+<h3 id="differentiation">7.2 차별화 핵심 — 경쟁 5사 정면 비교</h3>
+
+<table>
+  <tr>
+    <th>차원</th>
+    <th>BonusLink</th>
+    <th>GrabRewards</th>
+    <th>FoodPanda Pro</th>
+    <th>Tealive Rewards</th>
+    <th><strong>Tapik</strong></th>
+  </tr>
+  <tr>
+    <td>커버 가맹점 종류</td>
+    <td>대형 체인 (Shell·AmBank)</td>
+    <td>Grab 생태계 한정</td>
+    <td>배달 입점 한정</td>
+    <td>자체 매장만</td>
+    <td><strong>독립 F&amp;B 2만+ (POS 통합)</strong></td>
+  </tr>
+  <tr>
+    <td>적립 자동화</td>
+    <td>카드 스캔 수동</td>
+    <td>Grab 결제만 자동</td>
+    <td>배달 주문만 자동</td>
+    <td>자체 앱 결제만</td>
+    <td><strong>모든 결제 자동 (POS + 영수증 QR)</strong></td>
+  </tr>
+  <tr>
+    <td>픽업 선결제 (Mobile Order)</td>
+    <td>없음</td>
+    <td>없음</td>
+    <td>배달만</td>
+    <td>자체 매장만</td>
+    <td><strong>독립 F&amp;B에 최초 도입</strong></td>
+  </tr>
+  <tr>
+    <td>가맹점 측 인사이트 제공</td>
+    <td>본사만 보유</td>
+    <td>가맹점 X</td>
+    <td>제한적</td>
+    <td>본사 내부</td>
+    <td><strong>가맹점 통합 대시보드 (P&amp;L·5세그먼트·AI 진단)</strong></td>
+  </tr>
+  <tr>
+    <td>가맹점 자발 광고판</td>
+    <td>없음</td>
+    <td>없음</td>
+    <td>제한적 (배달 한정)</td>
+    <td>없음</td>
+    <td><strong>3필드 입력 → 실시간 노출</strong></td>
+  </tr>
+  <tr>
+    <td>소비자 시간 혜택 (큐 스킵)</td>
+    <td>없음</td>
+    <td>없음</td>
+    <td>배달만 (시간 절약 X)</td>
+    <td>없음</td>
+    <td><strong>선주문 + 5% 포인트 환원으로 "시간 절약"</strong></td>
+  </tr>
+  <tr>
+    <td>독립 매장 단골 데이터</td>
+    <td>가맹점에 미공유</td>
+    <td>해당 사항 없음</td>
+    <td>해당 사항 없음</td>
+    <td>자체</td>
+    <td><strong>가맹점 직접 보유 + 5세그먼트 자동 분류</strong></td>
+  </tr>
+</table>
+
+<h4>구조적 차별화 3개 (가장 중요)</h4>
+<ol>
+  <li><strong>POS 자체 통합 = 가맹점 자발적 등록 장벽 제거</strong>. 다른 모든 경쟁자는 가맹점이 별도 작업 (앱 설치·QR 부착·POS 통합 직접 작업) 해야 시작 가능. Tapik은 ShardLab POS 파트너 BD 채널로 기존 가맹점 관계 활용 — CAC 1/10.</li>
+  <li><strong>"시간 절약 레이어" 신규 카테고리</strong>. 할인 구독 (Grab Unlimited RM 3.99 · FoodPanda Pro RM 4.90)와 카테고리 자체가 다름. 독립 F&amp;B 픽업 선결제 시장은 말레이시아에 부재 (테마파크·공항·항공만 존재). 카테고리 선점 가능. "시간을 산다" 아니라 선주문으로 "시간을 절약".</li>
+  <li><strong>Payment Gateway 모델 (Tapik은 돈을 건드리지 않음)</strong>. 거래 수수료 10% + 서비스료 5% (전액 포인트 환원). SaaS 구독 없음. 가맹점은 즉시 수익 창출 경험 → 확산 빠름. 소비자는 영원 무료 (선주문 사용료 없음). 경쟁자는 SaaS 또는 수익 분담 모델로 초기 가맹점 저항 높음.</li>
+</ol>
+
+<h3 id="moat">7.3 진입 장벽·해자 (Moat) 분석</h3>
+
+<table>
+  <tr><th>해자 유형</th><th>설명</th><th>강도</th></tr>
+  <tr><td><strong>POS 파트너십 (Distribution Moat)</strong></td><td>ShardLab-IRS Software / StoreHub 등 POS 벤더 직접 채널. 신규 진입자가 동일 채널 확보까지 12-18개월 소요</td><td>★★★ 강함</td></tr>
+  <tr><td><strong>네트워크 효과 (Network Effect)</strong></td><td>소비자 3개+ 매장 이용 비중 33% → 가맹점에게 "Tapik 가입 안 하면 단골 빼앗긴다" 압박. 임계점 이후 비가맹점 자동 유입</td><td>★★ 중간 (임계점 도달 후 강함)</td></tr>
+  <tr><td><strong>POS 데이터 누적 (Data Moat)</strong></td><td>매장별 단골 행동·메뉴 마진·시간대별 매출·재고 회전 — 신규 진입자가 동일 깊이 데이터 확보까지 6-12개월 누적 필요</td><td>★★ 중간 (시간 누적형)</td></tr>
+  <tr><td><strong>가맹점 측 학습 비용 (Switching Cost)</strong></td><td>POS 통합·직원 교육·고객 데이터 마이그레이션 — 한 번 셋업하면 경쟁사 전환 시 동일 비용 재발</td><td>★★ 중간</td></tr>
+  <tr><td><strong>BNM 규제 정합성</strong></td><td>Limited Purpose Exemption 2024 closed-loop 단일 매장 포인트 안전 운영 노하우. e-money 라이선스 없이 운영 가능한 구조 검증</td><td>★ 약함 (신규 진입자도 동일 적용 가능)</td></tr>
+</table>
+
+<p><strong>해자 발현 시점</strong>: 가맹점 1,000곳 + 소비자 10,000명 도달 시점부터 네트워크 효과 + 데이터 모트 동시 발현. v3 Payment Gateway 모델로는 초기 거래 수수료 + 포인트 발행 구조로 즉시 수익. 이전엔 POS 파트너십 단일 해자 의존 → ShardLab POS 채널 우선 확보가 최우선 과제.</p>
+
+<h3 id="next-30d">7.4 합격 후 첫 30일 액션 플랜</h3>
+
+<p>"이 자리에 합격하면 첫 30일에 무엇을 할 것인가" — 과제 평가자가 묻고 싶을 질문 정면 답변.</p>
+
+<table>
+  <tr><th>주차</th><th>핵심 액션</th><th>산출물</th><th>의사결정 책임</th></tr>
+  <tr>
+    <td><strong>Day 1-3</strong></td>
+    <td>(1) ShardLab 내부 stakeholder 매핑 — POS 파트너 BD·법무·재무·엔지니어링 책임자 30분씩 1:1 (2) IRS Software / StoreHub 양사 파트너십 현황 파악 (3) v2 prototype 가맹점 데모 슬롯 확보</td>
+    <td>Stakeholder 맵 · POS 파트너 contact list · 데모 캘린더</td>
+    <td>PO (본인)</td>
+  </tr>
+  <tr>
+    <td><strong>Week 1</strong></td>
+    <td>(4) <strong>현장 답사 3일</strong> (TTDI·PJ SS2·Bangsar 각 1일) — 모던 카페·카운터 Kopitiam·Mamak 카테고리 비중 직접 관찰 (5) Instagram·Google Maps 사전 스캔으로 답사 우선순위 정렬 (6) POS 벤더 영업팀 동행</td>
+    <td>현장 답사 보고서 + 가맹점 1차 컨택 30곳 + 카테고리 비중 검증 (60%+ 목표)</td>
+    <td>PO + BD</td>
+  </tr>
+  <tr>
+    <td><strong>Week 2</strong></td>
+    <td>(7) ShardLab 내부 합의 도출 — 핵심 4축·Pass v3·가맹점 무료 정책·임계점 도달 시 유료 전환 조건 (8) 법무 검토 (BNM Limited Purpose Exemption 2024 적용 범위 + Pass v3 자동 갱신 조항 + PDPA Phase 3 분리 동의)</td>
+    <td>내부 alignment doc + 법무 검토 보고서 + 가맹점 표준 계약서 초안</td>
+    <td>PO + 법무</td>
+  </tr>
+  <tr>
+    <td><strong>Week 3</strong></td>
+    <td>(9) 엔지니어링 구체 스펙 (Part 5 데이터 모델·웹훅 보안·POS 연동 프로토콜) 엔지니어와 합의 (10) 디자인팀과 v2 IA 4탭·iPad-first 18-26px·BM+EN 등 디자인 시스템 합의</td>
+    <td>Engineering spec doc · Design system v0.1</td>
+    <td>PO + Eng + Design</td>
+  </tr>
+  <tr>
+    <td><strong>Week 4</strong></td>
+    <td>(11) Sprint 0 시작 (Monorepo·Supabase·OAuth·CI/CD) (12) 가맹점 25곳 1차 온보딩 시작 (TTDI 10·SS2 10·Bangsar 5) (13) 선주문 결제 게이트웨이 (FPX/DuitNow/TnG) + 포인트 자동 환원 로직 구현</td>
+    <td>가맹점 25곳 계약 체결 · Sprint 0 PR 머지 · Payment Gateway sandbox 작동</td>
+    <td>전체 팀</td>
+  </tr>
+</table>
+
+<h3 id="risks-honest">7.5 솔직한 한계 (Honest Limits)</h3>
+
+<p>72시간 과제 한계와 ShardLab 심사자가 알아야 할 미해결 이슈를 투명하게 명시. 합격 후 1순위 해소 항목.</p>
+
+<ul>
+  <li><strong>현장 감 부재</strong>: 72h 한계로 직접 답사 불가. 인기 독립점포가 Tapik 영업권에 들어올지는 Week 1 현장 스카우트로 검증 (Part 6 가설 4). 이 검증 통과 못 하면 선결제 기능 2주 연기.</li>
+  <li><strong>SS2·Bangsar 단독 인구</strong>: 공식 신뢰 수치 부재 · OpenDOSM API 레벨 재확인 필요. 보수 추정 75-85k 사용 (이전 150k 50% 다운 보정).</li>
+  <li><strong>Pass v3 "시간 구독" 메시지 수용성</strong>: 에이전트 R 재투입 대신 파일럿 6주 실측 데이터로 검증 예정. 주 3회+ 사용자 비율 5%/10% 룰로 무료 한도 조정.</li>
+  <li><strong>가맹점 무료 → 유료 전환율</strong>: 임계점 도달 후 50% 전환 가정. 미달 시 가격 구조 재검토 (Basic RM 49 → RM 29 등).</li>
+  <li><strong>경쟁 반응 (Grab·FoodPanda)</strong>: Tapik 매장 직주문 픽업이 배달 수익 침해 → 보복 가능성. 초기 3개월은 "포장·픽업 한정"으로 충돌 최소화.</li>
+  <li><strong>v2 prototype은 시뮬레이션</strong>: Pass 자동 갱신 결제·가맹점 POS 실제 연동·BNM 인증·PDPA 동의 플로우 등 실서비스 인프라 미구현. MVP 12주 단계에서 순차 구축.</li>
+</ul>
+
+<h3 id="closing">7.6 마무리 한 줄</h3>
+
+<div class="callout key" style="background:#1f2937;color:white;border-left:4px solid #f59e0b;padding:18px 24px;margin:16px 0">
+<p style="margin:0;font-size:15px;line-height:1.7">
+<strong>Tapik이 풀려는 것</strong>은 "또 하나의 할인 앱"이 아니라 <strong>말레이시아 독립 F&amp;B 2만+ 매장의 "시간 절약 레이어"</strong>다. 선주문으로 소비자는 점심 피크의 15분을 절약하고, 5% 서비스료는 100% 포인트로 돌려받는다. 가맹점은 10% 거래 수수료로 추가 매출을 얻되 서빙비 절감으로 실질 마진을 지킨다.
+</p>
+</div>
+
+<h3>Part 7 요약</h3>
+<div class="callout tldr">
+<ul style="margin:0">
+  <li><strong>Executive Summary</strong>: 한 페이지로 응축한 무엇·왜 가능·왜 지금·왜 우리 + 12주 검증 목표 5개 (선주문 사용률 30%+ 추가)</li>
+  <li><strong>차별화</strong>: 경쟁 5사 정면 비교 표 + 구조적 차별화 3개 (POS 통합·시간 절약 레이어·Payment Gateway 모델)</li>
+  <li><strong>해자 5종</strong>: POS 파트너십 (★★★) · 네트워크 효과 (★★) · 데이터 (★★) · 학습 비용 (★★) · 규제 정합성 (★)</li>
+  <li><strong>합격 후 첫 30일</strong>: Day 1-3 stakeholder 매핑 → Week 1 현장 답사 → Week 2 내부 합의·법무 → Week 3 spec 확정 → Week 4 Sprint 0 + 가맹점 25곳 1차 온보딩</li>
+  <li><strong>솔직한 한계 6개</strong>: 현장 감·인구 데이터·포인트 전환율·거래 수수료 수용성·경쟁 반응·prototype 시뮬레이션 한계 투명 공개</li>
+  <li><strong>마무리</strong>: "또 하나의 할인 앱"이 아니라 독립 F&amp;B 2만+ 매장의 시간 절약 레이어</li>
+</ul>
+</div>
+
+</main>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  try {
+    var KEY = 'shardlabPbSeenUpdates';
+    var seen = [];
+    try { seen = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e) { seen = []; }
+    document.querySelectorAll('.nav-new').forEach(function(badge) {
+      var id = badge.getAttribute('data-update-id');
+      if (!id) return;
+      if (seen.indexOf(id) !== -1) { badge.classList.add('seen'); return; }
+      var link = badge.parentElement;
+      link.addEventListener('click', function() {
+        badge.classList.add('seen');
+        if (seen.indexOf(id) === -1) {
+          seen.push(id);
+          try { localStorage.setItem(KEY, JSON.stringify(seen)); } catch(e) {}
+        }
+      });
+    });
+  } catch (err) {}
+});
+</script>
+</body>
+</html>

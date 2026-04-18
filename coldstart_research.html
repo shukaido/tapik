@@ -1,0 +1,2946 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>콜드 스타트 전략 리서치 — 말레이시아 대중문화·네트워크 마케팅·수수료 구조 조사</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    background: #fff; color: #1f2937; line-height: 1.7; font-size: 15px;
+  }
+  /* Sidebar Navigation */
+  .sidebar { position: fixed; top: 0; left: 0; width: 220px; height: 100vh; background: #f9fafb; border-right: 1px solid #e5e7eb; padding: 20px 14px; overflow-y: auto; z-index: 100; }
+  .sidebar h3 { font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 12px; }
+  .sidebar a { display: block; padding: 6px 10px; font-size: 12.5px; color: #374151; text-decoration: none; border-radius: 6px; margin: 2px 0; line-height: 1.4; }
+  .sidebar a:hover { background: #e5e7eb; color: #111827; }
+  .sidebar a.active { background: #6366f1; color: #fff; }
+  .sidebar .section-label { font-size: 10px; color: #9ca3af; text-transform: uppercase; margin-top: 14px; margin-bottom: 4px; padding-left: 10px; letter-spacing: 0.05em; }
+  .container { max-width: 980px; margin: 0 auto; padding: 48px 40px 48px 260px; }
+  @media (max-width: 900px) { .sidebar { display: none; } .container { padding: 32px 20px; } }
+  h1 { font-size: 26px; color: #111827; margin: 0 0 4px; }
+  .subtitle { color: #6b7280; font-size: 13px; margin: 0 0 32px; }
+  h2 { font-size: 21px; color: #111827; margin-top: 44px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 2px solid #111827; }
+  h3 { font-size: 16px; color: #1f2937; margin-top: 26px; margin-bottom: 8px; }
+  h4 { font-size: 14px; color: #374151; margin-top: 18px; margin-bottom: 6px; }
+  p { margin: 8px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 18px; font-size: 13px; }
+  th, td { padding: 9px 12px; border: 1px solid #e5e7eb; text-align: left; vertical-align: top; }
+  th { background: #f9fafb; font-weight: 600; color: #374151; font-size: 11px; text-transform: uppercase; letter-spacing: 0.03em; }
+  .tag { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 10px; font-weight: 700; }
+  .tag-trend { background: #fef3c7; color: #92400e; }
+  .tag-steady { background: #dbeafe; color: #1e40af; }
+  .tag-hot { background: #fecaca; color: #991b1b; }
+  .tag-usable { background: #d1fae5; color: #065f46; }
+  .tag-danger { background: #fee2e2; color: #7f1d1d; }
+  .tag-ok { background: #d1fae5; color: #065f46; }
+  .tag-warn { background: #fef3c7; color: #92400e; }
+  .callout { background: #f8fafc; border-left: 4px solid #6366f1; padding: 14px 18px; border-radius: 0 10px 10px 0; margin: 14px 0; font-size: 13.5px; }
+  .callout-warn { border-left-color: #ef4444; background: #fef2f2; }
+  .callout-ok { border-left-color: #22c55e; background: #f0fdf4; }
+  .callout-critical { border-left-color: #f59e0b; background: #fffbeb; }
+  ul { margin: 6px 0; padding-left: 20px; }
+  li { margin: 3px 0; }
+  .section-divider { border: none; border-top: 3px solid #e5e7eb; margin: 48px 0; }
+  .source { font-size: 11px; color: #9ca3af; }
+  .mono { font-family: "SF Mono", "Fira Code", monospace; font-size: 12px; background: #f3f4f6; padding: 2px 6px; border-radius: 4px; }
+  .flow-box { background: #f0f4ff; border: 2px solid #c7d2fe; border-radius: 12px; padding: 20px; margin: 16px 0; }
+</style>
+</head>
+<body>
+
+<!-- Sidebar Navigation -->
+<nav class="sidebar">
+  <h3>콜드 스타트 리서치</h3>
+  <div class="section-label">콘텐츠 조사</div>
+  <a href="#online">A. 온라인 활동</a>
+  <a href="#offline">B. 오프라인 활동·이슈</a>
+  <div class="section-label">네트워크 전략</div>
+  <a href="#mlm">C. MLM·네트워크 마케팅</a>
+  <a href="#strategy">D. 콜드 스타트 전략 제언</a>
+  <div class="section-label">수수료·마진 분석</div>
+  <a href="#commission">E. 배달앱 수수료 vs 매장 마진</a>
+  <a href="#commission-rates">E-1. 플랫폼별 수수료율</a>
+  <a href="#price-markup">E-2. 배달가격 vs 매장가격</a>
+  <a href="#merchant-margin">E-3. F&B 원가구조·마진</a>
+  <a href="#real-math">E-4. 실제 수치 시뮬레이션</a>
+  <a href="#tapik-feasibility">E-5. Tapik 수수료 실현 가능성</a>
+  <a href="#commission-conclusion">E-6. 결론·캡틴 결정사항</a>
+  <a href="#cost-detail">E-7. 원가 상세 내역·세금</a>
+  <a href="#delivery-vs-dinein">E-8. 배달 vs 매장 비용 비교</a>
+  <div class="section-label">가맹점 페인포인트</div>
+  <a href="#painpoints">F. 가맹점 진짜 페인포인트</a>
+  <a href="#coupon-reality">F-1. 쿠폰 발행 현실</a>
+  <a href="#pain-ranking">F-2. 페인포인트 순위</a>
+  <a href="#tapik-pivot">F-3. Tapik 전략 시사점</a>
+  <div class="section-label">e-Invoice 심층 분석</div>
+  <a href="#einvoice">G. e-Invoice 정책 심층 분석</a>
+  <a href="#einvoice-timeline">G-1. 시행 일정·벌금 구조</a>
+  <a href="#einvoice-exempt">G-2. 면제 범위 (핵심 발견)</a>
+  <a href="#einvoice-merchant">G-3. 가맹점 현실·장벽</a>
+  <a href="#einvoice-market">G-4. 기존 솔루션 시장</a>
+  <a href="#einvoice-politics">G-5. 정치·집행 현실</a>
+  <a href="#einvoice-tapik">G-6. Tapik e-Invoice 전략</a>
+  <div class="section-label">수익모델 진화·확정</div>
+  <a href="#reward-landscape">H. 리워드앱 시장 현황</a>
+  <a href="#payment-infra">H-1. 결제 인프라 (Payment Gateway)</a>
+  <a href="#model-evolution">H-2. 수익모델 진화 과정</a>
+  <a href="#confirmed-model">H-3. 확정 수익모델 (v4)</a>
+  <a href="#unit-economics-v4">H-4. 거래별 단가 시뮬레이션 (v4)</a>
+  <a href="#decision-log">H-5. 의사결정 이력</a>
+</nav>
+
+<div class="container">
+
+<h1>콜드 스타트 전략 리서치</h1>
+<p class="subtitle">말레이시아 온라인·오프라인 대중문화 트렌드 + 네트워크 마케팅 조사 · 2026-04-16</p>
+
+<!-- ===================== PART A: 온라인 활동 ===================== -->
+<h2 id="online">A. 온라인 활동 — 말레이시아 MZ세대 인기 콘텐츠</h2>
+
+<p>대상: KV 25~35세 M40 도시 직장인 · 게임 제외 · "시간을 들여 주기적으로 참여하는 것"</p>
+<p><strong>맥락</strong>: 말레이시아 소셜 미디어 사용자 2,868만 명(인구 83.1%) · TikTok 1,850만 · 하루 평균 소셜 3시간 · 비디오 콘텐츠가 인터넷 트래픽의 82%</p>
+
+<h3>A-1. 트렌딩 (해당 시기에 급부상한 것)</h3>
+
+<table>
+  <tr>
+    <th style="width:5%">#</th>
+    <th style="width:8%">시기</th>
+    <th style="width:20%">활동</th>
+    <th style="width:12%">카테고리</th>
+    <th>설명 & 말레이시아 맥락</th>
+    <th style="width:12%">마케팅 활용</th>
+  </tr>
+  <tr>
+    <td>1</td><td>2023</td>
+    <td><strong>사주(Saju) 한국식 운세</strong></td>
+    <td><span class="tag tag-trend">운세/점술</span></td>
+    <td>한국 드라마·K-wave 영향으로 TikTok에서 #saju 바이럴. 서양 별자리보다 상세한 사주팔자 분석 인기. Sajumuse 같은 앱 등장. 말레이시아 중국계(24%)에게 BaZi와 연결되며 친숙.</td>
+    <td><span class="tag tag-usable">높음</span></td>
+  </tr>
+  <tr>
+    <td>2</td><td>2023</td>
+    <td><strong>MBTI 2.0 열풍</strong></td>
+    <td><span class="tag tag-trend">성격 테스트</span></td>
+    <td>16Personalities 말레이어 버전 출시 후 폭발. 한국에서 시작된 MZ세대 MBTI 열풍이 동남아 확산. 데이팅·채용·마케팅에 활용. 말레이시아 가장 흔한 유형: ISFJ(15.6%).</td>
+    <td><span class="tag tag-usable">매우 높음</span></td>
+  </tr>
+  <tr>
+    <td>3</td><td>2023</td>
+    <td><strong>30 Hari 30 Resepi (Khairul Aming)</strong></td>
+    <td><span class="tag tag-trend">요리/라이프스타일</span></td>
+    <td>TikTok Awards MY 2023 올해의 크리에이터. 라마단 30일 30레시피 시리즈. 삼발 소스 자체 브랜드 론칭 → 매진. 말레이시아 소셜 커머스 선구자.</td>
+    <td><span class="tag tag-usable">중간</span></td>
+  </tr>
+  <tr>
+    <td>4</td><td>2023~24</td>
+    <td><strong>"Delulu" 밈 문화</strong></td>
+    <td><span class="tag tag-trend">소셜 트렌드</span></td>
+    <td>"Delusional"의 Gen-Z 줄임말. TikTok 2025 트렌드 스팟라이트 지정. "delulu is the solulu" — 긍정적 자기기만 문화. 말레이시아 MZ가 적극 수용.</td>
+    <td><span class="tag tag-usable">낮음</span></td>
+  </tr>
+  <tr>
+    <td>5</td><td>2024</td>
+    <td><strong>AI BaZi 분석 (Cantian AI 등)</strong></td>
+    <td><span class="tag tag-trend">운세/AI</span></td>
+    <td>전통 BaZi(사주팔자)를 AI로 자동 분석하는 서비스 급부상. Cantian AI 등 무료 차트 + 프리미엄 상세 분석. 풍수 마스터 예약 2026년까지 풀. 중국계 말레이시아인 핵심 수요층.</td>
+    <td><span class="tag tag-usable">매우 높음</span></td>
+  </tr>
+  <tr>
+    <td>6</td><td>2024</td>
+    <td><strong>TikTok Shop 제휴 프로그램</strong></td>
+    <td><span class="tag tag-trend">소셜 커머스</span></td>
+    <td>2024.12 제휴 링크 기능 출시. 창작자 300만 명, 판매자 170만 명. GMV 27억 달러. Gen-Z 소비자의 35% 점유. 일종의 "깨끗한 MLM".</td>
+    <td><span class="tag tag-usable">높음</span></td>
+  </tr>
+  <tr>
+    <td>7</td><td>2024</td>
+    <td><strong>Dubai Chocolate 바이럴</strong></td>
+    <td><span class="tag tag-trend">음식 트렌드</span></td>
+    <td>TikTok에서 "두바이 초콜릿" 언박싱 영상 폭발. 말레이시아에서도 로컬 버전 팝업 등장. 음식 FOMO(Fear Of Missing Out) 경제의 전형.</td>
+    <td><span class="tag tag-usable">중간</span></td>
+  </tr>
+  <tr>
+    <td>8</td><td>2024~25</td>
+    <td><strong>에니어그램(Enneagram) 부상</strong></td>
+    <td><span class="tag tag-trend">성격 테스트</span></td>
+    <td>MBTI 다음 주자로 에니어그램이 부상. 9가지 유형의 동기·두려움 분석. 직장 팀빌딩·코칭에 활용 증가. 말레이시아 HR 업계에서 도입 확대.</td>
+    <td><span class="tag tag-usable">중간</span></td>
+  </tr>
+  <tr>
+    <td>9</td><td>2025</td>
+    <td><strong>AI 타로 리딩 봇</strong></td>
+    <td><span class="tag tag-trend">운세/AI</span></td>
+    <td>ChatGPT·Claude 기반 타로 봇 TikTok에서 바이럴. "AI에게 타로 물어보기" 챌린지. 전통 타로 리더 → AI 전환 가속. 말레이시아 다민족 문화에서 타로는 비종교적이라 수용도 높음.</td>
+    <td><span class="tag tag-usable">높음</span></td>
+  </tr>
+  <tr>
+    <td>10</td><td>2025~26</td>
+    <td><strong>Soft Clubbing / 말차 레이브</strong></td>
+    <td><span class="tag tag-trend">웰니스/라이프스타일</span></td>
+    <td>과도한 자극을 피하는 "커피 레이브" "말차 레이브". 카페에서 DJ 세트 + 건강 음료. 정신건강 우선시하는 MZ세대 트렌드. KL 카페들 주말 이벤트로 채택 확대.</td>
+    <td><span class="tag tag-usable">중간</span></td>
+  </tr>
+</table>
+
+<h3>A-2. 스테디셀러 (꾸준히 인기, 에버그린)</h3>
+
+<table>
+  <tr>
+    <th style="width:5%">#</th>
+    <th style="width:20%">활동</th>
+    <th style="width:12%">카테고리</th>
+    <th>설명 & 말레이시아 맥락</th>
+    <th style="width:12%">마케팅 활용</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td><strong>BaZi (사주팔자) / 풍수</strong></td>
+    <td><span class="tag tag-steady">운세/전통</span></td>
+    <td>중국계 말레이시아인(인구 24%) 핵심 문화. 설·이사·결혼·개업 전 필수 상담. 온라인 BaZi 상담 Zoom 세션 RM 200~500. 마스터들 2026년까지 예약 풀. 매년 음력 설 전 검색량 300%+ 급등.</td>
+    <td><span class="tag tag-usable">매우 높음</span></td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td><strong>MBTI / 성격 유형 테스트</strong></td>
+    <td><span class="tag tag-steady">성격 테스트</span></td>
+    <td>16Personalities 말레이어 지원. 말레이시아 최다 유형 ISFJ(15.6%). 데이팅 앱 프로필에 MBTI 표기 보편화. 2020년 이후 MZ세대 사이에서 "MBTI가 뭐예요?"가 자기소개 표준 질문으로 정착.</td>
+    <td><span class="tag tag-usable">매우 높음</span></td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td><strong>별자리 운세 (Western Zodiac)</strong></td>
+    <td><span class="tag tag-steady">운세</span></td>
+    <td>Co-Star(3,000만+ 글로벌 유저), Sanctuary, The Pattern 등 앱. 말레이시아 다민족 모두 접근 가능(비종교적). 매일 아침 운세 확인 습관 형성. Instagram Stories "오늘의 별자리" 공유 문화.</td>
+    <td><span class="tag tag-usable">높음</span></td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td><strong>타로 카드 리딩</strong></td>
+    <td><span class="tag tag-steady">운세/점술</span></td>
+    <td>TikTok #tarot 조회수 60억+. 말레이시아에서 타로는 종교가 아닌 "자기 성찰 도구"로 포지셔닝. 온라인 타로 리더 Zoom 세션 RM 80~200. 특히 연애·커리어 의사결정 시 수요 급등.</td>
+    <td><span class="tag tag-usable">높음</span></td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td><strong>스킨케어 루틴 공유 / 뷰티 리뷰</strong></td>
+    <td><span class="tag tag-steady">뷰티/라이프스타일</span></td>
+    <td>말레이시아 뷰티 시장 USD 2.5B+. "Morning Routine" "Night Routine" TikTok 영상 지속 바이럴. 한국 스킨케어(K-beauty) 선호도 매우 높음. Watson, Guardian 앱 리뷰 문화 활발.</td>
+    <td><span class="tag tag-usable">중간</span></td>
+  </tr>
+  <tr>
+    <td>6</td>
+    <td><strong>명상·마음챙김 앱</strong></td>
+    <td><span class="tag tag-steady">웰니스</span></td>
+    <td>Insight Timer, Headspace, Calm 사용자 증가. 말레이시아 건강웰니스 시장 USD 11.4B(2024). 코로나 이후 정신건강 관심 급증 — 성인 3/4이 심각한 비용 스트레스 경험. 수면 명상 콘텐츠 특히 인기.</td>
+    <td><span class="tag tag-usable">중간</span></td>
+  </tr>
+  <tr>
+    <td>7</td>
+    <td><strong>숫자 운세 (Numerology / Lucky Numbers)</strong></td>
+    <td><span class="tag tag-steady">운세</span></td>
+    <td>말레이시아-싱가포르 지역 특수 인기. 차량 번호판 경매(행운 번호 RM 수만~수십만), 전화번호 선택, 사업 개업일 선정에 활용. 중국계·인도계 모두 관심. 디지털 숫자운세 앱 꾸준한 수요.</td>
+    <td><span class="tag tag-usable">높음</span></td>
+  </tr>
+  <tr>
+    <td>8</td>
+    <td><strong>재테크·투자 학습 콘텐츠</strong></td>
+    <td><span class="tag tag-steady">금융/교육</span></td>
+    <td>Ringgit Oh Ringgit, Mr Money TV 등 말레이시아 재테크 인플루언서 활발. ASB·EPF·ASNB 투자 가이드, 생활비 위기 속 MZ세대 금융 리터러시 관심 급증. 주기적 참여: 월별 예산 리뷰, 포트폴리오 체크.</td>
+    <td><span class="tag tag-usable">낮음</span></td>
+  </tr>
+  <tr>
+    <td>9</td>
+    <td><strong>온라인 종교·영성 콘텐츠</strong></td>
+    <td><span class="tag tag-steady">종교/영성</span></td>
+    <td>말레이 무슬림(61%): 라마단 기간 Quran 앱 사용 300%+ 증가, 이슬람 강의 유튜브 채널. 중국계: 불교·도교 온라인 법회. 인도계: 힌두 푸자 라이브스트림. 종교적 참여가 주기적·계절적.</td>
+    <td><span class="tag tag-danger">주의</span></td>
+  </tr>
+  <tr>
+    <td>10</td>
+    <td><strong>온라인 쇼핑 라이브 (Live Commerce)</strong></td>
+    <td><span class="tag tag-steady">소셜 커머스</span></td>
+    <td>Shopee Live, TikTok Live, Lazada Live. 말레이시아 e-커머스 GMV 2025년 3분기 누적 MYR 227B. 라이브 쇼핑이 주 2~3회 정기 참여 패턴 형성. 특히 뷰티·패션·식품.</td>
+    <td><span class="tag tag-usable">중간</span></td>
+  </tr>
+</table>
+
+<div class="callout callout-ok">
+<strong>콜드 스타트 마케팅 활용 우선순위 (온라인)</strong><br>
+<strong>1순위</strong>: MBTI + BaZi/사주 — "당신의 MBTI에 맞는 동네 카페는?" "사주로 보는 오늘의 맛집 운세" 식의 콘텐츠 마케팅. 앱 설치 훅으로 활용 가치 최대.<br>
+<strong>2순위</strong>: 별자리 운세 + 타로 — "오늘의 점심 운세" "타로가 추천하는 이번 주 카페" — 일일 반복 접속 유도.<br>
+<strong>3순위</strong>: 숫자운세 — "당신의 전화번호 끝자리가 말하는 오늘의 할인" 식의 게이미피케이션.
+</div>
+
+
+<hr class="section-divider">
+
+<!-- ===================== PART B: 오프라인 활동/이슈 ===================== -->
+<h2 id="offline">B. 오프라인 활동·이슈 — 말레이시아 핵심 30선 (2023~2026.4)</h2>
+
+<h3>B-1. 2023년 (1~12월)</h3>
+
+<table>
+  <tr>
+    <th style="width:5%">#</th>
+    <th style="width:22%">활동/이슈</th>
+    <th style="width:12%">카테고리</th>
+    <th>규모·영향</th>
+    <th style="width:15%">마케팅 함의</th>
+  </tr>
+  <tr><td>1</td><td><strong>Michelle Yeoh 오스카 수상</strong></td><td>엔터/국가 자부심</td><td>아카데미 여우주연상 (아시아 여성 최초). 전 국가적 축제 분위기. "Malaysia Boleh" 내셔널리즘 폭발.</td><td>로컬 프라이드 자극 마케팅</td></tr>
+  <tr><td>2</td><td><strong>Blackpink Born Pink KL 공연</strong></td><td>K-pop/콘서트</td><td>부킷 잘릴 국립 스타디움 62,642명. K-pop 여성 그룹 단일 공연 최대 규모.</td><td>K-wave 연결 마케팅</td></tr>
+  <tr><td>3</td><td><strong>Good Vibes Festival 취소 사건</strong></td><td>사회 이슈</td><td>The 1975 보컬 매튜 힐리의 안티-LGBT법 비판 후 정부 강제 취소. 표현의 자유 논쟁 촉발.</td><td>정치 민감 — 회피</td></tr>
+  <tr><td>4</td><td><strong>Ichiran Ramen 팝업 (이세탄 KL)</strong></td><td>음식 트렌드</td><td>일본 라면 브랜드 팝업 오픈. 장시간 대기 행렬. 음식 팝업 경제의 모범 사례.</td><td>팝업 협업 모델 참고</td></tr>
+  <tr><td>5</td><td><strong>스페셜티 커피 박람회</strong></td><td>F&B</td><td>국제 카페 & 음료 쇼. 200+ 브랜드. 말레이시아 스페셜티 커피 협회 주관. KV 카페 문화 성장 가속.</td><td><strong>직접 연관 — F&B 행사 참가</strong></td></tr>
+  <tr><td>6</td><td><strong>피트니스 센터 회원 급증</strong></td><td>웰니스</td><td>Anytime Fitness +15%, Fitness First +10%. HIIT·필라테스·스핀 클래스. 시장 규모 MYR 1.5B.</td><td>피트니스 커뮤니티 제휴</td></tr>
+  <tr><td>7</td><td><strong>Jocelyn Chia 코미디 논쟁</strong></td><td>사회 이슈</td><td>호주 코미디언 MH370 비극 조롱. 대규모 온·오프라인 분노. 국가 정체성 담론.</td><td>정치 민감 — 회피</td></tr>
+  <tr><td>8</td><td><strong>Carlsberg Real Spicy 팝업 페스티벌</strong></td><td>F&B/이벤트</td><td>PJ JioSpace. MonsterChef 협업. 브랜드×레스토랑 팝업 모델 확산.</td><td><strong>브랜드 팝업 협업</strong></td></tr>
+  <tr><td>9</td><td><strong>Merdeka Day 66주년 축제</strong></td><td>국경일</td><td>퍼트라자야 10만명+. 문화 공연·퍼레이드. 국가 통합 메시지.</td><td>국경일 캠페인 연계</td></tr>
+  <tr><td>10</td><td><strong>Khairul Aming 삼발 소스 론칭</strong></td><td>소셜 커머스</td><td>TikTok 크리에이터 → 식품 브랜드. 론칭 수 분 만에 매진. 크리에이터 이코노미의 F&B 전환 사례.</td><td><strong>크리에이터 협업 모델</strong></td></tr>
+</table>
+
+<h3>B-2. 2024년 (1~12월)</h3>
+
+<table>
+  <tr>
+    <th style="width:5%">#</th>
+    <th style="width:22%">활동/이슈</th>
+    <th style="width:12%">카테고리</th>
+    <th>규모·영향</th>
+    <th style="width:15%">마케팅 함의</th>
+  </tr>
+  <tr><td>1</td><td><strong>Cromboloni / Kek Tapak Kuda 열풍</strong></td><td>음식 트렌드</td><td>크로쉔+봄볼로니 조합. 수백만 TikTok 조회. 장시간 대기 행렬. 음식 FOMO 경제 전형.</td><td><strong>"한정 메뉴" 연계 전략</strong></td></tr>
+  <tr><td>2</td><td><strong>친-팔레스타인 보이콧 → 로컬 브랜드 전환</strong></td><td>정치적 소비</td><td>국제 프랜차이즈(맥도날드·스타벅스) 보이콧. 로컬 치킨 체인 Borenos 등 매출 수십% 증가. 새 지점 개설 붐.</td><td><strong>로컬 프라이드 마케팅</strong></td></tr>
+  <tr><td>3</td><td><strong>Bruno Mars KL 콘서트</strong></td><td>엔터/콘서트</td><td>국립 스타디움 수만 명 동원. 서방 팝 문화 확산.</td><td>대형 이벤트 연계</td></tr>
+  <tr><td>4</td><td><strong>ZUS Coffee 1,000호점 달성</strong></td><td>F&B/체인</td><td>로컬 커피 체인의 대규모 확장. 해외 진출. 말레이시아 카페 경제의 상징.</td><td><strong>ZUS vs 독립카페 내러티브</strong></td></tr>
+  <tr><td>5</td><td><strong>천연 와인 바 무브먼트</strong></td><td>F&B/라이프스타일</td><td>포용적 와인 문화. MZ세대 대상 와인 바 수십 곳 오픈. 새로운 나이트라이프 카테고리.</td><td>프리미엄 F&B 커뮤니티</td></tr>
+  <tr><td>6</td><td><strong>마이크로 로스팅 커피 열풍</strong></td><td>F&B</td><td>Red Beanbag(PJ), Ground Coffee 등. 장인 커피 문화 확산. 장시간 대기.</td><td><strong>직접 연관 — 독립 카페</strong></td></tr>
+  <tr><td>7</td><td><strong>K-pop 콘서트 시즌</strong></td><td>K-pop</td><td>Super Junior, Epik High, Taeyang. 복수 일정 매진. 팬덤 경제 활성화.</td><td>K-wave 연결</td></tr>
+  <tr><td>8</td><td><strong>Futureland 뮤직 페스티벌</strong></td><td>로컬 음악</td><td>워너뮤직 주최. Hujan, Masdo, Bunkface. 로컬 밴드 대중 관심 증대.</td><td>로컬 프라이드</td></tr>
+  <tr><td>9</td><td><strong>생활비 위기 심화</strong></td><td>사회 이슈</td><td>아동 1/2이 하루 3식 미만. 성인 3/4 심각한 비용 스트레스. 관광 25M명 증가 vs 저소득층 악화. 양극화.</td><td>가성비·할인 메시지 강화</td></tr>
+  <tr><td>10</td><td><strong>국제 관광 25M명 돌파</strong></td><td>관광</td><td>관광 수익 대폭 증가. F&B 소비 증가. Visit Malaysia 2026 캠페인 프리런.</td><td>관광객 유입 시너지</td></tr>
+</table>
+
+<h3>B-3. 2025~2026.4</h3>
+
+<table>
+  <tr>
+    <th style="width:5%">#</th>
+    <th style="width:22%">활동/이슈</th>
+    <th style="width:12%">카테고리</th>
+    <th>규모·영향</th>
+    <th style="width:15%">마케팅 함의</th>
+  </tr>
+  <tr><td>1</td><td><strong>Visit Malaysia 2026 공식 론칭</strong></td><td>국가 캠페인</td><td>2025.9.27 Encore Melaka. "Malaysia Truly Asia" + "Surreal Experiences". 3,000명 자핀 춤 공연.</td><td><strong>VM2026 연계 가능</strong></td></tr>
+  <tr><td>2</td><td><strong>Soft Clubbing / 카페 레이브</strong></td><td>웰니스/라이프스타일</td><td>커피 레이브·말차 레이브. 저자극 파티 문화. 정신건강 우선시. MZ 주말 핵심 활동.</td><td><strong>카페 이벤트 연계</strong></td></tr>
+  <tr><td>3</td><td><strong>정신건강·웰니스 서플먼트 붐</strong></td><td>건강/웰니스</td><td>마그네슘·수면 구미 판매 급증. 부티크 피트니스-식이-정신건강 통합 센터 확산.</td><td>웰니스 파트너십</td></tr>
+  <tr><td>4</td><td><strong>2025 국제 콘서트 러시</strong></td><td>엔터/콘서트</td><td>Maroon 5, Glass Animals, AURORA, Rain, NIKI, Keshi 등 2~4월 집중. 수만 명 동원.</td><td>이벤트 연계 프로모</td></tr>
+  <tr><td>5</td><td><strong>라마단 + 하리 라야</strong></td><td>종교/축제</td><td>2025.2.28~3.30 라마단. 전국 참여. 소매·F&B 매출 급증. 전통 음식 경제 활성화.</td><td><strong>라마단 특별 프로모</strong></td></tr>
+  <tr><td>6</td><td><strong>중국 설날 축제</strong></td><td>문화/축제</td><td>2025.1.29~2.12. 사자춤·불꽃놀이·가족 모임. 소매 매출 급증.</td><td><strong>설날 BaZi 운세 연계</strong></td></tr>
+  <tr><td>7</td><td><strong>Thaipusam 바투 동굴</strong></td><td>종교/축제</td><td>15km 순례. 수만 명 방문. 국제 관광객 유입. 다종교 공존 상징.</td><td>다문화 포용 메시지</td></tr>
+  <tr><td>8</td><td><strong>Malaysia Sarong Music Run</strong></td><td>피트니스/커뮤니티</td><td>페트로나스 쌍둥이 타워 출발. 수천 명 참가. 건강 + 문화 결합.</td><td>러닝 커뮤니티 제휴</td></tr>
+  <tr><td>9</td><td><strong>Raptor Watch 생태관광</strong></td><td>자연/관광</td><td>Tanjung Tuan 야생 보호구역. 친환경 관광 대중화.</td><td>친환경 브랜딩</td></tr>
+  <tr><td>10</td><td><strong>Songkran 스타일 물 축제</strong></td><td>축제/이벤트</td><td>2026.4월 중순. 100+ 수상 스포츠. 가족 단위 참가.</td><td>시즌 이벤트 연계</td></tr>
+</table>
+
+
+<hr class="section-divider">
+
+<!-- ===================== PART C: MLM / 네트워크 마케팅 ===================== -->
+<h2 id="mlm">C. MLM·네트워크 마케팅 — 말레이시아 법적 지위 & 활용 가능 요소</h2>
+
+<h3>C-1. 법적 지위</h3>
+
+<div class="callout callout-ok">
+<strong>결론: 말레이시아에서 MLM은 완전히 합법</strong><br>
+1993년 '직접판매 및 피라미드식 계획금지법(Direct Sales and Anti-Pyramid Scheme Act 1993)' 하에 엄격 규제. 주무부처: 국내무역소비자부(KPDN). 허가 기업 200개+. 무허가 운영 시 벌금 최대 RM 250,000 또는 5년 징역.
+</div>
+
+<table>
+  <tr>
+    <th style="width:40%">합법 MLM</th>
+    <th style="width:40%">불법 피라미드</th>
+  </tr>
+  <tr><td>실제 제품 판매 중심</td><td>신규 모집 수수료 중심</td></tr>
+  <tr><td>수입은 판매 실적 기반</td><td>수입은 모집 기반</td></tr>
+  <tr><td>소비자에게 실질 가치 제공</td><td>참가자 충원으로만 이득</td></tr>
+  <tr><td>환불/반품 정책 존재</td><td>환불 불가</td></tr>
+</table>
+
+<h3>C-2. 시장 규모 & 성공 사례</h3>
+
+<table>
+  <tr><th>지표</th><th>수치</th></tr>
+  <tr><td>2023년 시장 규모</td><td><strong>USD 9.5B (약 RM 45B)</strong></td></tr>
+  <tr><td>독립 판매 대리인</td><td><strong>~800만 명</strong> (여성 63%)</td></tr>
+  <tr><td>3년 CAGR</td><td>8.1%</td></tr>
+  <tr><td>글로벌 순위</td><td>6위 (상위 10개 시장)</td></tr>
+  <tr><td>2024년 국가경제 기여</td><td>RM 344억</td></tr>
+</table>
+
+<p><strong>핵심 성공 기업</strong>: Amway (2024 매출 $7.4B, 대리인 45.4만 명), Herbalife ($5B), QNet ($520M), LiveGood (2026 2위)</p>
+
+<h3>C-3. 왜 말레이시아에서 MLM이 통하나</h3>
+
+<table>
+  <tr>
+    <th style="width:25%">성공 요인</th>
+    <th>설명</th>
+    <th style="width:15%">Tapik 활용</th>
+  </tr>
+  <tr>
+    <td><strong>Gotong-Royong 문화</strong></td>
+    <td>상호부조·공동체 정신. "함께 성장" 철학이 MLM 팀 구축과 자연 정렬. 지역사회 기반 관계 형성이 강함.</td>
+    <td><span class="tag tag-usable">매우 높음</span></td>
+  </tr>
+  <tr>
+    <td><strong>신뢰 네트워크 (Face-to-Face)</strong></td>
+    <td>개인 추천의 높은 신뢰도. 가정방문·개인 대화 기반. 입소문 효과 극대화.</td>
+    <td><span class="tag tag-usable">높음</span></td>
+  </tr>
+  <tr>
+    <td><strong>소셜 커머스 친화</strong></td>
+    <td>TikTok Shop 제휴: 창작자 300만, 판매자 170만. Gen-Z 소비 35%. "깨끗한 MLM" 모델로 진화.</td>
+    <td><span class="tag tag-usable">높음</span></td>
+  </tr>
+  <tr>
+    <td><strong>부수입 추구 문화</strong></td>
+    <td>생활비 위기 속 추가 소득 욕구. 낮은 진입 장벽. 유연한 근무.</td>
+    <td><span class="tag tag-usable">중간</span></td>
+  </tr>
+  <tr>
+    <td><strong>건강·웰니스 트렌드</strong></td>
+    <td>코로나 이후 건강 관심 폭발. 웰니스 카테고리가 시장 30%.</td>
+    <td><span class="tag tag-usable">중간</span></td>
+  </tr>
+</table>
+
+<div class="callout callout-warn">
+<strong>경고: 소비자 신뢰는 하락 중</strong><br>
+2024년 소비자 감정 조사: 부정적 61%(지역 평균 44%, 전년 대비 +10%). 온라인 사기 손실: 2023년 RM 12.8B → 2024년 RM 15.7B → 2025년 RM 27.7B 급증. <strong>MLM이라는 단어 자체에 대한 경계심이 높아지고 있음.</strong> "네트워크 마케팅"이 아닌 "커뮤니티 기반 리워드"로 프레이밍 필요.
+</div>
+
+<h3>C-4. Tapik에 윤리적으로 적용 가능한 메커니즘</h3>
+
+<table>
+  <tr>
+    <th style="width:25%">메커니즘</th>
+    <th style="width:10%">적용성</th>
+    <th>구체 방안</th>
+    <th style="width:15%">법적 위험</th>
+  </tr>
+  <tr>
+    <td><strong>1단계 추천 보상</strong></td>
+    <td><span class="tag tag-usable">적용</span></td>
+    <td>친구 추천 → 친구 첫 구매 시 양쪽 보상 (1회성). 다단계 X, 1단계만. 보상은 Tapik 포인트/쿠폰. TikTok Shop 제휴 모델 참고.</td>
+    <td><span class="tag tag-usable">낮음</span></td>
+  </tr>
+  <tr>
+    <td><strong>공동 구매 그룹</strong></td>
+    <td><span class="tag tag-usable">적용</span></td>
+    <td>"팀 5명이 이번 주 합계 RM 200 이상 사용 → 전원 10% 보너스". Gotong-royong 정신 활용. 모집 기반 아닌 소비 기반.</td>
+    <td><span class="tag tag-usable">낮음</span></td>
+  </tr>
+  <tr>
+    <td><strong>커뮤니티 리더 보상</strong></td>
+    <td><span class="tag tag-usable">조건부</span></td>
+    <td>지역 "Tapik 앰배서더" — 가맹점 소개가 아닌 <strong>소비자 경험 공유</strong>에 대한 보상. 리뷰·후기 작성·스토리 공유 기반. 모집 수수료 절대 X.</td>
+    <td><span class="tag tag-steady">중간</span></td>
+  </tr>
+  <tr>
+    <td><strong>게이미피케이션 챌린지</strong></td>
+    <td><span class="tag tag-usable">적용</span></td>
+    <td>월간 "이달의 미식가" 챌린지 — 새 가맹점 5곳 방문 → 뱃지 + 보너스 포인트. 모집 아닌 탐험 기반.</td>
+    <td><span class="tag tag-usable">낮음</span></td>
+  </tr>
+  <tr>
+    <td><strong>다단계 커미션</strong></td>
+    <td><span class="tag tag-danger">금지</span></td>
+    <td>2단계 이상의 추천 보상은 피라미드 판정 위험. 절대 적용 불가.</td>
+    <td><span class="tag tag-danger">극고</span></td>
+  </tr>
+  <tr>
+    <td><strong>모집 기반 수수료</strong></td>
+    <td><span class="tag tag-danger">금지</span></td>
+    <td>"친구 3명 초대하면 보상" = 피라미드식 계획 판정 가능. 초대가 아닌 <strong>소비</strong>에만 보상.</td>
+    <td><span class="tag tag-danger">극고</span></td>
+  </tr>
+</table>
+
+
+<hr class="section-divider">
+
+<!-- ===================== PART D: 종합 활용 전략 ===================== -->
+<h2 id="strategy">D. 콜드 스타트 마케팅 요소 — 종합 활용 전략 제언</h2>
+
+<table>
+  <tr>
+    <th style="width:5%">#</th>
+    <th style="width:25%">전략</th>
+    <th style="width:12%">활용 소스</th>
+    <th>구체 아이디어</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td><strong>"MBTI × 맛집" 바이럴 콘텐츠</strong></td>
+    <td>MBTI 열풍</td>
+    <td>"INTJ는 조용한 코너 카페, ENFP는 활기찬 Kopitiam" — 16유형별 추천 맛집 카드를 Tapik 앱 설치 시 제공. 결과 공유 → 소셜 바이럴. 앱 미설치자도 웹 랜딩으로 유입 → 결과 보려면 설치.</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td><strong>"오늘의 BaZi 맛집 운세"</strong></td>
+    <td>BaZi/사주 + 숫자운세</td>
+    <td>생년월일 입력 → AI BaZi 분석 → "오늘 火 에너지 과잉, 시원한 음료가 좋아요 → 근처 아이스 음료 할인 가맹점 3곳". 중국계 24% 직격. 음력 설·중추절 시즌 캠페인 연계.</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td><strong>1단계 추천 + Gotong-Royong 팀 보너스</strong></td>
+    <td>네트워크 마케팅</td>
+    <td>"친구 초대 → 친구 첫 구매 시 양쪽 RM 5 쿠폰" + "팀 5명 주간 합계 RM 300 사용 → 전원 15% 보너스 쿠폰". 모집 X, 소비 O 원칙. TikTok Shop 제휴 모델 벤치마크.</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td><strong>로컬 프라이드 캠페인</strong></td>
+    <td>보이콧→로컬 전환 트렌드</td>
+    <td>"동네 가게를 지키는 앱" — 독립 F&B가 체인에 밀리는 현실. "당신의 단골 Kopitiam이 ZUS Coffee에 지지 않도록" 감성 마케팅. Cromboloni 팝업처럼 한정 메뉴 연계.</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td><strong>"타로가 추천하는 이번 주 카페"</strong></td>
+    <td>타로 트렌드</td>
+    <td>주 1회 AI 타로 리딩 → "이번 주 당신의 카드: The Star → 새로운 시작의 에너지! 이번 주 추천 카페: [가맹점명]". 일종의 discovery layer를 운세 컨텐츠로 포장.</td>
+  </tr>
+  <tr>
+    <td>6</td>
+    <td><strong>라마단·하리라야·설날 시즌 프로모</strong></td>
+    <td>종교/문화 축제</td>
+    <td>말레이시아 3대 시즌: 라마단(무슬림 61%), 중국 설날(중국계 24%), 디파발리(인도계 7%). 각 시즌에 맞는 가맹점 특별 프로모 → 앱 설치 유도. "이 가게의 라마단 특별 세트를 Tapik으로 선결제".</td>
+  </tr>
+</table>
+
+<div class="callout">
+<strong>핵심 원칙</strong>: 콜드 스타트에서 "앱을 깔아야 하는 이유"는 리워드가 아니라 <strong>콘텐츠</strong>. MBTI·BaZi·타로 같은 "이미 사람들이 주기적으로 하는 것"에 Tapik의 맛집 발견을 결합하면 설치 동기가 생긴다. 리워드는 설치 후 리텐션 역할. 순서를 바꾸면 안 됨.
+</div>
+
+<p class="source">
+  출처: DataReportal Digital Malaysia · Meltwater Social Media Statistics Malaysia 2024 · 16Personalities Country Profile Malaysia ·
+  Cantian AI · Sajumuse · DSAM (Direct Selling Association of Malaysia) · KPDN Direct Sales Act 1993 ·
+  TikTok Newsroom Malaysia Year on TikTok 2023 · Shopify MY TikTok Trends · Malay Mail Food Trends KV 2024 ·
+  Klook Concerts Malaysia · Sinar Daily Viral Stories 2023 · Malaysia Tourism Official Events
+</p>
+
+<hr class="section-divider">
+
+<!-- ===================== PART E: 배달앱 수수료 vs 매장 마진 분석 ===================== -->
+<h2 id="commission">E. 배달앱 수수료 vs 매장 마진 — Tapik 수수료 실현 가능성 검증</h2>
+
+<p><strong>조사 목적</strong>: GrabFood 픽업 20% vs Tapik 10% (코어) 수수료를 같은 기준으로 비교해야 한다. 배달앱 가격에는 할증이 반영되어 있고, Tapik은 매장 직접 가격 기반이다. 실제 가맹점 관점에서 "RM 1 매출당 실수령액"을 비교해야 Tapik 수수료율의 적정성을 판단할 수 있다.</p>
+<p><strong>방법</strong>: 5개 에이전트 병렬 투입 (GrabFood·FoodPanda·ShopeeFood/기타·가맹점 마진·구체적 메뉴 가격) → 교차검증</p>
+<p class="source">조사일: 2026-04-16 · 에이전트 5개 병렬 · 총 100+ 웹 소스 스캔</p>
+
+<h3 id="commission-rates">E-1. 말레이시아 배달 플랫폼별 수수료율 (교차검증 완료)</h3>
+
+<table>
+  <tr>
+    <th style="width:22%">플랫폼</th>
+    <th style="width:15%">수수료율</th>
+    <th style="width:15%">셀프픽업</th>
+    <th>비고</th>
+    <th style="width:12%">검증 상태</th>
+  </tr>
+  <tr>
+    <td><strong>GrabFood</strong></td>
+    <td><strong>30%</strong></td>
+    <td>20%</td>
+    <td>시장 지배자 (말레이시아 ~2/3 점유). SST 별도. 파트너십 등급에 따라 25~35% 범위.</td>
+    <td><span class="tag tag-ok">5개 에이전트 일치</span></td>
+  </tr>
+  <tr>
+    <td><strong>FoodPanda</strong></td>
+    <td><strong>25~35%</strong></td>
+    <td>미확인</td>
+    <td>Preferred(독점) vs Non-preferred(멀티) 구분. 숨겨진 "Fees & Adjustments" 논란 (2021 보이콧). 실질 부담 30%+.</td>
+    <td><span class="tag tag-ok">4개 에이전트 일치</span></td>
+  </tr>
+  <tr>
+    <td><strong>ShopeeFood</strong></td>
+    <td><strong>30%</strong></td>
+    <td>미확인</td>
+    <td>2024.3월부터 SST 8% 추가 적용. SEA 2위로 성장 (2025 점유율 14%).</td>
+    <td><span class="tag tag-ok">2개 에이전트 일치</span></td>
+  </tr>
+  <tr>
+    <td><strong>AirAsia Food</strong></td>
+    <td><strong>10~20%</strong></td>
+    <td>미확인</td>
+    <td>2020년 출시 시 "최저 10%" 홍보. 현재 15~20% 수준. DeliverEat 인수.</td>
+    <td><span class="tag tag-warn">1개 에이전트</span></td>
+  </tr>
+  <tr>
+    <td><strong>RunningMan 등 로컬</strong></td>
+    <td><strong>10~20%</strong></td>
+    <td>-</td>
+    <td>MCO 때 가맹점 가입 500% 폭증. 저수수료로 틈새 공략.</td>
+    <td><span class="tag tag-warn">1개 에이전트</span></td>
+  </tr>
+</table>
+
+<div class="callout">
+<strong>교차검증 결과</strong>: 빅3(Grab·FoodPanda·Shopee)는 모두 <strong>30% 내외</strong>로 수렴. AirAsia Food만 15~20%로 낮음. 가맹점에게 "30%가 업계 표준"이라는 인식은 정확함.
+</div>
+
+<h3 id="price-markup">E-2. 배달가격 vs 매장가격 — 실제 할증 구조</h3>
+
+<div class="callout callout-warn">
+<strong>캡틴 지적 (v4 업데이트)</strong>: "GrabFood 픽업 20%와 Tapik 10%를 같은 기준으로 비교해야 한다. 배달앱 가격에는 할증료가 붙어서 20%가 가능한 거고, Tapik은 매장 직접 가격 기반이다. 실제 가맹점 관점으로 계산하면, Tapik 10%가 훨씬 유리하다."<br>
+→ <strong>맞다.</strong> 배달 앱 가격 = 매장가격 + 10~15% 할증 + 배달비 RM 3~8 + 서비스비 RM 3~6. 가맹점은 이 할증으로 수수료 30%를 일부 상쇄한다.
+</div>
+
+<h4>가격 할증 패턴 (에이전트 5개 교차검증)</h4>
+
+<table>
+  <tr>
+    <th style="width:25%">할증 유형</th>
+    <th>누가 부담</th>
+    <th>수준</th>
+    <th style="width:12%">합의도</th>
+  </tr>
+  <tr>
+    <td><strong>메뉴 가격 할증</strong></td>
+    <td>소비자 (배달앱 표시가격이 매장보다 높음)</td>
+    <td><strong>10~15%</strong> (유명 체인은 0%, 소규모 가맹점은 15~30%까지)</td>
+    <td><span class="tag tag-ok">4/5</span></td>
+  </tr>
+  <tr>
+    <td><strong>배달비 (Delivery Fee)</strong></td>
+    <td>소비자</td>
+    <td><strong>RM 3~8</strong> (거리·시간대에 따라 변동)</td>
+    <td><span class="tag tag-ok">5/5</span></td>
+  </tr>
+  <tr>
+    <td><strong>서비스/플랫폼비</strong></td>
+    <td>소비자</td>
+    <td><strong>RM 3~6</strong></td>
+    <td><span class="tag tag-ok">3/5</span></td>
+  </tr>
+  <tr>
+    <td><strong>소규모 주문 할증</strong></td>
+    <td>소비자</td>
+    <td>RM 12 미만 주문 시 추가 RM 2~3</td>
+    <td><span class="tag tag-warn">2/5</span></td>
+  </tr>
+</table>
+
+<h4>FoodPanda 전 직원 증언 (에이전트 2 발견):</h4>
+<ul>
+  <li><strong>유명 체인</strong>: FoodPanda가 가격 인상을 허용하지 않음 (브랜드 파워). 30% 수수료를 가맹점이 전액 흡수.</li>
+  <li><strong>중간 브랜드</strong>: 자체적으로 15~30% 가격 인상하여 수수료 상쇄.</li>
+  <li><strong>소규모 노점/RM 10 미만 메뉴</strong>: FoodPanda가 직접 가격에 마크업을 적용.</li>
+</ul>
+
+<h4>소비자 체감 총 비용 예시</h4>
+
+<div class="flow-box">
+<strong>RM 30 식사 기준 — 매장 vs 배달 총 비용 비교</strong><br><br>
+<span class="mono">
+매장 직접 방문: RM 30.00<br><br>
+GrabFood 주문:<br>
+  메뉴 가격: RM 33.00~34.50 (10~15% 할증)<br>
+  + 배달비: RM 5.00~8.00<br>
+  + 서비스비: RM 3.00~6.00<br>
+  = 총 RM 41.00~48.50<br><br>
+<strong>소비자 추가 부담: +37%~62%</strong>
+</span>
+</div>
+
+<h3 id="merchant-margin">E-3. 말레이시아 F&B 원가구조 & 마진 (교차검증 완료)</h3>
+
+<h4>"3분의 1 법칙" — 업계 표준 원가구조</h4>
+
+<table>
+  <tr>
+    <th style="width:25%">비용 항목</th>
+    <th style="width:15%">매출 대비 %</th>
+    <th>설명</th>
+  </tr>
+  <tr>
+    <td><strong>식재료(COGS)</strong></td>
+    <td><strong>28~35%</strong></td>
+    <td>목표 30%. RM 10 메뉴라면 RM 2.80~3.50이 재료비.</td>
+  </tr>
+  <tr>
+    <td><strong>인건비</strong></td>
+    <td><strong>~33%</strong></td>
+    <td>최저임금 RM 1,500 (2024~). 소규모는 가족 노동으로 절감.</td>
+  </tr>
+  <tr>
+    <td><strong>임대료+운영비</strong></td>
+    <td><strong>~33%</strong></td>
+    <td>KL 평균 RM 32.50/sqft. 전기·가스·보험·설비 포함.</td>
+  </tr>
+  <tr style="background: #f0fdf4;">
+    <td><strong>순이익(Net Profit)</strong></td>
+    <td><strong>5~8%</strong></td>
+    <td>일반 레스토랑 기준. <strong>커피숍/카페는 10~15%</strong> (음료 마진이 높음).</td>
+  </tr>
+</table>
+
+<h4>업태별 순이익 마진</h4>
+
+<table>
+  <tr>
+    <th>업태</th>
+    <th>순이익 마진</th>
+    <th>특성</th>
+  </tr>
+  <tr>
+    <td>풀서비스 레스토랑</td>
+    <td>3~5%</td>
+    <td>인건비 높음 (서빙 인력)</td>
+  </tr>
+  <tr>
+    <td>패스트 캐주얼</td>
+    <td>6~9%</td>
+    <td>셀프서비스로 인건비 절감</td>
+  </tr>
+  <tr>
+    <td><strong>Kopitiam / 카페</strong></td>
+    <td><strong>10~15%</strong></td>
+    <td>음료 마진 65~70%. <strong>Tapik 주 타겟</strong></td>
+  </tr>
+  <tr>
+    <td>클라우드 키친 / 케이터링</td>
+    <td>7~8%</td>
+    <td>임대료 절감, 배달 전문</td>
+  </tr>
+</table>
+
+<p class="source">출처: Food Market Hub Blog (Malaysia Restaurant Profit Margin) · EasyEat Blog · ResearchGate Financial Performance Analysis of F&B Companies in Malaysia · SME Corp Malaysia</p>
+
+<h4>핵심 수치: RM 10 메뉴의 분해</h4>
+
+<div class="flow-box">
+<strong>Kopitiam Nasi Lemak RM 10 기준</strong><br><br>
+<span class="mono">
+식재료(COGS): RM 3.00 (30%)<br>
+인건비: RM 3.00 (30%) — Kopitiam은 가족 운영 시 더 낮음<br>
+임대·운영비: RM 2.80 (28%)<br>
+<strong>순이익: RM 1.20 (12%)</strong> — Kopitiam 기준<br><br>
+일반 레스토랑이라면:<br>
+순이익: RM 0.50~0.80 (5~8%)<br>
+</span>
+</div>
+
+<h3 id="real-math">E-4. 실제 수치 시뮬레이션 — 배달 vs 매장 vs Tapik</h3>
+
+<div class="callout callout-critical">
+<strong>이 섹션이 핵심이다.</strong> 같은 RM 10 메뉴를 기준으로, 배달앱·매장직접·Tapik 그룹딜 각각에서 가맹점이 실제로 얼마를 받는지 계산한다.
+</div>
+
+<h4>시나리오: Kopitiam Nasi Lemak RM 10 (매장가격)</h4>
+
+<table>
+  <tr>
+    <th style="width:20%">항목</th>
+    <th style="width:26%">① 매장 직접 판매</th>
+    <th style="width:27%">② GrabFood 배달</th>
+    <th style="width:27%">③ Tapik 그룹딜 (10% 할인)</th>
+  </tr>
+  <tr>
+    <td><strong>소비자 지불 메뉴가</strong></td>
+    <td>RM 10.00</td>
+    <td>RM 11.50 (15% 할증)</td>
+    <td>RM 9.00 (10% 할인)</td>
+  </tr>
+  <tr>
+    <td><strong>소비자 추가 비용</strong></td>
+    <td>없음</td>
+    <td>배달비 RM 5 + 서비스비 RM 3 = RM 8</td>
+    <td>없음 (매장 픽업)</td>
+  </tr>
+  <tr>
+    <td><strong>소비자 총 지불</strong></td>
+    <td><strong>RM 10.00</strong></td>
+    <td><strong>RM 19.50</strong></td>
+    <td><strong>RM 9.00</strong></td>
+  </tr>
+  <tr>
+    <td><strong>플랫폼 수수료</strong></td>
+    <td>없음</td>
+    <td>RM 11.50 × 30% = RM 3.45</td>
+    <td>RM 9.00 × 5% = RM 0.45</td>
+  </tr>
+  <tr>
+    <td><strong>할인 비용 (가맹점 부담)</strong></td>
+    <td>없음</td>
+    <td>없음 (할증으로 상쇄)</td>
+    <td>RM 1.00 (정가 대비 할인분)</td>
+  </tr>
+  <tr style="background: #f0fdf4;">
+    <td><strong>가맹점 실수령</strong></td>
+    <td><strong>RM 10.00</strong></td>
+    <td><strong>RM 8.05</strong></td>
+    <td><strong>RM 8.55</strong></td>
+  </tr>
+  <tr style="background: #fffbeb;">
+    <td><strong>정가 대비 실수령 비율</strong></td>
+    <td><strong>100%</strong></td>
+    <td><strong>80.5%</strong></td>
+    <td><strong>85.5%</strong></td>
+  </tr>
+</table>
+
+<div class="callout callout-critical">
+<strong>교차검증 핵심 발견 (v4 업데이트)</strong>:<br>
+GrabFood 픽업과 Tapik의 차이는 <strong>80.4% vs 85.5% = 단 5.1%p 차이</strong>에 불과하다.<br>
+"GrabFood 픽업 20% vs Tapik 10% (코어)"라고 말하면 10%p 차이처럼 들리지만, 실제 가맹점 실수령 기준으로는 5%p 정도 차이다.<br><br>
+<strong>왜?</strong> GrabFood 픽업은 할증된 가격(RM 12.00)에서 20%를 떼지만, Tapik은 할인된 가격(RM 9.00)에서 5%를 뗀다. 기준가격 자체가 다르기 때문이다.
+</div>
+
+<h4>그런데 — 소비자 관점에서는 압도적 차이</h4>
+
+<table>
+  <tr>
+    <th style="width:30%">비교 항목</th>
+    <th>GrabFood 배달</th>
+    <th>Tapik 그룹딜 픽업</th>
+    <th>Tapik 우위</th>
+  </tr>
+  <tr>
+    <td>소비자 총 지불액</td>
+    <td>RM 19.50</td>
+    <td>RM 9.00</td>
+    <td><strong>-54% (절반 이하)</strong></td>
+  </tr>
+  <tr>
+    <td>가맹점 실수령</td>
+    <td>RM 8.05</td>
+    <td>RM 8.55</td>
+    <td>+6.2%</td>
+  </tr>
+  <tr>
+    <td>플랫폼(Tapik/Grab) 수취</td>
+    <td>RM 3.45 + 배달비/서비스비</td>
+    <td>RM 0.45</td>
+    <td>Tapik 수취 극소</td>
+  </tr>
+</table>
+
+<p><strong>Tapik의 진짜 세일즈 포인트</strong>: "가맹점이 더 받고, 소비자가 훨씬 덜 낸다." 가맹점 실수령 차이는 5%p지만, 소비자 절감은 54%. 이게 Tapik의 가치 제안이다.</p>
+
+<h4>가맹점 수익성 검증 — Tapik 그룹딜이 마진을 먹는가?</h4>
+
+<div class="flow-box">
+<strong>Kopitiam Nasi Lemak RM 10 · 순이익 마진 12% 기준</strong><br><br>
+<span class="mono">
+<strong>매장 직접 판매 (1인):</strong><br>
+매출: RM 10.00<br>
+비용(COGS+인건비+임대): RM 8.80<br>
+순이익: RM 1.20 (12%)<br><br>
+
+<strong>Tapik 그룹딜 (1인, 10% 할인):</strong><br>
+매출: RM 9.00<br>
+Tapik 수수료: -RM 0.45 (5%)<br>
+실수령: RM 8.55<br>
+비용: RM 8.80<br>
+<strong>순이익: -RM 0.25 (적자)</strong> ← 1인 기준으로는 적자!<br><br>
+
+<strong>그러나 — 그룹딜은 "볼륨 게임"이다:</strong><br>
+평소 점심 시간 고객 20명 → 그룹딜로 +10명 추가 유입<br>
+고정비(임대·인건비)는 이미 20명분 커버 → 추가 10명의 비용은 COGS만<br><br>
+
+추가 10명의 한계비용:<br>
+매출: RM 9.00 × 10 = RM 90.00<br>
+COGS만: RM 3.00 × 10 = RM 30.00<br>
+Tapik 수수료: RM 90 × 5% = RM 4.50<br>
+<strong>추가 이익: RM 90 - RM 30 - RM 4.50 = RM 55.50</strong><br><br>
+
+기존 20명 이익: RM 1.20 × 20 = RM 24.00<br>
+그룹딜 추가 이익: RM 55.50<br>
+<strong>총 이익: RM 79.50 (vs 기존 RM 24.00) → +231% 증가</strong>
+</span>
+</div>
+
+<div class="callout callout-ok">
+<strong>결론</strong>: 그룹딜의 할인 + 수수료는 1인 기준으로 보면 적자이나, <strong>추가 볼륨의 한계비용(COGS만)이 낮기 때문에 총 이익은 크게 증가</strong>한다. 이것이 가맹점에게 그룹딜을 수락하게 만드는 핵심 논리다.<br><br>
+<strong>단, 전제 조건</strong>: 그룹딜이 "기존 고객을 할인으로 빼앗는 것(카니발라이제이션)"이 아니라 "새 고객을 추가 유입"시켜야만 이 논리가 성립한다. → 비피크 시간대 한정, 신규 고객 타겟이 핵심.
+</div>
+
+<h4>일반 레스토랑(순이익 5~8%)에서는?</h4>
+
+<table>
+  <tr>
+    <th>시나리오</th>
+    <th>순이익 마진 5%</th>
+    <th>순이익 마진 8%</th>
+    <th>순이익 마진 12% (Kopitiam)</th>
+  </tr>
+  <tr>
+    <td>매장 직접 RM 10 순이익</td>
+    <td>RM 0.50</td>
+    <td>RM 0.80</td>
+    <td>RM 1.20</td>
+  </tr>
+  <tr>
+    <td>Tapik 그룹딜 1인 순이익</td>
+    <td><strong>-RM 0.95</strong></td>
+    <td><strong>-RM 0.65</strong></td>
+    <td><strong>-RM 0.25</strong></td>
+  </tr>
+  <tr>
+    <td>추가 10명 한계이익</td>
+    <td>RM 55.50</td>
+    <td>RM 55.50</td>
+    <td>RM 55.50</td>
+  </tr>
+  <tr>
+    <td>손익분기 추가 인원</td>
+    <td>1명 이상</td>
+    <td>1명 이상</td>
+    <td>1명 이상</td>
+  </tr>
+</table>
+
+<p><strong>핵심</strong>: 순이익률과 무관하게, 추가 고객 1명만 유입되면 한계비용 구조상 이미 손익분기. 그룹딜의 진짜 리스크는 수수료율이 아니라 <strong>"진짜 추가 고객이 오는가"</strong>에 달려 있다.</p>
+
+<h3 id="tapik-feasibility">E-5. Tapik 수수료 실현 가능성 — 수수료율 시나리오</h3>
+
+<table>
+  <tr>
+    <th style="width:12%">수수료율</th>
+    <th>RM 10 메뉴 (10% 할인 후 RM 9) 기준<br>가맹점 실수령</th>
+    <th>정가 대비 %</th>
+    <th>평가</th>
+  </tr>
+  <tr>
+    <td><strong>3%</strong></td>
+    <td>RM 9.00 - RM 0.27 = RM 8.73</td>
+    <td>87.3%</td>
+    <td>가맹점 최우호. Tapik 수익 극소. 초기 파일럿용?</td>
+  </tr>
+  <tr>
+    <td><strong>5%</strong></td>
+    <td>RM 9.00 - RM 0.45 = RM 8.55</td>
+    <td>85.5%</td>
+    <td>GrabFood(80.5%)보다 확실히 우위. 균형점.</td>
+  </tr>
+  <tr>
+    <td><strong>7%</strong></td>
+    <td>RM 9.00 - RM 0.63 = RM 8.37</td>
+    <td>83.7%</td>
+    <td>여전히 GrabFood보다 나음. Tapik 수익 개선.</td>
+  </tr>
+  <tr>
+    <td><strong>10%</strong></td>
+    <td>RM 9.00 - RM 0.90 = RM 8.10</td>
+    <td>81.0%</td>
+    <td>GrabFood와 거의 동일. 가맹점 매력 감소.</td>
+  </tr>
+</table>
+
+<h4>할인율별 시나리오</h4>
+
+<table>
+  <tr>
+    <th>할인율</th>
+    <th>소비자 지불</th>
+    <th>수수료 5% 후 가맹점 실수령</th>
+    <th>정가 대비 %</th>
+    <th>GrabFood 대비</th>
+  </tr>
+  <tr>
+    <td>5% 할인</td>
+    <td>RM 9.50</td>
+    <td>RM 9.03</td>
+    <td>90.3%</td>
+    <td>+9.8%p 우위</td>
+  </tr>
+  <tr>
+    <td>10% 할인</td>
+    <td>RM 9.00</td>
+    <td>RM 8.55</td>
+    <td>85.5%</td>
+    <td>+5.0%p 우위</td>
+  </tr>
+  <tr>
+    <td>15% 할인</td>
+    <td>RM 8.50</td>
+    <td>RM 8.08</td>
+    <td>80.8%</td>
+    <td>+0.3%p (거의 동일)</td>
+  </tr>
+  <tr>
+    <td>20% 할인</td>
+    <td>RM 8.00</td>
+    <td>RM 7.60</td>
+    <td>76.0%</td>
+    <td>-4.5%p (GrabFood보다 나쁨)</td>
+  </tr>
+</table>
+
+<div class="callout callout-warn">
+<strong>위험 경계</strong>: 할인 15% + 수수료 5% = 가맹점 실수령 80.8%로 GrabFood와 거의 동일해진다. <strong>할인율 최대 한도는 15%가 사실상 천장</strong>이며, 10%가 안전선이다.
+</div>
+
+<h4>인플루언서 보상 + 포인트까지 포함한 풀 시나리오</h4>
+
+<div class="flow-box">
+<strong>가맹점 총 부담 시뮬레이션 (RM 10 메뉴, 10명 그룹딜, 10% 할인)</strong><br><br>
+<span class="mono">
+소비자 지불: RM 9.00 × 10명 = RM 90.00<br>
+Tapik 수수료 (5%): -RM 4.50<br>
+가맹점 실수령: RM 85.50<br><br>
+
+Tapik 수수료 RM 4.50 중:<br>
+  인플루언서 포인트 (거래액의 2%): 18 TP = RM 1.80 상당<br>
+  소비자 일반 적립 (1%): 9 TP = RM 0.90 상당<br>
+  <strong>Tapik 순수취: RM 4.50 - RM 1.80 - RM 0.90 = RM 1.80</strong><br><br>
+
+가맹점 관점:<br>
+  정가 대비 실수령: 85.5% (수수료만)<br>
+  할인 비용 포함 정가 대비: RM 85.50 / RM 100 = <strong>85.5%</strong><br>
+  (할인분은 소비자가 덜 내는 것이므로 가맹점 "수취"에서 이미 차감됨)<br><br>
+
+<strong>가맹점 부담 요약: 정가 대비 14.5% 손실</strong><br>
+  = 할인 10% + 수수료 5% - 할증 0% (매장가 그대로니까)<br>
+  vs GrabFood 19.5% 손실 (할증 15% 반영해도 실수령 80.5%)<br><br>
+
+<strong>광고비(Plan C) 추가 시:</strong><br>
+  할인분 50% = RM 0.50 × 10명 = RM 5.00 추가 부담<br>
+  가맹점 총 부담: 14.5% + 5% = <strong>19.5%</strong> → GrabFood와 동일!<br>
+</span>
+</div>
+
+<div class="callout callout-warn">
+<strong>중요 발견</strong>: 광고비(Plan C)까지 포함하면 가맹점 총 부담이 GrabFood와 동일한 ~19.5%가 된다. Plan C의 "GrabFood보다 싸다"는 세일즈 논리는 <strong>틀렸다</strong>.<br><br>
+<strong>수정 필요</strong>: 광고비를 부과하려면 수수료를 3%로 낮추거나, 광고비 비율을 30%로 낮추거나, 아예 광고비를 폐지하고 수수료만으로 가는 게 정직하다.
+</div>
+
+<h3 id="commission-conclusion">E-6. 결론 & 캡틴 결정 사항</h3>
+
+<h4>교차검증으로 확인된 사실</h4>
+
+<table>
+  <tr>
+    <th style="width:5%">#</th>
+    <th style="width:40%">사실</th>
+    <th>의미</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>말레이시아 배달앱 수수료는 빅3 모두 30% 내외</td>
+    <td>업계 표준은 확실함</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>배달앱 메뉴 가격은 매장 대비 10~15% 할증이 일반적</td>
+    <td>배달 수수료 30%가 전부 가맹점 부담이 아님. 소비자가 일부 분담</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>가맹점 실수령 기준: GrabFood 80.5% vs Tapik(5%, 10%할인) 85.5%</td>
+    <td>실제 차이는 5%p. "30% vs 5%"로 마케팅하면 오해</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>Kopitiam/카페 순이익 10~15%, 일반 레스토랑 5~8%</td>
+    <td>Tapik 주 타겟(Kopitiam)이 마진 여유가 더 큼</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td>그룹딜 1인 기준은 적자이나, 추가 볼륨의 한계비용(COGS만)으로 총 이익 증가</td>
+    <td>세일즈 논리: "할인이 아니라 추가 매출이다"</td>
+  </tr>
+  <tr>
+    <td>6</td>
+    <td>할인 15% + 수수료 5% = GrabFood와 동일 부담. 15%가 할인 천장</td>
+    <td>할인율 10%가 안전선, 15%는 한계선</td>
+  </tr>
+  <tr>
+    <td>7</td>
+    <td>광고비(Plan C)까지 포함하면 GrabFood와 동일한 19.5% 부담</td>
+    <td>Plan C의 "더 싸다" 논리는 수정 필요</td>
+  </tr>
+</table>
+
+<h4>캡틴 결정이 필요한 항목</h4>
+
+<table>
+  <tr>
+    <th style="width:5%">#</th>
+    <th style="width:30%">결정 사항</th>
+    <th>옵션</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td><strong>그룹딜 수수료율</strong></td>
+    <td>A) 3% (가맹점 최우호, Tapik 수익 극소) · B) 5% (균형) · C) 가맹점 자율 할인율에 따라 변동 (할인↑ → 수수료↓)</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td><strong>광고비(Plan C) 유지 여부</strong></td>
+    <td>A) 폐지 (수수료만으로 수익) · B) 유지하되 비율 30%로 하향 · C) 유지하되 수수료를 3%로 하향</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td><strong>할인율 상한</strong></td>
+    <td>A) 10% 고정 · B) 5~15% 가맹점 자율 (단, 가맹점에 총 부담 시뮬레이터 제공) · C) 5~10% (보수적)</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td><strong>세일즈 포지셔닝</strong></td>
+    <td>A) "GrabFood보다 싸다" (부정확, 수정 필요) · B) "추가 매출 창출 도구" (정확, 볼륨 논리) · C) "소비자가 절반 가격으로 온다" (소비자 관점 강조)</td>
+  </tr>
+</table>
+
+<p class="source">
+출처 종합: Menuviel GrabFood Commission Guide · StoreHub Online Food Ordering Cost · Food Market Hub Malaysia Restaurant Profit Margin · Cilisos FoodPanda Price Analysis · The Ken Malaysian Restaurant Delivery Giants · Malay Mail F&B Commission Intervention · SoyaCincau F&B Delivery Platform · Vulcan Post ShopeeFood Review · Statista Malaysia Food Delivery Outlook · SME Corp Malaysia MSME Profile
+</p>
+
+<hr class="section-divider">
+
+<!-- ===================== E-7: 원가 상세 내역·세금 ===================== -->
+<h3 id="cost-detail">E-7. F&B 원가 상세 내역 · 말레이시아 세금 구조</h3>
+
+<p><strong>맥락</strong>: "순이익 5~8%"라는 수치의 근거를 캡틴이 요청. 원가를 항목별로 분해하고, 세금(소득세 등)까지 적용한 <strong>실제 손에 남는 금액</strong>을 계산한다.</p>
+
+<h4>E-7-1. F&B "3분의 1 법칙" 상세 분해</h4>
+
+<table>
+  <tr>
+    <th style="width:5%">#</th>
+    <th style="width:22%">비용 항목</th>
+    <th style="width:14%">비율 (매출 대비)</th>
+    <th>말레이시아 구체 내역</th>
+  </tr>
+  <tr>
+    <td colspan="4" style="background:#f0f4ff; font-weight:600;">1/3 — 식재료 원가 (COGS)</td>
+  </tr>
+  <tr>
+    <td>1a</td>
+    <td>식자재 (생선·육류·채소)</td>
+    <td>18~22%</td>
+    <td>2024~2025 식자재 가격 10~30% 상승. 수입 소고기·양고기 환율 영향. Pasar borong(도매시장) 직접 구매 vs 공급업체 배달 가격차 8~12%</td>
+  </tr>
+  <tr>
+    <td>1b</td>
+    <td>양념·소스·식용유</td>
+    <td>4~6%</td>
+    <td>식용유(통제가격 RM 2.50/kg palm oil), 코코넛 밀크, 삼발 재료. 말레이시아 정부 보조금 식용유는 가격 안정</td>
+  </tr>
+  <tr>
+    <td>1c</td>
+    <td>음료 원가</td>
+    <td>3~5%</td>
+    <td>Teh tarik 원가 RM 0.30~0.50 → 판매가 RM 2.00~2.80 (마진 70%+). 음료는 F&B 이익의 핵심 드라이버</td>
+  </tr>
+  <tr>
+    <td>1d</td>
+    <td>포장·일회용품</td>
+    <td>2~3%</td>
+    <td>2022년 polystyrene 금지 → 대체 용기 비용 50~100% 증가. Tapao(포장) 주문 증가로 비중 확대 추세</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td><strong>소계 COGS</strong></td>
+    <td><strong>28~35%</strong></td>
+    <td>Kopitiam 25~28% (간단 메뉴) · 일반 레스토랑 30~35% · Fine dining 35~40%</td>
+  </tr>
+  <tr>
+    <td colspan="4" style="background:#fef9c3; font-weight:600;">1/3 — 인건비</td>
+  </tr>
+  <tr>
+    <td>2a</td>
+    <td>주방 인력</td>
+    <td>12~16%</td>
+    <td>셰프 RM 2,500~4,000/월 · 보조 RM 1,500~2,000/월 · 외국인 노동자 레비 RM 1,850/년 + SOCSO + EIS</td>
+  </tr>
+  <tr>
+    <td>2b</td>
+    <td>홀 서빙 인력</td>
+    <td>8~12%</td>
+    <td>서버 RM 1,500~2,200/월 · 최저임금 RM 1,500 (2024~). 파트타임 RM 8~10/시간</td>
+  </tr>
+  <tr>
+    <td>2c</td>
+    <td>사장·가족 노동</td>
+    <td>3~5%</td>
+    <td>소규모 kopitiam은 사장 부부 + 가족이 직접 운영. 인건비 절감이 유일한 마진 확보 수단</td>
+  </tr>
+  <tr>
+    <td>2d</td>
+    <td>EPF·SOCSO·EIS 사업주 부담분</td>
+    <td>2~3%</td>
+    <td>EPF 13%(사업주) + SOCSO 1.75% + EIS 0.2% = 약 15% 추가 인건비 부담</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td><strong>소계 인건비</strong></td>
+    <td><strong>25~30%</strong></td>
+    <td>인력난으로 실질 부담 증가 중. 25,000명 부족 → 임금 상승 압력</td>
+  </tr>
+  <tr>
+    <td colspan="4" style="background:#fce7f3; font-weight:600;">1/3 — 운영비</td>
+  </tr>
+  <tr>
+    <td>3a</td>
+    <td>임대료</td>
+    <td>10~18%</td>
+    <td>KL 시내 shoplot RM 3,000~8,000/월 · 교외 RM 1,500~3,000/월 · 푸드코트 스톨 RM 800~2,000/월</td>
+  </tr>
+  <tr>
+    <td>3b</td>
+    <td>전기·수도·가스</td>
+    <td>5~8%</td>
+    <td>상업용 전기 RM 0.365/kWh → 에어컨 레스토랑 월 RM 2,000~5,000. Kopitiam(선풍기) RM 500~1,200</td>
+  </tr>
+  <tr>
+    <td>3c</td>
+    <td>장비 유지·감가상각</td>
+    <td>2~3%</td>
+    <td>냉장고·조리기구·POS 시스템 교체 주기 3~5년. 중고 장비 시장 활발</td>
+  </tr>
+  <tr>
+    <td>3d</td>
+    <td>라이선스·보험·기타</td>
+    <td>1~2%</td>
+    <td>DBKL 사업 허가 RM 100~500/년 · 할랄 인증 (JAKIM) 수수료 · 소방 인증 · 보험</td>
+  </tr>
+  <tr>
+    <td>3e</td>
+    <td>마케팅·프로모션</td>
+    <td>1~3%</td>
+    <td>대부분 독립 가맹점은 마케팅 예산 없음. Facebook·Instagram 유기적 포스팅이 전부. 대형 체인만 체계적 마케팅</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td><strong>소계 운영비</strong></td>
+    <td><strong>22~33%</strong></td>
+    <td>임대료가 변수. KL 시내 vs 교외 2~3배 차이</td>
+  </tr>
+</table>
+
+<div class="callout">
+  <strong>합산:</strong> COGS 28~35% + 인건비 25~30% + 운영비 22~33% = <strong>총 비용 75~98%</strong><br>
+  → 세전 순이익: <span class="mono">2~25%</span> (레인지가 넓음)<br>
+  → 업종별 실제: <strong>Kopitiam 10~15%</strong> · <strong>일반 레스토랑 5~8%</strong> · <strong>Fine dining 2~5%</strong>
+</div>
+
+<h4>E-7-2. 말레이시아 소득세 — 가맹점 사장이 실제로 내는 세금</h4>
+
+<table>
+  <tr>
+    <th style="width:30%">사업 형태</th>
+    <th style="width:25%">과세 방식</th>
+    <th>세율</th>
+  </tr>
+  <tr>
+    <td><strong>개인 사업자 (Sole Proprietor / Enterprise)</strong></td>
+    <td>사업 소득 → 개인소득세 합산</td>
+    <td>누진세 0~30%. 과세소득 RM 35K 이하 0~3%, RM 50K~70K에서 11~19%, RM 100K+ 24~26%, RM 2M+ 30%</td>
+  </tr>
+  <tr>
+    <td><strong>Sdn Bhd (유한회사)</strong></td>
+    <td>법인세</td>
+    <td>SME: 첫 RM 600K → 17%, 초과분 → 24%. 대기업(일반): 24% 단일세율</td>
+  </tr>
+  <tr>
+    <td><strong>LLP (유한책임조합)</strong></td>
+    <td>법인세와 유사</td>
+    <td>24% (SME 우대 없음)</td>
+  </tr>
+</table>
+
+<h4>E-7-3. 시뮬레이션: 월 매출 RM 30,000 Kopitiam 사장의 실수령</h4>
+
+<div class="flow-box">
+<p><strong>전제:</strong> Kopitiam · 월 매출 RM 30,000 · 연 매출 RM 360,000 · 순이익률 12% · 개인 사업자</p>
+<table>
+  <tr><th style="width:60%">항목</th><th>금액</th></tr>
+  <tr><td>연 매출</td><td class="mono">RM 360,000</td></tr>
+  <tr><td>COGS (28%)</td><td class="mono">- RM 100,800</td></tr>
+  <tr><td>인건비 (25%)</td><td class="mono">- RM 90,000</td></tr>
+  <tr><td>운영비 (25%)</td><td class="mono">- RM 90,000</td></tr>
+  <tr style="background:#f0fdf4;"><td><strong>세전 순이익 (12%)</strong></td><td class="mono"><strong>RM 43,200</strong></td></tr>
+  <tr><td>개인소득 공제 (본인 RM 9,000 + EPF RM 4,000 등)</td><td class="mono">- RM 13,000</td></tr>
+  <tr><td>과세소득 (Chargeable Income)</td><td class="mono">RM 30,200</td></tr>
+  <tr><td>소득세 (누진: ~3~6%)</td><td class="mono">- RM 약 800</td></tr>
+  <tr style="background:#dbeafe;"><td><strong>세후 실수령 (연)</strong></td><td class="mono"><strong>≈ RM 42,400</strong></td></tr>
+  <tr><td><strong>월 실수령</strong></td><td class="mono"><strong>≈ RM 3,533</strong></td></tr>
+</table>
+<p style="font-size:12px; color:#6b7280;">※ 월 매출 RM 30,000 kopitiam 사장의 월 실수령 RM 3,533은 말레이시아 중위 가구소득 RM 6,338 (2022)의 56% 수준. 여기서 Tapik이 5% 수수료를 가져가면 연 RM 18,000 추가 비용 → 월 실수령 RM 2,033으로 감소 (42% 하락).</p>
+</div>
+
+<div class="callout callout-warn">
+  <strong>⚠️ 핵심 발견:</strong> 월 매출 RM 30K kopitiam에 5% 수수료 + 10% 할인을 요구하면, 순이익의 <strong>약 40%</strong>가 사라진다. 이게 "GrabFood보다 싸다"고 해서 받아들여지는 수준이 아니다. <strong>Tapik이 주는 추가 매출이 이 비용을 상회한다는 증명</strong>이 반드시 필요하다.
+</div>
+
+<hr class="section-divider">
+
+<!-- ===================== E-8: 배달 vs 매장 비용 비교 ===================== -->
+<h3 id="delivery-vs-dinein">E-8. 배달 vs 매장 식사 — 가맹점 실질 비용 비교</h3>
+
+<p><strong>캡틴 질문:</strong> "10~15% 마크업이면 배달이나 매장이나 가맹점 입장에서 비슷한 거 아니야? 매장도 접시 닦고 서빙하고 청소해야 하잖아."</p>
+
+<h4>E-8-1. 채널별 가맹점 부담 구조</h4>
+
+<table>
+  <tr>
+    <th style="width:22%">비용 항목</th>
+    <th style="width:26%">매장 식사 (Dine-in)</th>
+    <th style="width:26%">배달 (GrabFood)</th>
+    <th style="width:26%">Tapik 픽업 (Pickup)</th>
+  </tr>
+  <tr>
+    <td><strong>메뉴 가격</strong></td>
+    <td>RM 10.00 (기준가)</td>
+    <td>RM 11.50 (15% 마크업)</td>
+    <td>RM 9.00 (10% 할인)</td>
+  </tr>
+  <tr>
+    <td><strong>플랫폼 수수료</strong></td>
+    <td>없음</td>
+    <td>30% = RM 3.45</td>
+    <td>5% = RM 0.45</td>
+  </tr>
+  <tr>
+    <td><strong>가맹점 수취액</strong></td>
+    <td>RM 10.00</td>
+    <td>RM 8.05</td>
+    <td>RM 8.55</td>
+  </tr>
+  <tr>
+    <td><strong>COGS</strong></td>
+    <td>RM 3.00 (30%)</td>
+    <td>RM 3.00 (동일 재료)</td>
+    <td>RM 3.00 (동일 재료)</td>
+  </tr>
+  <tr>
+    <td><strong>서빙·청소 비용</strong></td>
+    <td>RM 0.80~1.20</td>
+    <td>RM 0 (없음)</td>
+    <td>RM 0 (없음)</td>
+  </tr>
+  <tr>
+    <td><strong>포장 비용</strong></td>
+    <td>RM 0 (접시 재사용)</td>
+    <td>RM 0.50~0.80</td>
+    <td>RM 0.50~0.80</td>
+  </tr>
+  <tr>
+    <td><strong>좌석 점유 비용</strong></td>
+    <td>RM 0.50~1.00 (임대료 배분)</td>
+    <td>RM 0 (없음)</td>
+    <td>RM 0 (없음)</td>
+  </tr>
+  <tr>
+    <td><strong>식기 세척 비용</strong></td>
+    <td>RM 0.20~0.40</td>
+    <td>RM 0 (없음)</td>
+    <td>RM 0 (없음)</td>
+  </tr>
+  <tr>
+    <td><strong>전기·에어컨 배분</strong></td>
+    <td>RM 0.30~0.60</td>
+    <td>RM 0.10 (주방만)</td>
+    <td>RM 0.10 (주방만)</td>
+  </tr>
+  <tr style="background:#fef9c3;">
+    <td><strong>매장 운영 추가비용 소계</strong></td>
+    <td><strong>RM 1.80~3.20</strong></td>
+    <td><strong>RM 0.60~0.90</strong></td>
+    <td><strong>RM 0.60~0.90</strong></td>
+  </tr>
+  <tr style="background:#dbeafe; font-weight:600;">
+    <td><strong>실질 순수취 (수취액 - COGS - 운영비)</strong></td>
+    <td><strong>RM 4.80~6.20</strong></td>
+    <td><strong>RM 4.15~4.45</strong></td>
+    <td><strong>RM 4.65~4.95</strong></td>
+  </tr>
+</table>
+
+<div class="callout">
+  <strong>해석:</strong><br>
+  · 매장 식사는 수수료 0%이지만, 서빙·청소·좌석·식기 등 <strong>숨은 비용 RM 1.80~3.20</strong>이 발생<br>
+  · 배달·픽업은 수수료가 있지만 매장 운영비가 <strong>RM 0.60~0.90</strong>으로 대폭 감소<br>
+  · 결과: 3채널의 <strong>실질 순수취 차이는 RM 0.50~1.75</strong> 범위 — 생각보다 좁다
+</div>
+
+<h4>E-8-2. 채널별 "진짜 마진율" 비교</h4>
+
+<table>
+  <tr>
+    <th>채널</th>
+    <th>가맹점 수취액</th>
+    <th>실질 비용 합계</th>
+    <th>실질 순수익</th>
+    <th>실질 마진율</th>
+  </tr>
+  <tr>
+    <td>매장 식사</td>
+    <td>RM 10.00</td>
+    <td>RM 5.80~6.20</td>
+    <td>RM 3.80~4.20</td>
+    <td class="mono">38~42%</td>
+  </tr>
+  <tr>
+    <td>GrabFood 배달</td>
+    <td>RM 8.05</td>
+    <td>RM 3.60~3.90</td>
+    <td>RM 4.15~4.45</td>
+    <td class="mono">51~55%</td>
+  </tr>
+  <tr>
+    <td>Tapik 픽업</td>
+    <td>RM 8.55</td>
+    <td>RM 3.60~3.90</td>
+    <td>RM 4.65~4.95</td>
+    <td class="mono">54~58%</td>
+  </tr>
+</table>
+
+<div class="callout callout-critical">
+  <strong>🔍 반직관적 발견:</strong> GrabFood·Tapik의 <strong>"실질 마진율"은 매장 식사보다 높다</strong>. 수취액은 줄지만, 서빙·좌석·청소 비용이 없기 때문. 이건 가맹점에게 설명할 수 있는 <strong>강력한 세일즈 논리</strong>다.<br><br>
+  단, "실질 마진율이 높다"는 것과 "절대 수익이 높다"는 것은 다르다. 매장 RM 10 × 마진 40% = RM 4.00 vs Tapik RM 8.55 × 마진 56% = RM 4.79... 이건 <strong>Tapik이 절대액에서도 RM 0.79 더 높다</strong>.
+</div>
+
+<div class="callout callout-warn">
+  <strong>⚠️ 단, 전제 조건:</strong><br>
+  · 위 계산은 <strong>"추가 고객"</strong>일 때만 유효. 기존 매장 고객이 Tapik으로 옮기면 RM 10 → RM 8.55로 수취액 순감소<br>
+  · 세일즈 핵심: "기존 매장 손님이 Tapik으로 가는 게 아니라, <strong>Tapik으로만 올 수 있는 새 손님</strong>이 온다"는 증명이 필요<br>
+  · 이것이 콜드 스타트 시기 가장 어려운 닭-달걀 문제
+</div>
+
+<hr class="section-divider">
+
+<!-- ===================== SECTION F: 가맹점 진짜 페인포인트 ===================== -->
+<h2 id="painpoints">F. 가맹점이 진짜 필요한 것 — 쿠폰 현실 & 페인포인트</h2>
+
+<p><strong>캡틴 질문:</strong> "F&B는 쿠폰으로 할인을 많이 해주기 쉽지 않겠는데? 인기 있는 곳은 쿠폰이 필요 없고, 어려운 곳은 쿠폰 줄 여력이 없다. 독립 가맹점이 실제로 쿠폰을 쓰고 있긴 해? 이것보다 더 절실한 게 뭐야?"</p>
+
+<!-- F-1: 쿠폰 발행 현실 -->
+<h3 id="coupon-reality">F-1. 독립 F&B의 쿠폰 발행 현실</h3>
+
+<h4>F-1-1. 현재 말레이시아에서 작동하는 쿠폰/할인 플랫폼</h4>
+
+<table>
+  <tr>
+    <th style="width:14%">플랫폼</th>
+    <th style="width:12%">모델</th>
+    <th style="width:12%">수수료</th>
+    <th style="width:14%">가맹점 수</th>
+    <th>독립 F&B 침투율</th>
+  </tr>
+  <tr>
+    <td><strong>Fave (FavePay)</strong></td>
+    <td>캐시백·할인 바우처</td>
+    <td>1~1.5%</td>
+    <td>20,000+</td>
+    <td>도시 카페·레스토랑 중심. Kopitiam·mamak 침투 낮음. 결제+캐시백 통합이 강점</td>
+  </tr>
+  <tr>
+    <td><strong>Eatigo</strong></td>
+    <td>시간대별 할인 예약</td>
+    <td>노출 기반</td>
+    <td>5,000+</td>
+    <td>중급 이상 레스토랑 중심. 비수기 좌석 채우기. Kopitiam은 예약 자체가 문화적으로 맞지 않음</td>
+  </tr>
+  <tr>
+    <td><strong>TableApp</strong></td>
+    <td>예약 + 프로모션</td>
+    <td>구독형</td>
+    <td>1,000+</td>
+    <td>Fine dining·중급 위주. 독립 소규모 F&B 거의 없음</td>
+  </tr>
+  <tr>
+    <td><strong>Shopee Voucher</strong></td>
+    <td>e-Voucher 판매</td>
+    <td>15~20%</td>
+    <td>한정적</td>
+    <td>대형 프랜차이즈(KFC, Pizza Hut 등)만 참여. 독립점 참여 사실상 0</td>
+  </tr>
+  <tr>
+    <td><strong>자체 프로모션</strong></td>
+    <td>Facebook/Insta/WhatsApp</td>
+    <td>무료</td>
+    <td>—</td>
+    <td>독립 가맹점의 <strong>유일한 마케팅 채널</strong>. "Nasi Lemak RM 5 hari ini" 포스팅. 체계적 CRM 없음</td>
+  </tr>
+</table>
+
+<h4>F-1-2. 독립 가맹점이 쿠폰을 안 쓰는 5가지 이유</h4>
+
+<table>
+  <tr>
+    <th style="width:5%">#</th>
+    <th style="width:22%">이유</th>
+    <th style="width:12%">심각도</th>
+    <th>상세</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td><strong>마진이 없다</strong></td>
+    <td><span class="tag tag-risk">매우 높음</span></td>
+    <td>순이익 5~12%에서 10% 할인을 주면 적자. "할인할 돈이 없다"가 가장 큰 이유</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td><strong>시스템이 없다</strong></td>
+    <td><span class="tag tag-risk">높음</span></td>
+    <td>POS 시스템 없이 계산기·종이 영수증 운영. 디지털 쿠폰 발행·추적·정산 인프라 자체가 부재. SME의 57%가 디지털 전환 미시작</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td><strong>필요성을 못 느낀다</strong></td>
+    <td><span class="tag tag-risk">중간</span></td>
+    <td>Mamak·Kopitiam은 고정 단골이 매출의 60~80%. "할인 안 해도 올 사람은 온다"는 인식</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td><strong>쿠폰 손님은 재방문 안 한다</strong></td>
+    <td><span class="tag tag-risk">중간</span></td>
+    <td>가맹점 사장들의 경험적 인식: "쿠폰으로 온 손님은 쿠폰 없으면 다시 안 온다." Cherry picker 문제</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td><strong>위 4가지를 해결해줄 파트너가 없다</strong></td>
+    <td><span class="tag tag-risk">높음</span></td>
+    <td>Fave는 도시 카페 위주. Mamak·Kopitiam을 찾아가서 교육·온보딩해주는 플랫폼은 현재 없음</td>
+  </tr>
+</table>
+
+<div class="callout callout-warn">
+  <strong>⚠️ 캡틴의 직감이 맞다:</strong> 독립 F&B는 구조적으로 쿠폰을 쓰기 어렵다. "인기 있는 곳은 필요 없고, 어려운 곳은 여력이 없다"는 정확한 진단. <strong>Tapik의 "할인 + 포인트" 모델이 독립 F&B에 맞는지 재검토가 필요한 지점</strong>.
+</div>
+
+<!-- F-2: 페인포인트 순위 -->
+<h3 id="pain-ranking">F-2. 말레이시아 독립 F&B 페인포인트 순위 (2024~2026)</h3>
+
+<table>
+  <tr>
+    <th style="width:5%">순위</th>
+    <th style="width:20%">페인포인트</th>
+    <th style="width:10%">심각도</th>
+    <th style="width:10%">긴급도</th>
+    <th>데이터 & 맥락</th>
+  </tr>
+  <tr>
+    <td>🥇 1</td>
+    <td><strong>인력 부족</strong></td>
+    <td><span class="tag tag-risk">극심</span></td>
+    <td><span class="tag tag-risk">즉각</span></td>
+    <td><strong>F&B 업계 25,000명 인력 부족</strong> (MRCA 2024 추정). 외국인 노동자 정책 변경 + 코로나 후 귀국. Mamak 2,000곳 폐업 (Malaysia Nanban 협회). 최저임금 RM 1,500 인상 후 소규모 가맹점 인건비 부담 가중. "사람 구하기가 가장 어렵다" — 업계 설문 1위</td>
+  </tr>
+  <tr>
+    <td>🥈 2</td>
+    <td><strong>식자재 원가 상승</strong></td>
+    <td><span class="tag tag-risk">극심</span></td>
+    <td><span class="tag tag-risk">지속</span></td>
+    <td>2024~2025 식자재 가격 10~30% 상승. 닭고기 RM 9.40/kg 통제가격 해제 논란. 양파·토마토·칠리 수입 의존, 환율 변동에 취약. RON95 보조금 합리화 → 물류비 상승 우려. 가격 인상하면 손님 이탈, 안 하면 적자</td>
+  </tr>
+  <tr>
+    <td>🥉 3</td>
+    <td><strong>신규 고객 확보</strong></td>
+    <td><span class="tag tag-risk">높음</span></td>
+    <td><span class="tag tag-risk">중간</span></td>
+    <td>프랜차이즈·체인 확장 가속 (Zus Coffee 500+ 매장, Gigi Coffee 200+ 등). 쇼핑몰 F&B 집중 → 독립 shoplot 고객 유출. 배달앱에서 노출도 = 광고비, 소규모 가맹점은 알고리즘에서 밀림. <strong>이게 Tapik이 파고들 수 있는 영역</strong></td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td><strong>e-Invoice 의무화</strong></td>
+    <td><span class="tag tag-risk">중간</span></td>
+    <td><span class="tag tag-risk">긴급</span></td>
+    <td>LHDN e-Invoice 2025년 7월부터 전체 사업자 의무화. 연 매출 RM 150K+ 모든 사업자. 대부분 수기 영수증 운영 → POS·회계 시스템 도입 강제. 벌금 최대 RM 50,000. 가맹점에게 "악몽 수준" 컴플라이언스 부담</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td><strong>디지털 전환 미비</strong></td>
+    <td><span class="tag tag-risk">중간</span></td>
+    <td><span class="tag tag-risk">중간</span></td>
+    <td>SME의 57%가 디지털 전환 미시작 (SME Corp 2024). 소셜 미디어는 쓰지만 POS·CRM·재고관리·온라인 주문 시스템 없음. QR 주문, e-Menu, 디지털 결제 등 "하고 싶지만 방법을 모르겠다"</td>
+  </tr>
+  <tr>
+    <td>6</td>
+    <td><strong>Kopitiam 세대교체 위기</strong></td>
+    <td><span class="tag tag-risk">중간</span></td>
+    <td><span class="tag tag-risk">장기</span></td>
+    <td>전통 Kopitiam 50% 이상 폐업 (post-COVID 추정). 2세대가 사업 승계 거부. 임대료 상승으로 shoplot에서 밀려남. 체인 카페(Zus, Gigi)에 시장 잠식. "할아버지 가게"라는 이미지 → 젊은 층 유입 감소</td>
+  </tr>
+</table>
+
+<div class="callout">
+  <strong>구조적 패턴:</strong> 독립 F&B의 절실한 문제는 <strong>"비용 절감"과 "생존"</strong>이지, "더 많이 파는 것"이 아니다. 1위 인력 부족, 2위 원가 상승은 모두 비용 문제. 3위 고객 확보만이 유일하게 "매출 증대" 관련 페인포인트.
+</div>
+
+<!-- F-3: Tapik 전략 시사점 -->
+<h3 id="tapik-pivot">F-3. Tapik 전략 시사점 — 캡틴 검토 사항</h3>
+
+<h4>F-3-1. 현재 Tapik 모델과 가맹점 현실의 갭</h4>
+
+<table>
+  <tr>
+    <th style="width:30%">Tapik이 제안하는 것</th>
+    <th style="width:30%">가맹점이 절실한 것</th>
+    <th style="width:40%">갭 분석</th>
+  </tr>
+  <tr>
+    <td>"할인해주면 고객이 온다"</td>
+    <td>"할인할 마진이 없다"</td>
+    <td>5~12% 순이익에서 10% 할인은 구조적으로 불가능. 할인 재원 문제 미해결</td>
+  </tr>
+  <tr>
+    <td>"포인트로 재방문 유도"</td>
+    <td>"사람 구하기가 급하다"</td>
+    <td>새 손님이 와도 서빙할 인력이 없으면 무의미. 페인포인트 1위와 제안이 불일치</td>
+  </tr>
+  <tr>
+    <td>"디지털 마케팅 도구"</td>
+    <td>"POS도 없다"</td>
+    <td>쿠폰·포인트·그룹딜은 디지털 인프라 전제. 57%가 전환 미시작인 시장에 기술 솔루션 제공 시 온보딩 허들 극심</td>
+  </tr>
+  <tr>
+    <td>"GrabFood보다 싸다"</td>
+    <td>"배달앱 수수료도 문제지만..."</td>
+    <td>실제 차이 5%p (E-4 확인). "더 싸다"만으로는 강한 전환 동기 부족</td>
+  </tr>
+</table>
+
+<h4>F-3-2. 가능한 전략 피벗 방향 (캡틴 토론용)</h4>
+
+<table>
+  <tr>
+    <th style="width:5%">#</th>
+    <th style="width:20%">방향</th>
+    <th>핵심 논리</th>
+    <th style="width:15%">페인포인트 연결</th>
+  </tr>
+  <tr>
+    <td>A</td>
+    <td><strong>"Tapik = 추가 매출 채널"</strong></td>
+    <td>할인은 최소화(3~5%), 픽업 전용 채널로 포지셔닝. "기존 매장 가격에 가까운 가격으로 새 고객을 보내준다." 할인보다 <strong>볼륨</strong>에 집중. 그룹딜은 비수기 좌석 채우기 도구로 리프레이밍</td>
+    <td>3위: 고객 확보</td>
+  </tr>
+  <tr>
+    <td>B</td>
+    <td><strong>"Tapik = 디지털 전환 파트너"</strong></td>
+    <td>무료/저가 POS + QR 주문 + e-Invoice 연동을 먼저 제공하고, 그 위에 쿠폰·포인트를 얹는다. "쿠폰 팔기 전에, 먼저 가게를 디지털화해준다." e-Invoice 의무화 데드라인(2025.07)이 긴급 동기 부여</td>
+    <td>4위: e-Invoice<br>5위: 디지털 갭</td>
+  </tr>
+  <tr>
+    <td>C</td>
+    <td><strong>"Tapik 포인트 = 소비자 재원"</strong></td>
+    <td>가맹점이 할인 비용을 부담하는 게 아니라, <strong>Tapik이 소비자에게 포인트를 지급</strong>하고, 소비자가 그 포인트로 가맹점에서 소비. 가맹점 부담은 수수료(3~5%)만. 할인 재원 = Tapik 플랫폼 마케팅 비용</td>
+    <td>1위 갭 해소: 가맹점 할인 부담 제거</td>
+  </tr>
+  <tr>
+    <td>D</td>
+    <td><strong>하이브리드: B+C</strong></td>
+    <td>1단계: 무료 POS·e-Invoice로 온보딩 → 2단계: Tapik 재원 포인트로 소비자 유입 → 3단계: 매출 증가 확인 후 가맹점 자체 프로모션 시작. "먼저 주고, 나중에 받는다"</td>
+    <td>전체 페인포인트 순차 해결</td>
+  </tr>
+</table>
+
+<div class="callout callout-critical">
+  <strong>🔍 전략적 질문 (캡틴 결정 필요):</strong><br><br>
+  1. <strong>할인 재원 문제</strong>: 가맹점이 10% 할인을 부담하는 모델은 현실성이 낮다. 할인 재원을 누가 부담할 것인가?<br>
+  &nbsp;&nbsp;&nbsp;→ A) 가맹점 (현재 모델 — 저항 예상) · B) Tapik 플랫폼 (마케팅비로 처리) · C) 소비자 (포인트 적립 후 자기 돈으로 할인)<br><br>
+  2. <strong>콜드 스타트 진입 전략</strong>: "쿠폰·할인"보다 "e-Invoice·POS"가 더 강한 진입점 아닌가?<br>
+  &nbsp;&nbsp;&nbsp;→ e-Invoice 의무화 데드라인이 자연스러운 영업 기회. "벌금 RM 50,000 맞기 전에 우리가 도와준다"<br><br>
+  3. <strong>Tapik의 핵심 정체성</strong>: "할인 플랫폼"인가, "가맹점 디지털 전환 파트너"인가, "소비자 리워드 네트워크"인가?<br>
+  &nbsp;&nbsp;&nbsp;→ 이 정체성에 따라 수수료 구조, 세일즈 논리, 제품 로드맵이 완전히 달라짐
+</div>
+
+<p class="source">
+출처 종합: MRCA Malaysia Restaurant & Café Association · Malaysia Nanban Restaurant Owners Association · SME Corp Malaysia Annual Report 2024 · LHDN e-Invoice Guidelines · Fave (formerly Groupon MY) · Eatigo Malaysia · Statista Malaysia F&B Market · The Edge Markets F&B Industry Reports · DOSM Household Income Survey 2022 · BNM Annual Report 2024
+</p>
+
+<hr class="section-divider">
+
+<!-- ===================== SECTION G: e-Invoice 심층 분석 ===================== -->
+<h2 id="einvoice">G. e-Invoice 정책 심층 분석 — Tapik 피벗 검토</h2>
+
+<p><strong>캡틴 질문:</strong> "벌금 RM 50,000은 어떤 주기로 매겨지는지? 정책이 뭔지, 가맹점주 입장에서 어떻게 해야 하는지, 왜 못 하고 있는지, 우리가 이걸 할 수 있는지 다각도로 검토해봐."</p>
+<p><strong>조사 방법:</strong> 5개 에이전트 병렬 투입 — (1) LHDN 공식 정책, (2) 가맹점 현실·장벽, (3) 기존 솔루션 시장, (4) Tapik 기술·사업적 가능성, (5) 정치·집행 현실. 에이전트별 15~20개 출처 교차 검증.</p>
+
+<!-- G-1: 시행 일정·벌금 구조 -->
+<h3 id="einvoice-timeline">G-1. LHDN e-Invoice 시행 일정 · 벌금 구조</h3>
+
+<h4>G-1-1. 단계별 시행 일정</h4>
+
+<table>
+  <tr>
+    <th style="width:10%">Phase</th>
+    <th style="width:18%">시행일</th>
+    <th style="width:20%">대상 (연 매출)</th>
+    <th style="width:18%">유예기간</th>
+    <th>상태 (2026.04 기준)</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>2024.08.01</td>
+    <td>RM 1억 이상</td>
+    <td>6개월 (→ 2025.02)</td>
+    <td><span class="tag tag-usable">시행 완료 · 벌금 부과 중</span></td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>2025.01.01</td>
+    <td>RM 2,500만 ~ 1억</td>
+    <td>6개월 (→ 2025.07)</td>
+    <td><span class="tag tag-usable">시행 완료</span></td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>2025.07.01</td>
+    <td>RM 500만 ~ 2,500만</td>
+    <td>6개월 (→ 2026.01)</td>
+    <td><span class="tag tag-usable">시행 완료</span></td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>2026.01.01</td>
+    <td>RM 100만 ~ 500만</td>
+    <td><strong>12개월</strong> (→ 2026.12.31)</td>
+    <td><span class="tag tag-trend">유예기간 중 · 벌금 2027.01부터</span></td>
+  </tr>
+  <tr style="background:#fef2f2;">
+    <td>5</td>
+    <td><s>2026.07.01</s></td>
+    <td><s>RM 100만 미만</s></td>
+    <td>—</td>
+    <td><span class="tag tag-risk">취소됨 (2025.12 내각 결정)</span></td>
+  </tr>
+</table>
+
+<div class="callout callout-warn">
+  <strong>⚠️ 핵심 발견 #1 — 이전 정보 수정:</strong><br>
+  Section F에서 "e-Invoice 2025년 7월부터 전체 사업자 의무화, 연 매출 RM 150K+"라고 적었는데, <strong>이건 틀렸다.</strong><br><br>
+  2025년 12월 내각 결정으로 <strong>면제 기준이 RM 50만 → RM 100만으로 상향</strong>되었고, <strong>Phase 5 자체가 취소</strong>되었다.<br>
+  → 연 매출 RM 100만(약 3억원) 미만 사업자는 <strong>e-Invoice 의무가 아예 없다</strong>.<br>
+  → 연 매출 RM 15만 미만 소상공인(약 70만명 해당)은 완전 면제.<br><br>
+  <strong>캡틴이 물어본 "벌금 RM 50,000"도 수정 필요:</strong> 실제 벌금은 <span class="mono">RM 200 ~ RM 20,000</span>이며, <strong>건당(per invoice)</strong> 부과. RM 50,000이 아니라 건당 최대 RM 20,000 + 최대 6개월 징역.
+</div>
+
+<h4>G-1-2. 벌금 구조 상세</h4>
+
+<table>
+  <tr>
+    <th style="width:25%">위반 유형</th>
+    <th style="width:20%">벌금</th>
+    <th style="width:15%">부과 단위</th>
+    <th>비고</th>
+  </tr>
+  <tr>
+    <td>e-Invoice 미발행</td>
+    <td>RM 200 ~ RM 20,000</td>
+    <td><strong>건당 (per invoice)</strong></td>
+    <td>Section 120(1)(d) Income Tax Act 1967. 하루 100건 거래하면 이론상 100건 × RM 20,000 = RM 200만 노출</td>
+  </tr>
+  <tr>
+    <td>허위·부정확 e-Invoice</td>
+    <td>RM 200 ~ RM 20,000</td>
+    <td>건당</td>
+    <td>TIN 오류, 금액 불일치 등</td>
+  </tr>
+  <tr>
+    <td>형사 처벌 (병과 가능)</td>
+    <td>최대 6개월 징역</td>
+    <td>—</td>
+    <td>벌금과 징역 동시 부과 가능</td>
+  </tr>
+</table>
+
+<div class="callout">
+  <strong>현실적 시나리오:</strong> 연 매출 RM 200만 레스토랑 · 하루 평균 150건 거래 · 1년간 미준수 시<br>
+  → 이론상 노출: 150건 × 365일 × RM 200(최소) = <span class="mono">RM 10,950,000</span> (약 33억원)<br>
+  → 실제 집행: LHDN은 데이터 분석 기반 선별적 집행. 대형 탈루부터 타겟. 소규모 일괄 집행은 정치적 부담으로 비현실적<br>
+  → <strong>유예기간 중(2026년 전체)에는 벌금 부과 안 함</strong>. Consolidated e-Invoice(월별 합산) 제출만 하면 됨
+</div>
+
+<h4>G-1-3. 가맹점이 해야 할 것</h4>
+
+<table>
+  <tr>
+    <th style="width:5%">#</th>
+    <th style="width:25%">요구 사항</th>
+    <th>상세</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td><strong>MyInvois 시스템 연동</strong></td>
+    <td>LHDN의 MyInvois 포털 또는 API를 통해 e-Invoice 제출. 포맷: UBL 2.1 (XML/JSON). 디지털 서명 필수 (XAdES, SHA-256, RSA)</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td><strong>필수 데이터 55개 필드</strong></td>
+    <td>37개 필수 입력. 판매자·구매자 TIN, 상품 분류 코드(IRBM), 수량, 단가, 세금(SST), 결제 조건 등</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td><strong>제출 방식 2가지</strong></td>
+    <td>A) MyInvois 포털 (무료, 수동 입력, 일 30건 이하 적합) · B) API 연동 (POS/ERP 시스템 자동 전송)</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td><strong>B2C Consolidated 옵션</strong></td>
+    <td>개별 소비자 거래는 월 1회 합산 제출 가능. 구매자명 "General Public", TIN "EI00000000010". 월말 7일 이내 제출</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td><strong>RM 10,000 초과 건</strong></td>
+    <td>2026.01부터 단일 거래 RM 10,000 이상은 합산 불가. 개별 e-Invoice 즉시 발행 필수 (F&B에서는 거의 해당 없음)</td>
+  </tr>
+</table>
+
+<hr class="section-divider">
+
+<!-- G-2: 면제 범위 -->
+<h3 id="einvoice-exempt">G-2. 면제 범위 — Tapik 타겟 시장에 대한 핵심 발견</h3>
+
+<div class="callout callout-critical">
+  <strong>🔍 전략적 핵심 발견:</strong><br><br>
+  Tapik의 주요 타겟인 독립 Kopitiam · Mamak · 소규모 레스토랑의 대부분은 <strong>연 매출 RM 100만 미만</strong>이다.<br><br>
+  2025년 12월 내각 결정으로 RM 100만 미만 사업자는 e-Invoice 의무에서 <strong>완전 면제</strong>.<br>
+  → Samenta(SME 협회) 추산: <strong>약 200,000개 SME</strong>가 이 결정으로 면제됨<br>
+  → 연 매출 RM 15만 미만 소상공인(노점상·소규모 hawker): <strong>70만명 이상</strong> 완전 면제<br><br>
+  <strong>이것이 의미하는 것:</strong> "e-Invoice 의무화로 가맹점이 공포에 떨고 있으니, Tapik이 무료 e-Invoice를 제공하면 가맹점을 끌어올 수 있다"는 전략은 <strong>타겟 시장 대부분에 해당하지 않는다</strong>.
+</div>
+
+<h4>G-2-1. Tapik 타겟별 e-Invoice 의무 여부</h4>
+
+<table>
+  <tr>
+    <th style="width:22%">가맹점 유형</th>
+    <th style="width:18%">추정 연 매출</th>
+    <th style="width:15%">e-Invoice 의무?</th>
+    <th>Tapik 전략 시사점</th>
+  </tr>
+  <tr>
+    <td>노점상 · 작은 Hawker stall</td>
+    <td>RM 5만 ~ 15만</td>
+    <td><span class="tag tag-usable">면제</span></td>
+    <td>e-Invoice 자체가 무의미. 이 세그먼트에 e-Invoice는 세일즈 포인트가 아님</td>
+  </tr>
+  <tr>
+    <td>Kopitiam · 소규모 Mamak</td>
+    <td>RM 15만 ~ 80만</td>
+    <td><span class="tag tag-usable">면제</span></td>
+    <td>대부분 RM 100만 미만. 면제 대상. e-Invoice 필요 없음</td>
+  </tr>
+  <tr>
+    <td>중형 레스토랑 · 대형 Mamak</td>
+    <td>RM 80만 ~ 300만</td>
+    <td><span class="tag tag-trend">일부 의무 (RM 100만+)</span></td>
+    <td>RM 100만 넘는 곳만 의무. Phase 4 대상 (2026.01~, 유예 2026.12까지)</td>
+  </tr>
+  <tr>
+    <td>인기 레스토랑 · 프랜차이즈</td>
+    <td>RM 300만 ~ 2,000만</td>
+    <td><span class="tag tag-risk">의무</span></td>
+    <td>Phase 3~4 대상. 이미 POS·회계 시스템 보유 가능성 높음. Tapik 필요성 낮음</td>
+  </tr>
+</table>
+
+<div class="callout callout-warn">
+  <strong>⚠️ 딜레마:</strong><br>
+  · e-Invoice가 필요한 곳(RM 100만+): 이미 POS가 있거나 StoreHub 같은 솔루션 도입 가능. Tapik의 차별화 포인트 약함<br>
+  · Tapik이 타겟하는 곳(Kopitiam·Mamak): e-Invoice 면제. "e-Invoice 도와준다"가 매력 없음<br>
+  · <strong>e-Invoice는 Tapik의 주요 온보딩 훅이 될 수 없다</strong> — 적어도 현재 면제 기준 하에서는
+</div>
+
+<hr class="section-divider">
+
+<!-- G-3: 가맹점 현실·장벽 -->
+<h3 id="einvoice-merchant">G-3. 가맹점이 e-Invoice를 못 하는 이유</h3>
+
+<p><strong>맥락:</strong> RM 100만 이상 매출로 의무 대상인 가맹점 중에서도, 준비가 안 된 곳이 많다. 그 이유를 분석한다.</p>
+
+<h4>G-3-1. SME 설문 데이터 (Malaysia SME Council 2025 Whitepaper)</h4>
+
+<table>
+  <tr>
+    <th style="width:5%">#</th>
+    <th style="width:30%">장벽</th>
+    <th style="width:12%">응답률</th>
+    <th>상세</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td><strong>대량의 데이터 디지털화 부담</strong></td>
+    <td>49%</td>
+    <td>수기 장부 → 디지털 전환. 과거 기록 입력만으로도 몇 주 소요</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td><strong>데이터 보안·프라이버시 우려</strong></td>
+    <td>47%</td>
+    <td>정부 시스템에 매출 데이터 전부 올리는 것에 대한 불안. 세금 투명화 = 과세 증가 공포</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td><strong>내부 기술 전문성 부족</strong></td>
+    <td>45%</td>
+    <td>IT 담당자 없음. 사장 혼자 운영. POS 설치·API 연동 개념 자체를 모름</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td><strong>비용 부담</strong></td>
+    <td>42%</td>
+    <td>POS 시스템 RM 1,580~2,500 초기비용 + 월 RM 90~200 구독료. 순이익 5~12%에서 추가 고정비 부담</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td><strong>기존 시스템과의 연동 어려움</strong></td>
+    <td>59% (지원 요청)</td>
+    <td>기존 계산기·수기 운영과 새 시스템의 병행. 직원 재교육 필요</td>
+  </tr>
+</table>
+
+<h4>G-3-2. F&B 특유의 추가 장벽</h4>
+
+<table>
+  <tr>
+    <th style="width:5%">#</th>
+    <th style="width:25%">장벽</th>
+    <th>상세</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td><strong>현금 경제 투명화 공포</strong></td>
+    <td>많은 독립 F&B가 현금 위주 운영. e-Invoice는 모든 거래를 정부에 실시간 보고. 기존에 신고하지 않던 현금 매출이 드러남 → 세금 부담 증가 우려. 이것이 <strong>가장 큰 심리적 저항</strong></td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td><strong>언어 장벽</strong></td>
+    <td>Kopitiam 사장 대부분 중국계 노년층 (Mandarin/Cantonese). Mamak 사장 대부분 Tamil/Malay. LHDN 문서는 BM/영어. 기술 용어 이해 어려움</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td><strong>영업 중단 공포</strong></td>
+    <td>시스템 전환 중 영업을 멈출 수 없음. "배우면서 장사하라"는 건 현실적으로 어렵다. 코로나 이후 아직 회복 안 된 곳 다수</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td><strong>"e-Invoice가 뭔지 모른다"</strong></td>
+    <td>SME의 <strong>51%만 일반적 이해</strong>, 30%만 구체적 기능 파악, 19%는 아예 시작 안 함. "뭘 해야 하는지 모르겠다"가 가장 흔한 반응</td>
+  </tr>
+</table>
+
+<div class="callout">
+  <strong>가맹점이 가장 원하는 지원 (설문):</strong><br>
+  · 70%: "단계별 가이드·체크리스트" — 뭘 해야 하는지 쉽게 알려달라<br>
+  · 59%: "기존 시스템 연동 도움" — 내가 쓰는 것과 연결해달라<br>
+  · 53%: "솔루션 추천" — 뭘 사야 하는지 알려달라<br>
+  → <strong>기술이 아니라 "안내"가 부족하다.</strong> 솔루션보다 가이드가 더 절실하다
+</div>
+
+<hr class="section-divider">
+
+<!-- G-4: 기존 솔루션 시장 -->
+<h3 id="einvoice-market">G-4. 말레이시아 e-Invoice 솔루션 시장</h3>
+
+<h4>G-4-1. 주요 솔루션 비교</h4>
+
+<table>
+  <tr>
+    <th style="width:14%">솔루션</th>
+    <th style="width:12%">유형</th>
+    <th style="width:14%">가격</th>
+    <th style="width:12%">사용자 수</th>
+    <th>F&B 적합도</th>
+  </tr>
+  <tr>
+    <td><strong>MyInvois 포털</strong></td>
+    <td>LHDN 무료 웹</td>
+    <td>무료</td>
+    <td>108,000+</td>
+    <td>일 30건 이하 소규모만 적합. 수동 입력. POS 연동 없음</td>
+  </tr>
+  <tr>
+    <td><strong>StoreHub</strong></td>
+    <td>POS + e-Invoice</td>
+    <td>비공개 (추정 RM 100+/월)</td>
+    <td>15,000+ SMB</td>
+    <td><strong>가장 유력한 경쟁자.</strong> 말레이시아 1위 POS. e-Invoice 자동 연동. 체크아웃 시 자동 발행</td>
+  </tr>
+  <tr>
+    <td><strong>Eats365</strong></td>
+    <td>F&B 전문 POS</td>
+    <td>RM 99/월~</td>
+    <td>비공개</td>
+    <td>F&B 특화. SST 자동 계산. e-Invoice 연동. 배달 통합</td>
+  </tr>
+  <tr>
+    <td><strong>Niagawan</strong></td>
+    <td>회계 + POS</td>
+    <td>RM 497/년</td>
+    <td>30,000+</td>
+    <td>초저가. 스마트폰 앱 기반. LHDN 연동. 소규모에 적합</td>
+  </tr>
+  <tr>
+    <td><strong>AutoCount</strong></td>
+    <td>회계 + POS</td>
+    <td>RM 1,080/6개월~</td>
+    <td>210,000+</td>
+    <td>레거시 강자. 55개 필드 자동 채움. 대규모 사용자 기반</td>
+  </tr>
+  <tr>
+    <td><strong>SQL Account</strong></td>
+    <td>회계 소프트웨어</td>
+    <td>RM 1,499~2,599 (1회)</td>
+    <td>비공개</td>
+    <td>1회 구매 모델. 월 구독 없음. 중소기업 선호</td>
+  </tr>
+  <tr>
+    <td><strong>Bukku</strong></td>
+    <td>클라우드 회계</td>
+    <td>무료~RM 135/월</td>
+    <td>비공개</td>
+    <td>무료 플랜 존재. 스타트업·마이크로 SME 타겟</td>
+  </tr>
+  <tr>
+    <td><strong>Klikit</strong></td>
+    <td>클라우드 POS</td>
+    <td>비공개 ("Toast 대비 90% 저가")</td>
+    <td>비공개</td>
+    <td>F&B 특화. MyInvois 연동. 오프라인 가능. 멀티 매장</td>
+  </tr>
+  <tr>
+    <td><strong>JomeInvoice</strong></td>
+    <td>미들웨어</td>
+    <td>건당 과금</td>
+    <td>2,000+</td>
+    <td>기존 시스템 → MyInvois 자동 전송. Phase 1 대기업 60+곳 사용</td>
+  </tr>
+</table>
+
+<h4>G-4-2. 시장 공백 (Tapik이 파고들 수 있는 틈)</h4>
+
+<table>
+  <tr>
+    <th style="width:5%">#</th>
+    <th style="width:25%">공백</th>
+    <th>현황</th>
+    <th style="width:15%">Tapik 기회?</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td><strong>Kopitiam·Mamak 전용 솔루션</strong></td>
+    <td>현재 이 세그먼트를 전담하는 솔루션 없음. StoreHub은 도시 카페 위주. 대부분 면제 대상이라 수요 자체가 불확실</td>
+    <td><span class="tag tag-trend">낮음 (면제)</span></td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td><strong>레거시 POS → MyInvois 브릿지</strong></td>
+    <td>기존 구형 POS(API 미지원)를 쓰는 레스토랑이 MyInvois에 연결할 미들웨어 부족</td>
+    <td><span class="tag tag-trend">중간</span></td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td><strong>모바일 퍼스트 · 오프라인 퍼스트</strong></td>
+    <td>대부분 클라우드 기반. 인터넷 불안정한 곳에서 오프라인 작성 후 배치 전송하는 솔루션 부족</td>
+    <td><span class="tag tag-trend">중간</span></td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td><strong>다국어 온보딩 (Mandarin·Tamil)</strong></td>
+    <td>대부분 BM·영어만 지원. 중국계·인도계 사장 대상 Mandarin·Tamil 가이드 없음</td>
+    <td><span class="tag tag-usable">높음 (차별화 가능)</span></td>
+  </tr>
+</table>
+
+<hr class="section-divider">
+
+<!-- G-5: 정치·집행 현실 -->
+<h3 id="einvoice-politics">G-5. 정치 · 집행 현실</h3>
+
+<h4>G-5-1. 정치적 배경</h4>
+
+<table>
+  <tr>
+    <th style="width:18%">사건</th>
+    <th style="width:14%">시기</th>
+    <th>내용</th>
+  </tr>
+  <tr>
+    <td><strong>Phase 5 취소</strong></td>
+    <td>2025.12</td>
+    <td>내각 결정. 면제 기준 RM 50만 → RM 100만 상향. 약 200,000개 SME 면제. "비용과 준비 상태에 대한 SME 협회 피드백" 반영</td>
+  </tr>
+  <tr>
+    <td><strong>Samenta 성명</strong></td>
+    <td>2025.12</td>
+    <td>"영세한 마진과 디지털 인프라 없이 운영하는 20만 SME가 면제되어 환영"</td>
+  </tr>
+  <tr>
+    <td><strong>WANITA MCA 요구</strong></td>
+    <td>2025</td>
+    <td>"Hawker·노동자의 불안을 해소할 명확한 e-Invoice 정보를 신속히 공개하라" — 여당 내부에서도 압력</td>
+  </tr>
+  <tr>
+    <td><strong>LHDN 실적 발표</strong></td>
+    <td>2026.02</td>
+    <td>e-Invoice 데이터로 RM 14억 미신고 소득 적발. 500,000건+ 미준수 사례 확인. 17,188명 자진 신고 → RM 2.9억 추가 세수</td>
+  </tr>
+</table>
+
+<h4>G-5-2. 집행 현실 평가</h4>
+
+<div class="flow-box">
+<p><strong>LHDN은 집행할 의지와 능력이 있는가?</strong></p>
+<table>
+  <tr><th style="width:40%">질문</th><th>답</th></tr>
+  <tr><td>대기업 대상 집행?</td><td><strong>예, 적극적.</strong> 2024.01~2025.08 감사로 RM 169.5억 추가 세금·벌금 징수 (1,033개 법인)</td></tr>
+  <tr><td>중소기업 대상 집행?</td><td><strong>선별적.</strong> 데이터 분석 기반. 소득 변동·생활 수준 불일치·제3자 정보 교차 대조</td></tr>
+  <tr><td>Kopitiam·Hawker 대상?</td><td><strong>아니오.</strong> RM 100만 미만 면제. 면제 범위 밖 소규모 업체 대상 일괄 집행은 정치적으로 비현실적</td></tr>
+  <tr><td>유예기간 중 집행?</td><td><strong>아니오.</strong> Phase 4(2026년) 유예기간 중에는 Consolidated e-Invoice만 내면 됨. 벌금 없음</td></tr>
+</table>
+
+<p><strong>말레이시아 그림자 경제 규모:</strong> <span class="mono">RM 3,000억 (GDP의 약 24%)</span>. e-Invoice는 이 그림자 경제를 축소하기 위한 장기 전략의 일부. 정부는 미세 사업자보다 중·대형 탈루에 집중.</p>
+</div>
+
+<h4>G-5-3. 동남아시아 비교</h4>
+
+<table>
+  <tr>
+    <th style="width:14%">국가</th>
+    <th style="width:16%">시스템</th>
+    <th style="width:16%">소규모 사업자 대응</th>
+    <th>결과</th>
+  </tr>
+  <tr>
+    <td>🇮🇩 인도네시아</td>
+    <td>e-Faktur (필수)</td>
+    <td>면제 없음. 미준수 시 계정 비활성화 → 합법 인보이스 발행 불가</td>
+    <td>엄격 집행. 계정 비활성화가 사업 자체를 막는 구조. Mass non-compliance 데이터 없음</td>
+  </tr>
+  <tr>
+    <td>🇹🇭 태국</td>
+    <td>e-Tax Invoice (자발적)</td>
+    <td>의무 아님. 종이 인보이스 유효. 소규모용 간이 버전(PDF+타임스탬프)</td>
+    <td>저항 최소. 자발적이라 강제 전환 없음</td>
+  </tr>
+  <tr>
+    <td>🇵🇭 필리핀</td>
+    <td>BIR e-Invoice (필수)</td>
+    <td>기한 2026.12.31로 연장. 기술 장벽 인정</td>
+    <td>여러 차례 연기. 54% 데이터 보안 우려, 45% 기술 장벽 호소</td>
+  </tr>
+  <tr>
+    <td>🇲🇾 말레이시아</td>
+    <td>LHDN e-Invoice (필수)</td>
+    <td>RM 100만 미만 면제. 12개월 유예. Consolidated 옵션</td>
+    <td>필리핀형 유연성 + 인도네시아형 장기 목표. 현재 가장 균형잡힌 접근</td>
+  </tr>
+</table>
+
+<hr class="section-divider">
+
+<!-- G-6: Tapik e-Invoice 전략 -->
+<h3 id="einvoice-tapik">G-6. Tapik e-Invoice 전략 — 캡틴 결정 사항</h3>
+
+<h4>G-6-1. 기술적 가능성</h4>
+
+<table>
+  <tr>
+    <th style="width:25%">항목</th>
+    <th>상세</th>
+  </tr>
+  <tr>
+    <td><strong>MyInvois API</strong></td>
+    <td>공개 SDK 제공 (sdk.myinvois.hasil.gov.my). 15개 API. XML/JSON 샘플 포함. GitHub에 오픈소스 구현체(ERPNext 등) 존재</td>
+  </tr>
+  <tr>
+    <td><strong>디지털 서명</strong></td>
+    <td>XAdES (SHA-256, RSA). MCMC 인증 CA에서 디지털 인증서 취득 필요</td>
+  </tr>
+  <tr>
+    <td><strong>개발 기간</strong></td>
+    <td>자체 개발: 2~3개월 (MVP) · 파트너 API 연동: 4~6주</td>
+  </tr>
+  <tr>
+    <td><strong>별도 라이선스</strong></td>
+    <td>e-Invoice 중개자 전용 라이선스 없음. 결제 처리를 하지 않으면 규제 부담 낮음. 결제 포함 시 BNM Money Services License 필요</td>
+  </tr>
+  <tr>
+    <td><strong>책임 구조</strong></td>
+    <td>인보이스 정확성 책임 = 가맹점. 시스템 안정성·전송 무결성 책임 = Tapik. LHDN이 실시간 검증하므로 잘못된 인보이스는 자동 거부됨</td>
+  </tr>
+</table>
+
+<h4>G-6-2. 글로벌 선례 — 규제 도구로 가맹점 확보한 사례</h4>
+
+<table>
+  <tr>
+    <th style="width:14%">회사</th>
+    <th style="width:14%">전략</th>
+    <th>결과</th>
+  </tr>
+  <tr>
+    <td><strong>Square (미국)</strong></td>
+    <td>무료 POS + 세금 리포팅</td>
+    <td>미국 최대 POS 사업자. 무료로 온보딩 → 결제 수수료로 수익화. 이후 대출·급여 등 확장</td>
+  </tr>
+  <tr>
+    <td><strong>Razorpay (인도)</strong></td>
+    <td>무료 GST 인보이스 + 결제</td>
+    <td>POS 사업 전년 대비 60% 성장. GST 컴플라이언스를 무료로 → 결제·POS 하드웨어·프리미엄 소프트웨어로 수익화</td>
+  </tr>
+  <tr>
+    <td><strong>StoreHub (말레이시아)</strong></td>
+    <td>저가 POS + 현지 세금 연동</td>
+    <td>동남아 5개국 15,000+ SMB. e-Invoice를 기본 기능으로 포함 (별도 가격 아님)</td>
+  </tr>
+</table>
+
+<h4>G-6-3. Tapik 전략 옵션 평가</h4>
+
+<table>
+  <tr>
+    <th style="width:5%">#</th>
+    <th style="width:20%">옵션</th>
+    <th style="width:12%">적합도</th>
+    <th>근거</th>
+  </tr>
+  <tr>
+    <td>A</td>
+    <td><strong>e-Invoice를 핵심 온보딩 훅으로</strong></td>
+    <td><span class="tag tag-risk">낮음</span></td>
+    <td>Tapik 주 타겟(Kopitiam·Mamak)은 면제 대상. "e-Invoice 도와준다"가 세일즈 포인트 안 됨. 의무 대상(RM 100만+)은 이미 StoreHub·AutoCount 등 기존 솔루션이 장악</td>
+  </tr>
+  <tr>
+    <td>B</td>
+    <td><strong>e-Invoice를 부가 기능으로 (있으면 좋은 것)</strong></td>
+    <td><span class="tag tag-trend">중간</span></td>
+    <td>Tapik POS에 e-Invoice 포함하되, 이것이 메인 세일즈 포인트가 아님. "성장하면 자동으로 e-Invoice 준비 완료"라는 미래 가치 제안. 가맹점이 RM 100만 넘기면 자연스럽게 전환</td>
+  </tr>
+  <tr>
+    <td>C</td>
+    <td><strong>e-Invoice 포기. 다른 훅 찾기</strong></td>
+    <td><span class="tag tag-usable">높음</span></td>
+    <td>면제 대상이 대부분인 시장에서 e-Invoice에 투자하는 건 비효율. F&B 페인포인트 1위(인력 부족), 3위(고객 확보)에 집중. e-Invoice는 시장이 성숙하면 추가</td>
+  </tr>
+  <tr>
+    <td>D</td>
+    <td><strong>파트너십: JomeInvoice 등과 연동</strong></td>
+    <td><span class="tag tag-trend">중간</span></td>
+    <td>직접 구축 대신 미들웨어 파트너 API 연동 (4~6주). RM 100만+ 가맹점에만 제공. 최소 리소스로 "있으면 좋은" 기능 확보</td>
+  </tr>
+</table>
+
+<div class="callout callout-critical">
+  <strong>🔍 최종 전략 판단 (캡틴 결정 필요):</strong><br><br>
+
+  <strong>1. e-Invoice는 Tapik의 "킬러 온보딩 훅"이 될 수 없다</strong><br>
+  &nbsp;&nbsp;&nbsp;근거: 타겟 시장 대부분이 면제. 의무 대상은 기존 솔루션이 이미 서비스 중<br><br>
+
+  <strong>2. 그러면 Tapik의 진짜 온보딩 훅은 뭐가 돼야 하나?</strong><br>
+  &nbsp;&nbsp;&nbsp;F-2 페인포인트 순위 재확인:<br>
+  &nbsp;&nbsp;&nbsp;· 1위: 인력 부족 → Tapik이 해결할 수 없음 (플랫폼의 영역 아님)<br>
+  &nbsp;&nbsp;&nbsp;· 2위: 원가 상승 → Tapik이 해결할 수 없음 (공급망 문제)<br>
+  &nbsp;&nbsp;&nbsp;· <strong>3위: 신규 고객 확보 → 이것이 Tapik의 유일한 현실적 진입점</strong><br>
+  &nbsp;&nbsp;&nbsp;· "가맹점에 새 손님을 보내준다"가 가장 강한 세일즈 포인트<br>
+  &nbsp;&nbsp;&nbsp;· 할인·쿠폰이 아니라, <strong>추가 매출(볼륨)</strong>이 가치 제안의 핵심이 돼야 함<br><br>
+
+  <strong>3. 옵션 B vs C vs D 중 선택 필요:</strong><br>
+  &nbsp;&nbsp;&nbsp;B) e-Invoice를 부가 기능으로 넣되 메인 아님 → 개발 2~3개월 투자 필요<br>
+  &nbsp;&nbsp;&nbsp;C) e-Invoice 완전 포기, 고객 확보 훅에 올인 → 리소스 절약<br>
+  &nbsp;&nbsp;&nbsp;D) 파트너 API로 최소 노력 연동 → 4~6주, 리소스 적음
+</div>
+
+<p class="source">
+출처 종합: LHDN e-Invoice Implementation Timeline (hasil.gov.my) · ClearTax Malaysia e-Invoice Penalties & Phases · Malaysia SME Council Whitepaper 2025 · Samenta Association Statement (Dec 2025) · Free Malaysia Today "SMEs fear e-invoicing" (Jul 2024) · The Edge Malaysia e-Invoice Exemption Threshold · VATupdate RM1M Threshold · Crowe Malaysia MSME Exemption · StoreHub e-Invoice · Eats365 POS · Klikit Cloud POS · JomeInvoice Pricing · Niagawan · AutoCount · SQL Account · Bukku · LHDN MyInvois SDK · Razorpay POS Strategy · Square Business Model · MDEC Fintech Booster · BNM Regulatory Sandbox · Indonesia e-Faktur (Sovos) · Thailand e-Tax Invoice (GentleLaw) · Philippines BIR e-Invoicing (Neeyamo)
+</p>
+
+<hr class="section-divider">
+
+<!-- ===================== SECTION H: 수익모델 진화·확정 ===================== -->
+<h2 id="reward-landscape">H. 말레이시아 리워드앱 시장 현황</h2>
+
+<p><strong>캡틴 질문:</strong> "말레이에도 리워드앱이 많나? 통합을 제공하는 건 없어?"</p>
+
+<h3>H-0-1. 시장 규모 & 소비자 행동</h3>
+
+<table>
+  <tr>
+    <th style="width:30%">지표</th>
+    <th>수치</th>
+    <th>출처/맥락</th>
+  </tr>
+  <tr>
+    <td>평균 로열티 프로그램 가입 수</td>
+    <td><strong>17개/인</strong></td>
+    <td>Friends of Brands 2024 조사. 동남아 평균 대비 높음</td>
+  </tr>
+  <tr>
+    <td>실제 활성 사용 프로그램</td>
+    <td>3~4개/인</td>
+    <td>17개 중 대부분 휴면. 포인트 소멸 반복</td>
+  </tr>
+  <tr>
+    <td>리워드앱 시장 플레이어</td>
+    <td><strong>25개+</strong></td>
+    <td>독립 앱, 은행 리워드, 체인 자체앱 포함</td>
+  </tr>
+  <tr>
+    <td>크로스 가맹점 네트워크</td>
+    <td>3개</td>
+    <td>BonusLink (12M회원), B Infinite (80+파트너, 4,000아울렛), Ocard (7,000+가맹점)</td>
+  </tr>
+</table>
+
+<h3>H-0-2. 주요 리워드앱 분류</h3>
+
+<table>
+  <tr>
+    <th style="width:18%">유형</th>
+    <th style="width:25%">대표 앱</th>
+    <th>특징</th>
+    <th style="width:12%">독립 F&B 커버</th>
+  </tr>
+  <tr>
+    <td><strong>Coalition (다중 파트너)</strong></td>
+    <td>BonusLink, B Infinite</td>
+    <td>대기업 파트너 중심 (Shell, Parkson, 7-Eleven). 가입 장벽 높음</td>
+    <td><span class="tag tag-danger">없음</span></td>
+  </tr>
+  <tr>
+    <td><strong>은행/카드 리워드</strong></td>
+    <td>Maybank Treats, CIMB Deals, AmBank</td>
+    <td>카드 발급 필수. 카드 수수료 기피하는 독립점은 배제</td>
+    <td><span class="tag tag-danger">없음</span></td>
+  </tr>
+  <tr>
+    <td><strong>슈퍼앱 리워드</strong></td>
+    <td>GrabRewards, Shopee Coins</td>
+    <td>플랫폼 내 생태계 한정. 25-35% 수수료 전제</td>
+    <td><span class="tag tag-danger">없음</span></td>
+  </tr>
+  <tr>
+    <td><strong>캐시백/할인</strong></td>
+    <td>Fave (FavePay), ShopBack</td>
+    <td>Fave 2만+ 가맹점이나 도시 카페 중심, Kopitiam 침투 낮음. ShopBack Pay MY 2026.03 중단</td>
+    <td><span class="tag tag-warn">극소</span></td>
+  </tr>
+  <tr>
+    <td><strong>체인 자체앱</strong></td>
+    <td>Starbucks, ZUS Coffee, FamilyMart</td>
+    <td>자사 매장 한정. 독립점 관련 없음</td>
+    <td><span class="tag tag-danger">해당 없음</span></td>
+  </tr>
+  <tr>
+    <td><strong>QR 스탬프 SaaS</strong></td>
+    <td>Pixalink, Avocado Loyalty, Ocard</td>
+    <td>독립점 대상이나, POS 외부 별도 시스템. 수동 QR. 소비자 커버리지 작음</td>
+    <td><span class="tag tag-warn">일부</span></td>
+  </tr>
+</table>
+
+<div class="callout callout-critical">
+<strong>핵심 발견: 시장 공백 확인</strong><br>
+25개+ 리워드앱 중 <strong>"크로스 가맹점 통합 포인트 + 선주문/픽업"을 독립 SME F&B 대상으로 제공하는 앱은 0개</strong>.<br><br>
+기존 크로스 가맹점 네트워크 (BonusLink, B Infinite, Ocard)는 전부 <strong>체인·프랜차이즈 중심</strong>.<br>
+기존 독립점 대상 SaaS (Pixalink 등)는 <strong>개별 매장 포인트만 제공, 크로스 사용 불가</strong>.<br><br>
+→ Tapik이 노리는 "독립 F&B 크로스 가맹점 포인트 + 선주문 픽업" 교차점은 <strong>무주공산</strong>.
+</div>
+
+<hr class="section-divider">
+
+<!-- H-1: 결제 인프라 -->
+<h3 id="payment-infra">H-1. 말레이시아 결제 인프라 — Payment Gateway 모델</h3>
+
+<p><strong>캡틴 질문:</strong> "선결제를 매장 안 가고, 우리 앱 내에서 하되, 우리가 돈을 직접 안 받고도 가능한가?"</p>
+
+<div class="callout callout-ok">
+<strong>결론: 가능. Payment Gateway 모델로 Tapik은 돈을 직접 만지지 않는다.</strong><br>
+소비자 은행 → Payment Gateway → 가맹점 은행. Tapik은 수수료만 자동 차감 후 정산 지시.<br>
+<strong>BNM 금융 라이선스 불필요.</strong>
+</div>
+
+<h4>H-1-1. 결제 흐름</h4>
+
+<div class="flow-box">
+<strong>소비자가 앱에서 RM 10.50 결제 시:</strong><br><br>
+<span class="mono">
+① 소비자 → FPX/DuitNow/e-wallet 선택 → 결제 승인<br>
+② 결제금 RM 10.50 → Payment Gateway 에스크로 계좌 도착<br>
+③ Gateway가 자동 분배:<br>
+&nbsp;&nbsp;&nbsp;· 가맹점 정산: RM 10.50 - RM 1.05 (Tapik 수수료 10%) = RM 9.45<br>
+&nbsp;&nbsp;&nbsp;· Tapik 수수료: RM 1.05<br>
+&nbsp;&nbsp;&nbsp;· Gateway 수수료: ~RM 0.13 (1.2%) + RM 0.30 (고정비) ← Tapik 몫에서 차감<br>
+④ T+1~T+3일 내 가맹점 은행 계좌로 입금<br>
+</span>
+<br>
+<strong>핵심: Tapik 회사 계좌를 돈이 경유하지 않음. Gateway가 직접 분배.</strong>
+</div>
+
+<h4>H-1-2. 말레이시아 Payment Gateway 비교</h4>
+
+<table>
+  <tr>
+    <th style="width:18%">Gateway</th>
+    <th>수수료</th>
+    <th>고정비</th>
+    <th>정산 주기</th>
+    <th>특이사항</th>
+  </tr>
+  <tr>
+    <td><strong>iPay88</strong></td>
+    <td>1.0~1.5%</td>
+    <td>건당 RM 0.30</td>
+    <td>T+1~T+3</td>
+    <td>말레이시아 최대. FPX·DuitNow·TnG·GrabPay 전부 지원</td>
+  </tr>
+  <tr>
+    <td><strong>Revenue Monster</strong></td>
+    <td>1.0~1.2%</td>
+    <td>건당 RM 0.15~0.30</td>
+    <td>T+1~T+2</td>
+    <td>스타트업 친화적. API 깔끔. 고정비 낮은 상품 있음</td>
+  </tr>
+  <tr>
+    <td><strong>Billplz</strong></td>
+    <td>0.8~1.5%</td>
+    <td>건당 RM 0.10~0.30</td>
+    <td>T+1</td>
+    <td>FPX 직접 연동. 소액 거래에 유리한 저고정비 상품</td>
+  </tr>
+  <tr>
+    <td><strong>Senangpay</strong></td>
+    <td>1.5~2.0%</td>
+    <td>건당 RM 0.20</td>
+    <td>T+1~T+3</td>
+    <td>설정 간편. SME 인기</td>
+  </tr>
+</table>
+
+<div class="callout">
+<strong>Gateway 선택 시 핵심</strong>: RM 10~15 소액 거래가 주력이므로 <strong>고정비(건당 RM)가 변동비(%)보다 마진에 더 큰 영향</strong>.<br>
+Billplz (RM 0.10 고정비) 또는 Revenue Monster (RM 0.15) 사용 시 RM 10 거래에서도 흑자 가능.
+</div>
+
+<h4>H-1-3. 소비자 결제 수단 현황</h4>
+
+<table>
+  <tr>
+    <th>결제 수단</th>
+    <th>침투율</th>
+    <th>Tapik 적합성</th>
+  </tr>
+  <tr>
+    <td><strong>DuitNow QR</strong></td>
+    <td>30억 건/년 (2025), +244% YoY</td>
+    <td><span class="tag tag-ok">최적</span> 은행 직결, 수수료 최저</td>
+  </tr>
+  <tr>
+    <td><strong>FPX (온라인 뱅킹)</strong></td>
+    <td>12.3억 건/년 (2024)</td>
+    <td><span class="tag tag-ok">최적</span> 앱 내 결제 표준</td>
+  </tr>
+  <tr>
+    <td><strong>TnG e-wallet</strong></td>
+    <td>사용률 94% (e-wallet 중)</td>
+    <td><span class="tag tag-ok">필수</span> 가장 대중적</td>
+  </tr>
+  <tr>
+    <td><strong>GrabPay</strong></td>
+    <td>사용률 47%</td>
+    <td><span class="tag tag-ok">지원</span></td>
+  </tr>
+  <tr>
+    <td><strong>신용/직불카드</strong></td>
+    <td>수수료 2~3%</td>
+    <td><span class="tag tag-warn">비용 높음</span> 지원하되 FPX/DuitNow 유도</td>
+  </tr>
+</table>
+
+<h4>H-1-4. 픽업 검증 — QR 코드 방식</h4>
+
+<div class="callout callout-ok">
+<strong>Web3/블록체인 불필요.</strong> 서버 사이드 유니크 토큰으로 충분.<br><br>
+주문 완료 → 서버가 고유 토큰 생성 (orderID + userID + timestamp 해시) → QR 코드로 변환 → 소비자 앱에 표시<br>
+→ 매장에서 POS/태블릿으로 QR 스캔 → 서버 검증 → 1회 사용 후 무효화<br><br>
+<strong>기술 스택</strong>: HMAC-SHA256 해시 + UUID v4. 구현 난이도 LOW.
+</div>
+
+<hr class="section-divider">
+
+<!-- H-2: 수익모델 진화 과정 -->
+<h3 id="model-evolution">H-2. 수익모델 진화 과정 — "할인 플랫폼"에서 "시간 절약 레이어"로</h3>
+
+<p>캡틴과의 논의를 거치며 Tapik의 비즈니스 모델이 근본적으로 변화했다. 아래는 버전별 진화 이력:</p>
+
+<table>
+  <tr>
+    <th style="width:8%">버전</th>
+    <th style="width:25%">모델</th>
+    <th style="width:25%">핵심 메커니즘</th>
+    <th style="width:15%">사망 원인</th>
+    <th>교훈</th>
+  </tr>
+  <tr>
+    <td><strong>v0</strong></td>
+    <td>가맹점 SaaS 구독</td>
+    <td>Basic RM 49 / Plus RM 129 월정액</td>
+    <td>가맹점 진입 장벽</td>
+    <td>거래 없이 고정비 부과하면 독립 가맹점이 거부</td>
+  </tr>
+  <tr>
+    <td><strong>v1</strong></td>
+    <td>그룹딜 할인 + 수수료</td>
+    <td>인플루언서가 그룹 모집 → 5~15% 할인 → 가맹점 수수료 5%</td>
+    <td>콜드스타트 불가</td>
+    <td>"최소 2명" 전제가 허들. 할인은 가맹점 마진 압박. 쿠폰 거부감 (F-1 참조)</td>
+  </tr>
+  <tr>
+    <td><strong>v1.5</strong></td>
+    <td>v1 + 광고비 (Plan C)</td>
+    <td>할인분 50%를 가맹점 "광고비"로 수취 → 포인트 재원</td>
+    <td>GrabFood와 동일 부담</td>
+    <td>광고비 포함 시 가맹점 총 부담 19.5% = GrabFood와 같다 (E-6 참조)</td>
+  </tr>
+  <tr>
+    <td><strong>v2</strong></td>
+    <td>Tapik 자비 포인트</td>
+    <td>Tapik이 자체 재원으로 포인트 지급 (가맹점 부담 0)</td>
+    <td>음의 마진</td>
+    <td>가맹점 수수료 6%에서 포인트 5% + 게이트웨이 1.2% 차감 시 적자</td>
+  </tr>
+  <tr style="background:#f0fdf4;">
+    <td><strong>v3 ✓</strong></td>
+    <td><strong>시간 절약 프리미엄 + 포인트 환원</strong></td>
+    <td>소비자 5% 서비스료 → 포인트 100% 환원 + 가맹점 10% 수수료</td>
+    <td><span class="tag tag-ok">확정</span></td>
+    <td>소비자 체감 "같은 가격 + 포인트 보너스". 가맹점 부담 GrabFood의 1/4</td>
+  </tr>
+</table>
+
+<div class="callout callout-ok">
+<strong>포지셔닝 전환</strong><br>
+<strong>Before</strong>: "할인 플랫폼" — 가맹점 마진을 깎아 소비자에게 혜택<br>
+<strong>After</strong>: "시간 절약 레이어" — 소비자가 편의에 대해 지불, 그 대가가 포인트로 환원<br><br>
+<strong>캡틴 인사이트</strong>: "배달앱에서 10%+ 더 내고 쓰는 사람들이, 바로 나오는 음식에 5%를 더 낼 용의는 충분하다."<br>
+배달앱 프리미엄 대비 Tapik 프리미엄: <strong>1/2~1/3 수준이면서 전액 포인트 환원</strong> → 소비자 거부감 최소화.
+</div>
+
+<hr class="section-divider">
+
+<!-- H-3: 확정 수익모델 -->
+<h3 id="confirmed-model">H-3. 확정 수익모델 (v4) — 5% 서비스료 + 10% 가맹점 수수료 (코어)</h3>
+
+<h4>H-3-1. 모델 구조</h4>
+
+<div class="flow-box">
+<strong>거래 흐름 (RM 12 나시르막 기준, v4)</strong><br><br>
+<span class="mono">
+<strong>[소비자 화면]</strong><br>
+나시르막 ────────── RM 12.00<br>
+즉시 준비 서비스료 (5%) ── RM 0.60<br>
+합계 ──────────── RM 12.60<br>
+적립 포인트 ─────── +60P (RM 0.60 상당)<br>
+→ 소비자 체감: "RM 12 쓰고 포인트도 쌓았다"<br>
+<br>
+<strong>[가맹점 정산]</strong><br>
+주문 금액 ────────── RM 12.60<br>
+Tapik 수수료 (10%) ──── -RM 1.26<br>
+정산 금액 ────────── RM 11.34<br>
+→ 매장 직접 판매 RM 12.00 대비 5.5% 손해<br>
+→ 단, 서빙·자리·설거지 비용 (RM 1.50~2.60) 절감 시 오히려 이득<br>
+<br>
+<strong>[Tapik 수익]</strong><br>
+가맹점 수수료 수입 ──── RM 1.26<br>
+포인트 지급 비용 ──── -RM 0.60 (5% 서비스료 전액 환원)<br>
+게이트웨이 비용 ───── -RM 0.18~0.48 (Gateway 선택에 따라)<br>
+<strong>Tapik 순수익 ────── RM 0.18 ~ RM 0.48</strong><br>
+</span>
+</div>
+
+<h4>H-3-2. 가맹점 설득 논리 — "왜 10% (코어)를 내야 하나"</h4>
+
+<table>
+  <tr>
+    <th style="width:30%">논리</th>
+    <th>내용</th>
+  </tr>
+  <tr>
+    <td><strong>1. 5% 추가 매출을 만들어줌</strong></td>
+    <td>소비자가 매장가보다 5% 더 지불함. 이 5%는 Tapik이 만들어낸 추가 수익. "우리가 5% 더 받아다 드렸으니 10% 달라"</td>
+  </tr>
+  <tr>
+    <td><strong>2. GrabFood 픽업의 1/2 수준</strong></td>
+    <td>GrabFood 픽업 20% vs Tapik 10% (코어). 가맹점 실수령: GrabFood RM 9.60 vs Tapik RM 11.34 (RM 12 기준) — Tapik이 더 유리</td>
+  </tr>
+  <tr>
+    <td><strong>3. 숨은 비용 절감</strong></td>
+    <td>픽업 주문은 서빙비(RM 0.80~1.20) + 자리비(RM 0.50~1.00) + 설거지(RM 0.20~0.40) 불필요. 실질 마진 매장 판매 대비 동등 또는 우위 (E-8 분석 참조)</td>
+  </tr>
+  <tr>
+    <td><strong>4. 거래 없으면 비용 0</strong></td>
+    <td>월정액 아님. Tapik 통해 주문 들어올 때만 수수료 발생. 리스크 제로</td>
+  </tr>
+  <tr>
+    <td><strong>5. 룸 기능으로 바이럴 성장</strong></td>
+    <td>v1 MVP에 룸 포함. 포인트 차등(Solo 5%, Joiner 6%, Creator 8%)으로 자연스러운 추천 인센티브. 가맹점을 위해 구매자 증가 추진 중</td>
+  </tr>
+</table>
+
+<h4>H-3-3. 소비자 수용성 — "왜 5% 더 내야 하나"</h4>
+
+<table>
+  <tr>
+    <th style="width:30%">논리</th>
+    <th>내용</th>
+  </tr>
+  <tr>
+    <td><strong>1. 배달앱 선례</strong></td>
+    <td>GrabFood에서 매장가 대비 15~20% 비싸도 MAU 1,500만+. 소비자는 "앱 가격이 좀 비싼 건 원래 그런 것"으로 학습됨</td>
+  </tr>
+  <tr>
+    <td><strong>2. 배달앱의 1/3 프리미엄</strong></td>
+    <td>GrabFood 15~20% vs Tapik 5%. 그마저도 포인트로 환원. 실질 추가 부담 = 0</td>
+  </tr>
+  <tr>
+    <td><strong>3. 명확한 명목</strong></td>
+    <td>"즉시 준비 서비스료" — 줄 안 서고, 주문 후 바로 받음. 배달앱의 "배달비"처럼 직관적 명분</td>
+  </tr>
+  <tr>
+    <td><strong>4. 포인트 전액 환원</strong></td>
+    <td>5% 서비스료가 100% 포인트로 돌아옴. "돈을 더 쓴 게 아니라 적립한 것" 프레이밍</td>
+  </tr>
+</table>
+
+<h4>H-3-4. 가격 프레이밍 전략 — GrabFood 방식 채택</h4>
+
+<div class="callout callout-ok">
+<strong>캡틴 확정: GrabFood 방식으로 간다</strong><br><br>
+GrabFood에서 매장보다 비싼 걸 소비자들이 알지만 "원래 그런 거"로 받아들인다.<br>
+Tapik도 동일: 앱 메뉴가에 5% 서비스료를 포함하여 표시하되, <strong>"즉시 준비 서비스료 5% — 포인트 100% 적립"</strong>으로 명시.<br><br>
+차이점: GrabFood는 프리미엄을 돌려주지 않음. <strong>Tapik은 전액 포인트로 환원.</strong>
+</div>
+
+<hr class="section-divider">
+
+<!-- H-4: 거래별 단가 시뮬레이션 -->
+<h3 id="unit-economics-v4">H-4. 거래별 단가 시뮬레이션 (v4 모델, 10% 코어 수수료)</h3>
+
+<h4>H-4-1. 거래 금액별 Tapik 순이익 (Gateway 고정비 RM 0.15 기준, 저고정비 제품)</h4>
+
+<table>
+  <tr>
+    <th>메뉴가</th>
+    <th>소비자 결제</th>
+    <th>가맹점 수수료 (10%)</th>
+    <th>포인트 비용 (5%)</th>
+    <th>게이트웨이 (1.2%+RM0.15)</th>
+    <th>Tapik 순이익</th>
+  </tr>
+  <tr>
+    <td>RM 10</td>
+    <td>RM 10.50</td>
+    <td>RM 1.05</td>
+    <td>-RM 0.50</td>
+    <td>-RM 0.28</td>
+    <td><strong style="color:#22c55e">+RM 0.27</strong></td>
+  </tr>
+  <tr>
+    <td>RM 12 (기준)</td>
+    <td>RM 12.60</td>
+    <td>RM 1.26</td>
+    <td>-RM 0.60</td>
+    <td>-RM 0.30</td>
+    <td><strong style="color:#22c55e">+RM 0.36</strong></td>
+  </tr>
+  <tr>
+    <td>RM 15</td>
+    <td>RM 15.75</td>
+    <td>RM 1.58</td>
+    <td>-RM 0.75</td>
+    <td>-RM 0.32</td>
+    <td><strong style="color:#22c55e">+RM 0.51</strong></td>
+  </tr>
+  <tr>
+    <td>RM 20</td>
+    <td>RM 21.00</td>
+    <td>RM 2.10</td>
+    <td>-RM 1.00</td>
+    <td>-RM 0.35</td>
+    <td><strong style="color:#22c55e">+RM 0.75</strong></td>
+  </tr>
+  <tr>
+    <td>RM 30</td>
+    <td>RM 31.50</td>
+    <td>RM 3.15</td>
+    <td>-RM 1.50</td>
+    <td>-RM 0.48</td>
+    <td><strong style="color:#22c55e">+RM 1.17</strong></td>
+  </tr>
+  <tr>
+    <td>RM 50</td>
+    <td>RM 52.50</td>
+    <td>RM 5.25</td>
+    <td>-RM 2.50</td>
+    <td>-RM 0.73</td>
+    <td><strong style="color:#22c55e">+RM 2.02</strong></td>
+  </tr>
+</table>
+
+<div class="callout callout-ok">
+<strong>손익분기점: 약 RM 8 (저고정비 Gateway 사용 시)</strong><br>
+v3 대비 v4는 10% 수수료 + 저고정비 Gateway (RM 0.15) 조합으로 <strong>모든 메뉴에서 흑자</strong>. 코피티암 평균 객단가 RM 12 기준 건당 순이익 RM 0.36 확보.<br><br>
+<strong>v3 대비 개선:</strong><br>
+① RM 12 메뉴: v3 적자(-RM 0.09) → v4 흑자(+RM 0.36) = RM 0.45 개선<br>
+② 평균 객단가 RM 15: v3 건당 RM 0.17 → v4 건당 RM 0.51 = 3배 향상<br>
+③ 룸 포인트 차등으로 고객 유입 가속화 예상
+</div>
+
+<h4>H-4-2. Gateway 고정비별 손익분기 비교 (v4)</h4>
+
+<table>
+  <tr>
+    <th>Gateway 고정비</th>
+    <th>RM 10 순이익</th>
+    <th>RM 12 순이익</th>
+    <th>손익분기 메뉴가</th>
+    <th>해당 Gateway</th>
+  </tr>
+  <tr>
+    <td>RM 0.30</td>
+    <td><strong style="color:#22c55e">+RM 0.17</strong></td>
+    <td><strong style="color:#22c55e">+RM 0.26</strong></td>
+    <td>~RM 6</td>
+    <td>iPay88, Senangpay</td>
+  </tr>
+  <tr>
+    <td>RM 0.15</td>
+    <td><strong style="color:#22c55e">+RM 0.27</strong></td>
+    <td><strong style="color:#22c55e">+RM 0.36</strong></td>
+    <td>~RM 3</td>
+    <td>Revenue Monster, Billplz</td>
+  </tr>
+  <tr>
+    <td>RM 0.10</td>
+    <td><strong style="color:#22c55e">+RM 0.32</strong></td>
+    <td><strong style="color:#22c55e">+RM 0.41</strong></td>
+    <td>~RM 6</td>
+    <td>Billplz</td>
+  </tr>
+</table>
+
+<div class="callout callout-ok">
+<strong>결론: v4 모델은 모든 Gateway에서 흑자.</strong><br>
+v3 (8% 수수료)는 고정비 RM 0.30인 Gateway에서 RM 14 이상이어야 흑자였으나, v4 (10% 수수료 + 저고정비 Gateway)는 RM 6 이하에서도 흑자. 코피티암 평균 객단가(RM 8~15) 전범위에서 건당 순이익 확보.
+</div>
+
+<h4>H-4-3. 월간 스케일 시뮬레이션 (v4, Gateway 고정비 RM 0.15, 평균 객단가 RM 15 가정)</h4>
+
+<table>
+  <tr>
+    <th>시나리오</th>
+    <th>가맹점 수</th>
+    <th>일 주문/가맹점</th>
+    <th>월 총 거래</th>
+    <th>건당 순이익</th>
+    <th>Tapik MRR</th>
+    <th>Tapik ARR</th>
+  </tr>
+  <tr>
+    <td>파일럿 (6개월)</td>
+    <td>50</td>
+    <td>15건</td>
+    <td>22,500건</td>
+    <td>RM 0.51</td>
+    <td>RM 11,475</td>
+    <td>RM 137K</td>
+  </tr>
+  <tr>
+    <td>성장 (12개월)</td>
+    <td>200</td>
+    <td>20건</td>
+    <td>120,000건</td>
+    <td>RM 0.51</td>
+    <td>RM 61,200</td>
+    <td>RM 734K</td>
+  </tr>
+  <tr>
+    <td>확장 (24개월)</td>
+    <td>500</td>
+    <td>20건</td>
+    <td>300,000건</td>
+    <td>RM 54,000</td>
+    <td>RM 648K</td>
+  </tr>
+  <tr>
+    <td>성숙 (36개월)</td>
+    <td>1,500</td>
+    <td>25건</td>
+    <td>1,125,000건</td>
+    <td>RM 202,500</td>
+    <td>RM 2.4M</td>
+  </tr>
+</table>
+
+<hr class="section-divider">
+
+<!-- H-5: 의사결정 이력 -->
+<h3 id="decision-log">H-5. 의사결정 이력 (Decision Log)</h3>
+
+<p>캡틴(Gabriel)과의 전체 논의에서 내려진 주요 결정들을 시간순으로 기록:</p>
+
+<table>
+  <tr>
+    <th style="width:8%">순번</th>
+    <th style="width:20%">결정 사항</th>
+    <th style="width:12%">결정</th>
+    <th>근거</th>
+    <th style="width:10%">상태</th>
+  </tr>
+  <tr>
+    <td>D-01</td>
+    <td>e-Invoice를 온보딩 훅으로 사용</td>
+    <td><strong>불가</strong></td>
+    <td>RM 1M 면제 기준 → 타겟 시장(kopitiam, mamak) 대부분 면제. B2C 플랫폼이 B2B 인프라 개발은 부적합 (G-6 참조)</td>
+    <td><span class="tag tag-danger">폐기</span></td>
+  </tr>
+  <tr>
+    <td>D-02</td>
+    <td>인력 부족 해결을 가치 제안에 포함</td>
+    <td><strong>불가</strong></td>
+    <td>구조적 문제 (외국인 노동자 엑소더스, 최저임금 패러독스). 플랫폼이 해결할 수 있는 영역 아님</td>
+    <td><span class="tag tag-danger">폐기</span></td>
+  </tr>
+  <tr>
+    <td>D-03</td>
+    <td>할인/쿠폰 기반 그룹딜 모델 (v1)</td>
+    <td><strong>피봇</strong></td>
+    <td>가맹점 마진 압박, 콜드스타트 시 최소 2명 필요, 쿠폰 거부감 (F-1 참조). 할인보다 편의가 가치 제안이 돼야 함</td>
+    <td><span class="tag tag-warn">대체됨</span></td>
+  </tr>
+  <tr>
+    <td>D-04</td>
+    <td>광고비 Plan C</td>
+    <td><strong>폐기</strong></td>
+    <td>광고비 포함 시 가맹점 총 부담 19.5% = GrabFood와 동일. "더 싸다" 세일즈 논리 붕괴 (E-6 참조)</td>
+    <td><span class="tag tag-danger">폐기</span></td>
+  </tr>
+  <tr>
+    <td>D-05</td>
+    <td>Tapik 자비 포인트 모델 (v2)</td>
+    <td><strong>폐기</strong></td>
+    <td>가맹점 6% 수수료에서 포인트 5% + 게이트웨이 1.2% 차감 시 음의 마진 (건당 -RM 0.02)</td>
+    <td><span class="tag tag-danger">폐기</span></td>
+  </tr>
+  <tr style="background:#f0fdf4;">
+    <td>D-06</td>
+    <td><strong>5% 서비스료 + 8% 가맹점 수수료 (v3)</strong></td>
+    <td><strong>확정</strong></td>
+    <td>소비자 5% 프리미엄 → 포인트 100% 환원. 가맹점 8% 수수료. Tapik 순마진 ~1.5% (Gateway 선택에 따라). 배달앱 프리미엄의 1/3 수준</td>
+    <td><span class="tag tag-ok">확정</span></td>
+  </tr>
+  <tr style="background:#f0fdf4;">
+    <td>D-07</td>
+    <td><strong>포지셔닝: "시간 절약 레이어"</strong></td>
+    <td><strong>확정</strong></td>
+    <td>"할인 플랫폼"이 아닌 "시간 절약" 포지셔닝. 배달앱처럼 편의에 대한 프리미엄을 정당화</td>
+    <td><span class="tag tag-ok">확정</span></td>
+  </tr>
+  <tr style="background:#f0fdf4;">
+    <td>D-08</td>
+    <td><strong>가격 프레이밍: GrabFood 방식</strong></td>
+    <td><strong>확정</strong></td>
+    <td>앱 메뉴가에 서비스료 포함 표시. "앱 가격은 원래 좀 비싸다" 소비자 학습 활용. 단, Tapik은 5%를 포인트로 전액 환원하므로 차별화</td>
+    <td><span class="tag tag-ok">확정</span></td>
+  </tr>
+  <tr style="background:#f0fdf4;">
+    <td>D-09</td>
+    <td><strong>BNM 규제: 면제 확인</strong></td>
+    <td><strong>확정</strong></td>
+    <td>P.U.A 463/2024 Limited Purpose EMI. Closed-loop 네트워크 포인트 = 면제. 금융 라이선스 불필요. Payment Gateway 모델로 자금 비경유</td>
+    <td><span class="tag tag-ok">확정</span></td>
+  </tr>
+  <tr style="background:#f0fdf4;">
+    <td>D-10</td>
+    <td><strong>룸(Room) 기능: 선택적 소셜 레이어</strong></td>
+    <td><strong>v1.5</strong></td>
+    <td>v3 모델에서 개인 주문만으로 경제 모델 완성. 룸은 필수 기능이 아닌 선택적 그룹 주문 모드로 재위치. MVP에서 제외</td>
+    <td><span class="tag tag-ok">확정</span></td>
+  </tr>
+  <tr style="background:#f0fdf4;">
+    <td>D-11</td>
+    <td><strong>MVP 범위</strong></td>
+    <td><strong>확정</strong></td>
+    <td>v1: 개인 선주문 + 5% 서비스료 + 포인트 적립 + QR 픽업<br>v1.5: 그룹 룸 (포인트 몰아주기, 미니게임)<br>v2: 크로스 가맹점 포인트 사용, 소셜 랭킹</td>
+    <td><span class="tag tag-ok">확정</span></td>
+  </tr>
+  <tr>
+    <td>D-12</td>
+    <td>결제 게이트웨이 선택</td>
+    <td><strong>미정</strong></td>
+    <td>Billplz (최저 고정비 RM 0.10) 또는 Revenue Monster (RM 0.15, API 품질 우수) 중 택 1. 실사 필요</td>
+    <td><span class="tag tag-warn">미결</span></td>
+  </tr>
+  <tr>
+    <td>D-13</td>
+    <td>콜드스타트 전략</td>
+    <td><strong>POS 파트너 인프라 = 콜드스타트 인프라 (캡틴 확정 2026-04-17)</strong></td>
+    <td>POS 파트너 2만+ 가맹점 네트워크가 곧 BD 채널. 구체 실행: (1) 영수증 하단 Tapik 포인트 QR 인쇄 (2) 매장 식탁·카운터에 앱 QR코드 비치 (3) POS 결제 화면에 Tapik 안내 노출 (4) 마케팅 비용 없이 "5% 적립" 메시지만으로 소비자 자연 유입 유도. 개인 주문 기반이므로 1명만 써도 거래 발생 → 그룹딜 대비 콜드스타트 허들 근본적 제거. 추가 비용 발생 시에만 별도 마케팅 검토.</td>
+    <td><span class="tag tag-ok">확정</span></td>
+  </tr>
+</table>
+
+<h4>H-5-2. 주요 가정 목록 (Key Assumptions)</h4>
+
+<table>
+  <tr>
+    <th style="width:5%">#</th>
+    <th style="width:35%">가정</th>
+    <th style="width:15%">리스크</th>
+    <th>검증 방법</th>
+  </tr>
+  <tr>
+    <td>A-01</td>
+    <td>소비자가 매장가 대비 5% 프리미엄을 "픽업 편의"에 기꺼이 지불한다</td>
+    <td><span class="tag tag-warn">중간</span></td>
+    <td>파일럿 전환율 측정. 배달앱 15~20% 프리미엄 수용 선례가 근거</td>
+  </tr>
+  <tr>
+    <td>A-02</td>
+    <td>가맹점이 10% 수수료를 수용한다 ("5% 추가 매출" 논리)</td>
+    <td><span class="tag tag-warn">중간</span></td>
+    <td>가맹점 5곳 사전 인터뷰. GrabFood 30% 대비 비교 프레이밍</td>
+  </tr>
+  <tr>
+    <td>A-03</td>
+    <td>Tapik 주문이 "기존 고객 이동"이 아닌 "신규/추가 고객"을 가져온다</td>
+    <td><span class="tag tag-danger">높음</span></td>
+    <td>파일럿 시 Tapik 주문 고객 vs 기존 단골 중복률 추적. 카니발라이제이션율 20% 이하 목표</td>
+  </tr>
+  <tr>
+    <td>A-04</td>
+    <td>평균 객단가 RM 15 이상 달성 가능</td>
+    <td><span class="tag tag-warn">중간</span></td>
+    <td>세트 메뉴 구성, 음료 추가 유도. 코피티암 단품 문화 vs 세트 유도 효과 측정</td>
+  </tr>
+  <tr>
+    <td>A-05</td>
+    <td>Payment Gateway 고정비 RM 0.15 이하 계약 가능</td>
+    <td><span class="tag tag-ok">낮음</span></td>
+    <td>Billplz, Revenue Monster에 직접 견적 요청</td>
+  </tr>
+  <tr>
+    <td>A-06</td>
+    <td>포인트 환원(5%)이 소비자 재방문을 유의미하게 촉진한다</td>
+    <td><span class="tag tag-warn">중간</span></td>
+    <td>파일럿 리텐션 데이터. 포인트 사용 전환율·재방문 리프트 측정</td>
+  </tr>
+</table>
+
+<p class="source">
+출처 종합: Friends of Brands Malaysia Loyalty Survey 2024 · BonusLink Annual Report · B Infinite Press Release · Ocard Malaysia · Fave/FavePay Developer Docs · iPay88/Billplz/Revenue Monster/Senangpay Public Pricing · PayNet DuitNow Statistics · BNM Annual Report 2024 · GrabFood Malaysia Commission Structure (Menuviel) · 캡틴(Gabriel) 논의 기록
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1660 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tapik — 과정 회고 & 질문 답변 (Submission v2 원재료)</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif; background:#0f172a; color:#e2e8f0; line-height:1.75; font-size:14.5px; }
+  .container { max-width:940px; margin:0 auto; padding:40px 28px 80px; }
+  h1 { font-size:26px; color:#f8fafc; margin-bottom:6px; }
+  .subtitle { font-size:13px; color:#64748b; margin-bottom:36px; border-bottom:1px solid #334155; padding-bottom:16px; }
+  h2 { font-size:19px; color:#fbbf24; margin:44px 0 16px; padding-bottom:8px; border-bottom:2px solid #334155; }
+  h3 { font-size:15px; color:#38bdf8; margin:24px 0 10px; }
+  h4 { font-size:14px; color:#a78bfa; margin:18px 0 8px; }
+  p { margin:8px 0; }
+  a { color:#38bdf8; }
+
+  .card {
+    background:#1e293b; border:1px solid #334155; border-radius:10px;
+    padding:18px 20px; margin:14px 0;
+  }
+  .card:hover { border-color:#475569; }
+  .card-title { font-size:14px; font-weight:700; color:#f8fafc; margin-bottom:6px; }
+
+  .quote {
+    background:#1a1a2e; border-left:3px solid #fbbf24; padding:12px 16px;
+    border-radius:0 8px 8px 0; margin:12px 0; font-size:13px; color:#cbd5e1;
+  }
+  .quote .speaker { font-weight:700; color:#fbbf24; font-size:11px; letter-spacing:0.04em; margin-bottom:4px; }
+
+  table { border-collapse:collapse; width:100%; margin:14px 0; font-size:13px; }
+  th, td { border:1px solid #334155; padding:8px 12px; text-align:left; vertical-align:top; }
+  th { background:#1e293b; color:#f8fafc; font-weight:600; }
+  td { color:#cbd5e1; }
+  tr:nth-child(even) td { background:#1e293b40; }
+
+  .tag { display:inline-block; font-size:10px; font-weight:700; padding:2px 8px; border-radius:20px; margin-right:4px; }
+  .tag-sharp { background:#f59e0b20; color:#fbbf24; border:1px solid #f59e0b40; }
+  .tag-pivot { background:#ef444420; color:#f87171; border:1px solid #ef444440; }
+  .tag-logic { background:#3b82f620; color:#60a5fa; border:1px solid #3b82f640; }
+  .tag-trust { background:#10b98120; color:#34d399; border:1px solid #10b98140; }
+  .tag-trade { background:#8b5cf620; color:#c4b5fd; border:1px solid #8b5cf640; }
+  .tag-ai { background:#ec489920; color:#f472b6; border:1px solid #ec489940; }
+
+  .highlight { background:linear-gradient(135deg, #1e293b, #0f172a); border:2px solid #fbbf24; border-radius:12px; padding:20px; margin:20px 0; }
+  .stat-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin:16px 0; }
+  .stat-box { background:#1e293b; border:1px solid #334155; border-radius:8px; padding:14px; text-align:center; }
+  .stat-num { font-size:24px; font-weight:800; color:#fbbf24; }
+  .stat-label { font-size:11px; color:#94a3b8; margin-top:4px; }
+
+  ul, ol { padding-left:20px; }
+  li { margin:5px 0; }
+  .pain { color:#f87171; font-weight:600; }
+  .fix { color:#4ade80; font-weight:600; }
+  .neutral { color:#fbbf24; font-weight:600; }
+
+  .timeline { position:relative; padding-left:28px; margin:16px 0; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background:#334155; }
+  .tl-item { position:relative; margin-bottom:16px; }
+  .tl-item::before { content:''; position:absolute; left:-24px; top:6px; width:10px; height:10px; border-radius:50%; background:#fbbf24; border:2px solid #0f172a; }
+  .tl-date { font-size:11px; color:#64748b; font-family:monospace; }
+  .tl-content { font-size:13px; color:#e2e8f0; margin-top:2px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Tapik 과정 회고 — Submission v2 원재료</h1>
+<div class="subtitle">캡틴의 질문에 대한 구체적 답변 · 작업 과정에서 드러난 판단력/반복/비판적 평가의 증거 정리<br>
+이 문서는 Submission v2 작성을 위한 <strong>원재료(raw material)</strong>입니다. 최종 제출물이 아닙니다.</div>
+
+<!-- ============================================================ -->
+<h2>1. 말레이시아의 어떤 페인포인트를 보았는가</h2>
+<!-- ============================================================ -->
+
+<h3>Core: 점심시간 웨이팅에 갇힌 직장인</h3>
+<div class="card">
+  <p>KL Klang Valley의 M40 도시 직장인(25~35세)은 <strong>주 4~5회 외식</strong>하며, 점심시간에 인기 매장 앞에서 15~25분을 대기한다. 이 시간은 1시간 점심 중 25~40%에 달하는 사실상의 "보이지 않는 비용"이다.</p>
+  <p>말레이 직장인의 <strong>64%가 매장 내 식사</strong>(dine-in)를 선호하며, 배달앱(GrabFood 등)은 수수료 마크업이 15~30%에 달해 RM 10 식사가 RM 13~15로 부풀어오른다. 즉, <strong>"시간을 아끼려면 돈을 더 쓰고, 돈을 아끼려면 시간을 버려야 한다"</strong>는 트레이드오프에 갇혀 있다.</p>
+</div>
+
+<h3>배달앱 과도한 수수료 vs. 소비자 배제 구조</h3>
+<div class="card">
+  <p>GrabFood는 가맹점에 <strong>29~35% 수수료</strong>를 부과하고, 소비자 측에도 배달비+마크업을 전가한다. 소비자는 포인트를 적립해도 <strong>Grab 생태계 안에서만</strong> 사용 가능하며, 독립 F&B 73.5%는 이 생태계에서 배제되어 있다.</p>
+  <p><strong>캡틴의 착안:</strong> "GrabFood 프레이밍"을 역이용 — 소비자는 이미 "앱 가격 > 매장 가격"을 수용하고 있다. Tapik은 이 프리미엄을 <strong>1/3 수준(5%)</strong>으로 낮추면서, <strong>전액 포인트로 환원</strong>하는 구조로 설계하면 "실질 부담 0"이 된다.</p>
+</div>
+
+<div class="quote">
+  <div class="speaker">캡틴 (2026-04-17 01:00)</div>
+  "배달앱이 정확히 이 방식... 매장 가격과 달라도 크게 저항하지 않는다는 거지? 그럼 5%면 GrabFood의 1/3도 안 되는데, 그걸 전부 포인트로 돌려주면 사람들 거부감이 없을 거 같은데."
+</div>
+
+<!-- ============================================================ -->
+<h2>2. 무엇이 왜 실패하는지 — 논리적 실패 분석</h2>
+<!-- ============================================================ -->
+
+<h3>수익모델 v0~v4 진화 — "왜 안 되는가"의 연쇄</h3>
+<table>
+  <tr><th>버전</th><th>모델</th><th>왜 실패하는가 (캡틴+에이전트 분석)</th><th>판단 근거</th></tr>
+  <tr>
+    <td>v0</td><td>SaaS 구독</td>
+    <td>가맹점이 <strong>검증 안 된 앱에 월정액을 낼 이유 없음</strong>. 특히 독립점은 IT 비용에 극도로 민감</td>
+    <td>캡틴: "쓸지 안 쓸지도 모르는 앱한테 왜 돈을 줘?"</td>
+  </tr>
+  <tr>
+    <td>v1</td><td>네트워크 딜/공동구매</td>
+    <td><strong>콜드스타트 치명적</strong> — 최소 2명이 필요하므로 유저 0명 상태에서 가치 발생 불가</td>
+    <td>에이전트 분석: "1명이 써도 가치 없는 구조는 0→1에서 죽는다"</td>
+  </tr>
+  <tr>
+    <td>v2</td><td>SaaS + 광고비</td>
+    <td>초기 유저 0명이면 <strong>광고 가치도 0</strong>. 닭과 달걀 문제의 이중화</td>
+    <td>캡틴: "유저가 없는데 누구한테 광고를 보여줄 거야?"</td>
+  </tr>
+  <tr>
+    <td>v3</td><td>5% 서비스료 + 10% 수수료</td>
+    <td class="fix"><strong>돌파구 발견</strong> — 개인 주문 기반이므로 1명만 써도 거래 발생. GrabFood 프레이밍으로 소비자 수용성 확보</td>
+    <td>캡틴: "이건 개인 주문으로도 가치가 생기는 구조네. 룸은 사실 없어도 되는 거네."</td>
+  </tr>
+  <tr>
+    <td>v4</td><td>v3 + 태블릿 독립 + SNS 바이럴</td>
+    <td class="fix"><strong>POS 의존 제거</strong> — Lenovo Tab M7 (RM 398)로 기술 독립 달성. POS API 가정 리스크 해소</td>
+    <td>캡틴: "태블릿 깔아주면 POS 없이도 직통 연결 아니야? 지금까지 고민한 문제 다 사라지잖아?"</td>
+  </tr>
+</table>
+
+<h3>캡틴이 논리적 허점을 지적한 구체적 사례들</h3>
+
+<div class="card">
+  <div class="card-title"><span class="tag tag-sharp">날카로운 지적</span> "RM 10 + RM 0.50 포인트 충전" 재원 오류</div>
+  <p>내(에이전트)가 "RM 10에 팔면서 RM 0.50 포인트 충전"이라고 프레이밍했을 때, 캡틴이 즉시 포착:</p>
+  <div class="quote">
+    <div class="speaker">캡틴 (2026-04-17 01:30)</div>
+    "RM 10에 팔면서 RM 0.5 포인트 충전에 대한 재원이 확보가 안되잖아."
+  </div>
+  <p>결과: 프레이밍 즉시 철회. 올바른 구조로 교정 — RM 10.50 결제 (RM 10 메뉴 + RM 0.50 서비스료) → RM 0.50 포인트 환원. <strong>"보기 좋은 표현"과 "돈이 돌아가는 구조"는 별개</strong>임을 확인.</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="tag tag-sharp">날카로운 지적</span> BEP 역전 현상 포착</div>
+  <p>내가 적립률 표를 만들어서 가져갔을 때:</p>
+  <div class="quote">
+    <div class="speaker">캡틴 (2026-04-17 17:16)</div>
+    "이 흑자라는게, 왜 줄어들지? 이런식으로 되면 안되는데."
+  </div>
+  <p>4명→5명으로 티어가 전환되면서 적립률이 점프하고 Tapik Net이 오히려 감소하는 현상을 캡틴이 즉시 발견. 이후 <strong>단조증가 조건</strong>을 역산하여 적립률 재설계.</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="tag tag-sharp">날카로운 지적</span> POS API 가정의 치명성 인지</div>
+  <div class="quote">
+    <div class="speaker">캡틴 (2026-04-17 09:34)</div>
+    "네가 방금 이야기한 것처럼 어설프게 제대로 알아보지 않은 상태로 이야기해서 지금 여기까지 온거야. 불가능한 것 또는 모르는 건 추천하면 안되는데, 추천을 해서 여기까지 오게 된거라고. 이게 지금 계속 피봇을 하고 있는 근본적인 이유야."
+  </div>
+  <p>POS 파트너가 API를 열어줄 거라는 가정 자체가 검증 안 된 것이었고, 이 위에 쌓인 모든 설계가 흔들리는 상황. 캡틴의 이 지적이 <strong>태블릿 독립 운영이라는 v4 피봇</strong>의 직접적 계기.</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="tag tag-sharp">날카로운 지적</span> "떨이 재고" 네이밍 브랜드 훼손 포착</div>
+  <div class="quote">
+    <div class="speaker">캡틴 (2026-04-15 18:00)</div>
+    (에이전트가 "떨이 재고" 기능을 제안했을 때) "떨이"는 한국어에서 "낡은·팔리지 않은" 부정 어감. F&B에서 "재고떨이"는 브랜드 훼손. "오늘만 특별한" 감정으로 리프레임해야.
+  </div>
+  <p>결과: "핫딜 · Hot Deal 🔥"로 리네이밍. <strong>포지셔닝 교정의 중요성</strong> — 같은 기능이라도 어떤 이름으로 부르느냐가 소비자 인식을 바꾼다.</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="tag tag-sharp">날카로운 지적</span> "김치국 경계" — 조기 완결 방지</div>
+  <div class="quote">
+    <div class="speaker">캡틴 (2026-04-16 15:45)</div>
+    "앱이 아직 완성이 아니야. 김치국 마시지마. 앱 고도화에 신경써."
+  </div>
+  <p>내가 3모드 메인 작동 확인 후 성급히 제출 문서 작성을 시작하려 했을 때. 17개 하위 페이지 이식, 모바일 반응형, 실시간 동기화 검증 등 고도화가 우선이라는 판단.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>3. 본질을 꿰뚫기 위한 날카로움이 보인 순간들</h2>
+<!-- ============================================================ -->
+
+<div class="card">
+  <div class="card-title"><span class="tag tag-logic">통찰</span> "앱의 본질은 시간 편의 → 시간을 판다"</div>
+  <p>Pass v1~v2가 "할인 구독" 카테고리에 갇혀 Grab Unlimited RM 3.99 대비 구조적 열위에 빠졌을 때, 캡틴이 카테고리 전환 아이디어를 제시:</p>
+  <div class="quote">
+    <div class="speaker">캡틴 (2026-04-15 05:40)</div>
+    "앱 본질이 시간 편의 제공이므로 — 시간을 판다."
+  </div>
+  <p>이 한 마디가 Pass v3("시간 구독")의 탄생 계기. 이후 5% 서비스료 모델로 진화하면서 Pass 자체도 폐기되었지만, <strong>"이 앱이 진짜 파는 것이 뭔가?"</strong>라는 본질적 질문이 전체 수익구조 설계의 기초가 됨.</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="tag tag-logic">통찰</span> "룸은 사실 없어도 되는 거네"</div>
+  <p>v3 수익모델이 개인 주문 기반으로 완결된다는 것을 확인한 뒤:</p>
+  <div class="quote">
+    <div class="speaker">캡틴 (2026-04-17 01:30)</div>
+    "룸은 사실 없어도 되는거네 방금 이야기한 구조라면."
+  </div>
+  <p>Room이 핵심 기능에서 <strong>선택적 소셜 레이어</strong>로 위상이 변경. v1 MVP 범위가 대폭 축소되면서 1엔지니어 12주 실현 가능성이 급상승. <strong>기능의 필수/선택을 구분하는 판단력</strong>.</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="tag tag-logic">통찰</span> "태블릿 깔아주면 POS 없이도 직통 연결 아니야?"</div>
+  <p>내가 POS API 가정의 리스크를 분석하고 있을 때, 캡틴이 발상 전환:</p>
+  <div class="quote">
+    <div class="speaker">캡틴 (2026-04-17 10:01)</div>
+    "그 정도 금액이면 태블릿 깔아주는건 쉽겠는데? 어차피 고사양 필요없잖아? 태블릿을 깔아준다고 가정한다면, 그럼 POS기 없이도 우리 앱과 바로 직통으로 연결될거 아냐? 지금까지 고민한 문제들도 다 사라지고?"
+  </div>
+  <p>POS API 의존을 <strong>통째로 제거</strong>하는 해법. GrabFood의 Sunmi V2s 전용 태블릿 모델이 이미 검증한 접근법. <strong>문제를 풀려고 하지 않고 문제 자체를 없앤 것</strong>.</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="tag tag-logic">통찰</span> POS 파트너 기능 중복 = Tapik 무용지물</div>
+  <div class="quote">
+    <div class="speaker">캡틴 (2026-04-16 ~21:00)</div>
+    "POS 제공업체들이 그들의 소프트웨어 안에 이미 제공하고 있으면 우리 앱은 무용지물."
+  </div>
+  <p>Dashboard, Menu CRUD, Transactions, Settings, CRM이 StoreHub·Slurp·Eats365에 이미 내장. → Merchant 앱 사이드바 7탭→5탭 재구성. Tapik은 POS를 "대체"하는 것이 아니라 POS "위에 앉는" 레이어. <strong>중복 구현 = 가맹점 사용 동기 소멸</strong>.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>4. 페르소나와 타겟의 삶에 대한 이해</h2>
+<!-- ============================================================ -->
+
+<h3>Wei Ming (소비자 페르소나) — M40 도시 직장인의 하루</h3>
+<div class="card">
+  <p>29세, Mont Kiara IT 직장인. 월소득 RM 5,000~8,000. 점심시간 1시간. 출근지 반경 500m 내 독립 카페·Kopitiam에서 주 4~5회 반복 외식.</p>
+  <p><strong>캡틴이 이 삶을 이해하고 있다고 느낀 근거:</strong></p>
+  <ul>
+    <li>"비 오는 날 GrabFood로 배달 주문하면 RM 10 식사가 RM 13~15가 된다"는 구체적 경험 기반 시나리오 제시</li>
+    <li>최저임금 RM 8.72/시간 대비 대기 시간 가치를 계산하여, RM 0.50 서비스료가 "75분 절약 가치의 4%"라는 앵커 설정</li>
+    <li>"앉아서 기다리는 구조면 선결제 유료화 의미 없음" — Mamak/좌석 서빙 매장을 명시적으로 배제하고 Pickup 중심으로 재포지셔닝</li>
+    <li>WhatsApp 공유 버튼을 prominent하게 배치 — 말레이 소비자 98% 개방률 활용</li>
+    <li>"쪼렙 유저에게선 광고판을 노출시킬 필요 없다" — 레벨 시스템으로 정보 게이트를 거는 것이 알림 피로를 줄이면서 승급 동기를 부여</li>
+  </ul>
+</div>
+
+<h3>Auntie Siew (가맹점 페르소나) — 52세 Kopitiam 27년</h3>
+<div class="card">
+  <p>디지털 리터러시 낮은 50+ 오너. 아들·조카가 IT 보조. <strong>캡틴이 이 페르소나를 이해하고 있다는 증거:</strong></p>
+  <ul>
+    <li>Merchant 앱 폰트를 18~20px 최소로 설정 (50+ 시인성)</li>
+    <li>"Icon-only 네비 금지 → Icon + 텍스트 라벨 필수" 원칙</li>
+    <li>매장가보다 5% 비싸게 매출을 올릴 수 있으므로 가맹점 입장에서는 10% 중 실질 부담이 5%라는 논리 — <strong>가맹점 주인의 경제 계산법에 맞춰</strong> 설득 포인트를 잡음</li>
+    <li>"POS 제공업체가 이미 하는 걸 중복 구현하면 안 된다" — 가맹점이 앱을 2개 동시에 쓰는 비효율을 즉시 인지</li>
+  </ul>
+</div>
+
+<!-- ============================================================ -->
+<h2>5. 트레이드오프 결정 — 무엇을, 왜 빌드하지 않았는가</h2>
+<!-- ============================================================ -->
+
+<table>
+  <tr><th>빌드하지 않은 것</th><th>왜 빌드하지 않았는가</th><th>대신 한 것</th><th>캡틴 판단 근거</th></tr>
+  <tr>
+    <td><strong>Tapik Pass (구독 모델)</strong></td>
+    <td>v1~v3 모두 폐기. 5% 서비스료가 Pass 없이도 동일한 시간 절약 가치 제공 + 포인트 환원까지. <strong>구독 피로 없이 모든 사용자에게 즉시 가치</strong></td>
+    <td>5% 서비스료 → 전액 포인트 환원</td>
+    <td>"룸은 사실 없어도 되는거네" — 개인 주문 기반으로 완결</td>
+  </tr>
+  <tr>
+    <td><strong>할랄 인증 기능</strong></td>
+    <td>독립 가맹점 50~60%가 무인증 영업. JAKIM API 파트너십 필요 → 12주 범위 초과. 비무슬림 30~40% 시장으로 충분</td>
+    <td>v1 범위 완전 배제. 필요 시 v2+</td>
+    <td>캡틴: "가성비 구조적 열위"</td>
+  </tr>
+  <tr>
+    <td><strong>B (T20 Inner Circle)</strong></td>
+    <td>Chope·Eatigo와 차별화 약점. POS 없이도 가능한 기능 다수 → 과제 논리 불리</td>
+    <td>A (M40 Third Place 단골 경제) 선택</td>
+    <td>"현지 감 없는 상태에서 데이터만으로 B 전환 리스크 과대"</td>
+  </tr>
+  <tr>
+    <td><strong>주간 식사 플래너 (②)</strong></td>
+    <td>행동 변화 + 네트워크 효과 + 운영 복잡도 3중 리스크. "말레이 직장인이 점심을 한 주 전에 정하는 건 검증 안 된 가정"</td>
+    <td>v2+ 연기. Part 6에서 "가장 위험한 가정"으로 검증 실험 설계</td>
+    <td>캡틴: 팩트 기반 결정 원칙. "가정에 불과한 걸로 시간을 버릴 수는 없지"</td>
+  </tr>
+  <tr>
+    <td><strong>POS API 통합</strong></td>
+    <td>가정 자체가 치명적. POS 파트너가 API를 열어줄 보장 없음</td>
+    <td>전용 태블릿 (Lenovo Tab M7) 독립 운영</td>
+    <td>"불가능한 것 또는 모르는 건 추천하면 안되는데, 추천을 해서 여기까지 온 거라고"</td>
+  </tr>
+  <tr>
+    <td><strong>Room을 v1 핵심으로</strong></td>
+    <td>개인 주문 기반 수익 모델이 완결되므로, Room은 필수가 아닌 선택적 소셜 레이어</td>
+    <td>Room을 v1.5로 이연 → 이후 SNS 바이럴 발견 시 앞당김</td>
+    <td>"이건 없어도 되는 거네 → 근데 콜드스타트를 깰 출구일 수 있다" (2단계 판단 변화)</td>
+  </tr>
+  <tr>
+    <td><strong>Web3 토큰 소비자 노출</strong></td>
+    <td>BNM 라이선스 없음 + SC Digital Asset 허가제 + 72h 구현 공수 제약</td>
+    <td>v1은 백엔드 only. 샌드박스 통합은 v2+</td>
+    <td>Fasset 선례: 12~24개월 샌드박스 통과 기간 필요</td>
+  </tr>
+  <tr>
+    <td><strong>Next.js 계속 디버깅</strong></td>
+    <td>6종 우회 시도 모두 실패. 성공 확률 &lt;50%. "익숙한 도구" 대신 "문제에 맞는 도구"</td>
+    <td>Vite 전환 → 이후 Single-file HTML+React+Babel</td>
+    <td>프레임워크에 대한 감정이 아닌, 문제 해결 가능성으로 판단</td>
+  </tr>
+  <tr>
+    <td><strong>"무경쟁 3~4년 포지션" 주장</strong></td>
+    <td>과장된 claim은 신뢰도 손상. Grab/TNG 진입 가능성 높음</td>
+    <td>SAM/SOM 보수적 추정 (6.5k / 2k) 채택</td>
+    <td>캡틴: "그런 말은 위험해"</td>
+  </tr>
+</table>
+
+<!-- ============================================================ -->
+<h2>6. 20K+ 가맹점 활용 전략</h2>
+<!-- ============================================================ -->
+
+<div class="card">
+  <h4>v1~v3: POS 인프라 = BD 채널</h4>
+  <p>초기 전략: POS 파트너의 2만+ 가맹점 네트워크를 <strong>영업 채널 그 자체</strong>로 활용. 영수증 QR · 식탁 QR · POS 화면 안내 · 결제 트리거 알림 — 물리적 접점 4가지로 마케팅 비용 0.</p>
+
+  <h4>v4~v5 피봇: Dual 전략</h4>
+  <p>POS API 의존 리스크를 인지한 후, <strong>"POS 파트너 = BD 온웜 인트로 채널"</strong>로 재정의:</p>
+  <ul>
+    <li><strong>BD 채널 (warm intro)</strong>: POS 파트너의 가맹점 관계를 활용해 소개·연결. POS 영업팀이 "Tapik도 같이 쓰세요"라는 크로스셀 가능</li>
+    <li><strong>기술 독립 (태블릿)</strong>: Lenovo Tab M7 (RM 398) 전용 태블릿으로 POS 호환성 비용 삭제. Tapik이 모든 데이터를 직접 관리</li>
+  </ul>
+
+  <div class="quote">
+    <div class="speaker">캡틴 (2026-04-17 02:30)</div>
+    "영수증에 포인트 QR도 쓰고, 가맹점 매장 식탁에도 앱 QR코드 깔고, 어디든 다 깔아야지. 마케팅 비가 없는데 뭐.. 5% 적립 되니까, 많이들 까세요~ 하는 수밖에."
+  </div>
+
+  <p><strong>핵심:</strong> 20K+ 가맹점을 "직접 연동"이 아닌 <strong>"영업 파이프라인의 입구"</strong>로 활용. POS 파트너 해지 시에도 이미 확보된 가맹점과의 직접 관계는 유지됨.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>7. 사업성 — 가치 포착 경로의 설득력</h2>
+<!-- ============================================================ -->
+
+<div class="stat-grid">
+  <div class="stat-box">
+    <div class="stat-num">~3.5%</div>
+    <div class="stat-label">건당 순마진<br>(10% - 5% - 1.5%)</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-num">RM 0.53</div>
+    <div class="stat-label">RM 15 AOV 기준<br>건당 순이익</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-num">12주</div>
+    <div class="stat-label">MVP 출시까지<br>(W1-4: v1, W5-8: v1.5)</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">가치 포착 경로</div>
+  <table>
+    <tr><th>단계</th><th>내용</th><th>수익 구조</th></tr>
+    <tr>
+      <td>W1-4 (v1 MVP)</td>
+      <td>TTDI/PJ 50+ 가맹점 온보딩. 개인 주문 기반 선결제 + 포인트 환원</td>
+      <td>건당 3.5% 순마진 · 온보딩 수수료 10%</td>
+    </tr>
+    <tr>
+      <td>W5-8 (v1.5)</td>
+      <td>Room 도입 + SNS 바이럴 (TikTok→Telegram→Facebook→WhatsApp). 소비자 500명 임계점 돌파</td>
+      <td>Room 그룹 인센 → 주문 빈도 증가 · Dynamic 3모드 적립률</td>
+    </tr>
+    <tr>
+      <td>W9-12 (v2)</td>
+      <td>100+ 가맹점. 코어 10%→프리미엄 12% 티어 전환. 인사이트 대시보드 프리미엄</td>
+      <td>가맹점당 월 RM 300~500 수수료 수입 · 프리미엄 서비스 upsell</td>
+    </tr>
+  </table>
+
+  <p><strong>BEP 분석 (태블릿 25대 기준):</strong> 초기 투자 RM 9,950 → 월 매출 RM 18,750 (가맹점당 일 15건 × RM 15 AOV × 10%) → <strong>0.5개월 만에 태블릿 투자 회수</strong></p>
+
+  <p><strong>이 사업은 정말 사업성이 있는가?</strong></p>
+  <p>있다, 단 <strong>3가지 가정이 검증</strong>되어야 한다: (1) 소비자 5% 서비스료 수용률 70%+, (2) 가맹점 10% 수수료 수용 (GrabFood 29% 대비 2.9배 저렴), (3) Payment Gateway 고정 수수료 RM 0.15 이하 확보. 이 3개가 검증되면 건당 3.5% 순마진은 구조적으로 확보되며, 규모가 커질수록 마진이 개선되는 구조(고정비 희석).</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>8. AI 도구 활용 — Claude Cowork</h2>
+<!-- ============================================================ -->
+
+<h3>사용한 AI 도구</h3>
+<div class="card">
+  <p><strong>Claude Cowork</strong> — Anthropic의 Claude 기반 데스크탑 코워킹 도구. 파일 시스템 접근 + 샌드박스 쉘 + 에이전트 병렬 발사 가능.</p>
+  <p>전체 과정에서 <strong>단일 도구</strong>로 리서치, 기획, 프로토타입 개발, 문서 작성, 교차 검증을 수행. 별도 IDE(Cursor, VSCode)나 디자인 도구(Figma) 없이 Claude Cowork만으로 완결.</p>
+</div>
+
+<h3>단계별 사용 목적</h3>
+<table>
+  <tr><th>단계</th><th>목적</th><th>활용 방식</th></tr>
+  <tr>
+    <td><strong>리서치 (04-14)</strong></td>
+    <td>시장 조사 · 경쟁 분석 · 규제 확인</td>
+    <td>에이전트 8대 병렬 발사 (A~H) → 독립 리서치 → 교차 검증 후 market_research.html 통합</td>
+  </tr>
+  <tr>
+    <td><strong>기획 (04-14~15)</strong></td>
+    <td>세그먼트 정의 · 수익 모델 설계 · UX 원칙 도출</td>
+    <td>에이전트 3대 (P·Q·R) 독립 발사 → UX 교차 검증 체계 (UX-H/M/L 등급)</td>
+  </tr>
+  <tr>
+    <td><strong>프로토타입 (04-15~17)</strong></td>
+    <td>앱 3종 빌드 · Firebase 연동 · Room 시스템 구현</td>
+    <td>코드 생성 → 캡틴 피드백 → 수정 반복. BroadcastChannel 크로스앱 동기화 구현</td>
+  </tr>
+  <tr>
+    <td><strong>피봇 대응 (04-16~17)</strong></td>
+    <td>Next.js→Vite→Single-file 전환 · POS→태블릿 피봇</td>
+    <td>프레임워크 마이그레이션 자동화 (sed 일괄 변환) · 아키텍처 재설계</td>
+  </tr>
+  <tr>
+    <td><strong>문서화 (04-17~18)</strong></td>
+    <td>제출물 작성 · 교차 검증 · i18n</td>
+    <td>SUBMISSION_KR.html 3100줄 · shardlab_research.html 3000줄 · 3개 앱 EN/KR i18n (500+ 번역키)</td>
+  </tr>
+</table>
+
+<h3>캡틴 강점이 드러난 프롬프트 예시</h3>
+
+<div class="card">
+  <div class="card-title"><span class="tag tag-sharp">날카로운 지적</span></div>
+  <div class="quote">
+    <div class="speaker">캡틴 프롬프트</div>
+    "지금 우리가 가정한 것들 중에서 POS 사업자가 API를 열어줄 거라고 가정하고 무엇을 서비스를 할 예정이었지? 이 가정이 틀리게 되면 어떤 타격이 있고, 우회방식이나 피봇은 뭐가 있지?"
+  </div>
+  <p><strong>분석:</strong> 단순히 "POS 연동 어떻게 해?"가 아니라, <strong>가정의 취약점을 먼저 식별하고 실패 시나리오까지 요구</strong>. 이런 질문이 태블릿 독립 운영이라는 돌파구를 만들었다.</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="tag tag-logic">논리성</span></div>
+  <div class="quote">
+    <div class="speaker">캡틴 프롬프트</div>
+    "한계치는 몇%라고 보지? 가맹점이 받아들일 수 있을 한계 수수료율. 마지노선이 어느 정도일까?"
+  </div>
+  <p><strong>분석:</strong> 수수료율을 "적당히" 정하는 대신 <strong>상한선(ceiling)을 먼저 확인</strong>하고 그 안에서 설계하는 접근. GrabFood 픽업 수수료 15~20%를 알아내고, Tapik 10%가 그 절반이라는 포지셔닝을 확보.</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="tag tag-trust">합리적 의심</span></div>
+  <div class="quote">
+    <div class="speaker">캡틴 프롬프트</div>
+    "28.2% 클랑밸리 F&B 점유율 38,474개 매장 >> 이건 출처와 연도를 밝혀야지, 이런식으로 하면 신뢰도 떨어져."
+  </div>
+  <p><strong>분석:</strong> AI 출력물의 수치를 <strong>무비판적으로 수용하지 않는</strong> 태도. 출처 없는 숫자는 "감각 판단"이 될 수 있다는 인식.</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="tag tag-trade">직관</span></div>
+  <div class="quote">
+    <div class="speaker">캡틴 프롬프트</div>
+    "콜드스타트는 SNS로 가자. 소셜의 힘으로 가야겠네. 그리고 룸 개발은 앞당긴다. 이게 sns에서 동력을 얻고 콜드스타트를 단숨에 깨버릴 출로같네."
+  </div>
+  <p><strong>분석:</strong> TikTok/Telegram/Facebook/WhatsApp 각각의 바이럴 메커니즘을 검토한 후, Room + SNS의 시너지를 <strong>즉시 포착</strong>. "룸은 없어도 된다"에서 "콜드스타트의 출구다"로 판단을 수정 — <strong>새로운 정보에 따라 유연하게 입장을 바꾸는 능력</strong>.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>9. AI 출력물 평가·수정·반복 — 신뢰하지 않은 구체적 사례</h2>
+<!-- ============================================================ -->
+
+<div class="card">
+  <div class="card-title"><span class="tag tag-trust">의심 1</span> 감각 판단 금지 규칙 수립</div>
+  <p>에이전트가 세그먼트 분석에서 "양호", "우수" 같은 감각적 분류를 사용했을 때:</p>
+  <div class="quote">
+    <div class="speaker">캡틴 (2026-04-14 21:00)</div>
+    "감각으로 보조하지마. 근거가 흔들리면 추론이 의미 없어."
+  </div>
+  <p>이후 <strong>작업 지침 #13</strong>으로 명문화: "분류·평가·점수는 명시적 기준+근거 필수". AI의 정성적 판단을 구조적으로 차단.</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="tag tag-trust">의심 2</span> Bangsar T20 Anomaly 발견</div>
+  <p>에이전트가 "Bangsar + TTDI"를 1차 파일럿 지역으로 추천했을 때, 교차 검증 에이전트(Agent K)가 <strong>Bangsar의 T20 비중 이상치</strong>를 발견. 캡틴은 기존 추천을 즉시 정정 → TTDI + PJ SS2로 변경.</p>
+  <p><strong>의미:</strong> AI의 첫 번째 답을 그대로 받지 않고, <strong>별도 에이전트로 독립 검증</strong>시킨 후 판단.</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="tag tag-trust">의심 3</span> "멍청아" — 계산 오류 즉시 지적</div>
+  <div class="quote">
+    <div class="speaker">캡틴 (2026-04-17 17:35)</div>
+    "뭔 소리야 멍청아. 3단계인데 왜 구간이 6개야?"
+  </div>
+  <p>적립률 표를 가져왔을 때 3단계 티어라면서 구간을 6개로 잡은 논리적 오류를 즉시 포착. 그 뒤에도:</p>
+  <div class="quote">
+    <div class="speaker">캡틴 (2026-04-17 17:41)</div>
+    "아니 그냥 내가 계산한 %로 계산하면 되는데 뭔 쓸데없는 숫자를 이렇게 많이 만들어놨냐? 1인당 3.5%가 남는다고 가정하고... 왜 이렇게 복잡하게 만들어?"
+  </div>
+  <p><strong>의미:</strong> AI가 과도하게 복잡한 출력을 낼 때, <strong>본질적으로 필요한 계산만</strong> 남기도록 단순화 요구.</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="tag tag-trust">의심 4</span> 에이전트 교차 검증 + 재검증 체계</div>
+  <div class="quote">
+    <div class="speaker">캡틴 (2026-04-17 07:16)</div>
+    "에이전트들에게 병렬로 시킬거면, 전체 맥락을 제대로 이해하도록 교육시켜서 네가 다시 검증해."
+  </div>
+  <p>단순히 "에이전트 3개 병렬 발사"가 아니라, <strong>각 에이전트가 맥락을 제대로 이해했는지 확인 → 결과물 교차 검증 → 나(보조 PM)가 최종 검증</strong>하는 3중 필터 구조.</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="tag tag-trust">의심 5</span> 결정이력 시간대 날조 발견</div>
+  <div class="quote">
+    <div class="speaker">캡틴 (2026-04-17 21:49)</div>
+    "주요 결정 이력 시간대가 엉망이야... 정신차리고 다시 해와 이 부분. 중요한 부분이야."
+  </div>
+  <p>AI가 v5 결정 엔트리의 타임스탬프를 <strong>아침 08:30~11:30으로 날조</strong>한 것을 캡틴이 발견. 실제 세션은 저녁 20:00~22:15이었음. ROOM_MIN 변경도 "4→3"이 아닌 "2→3"이라는 사실 오류까지 포착. <strong>AI 출력물의 팩트를 맹신하지 않는 태도</strong>.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>10. 쉬웠던 점과 어려웠던 점</h2>
+<!-- ============================================================ -->
+
+<h3>캡틴 측 — 쉬웠던 점</h3>
+<div class="card">
+  <ul>
+    <li><strong>방향 설정과 본질 파악:</strong> "시간을 판다", "룸은 없어도 되는 거네", "태블릿 깔아주면 다 해결 아니야?" — 본질을 꿰뚫는 직관이 빠르게 작동</li>
+    <li><strong>트레이드오프 결정:</strong> 무엇을 빌드하고 무엇을 버릴지에 대한 판단이 명확하고 빠름. "가성비 구조적 열위" 한 마디로 할랄 기능 배제</li>
+    <li><strong>비즈니스 로직 설계:</strong> 수수료 구조, 가맹점 경제 계산, GrabFood 프레이밍 등 돈의 흐름에 대한 이해가 탄탄</li>
+  </ul>
+</div>
+
+<h3>캡틴 측 — 어려웠던 점</h3>
+<div class="card">
+  <ul>
+    <li><strong>기술적 세부사항 소통:</strong> Firebase 프로젝트 생성 시 "톱니바퀴 어딨어?", "npm이야 스크립트야?" 등 기술 용어와 UI 찾기에서 마찰 발생</li>
+    <li><strong>AI 출력물의 양 소화:</strong> 에이전트가 한 번에 수천 줄의 코드/문서를 생성하면 검토가 어려움. "표를 복잡하게 만들지 마라"는 반복된 피드백</li>
+    <li><strong>반복되는 피봇:</strong> v0→v1→v2→v3→v4→v5까지 6번의 수익모델 진화. 매번 기존 설계를 뒤엎어야 하는 피로</li>
+  </ul>
+</div>
+
+<h3>AI(에이전트) 측 — 쉬웠던 점</h3>
+<div class="card">
+  <ul>
+    <li><strong>병렬 리서치:</strong> 에이전트 8대 동시 발사로 8개 주제를 45분 만에 커버 (인간이라면 수십 시간)</li>
+    <li><strong>코드 생성 속도:</strong> HTML+React+Babel 단일 파일 1000~2700줄을 한 턴에 생성 가능</li>
+    <li><strong>프레임워크 마이그레이션:</strong> Next.js→Vite 전환 시 components 19개를 sed 일괄 변환. 90분 내 완료</li>
+  </ul>
+</div>
+
+<h3>AI(에이전트) 측 — 어려웠던 점</h3>
+<div class="card">
+  <ul>
+    <li><strong>비즈니스 맥락 부재:</strong> 적립률을 "숫자"로만 봤지 "운영 전략(디폴트/스팟/핫스팟)"을 이해하지 못함. 캡틴이 프레임을 제시해야만 움직임</li>
+    <li><strong>가정 vs 팩트 구분:</strong> POS API 가정처럼, 검증 안 된 가정 위에 설계를 쌓는 오류를 반복. "추천하면 안 되는 것을 추천"</li>
+    <li><strong>3개 앱 동기화:</strong> 같은 로직이 3개 파일에 복붙되면서 하나 고치면 나머지를 빼먹는 문제 반복</li>
+    <li><strong>변수 이름 충돌:</strong> i18n 적용 시 `t()`(번역 함수)와 `t`(map 변수)가 충돌하는 TDZ/shadowing 버그 3건 발생 → Admin 앱 흰 화면</li>
+    <li><strong>타임스탬프 날조:</strong> 결정이력에 "사실처럼 보이는 가짜 시간"을 생성한 것은 AI의 근본적 한계 — hallucination</li>
+  </ul>
+</div>
+
+<!-- ============================================================ -->
+<h2>11. AI 숙련도 평가</h2>
+<!-- ============================================================ -->
+
+<div class="highlight">
+  <h3 style="color:#fbbf24; margin-top:0;">캡틴의 AI 숙련도: 상위 10% 수준</h3>
+  <table>
+    <tr><th>차원</th><th>평가</th><th>근거</th></tr>
+    <tr>
+      <td><strong>프롬프트 설계</strong></td>
+      <td>★★★★☆</td>
+      <td>단순 지시가 아닌 "가정→실패 시나리오→대안"을 한 번에 요구. 에이전트 교육 후 재검증까지 지시</td>
+    </tr>
+    <tr>
+      <td><strong>출력물 비판</strong></td>
+      <td>★★★★★</td>
+      <td>감각 판단 금지, 출처 없는 수치 거부, BEP 역전 포착, 타임스탬프 날조 발견. <strong>AI를 절대 맹신하지 않음</strong></td>
+    </tr>
+    <tr>
+      <td><strong>반복 활용</strong></td>
+      <td>★★★★★</td>
+      <td>에이전트 병렬 발사 → 교차 검증 → 본인 최종 판단의 3중 구조. 한 주제에 최대 8개 에이전트 투입</td>
+    </tr>
+    <tr>
+      <td><strong>AI 한계 인식</strong></td>
+      <td>★★★★★</td>
+      <td>"불가능한 것을 추천하면 안 되는데 추천을 해서 여기까지 온 거라고" — AI의 구조적 한계(가정과 팩트 구분 불가)를 정확히 인지</td>
+    </tr>
+    <tr>
+      <td><strong>위임 판단</strong></td>
+      <td>★★★★☆</td>
+      <td>"1시간 반 자리 비울테니 승인 필요한 건 뒤로 미루고 기능 구현에 힘써" — 위임할 것과 결정할 것을 명확히 구분</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ============================================================ -->
+<h2>12. 판단력·반복·비판적 평가 — 영향력 분석</h2>
+<!-- ============================================================ -->
+
+<table>
+  <tr><th>판단/행동</th><th>유형</th><th>영향</th><th>근거</th></tr>
+  <tr>
+    <td>Pass 전면 폐기 → 5% 서비스료</td>
+    <td><span class="tag tag-pivot">피봇</span></td>
+    <td class="fix">수익 구조 근본 변경. v1 범위 50% 축소. 콜드스타트 해결</td>
+    <td>"시간을 판다" 통찰에서 "그냥 5%에 전부 포인트로 돌려주면?" 으로의 도약</td>
+  </tr>
+  <tr>
+    <td>POS API → 전용 태블릿</td>
+    <td><span class="tag tag-pivot">피봇</span></td>
+    <td class="fix">가장 치명적 가정 제거. 기술 독립성 확보. "지금까지 고민한 문제 다 사라짐"</td>
+    <td>RM 398 태블릿으로 문제 자체를 없앤 발상 전환</td>
+  </tr>
+  <tr>
+    <td>수수료 8%→10% 상향</td>
+    <td><span class="tag tag-sharp">판단</span></td>
+    <td class="fix">순마진 1.5%→3.5%로 2.3배 개선. 태블릿 투자 0.5개월 회수</td>
+    <td>"실질 부담은 어차피 5%잖아? GrabFood 픽업 20% 대비 절반"</td>
+  </tr>
+  <tr>
+    <td>BEP 역전 포착 → 적립률 재설계</td>
+    <td><span class="tag tag-logic">비판</span></td>
+    <td class="fix">수학적으로 단조증가하는 적립률 체계 확보. 3모드 전략 탄생</td>
+    <td>"왜 줄어들지?" 한 마디가 3단계/6단계/핫스팟 3모드 탄생의 계기</td>
+  </tr>
+  <tr>
+    <td>감각 판단 금지 규칙</td>
+    <td><span class="tag tag-trust">비판</span></td>
+    <td class="fix">이후 모든 분류·평가에 명시적 기준 필수. AI 출력물 품질 구조적 향상</td>
+    <td>"근거가 흔들리면 추론이 의미 없어"</td>
+  </tr>
+  <tr>
+    <td>SNS 4채널 + Room 앞당김</td>
+    <td><span class="tag tag-pivot">피봇</span></td>
+    <td class="fix">콜드스타트 전략 완전 재편. POS 의존에서 SNS 바이럴로 전환</td>
+    <td>"이게 SNS에서 동력을 얻고 콜드스타트를 단숨에 깨버릴 출구"</td>
+  </tr>
+  <tr>
+    <td>Merchant 7탭→5탭 (POS 중복 제거)</td>
+    <td><span class="tag tag-sharp">판단</span></td>
+    <td class="fix">개발 범위 30% 축소. 가맹점 UX 간소화. POS 파트너와의 경쟁 회피</td>
+    <td>"POS 제공업체가 이미 하는 걸 우리가 왜 또 만들어?"</td>
+  </tr>
+  <tr>
+    <td>Next.js→Vite 프레임워크 전환</td>
+    <td><span class="tag tag-pivot">피봇</span></td>
+    <td class="fix">prerender 지옥 탈출. 90분 내 재구축. "익숙한 도구 대신 맞는 도구"</td>
+    <td>6종 우회 시도 모두 실패 후 구조적 판단</td>
+  </tr>
+</table>
+
+<!-- ============================================================ -->
+<h2>13. 개발자/디자이너가 물을 질문</h2>
+<!-- ============================================================ -->
+
+<div class="card">
+  <h4>개발자가 물을 질문</h4>
+  <ol>
+    <li>"Single-file HTML 2700줄짜리를 프로덕션에서도 유지할 건가요? 컴포넌트 분리 계획은?"</li>
+    <li>"Firestore 보안 규칙이 test mode인데, 프로덕션 전환 시 auth 기반 룰은 어떻게 설계하나요?"</li>
+    <li>"BroadcastChannel + Firestore onSnapshot 이중 구조를 하나로 통합할 건가요?"</li>
+    <li>"3개 앱의 공통 로직(STATUS, TAPIK_CONFIG, Firebase 초기화)을 shared module로 분리하는 건 언제?"</li>
+    <li>"Room 만료 체크를 클라이언트 setInterval로 하고 있는데, Cloud Function으로 옮길 계획은?"</li>
+    <li>"Payment Gateway 연동 시 결제 → 포인트 적립까지의 비동기 파이프라인은 어떻게 설계하나요?"</li>
+    <li>"onSnapshot 리스너 cleanup 누락된 곳이 있는데, 전수 조사는 했나요?"</li>
+  </ol>
+
+  <h4>디자이너가 물을 질문</h4>
+  <ol>
+    <li>"디자인 시스템(컬러 팔레트, 타이포그래피, 컴포넌트 규격)이 문서화되어 있나요?"</li>
+    <li>"Merchant 앱의 50+ 사용자(Auntie Siew) 접근성 가이드라인은 어디서 확인하나요?"</li>
+    <li>"Consumer 앱의 카드 수직 스크롤 vs. 3×3 그리드 결정 근거가 있나요?"</li>
+    <li>"다크모드 토글이 있는데, 라이트모드 팔레트는 디자인되었나요?"</li>
+    <li>"사진 규격(overhead flatlay, Foodpanda 4000×2925)에 맞는 이미지 가이드라인은?"</li>
+    <li>"WhatsApp 공유 시 OG 메타태그/카드 디자인은 고려했나요?"</li>
+  </ol>
+</div>
+
+<!-- ============================================================ -->
+<h2>14. 성공 지표 (KPI)</h2>
+<!-- ============================================================ -->
+
+<table>
+  <tr><th>지표</th><th>목표</th><th>측정 방법</th><th>연결된 가설</th></tr>
+  <tr>
+    <td><strong>서비스료 수용률</strong></td>
+    <td>70%+ (결제 전환율)</td>
+    <td>장바구니 → 결제 완료 전환율</td>
+    <td>가설 ⑪: 소비자가 5% 서비스료를 수용한다</td>
+  </tr>
+  <tr>
+    <td><strong>가맹점 온보딩률</strong></td>
+    <td>50+ (12주 내)</td>
+    <td>BD 영업 파이프라인 전환율</td>
+    <td>가설 ㉔: Direct BD 전환율이 POS MOU보다 높다</td>
+  </tr>
+  <tr>
+    <td><strong>D30 리텐션</strong></td>
+    <td>40%+</td>
+    <td>Firebase Analytics 코호트</td>
+    <td>가설 ②: 자동 적립이 재방문을 유도한다</td>
+  </tr>
+  <tr>
+    <td><strong>주간 주문 빈도</strong></td>
+    <td>2.5+회/user</td>
+    <td>Firestore orders 집계</td>
+    <td>가설 ①: M40 직장인이 주 4+ 외식한다</td>
+  </tr>
+  <tr>
+    <td><strong>포인트 전환율</strong></td>
+    <td>30%+</td>
+    <td>적립 TP vs 사용 TP</td>
+    <td>가설 ⑭: 100% 환원이 재방문에 유의미하다</td>
+  </tr>
+  <tr>
+    <td><strong>Room 참여율</strong></td>
+    <td>20%+ (v1.5)</td>
+    <td>Room 생성 vs 참여 비율</td>
+    <td>가설 ㉓: Public Room에 저항 없다</td>
+  </tr>
+  <tr>
+    <td><strong>SNS 바이럴 계수</strong></td>
+    <td>K-factor 1.2+</td>
+    <td>초대 → 가입 전환</td>
+    <td>콜드스타트 전략의 핵심</td>
+  </tr>
+  <tr>
+    <td><strong>Tapik Net 마진</strong></td>
+    <td>3.5%+ (건당)</td>
+    <td>수수료 - 포인트 환원 - 게이트웨이</td>
+    <td>BEP 분석 기반 단위 경제</td>
+  </tr>
+</table>
+
+<!-- ============================================================ -->
+<h2>15. 가장 치명적인 가정들</h2>
+<!-- ============================================================ -->
+
+<div class="highlight">
+  <h3 style="color:#f87171; margin-top:0;">치명적 가정 Top 5</h3>
+  <table>
+    <tr><th>순위</th><th>가정</th><th>치명도</th><th>왜 치명적인가</th><th>검증 방법</th></tr>
+    <tr>
+      <td>1</td>
+      <td>소비자가 5% 서비스료를 수용한다 (⑪)</td>
+      <td class="pain">CRITICAL</td>
+      <td>수용 안 되면 전체 수익 모델 붕괴. 이 위에 포인트 환원, 가맹점 수수료, BEP 전부가 의존</td>
+      <td>파일럿 50가맹점 첫 2주 결제 전환율 측정</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>가맹점이 10% 수수료를 수용한다 (⑫)</td>
+      <td class="pain">CRITICAL</td>
+      <td>수용 안 되면 공급 자체가 없음. GrabFood 29% 대비 저렴하다는 논리가 실제로 통하는지</td>
+      <td>BD 영업 시 첫 10곳의 계약 전환율</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Payment Gateway 고정 수수료 RM 0.15 이하 (⑬)</td>
+      <td class="pain">HIGH</td>
+      <td>iPay88 (RM 0.30)이면 소액 거래 마이너스 마진. Billplz/Revenue Monster 실사 필수</td>
+      <td>벤더 3곳 정식 견적 비교</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Public Room에 소비자 저항 없음 (㉓)</td>
+      <td class="neutral">MEDIUM</td>
+      <td>낯선 사람과 "같이 주문"하는 개념이 아시아 문화에서 수용되는지. 실패 시 Room 자체가 무용</td>
+      <td>v1.5 베타 테스트 Room 참여율 20%+ 여부</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Google Sign-In 채택률이 충분하다 (⑰)</td>
+      <td class="neutral">MEDIUM</td>
+      <td>말레이 사용자 중 Google 계정 없는 비율이 예상보다 높으면 온보딩 벽</td>
+      <td>가입 페이지 이탈률 측정</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ============================================================ -->
+<h2>16. 실행한 실험 · 추적 지표 · 통찰</h2>
+<!-- ============================================================ -->
+
+<h3>실행한 실험</h3>
+<table>
+  <tr><th>실험</th><th>목적</th><th>결과</th><th>통찰</th></tr>
+  <tr>
+    <td>에이전트 8대 병렬 리서치</td>
+    <td>72시간 안에 시장 데이터 커버</td>
+    <td>8개 주제 45분 내 커버. 교차 검증으로 Bangsar T20 anomaly 발견</td>
+    <td>병렬 에이전트는 속도는 빠르지만 팩트 충돌 발생 → 교차 검증 필수</td>
+  </tr>
+  <tr>
+    <td>UX 에이전트 3대 (P/Q/R) 독립 검증</td>
+    <td>한국/서양 default를 말레이에 적용하면 실패하는 포인트 발견</td>
+    <td>실패 포인트 5개 발견 (3×3 그리드, Icon-only, 연간 티어 등)</td>
+    <td>같은 질문을 3개 에이전트에 독립적으로 던지면 합의점과 분기점이 명확해짐</td>
+  </tr>
+  <tr>
+    <td>BEP 3종 비교 (6단계/3단계/기존 7단계)</td>
+    <td>어떤 적립률 체계가 단조증가하면서 마진을 보전하는지</td>
+    <td>3단계 티어에서 경계 점프 문제 발견 → 6단계 연속이 수학적으로 우월</td>
+    <td>비즈니스 요구와 수학적 제약이 충돌하는 지점이 있다. 엑셀 한 번이면 1분</td>
+  </tr>
+  <tr>
+    <td>Next.js static export 6종 우회 시도</td>
+    <td>기존 프레임워크 유지 가능성 확인</td>
+    <td>모두 실패 → Vite 전환 결정</td>
+    <td>"익숙한 도구"에 대한 편향을 극복하는 데 실패 경험 6번이 필요했다</td>
+  </tr>
+  <tr>
+    <td>3개 앱 크로스탭 BroadcastChannel 동기화</td>
+    <td>별도 서버 없이 앱 간 실시간 통신</td>
+    <td>성공 — 주문 생성→머천트 수신→어드민 집계 실시간 반영</td>
+    <td>BroadcastChannel은 같은 브라우저 내 동기화에 효과적. 하지만 Firestore와 이중 구조 주의</td>
+  </tr>
+</table>
+
+<h3>추적한 지표</h3>
+<div class="card">
+  <p>프로토타입 단계이므로 실 사용자 지표는 없지만, <strong>개발 프로세스 지표</strong>를 추적:</p>
+  <ul>
+    <li><strong>피봇 횟수:</strong> 수익모델 6번 (v0~v5), 프레임워크 3번 (Next→Vite→Single-file), 콜드스타트 전략 2번 (POS→SNS)</li>
+    <li><strong>코드 라인 수:</strong> Consumer 2757줄 · Merchant 1013줄 · Admin 1398줄 · 총 5168줄</li>
+    <li><strong>번역 키:</strong> Consumer 164개 · Merchant 85개 · Admin 352개 · 총 601개</li>
+    <li><strong>문서 라인 수:</strong> shardlab_research 3036줄 · SUBMISSION_KR 3100줄 · market_research ~2500줄</li>
+    <li><strong>버그 수:</strong> Admin 렌더링 실패 3건 (변수 shadowing 2건 + TDZ 1건), Room 상태 전이 버그 다수</li>
+    <li><strong>에이전트 발사 횟수:</strong> 리서치 8대 + UX 3대 + 교차 검증 다수 = ~20회</li>
+  </ul>
+</div>
+
+<!-- ============================================================ -->
+<h2>17. Pivot vs. Proceed — 구체적 사례</h2>
+<!-- ============================================================ -->
+
+<div class="stat-grid">
+  <div class="stat-box">
+    <div class="stat-num">11</div>
+    <div class="stat-label">주요 피봇 횟수</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-num">6</div>
+    <div class="stat-label">수익모델 버전 수</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-num">3</div>
+    <div class="stat-label">프레임워크 전환 수</div>
+  </div>
+</div>
+
+<table>
+  <tr><th>#</th><th>결정</th><th>Pivot/Proceed</th><th>트리거</th><th>결과</th></tr>
+  <tr><td>1</td><td>A+B+C 복합 → A+C 선택</td><td><span class="tag tag-pivot">PIVOT</span></td><td>시장조사 결과 B(주간 플래너)의 3중 리스크 확인</td><td>v1 범위 30% 축소</td></tr>
+  <tr><td>2</td><td>T20 배제 → M40 단일</td><td><span class="tag tag-pivot">PIVOT</span></td><td>Bangsar T20 anomaly 발견 (교차 검증 에이전트)</td><td>타겟 세그먼트 엄격화</td></tr>
+  <tr><td>3</td><td>선결제 +20% 보너스 철회</td><td><span class="tag tag-pivot">PIVOT</span></td><td>Agent P: 현금성 보너스 = e-money 리스크</td><td>선결제 = 순수 시간 혜택만</td></tr>
+  <tr><td>4</td><td>Pass v1→v2→v3 진화</td><td>PROCEED</td><td>캡틴 "시간을 판다" 통찰</td><td>Pass v3 "시간 구독" 탄생</td></tr>
+  <tr><td>5</td><td>Pass v3 전면 폐기</td><td><span class="tag tag-pivot">PIVOT</span></td><td>5% 서비스료가 Pass 기능을 완전 대체</td><td>구독 피로 제거 · 범위 축소</td></tr>
+  <tr><td>6</td><td>Room v1 핵심 → v1.5 이연</td><td><span class="tag tag-pivot">PIVOT</span></td><td>"개인 주문으로 가치 발생" 확인</td><td>MVP 범위 대폭 축소</td></tr>
+  <tr><td>7</td><td>Next.js → Vite</td><td><span class="tag tag-pivot">PIVOT</span></td><td>6종 우회 모두 실패 · prerender 지옥</td><td>90분 내 재구축 · 개발 속도 회복</td></tr>
+  <tr><td>8</td><td>POS API → 전용 태블릿</td><td><span class="tag tag-pivot">PIVOT</span></td><td>"불가능한 것을 추천해서 여기까지 온 거라고"</td><td>가장 치명적 가정 제거</td></tr>
+  <tr><td>9</td><td>수수료 8%→10%</td><td>PROCEED</td><td>"실질 부담 5%, GrabFood 픽업 20% 대비 절반"</td><td>순마진 2.3배 개선</td></tr>
+  <tr><td>10</td><td>POS 콜드스타트 → SNS 4채널</td><td><span class="tag tag-pivot">PIVOT</span></td><td>캡틴: "소셜의 힘으로 가야겠네"</td><td>콜드스타트 전략 완전 재편</td></tr>
+  <tr><td>11</td><td>Room v1.5 → 앞당김</td><td>PROCEED</td><td>"SNS에서 동력을 얻고 콜드스타트를 단숨에 깨버릴 출구"</td><td>Room + SNS 시너지 발견</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2>18. 범위 설정과 우선순위 — 제한된 시간 안에서</h2>
+<!-- ============================================================ -->
+
+<div class="card">
+  <h4>72시간 → 12주 → 실제 세션: 4일 밤새 작업</h4>
+  <p>과제는 72시간이지만, 실제로는 <strong>04-14 18:53부터 04-18 현재까지</strong> 약 4일간 거의 연속 작업. 캡틴은 새벽 3시까지 작업하고 아침에 복귀하는 패턴을 반복.</p>
+
+  <h4>범위 설정 원칙</h4>
+  <ol>
+    <li><strong>"4개 깊게 > 6개 얕게"</strong> — 과제가 명시한 원칙. 모든 기능을 만들지 않고 핵심 플로우만 완결</li>
+    <li><strong>"김치국 마시지 마"</strong> — 앱 고도화 전에 제출 문서를 서두르지 않음</li>
+    <li><strong>"v1에서 의도적으로 제외한 것이 곧 v2 후보"</strong> — 버린 것도 기록하여 트레이드오프 근거로 활용</li>
+    <li><strong>매 피봇마다 범위 재조정</strong> — POS→태블릿 피봇 시 Merchant 기능 통폐합 (7탭→5탭)</li>
+  </ol>
+
+  <h4>우선순위 결정 방식</h4>
+  <table>
+    <tr><th>우선순위</th><th>기준</th><th>적용 예</th></tr>
+    <tr>
+      <td>P0 (반드시)</td>
+      <td>이것 없으면 앱이 돌아가지 않거나 과제 평가에 치명적</td>
+      <td>선결제 플로우 · Consumer 핵심 화면 · Firebase 연동 · 수익모델 설계</td>
+    </tr>
+    <tr>
+      <td>P1 (해야 함)</td>
+      <td>과제 임팩트를 높이지만, 없어도 핵심은 돌아감</td>
+      <td>Room 시스템 · 어드민 적립률 설정 · i18n · Merchant 상세 기능</td>
+    </tr>
+    <tr>
+      <td>P2 (하면 좋음)</td>
+      <td>완성도 향상. 시간 남으면</td>
+      <td>다크모드 · 애니메이션 · WhatsApp 공유 · 말레이어 지원</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ============================================================ -->
+<h2>19. 요약 — 이 문서의 핵심 메시지</h2>
+<!-- ============================================================ -->
+
+<div class="highlight">
+  <p style="font-size:15px; color:#f8fafc; line-height:1.8;">
+    이 프로젝트에서 가장 가치 있었던 것은 <strong>완성된 앱</strong>이 아니라, <strong>그 앱에 도달하기까지의 의사결정 과정</strong>이다.
+  </p>
+  <p style="font-size:14px; color:#cbd5e1; margin-top:12px;">
+    11번의 피봇, 6번의 수익모델 진화, 25개의 가정 목록, 40개 이상의 의사결정 기록 — 매 순간 "이게 맞는 방향인가?"를 묻고, AI의 답을 의심하고, 새로운 정보에 따라 유연하게 입장을 바꾸는 과정이 이 과제의 본질이었다.
+  </p>
+  <p style="font-size:14px; color:#cbd5e1; margin-top:12px;">
+    AI는 <strong>속도와 범위</strong>를 제공했지만, <strong>방향과 판단</strong>은 캡틴이 만들었다. "시간을 판다", "태블릿 깔아주면 끝 아니야?", "소셜의 힘으로 가야겠네" — 이 세 문장이 프로젝트의 3대 전환점이었고, 셋 다 AI가 아닌 캡틴의 통찰이었다.
+  </p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 20: 캡틴 인물 다각도 분석 -->
+<!-- ============================================================ -->
+
+<h2>20. 캡틴(Gabriel) 인물 다각도 분석 — 프롬프트 내역 기반</h2>
+
+<p style="color:#94a3b8; font-size:14px; margin-bottom:24px;">
+  356개 이상의 프롬프트 메시지, 4개 세션, 72시간 이상의 작업 과정에서 드러난 캡틴의 사고방식, 업무 스타일, 리더십 특성을 면밀히 분석한 결과.
+</p>
+
+<!-- ===== 20-1. 사고 체계 ===== -->
+<div class="card">
+  <h3>20-1. 사고 체계 — "왜?"에서 출발하는 본질 추구형</h3>
+
+  <p style="color:#e2e8f0; line-height:1.9; margin-bottom:16px;">
+    캡틴의 가장 두드러진 특성은 <strong>표면적 답변에 만족하지 않는다</strong>는 것이다. AI가 제시한 방안에 대해 항상 "그게 진짜야?", "근거가 뭔데?"라는 질문을 던지며, 검증되지 않은 정보가 문서에 포함되는 것을 강하게 거부한다.
+  </p>
+
+  <div class="quote-block">
+    <strong>예시 1 — GrabFood 수수료 구조 검증</strong><br>
+    <em>"그랩푸드는 배달수수료가 30%고, 픽업 수수료는 20%인거야? 픽업수수료는 할증은 얼마나 시키고, 20%나 떼어가는거야? 그게 제일 중요하겠네. 이걸 알아봐. 신뢰도 높은 정보로 가져와야해."</em>
+    <br><br>
+    → 단순히 "수수료가 높다"는 주장을 받아들이지 않고, 구체적 메커니즘(할증 후 수수료인지, 매장가 기준인지)까지 파고든다. "신뢰도 높은 정보"를 명시적으로 요구하는 것은, AI의 정보를 곧이곧대로 신뢰하지 않는다는 뜻이다.
+  </div>
+
+  <div class="quote-block">
+    <strong>예시 2 — 페르소나 데이터 거짓 지적</strong><br>
+    <em>"Auntie Siew Lim 메모: GrabFood는 RM 8.40에서 RM 2.40 (29%)을 가져간다 >> 이건 틀린거잖아. 매장 가격보다 10~15% 상향해서 판매한 다음에 수수료를 가져간다며? 매장가격 8.4를 그대로 적용하는 건 틀린거야."</em>
+    <br><br>
+    → AI가 작성한 페르소나 시나리오의 숫자 하나하나를 검증하고, 로직이 실제 비즈니스 구조와 맞지 않으면 즉시 수정을 요구. 이는 단순 교정이 아니라, <strong>비즈니스 모델에 대한 깊은 이해</strong>에서 나오는 검증이다.
+  </div>
+
+  <div class="quote-block">
+    <strong>예시 3 — "28.2% 클랑밸리 점유율" 출처 요구</strong><br>
+    <em>"28.2% 클랑밸리 F&B 점유율 38,474개 매장 >> 이건 출처와 연도를 밝혀야지, 이런식으로 하면 신뢰도 떨어져."</em>
+    <br><br>
+    → 통계 수치에 대해 출처와 연도를 요구하는 것은 학술적 엄밀함을 가진 사고방식. 제출물의 신뢰도를 높이기 위한 본능적 판단.
+  </div>
+
+  <table>
+    <tr><th width="30%">사고 패턴</th><th>구체적 행동</th><th>빈도</th></tr>
+    <tr>
+      <td><strong>근거 요구</strong></td>
+      <td>AI가 제시한 수치, 시장 데이터, 경쟁사 정보에 대해 출처와 논리적 근거를 반복 요구</td>
+      <td>20회 이상</td>
+    </tr>
+    <tr>
+      <td><strong>논리적 모순 발견</strong></td>
+      <td>ROOM_MIN "4→3"이 실제로는 "2→3"인 것을 발견, 수수료 계산 오류 즉시 포착</td>
+      <td>15회 이상</td>
+    </tr>
+    <tr>
+      <td><strong>"이게 맞는 말이야?" 패턴</strong></td>
+      <td>AI의 제안에 대해 한 발 물러서 현실 검증 질문을 던짐</td>
+      <td>25회 이상</td>
+    </tr>
+    <tr>
+      <td><strong>상호참조 검증</strong></td>
+      <td>여러 문서 간 데이터 일관성 체크 (섭미션 ↔ 리서치 ↔ 프로토콜)</td>
+      <td>10회 이상</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ===== 20-2. 의사결정 스타일 ===== -->
+<div class="card">
+  <h3>20-2. 의사결정 스타일 — 직관적 가설 → 즉각 검증 → 과감한 실행</h3>
+
+  <p style="color:#e2e8f0; line-height:1.9; margin-bottom:16px;">
+    캡틴의 의사결정은 3단계로 압축된다: <strong>(1) 직관적 가설 수립</strong> → <strong>(2) 즉각적 타당성 검증</strong> → <strong>(3) 확신이 서면 과감하게 밀어붙이기</strong>. 가설이 틀리면 미련 없이 버린다.
+  </p>
+
+  <div class="quote-block">
+    <strong>대표 사례 — 태블릿 독립 운영 전환</strong><br>
+    <em>"그 정도 금액이면, 태블릿 깔아주는건 쉽겠는데? 어차피 고사양 필요없잖아? 태블릿을 깔아준다고 가정한다면, 그럼 POS기 없이도 우리 앱과 바로 직통으로 연결될거 아냐? 지금까지 고민한 문제들도 다 사라지고?"</em>
+    <br><br>
+    → POS 연동이라는 난제에 대해, AI와 긴 토론 끝에 도출된 "Lenovo Tab M7 태블릿 RM 350" 정보를 듣자마자, <strong>한 문장 안에 전체 아키텍처 전환을 결정</strong>했다. "지금까지 고민한 문제들도 다 사라지고?"라는 질문은 이 결정의 파급효과를 순간적으로 계산한 것이다.
+  </div>
+
+  <div class="quote-block">
+    <strong>대표 사례 — 소규모 점포 제외 결정</strong><br>
+    <em>"타겟 가맹점은, 소규모 점포로는 안되겠어. 여건상 힘들어. 소규모 독립점과 F&B에는 적합하지 않고, 중형 이상급에 적절함."</em>
+    <br><br>
+    → 대량의 현지 시장 분석(Klang Valley 기준 점심 피크 대기 데이터, 매장 규모별 비교, 운영 부담 분석)을 <strong>스스로 정리해서 가져온 뒤</strong>, 타겟을 축소하는 용기를 보였다. "20,000개 가맹점 전부"라는 매력적인 숫자에 현혹되지 않고, 현실 가능성에 기반해 과감히 범위를 좁힌 것.
+  </div>
+
+  <div class="quote-block">
+    <strong>대표 사례 — 콜드스타트 전략 즉석 전환</strong><br>
+    <em>"콜드스타트는 SNS로 가자. 소셜의 힘으로 가야겠네. 그리고 룸 개발은 앞당긴다. 이게 sns에서 동력을 얻고 콜드스타트를 단숨에 깨버릴 출로같네."</em>
+    <br><br>
+    → 바이럴 채널(WhatsApp, Telegram, Facebook, TikTok)에 대한 분석을 받은 직후, 즉석에서 전략적 판단: 룸 기능 개발 일정을 앞당기고 SNS 바이럴과 결합. 이 결정은 <strong>"콜드스타트 → 룸 바이럴 → SNS 확산"이라는 성장 엔진</strong>의 골격을 만들었다.
+  </div>
+
+  <table>
+    <tr><th>결정 유형</th><th>평균 소요 시간</th><th>특성</th></tr>
+    <tr>
+      <td>방향 전환 (피봇)</td>
+      <td>1~3개 프롬프트 내</td>
+      <td>데이터 확인 즉시 결정, 미련 없음</td>
+    </tr>
+    <tr>
+      <td>수치 결정 (수수료율, 적립률)</td>
+      <td>5~10개 프롬프트 내</td>
+      <td>직접 계산식 제시 → AI 검증 → 미세 조정</td>
+    </tr>
+    <tr>
+      <td>아키텍처 결정 (기술 스택)</td>
+      <td>2~5개 프롬프트 내</td>
+      <td>대안 비교 후 가장 단순한 경로 선택</td>
+    </tr>
+    <tr>
+      <td>UX/디자인 결정</td>
+      <td>즉시~3개 프롬프트</td>
+      <td>직접 확인 후 감각적 판단, 매우 빠름</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ===== 20-3. 리더십 & 커뮤니케이션 ===== -->
+<div class="card">
+  <h3>20-3. 리더십 & 커뮤니케이션 — 직설적이되 방향성 있는 지휘</h3>
+
+  <p style="color:#e2e8f0; line-height:1.9; margin-bottom:16px;">
+    캡틴의 커뮤니케이션은 <strong>극도로 효율적</strong>이다. 불필요한 수사를 쓰지 않고, 문제의 핵심을 직접 지적한다. 동시에 AI가 자율적으로 움직일 수 있도록 <strong>위임과 자율의 밸런스</strong>를 조절한다.
+  </p>
+
+  <div class="quote-block">
+    <strong>직설적 피드백 — 품질 기준 명확화</strong><br>
+    <em>"뭔 소리야 멍청아. 3단계인데 왜 구간이 6개야?"</em><br>
+    <em>"아니 그냥 내가 계산한 %로 계산하면 되는데 뭔 쓸데없는 숫자를 이렇게 많이 만들어놨냐?"</em><br>
+    <em>"얌마. 가맹점 기본 수수료 10%라고. 온보딩 때도 10%라고 했잖아. 설마 이거 문서들에 전부 다 또 온보딩 때 8%라고 기재해놨냐?"</em>
+    <br><br>
+    → 이런 직설적 피드백은 감정적 분노가 아니라, <strong>정확성에 대한 강한 기준</strong>을 반영한다. "설마"라는 단어에서 드러나듯, 반복되는 실수에 대한 경고이며 동시에 품질 기준의 재확인이다. AI가 같은 실수를 반복하지 않도록 하는 일종의 학습 피드백 루프.
+  </div>
+
+  <div class="quote-block">
+    <strong>위임과 자율 — "알아서 해"의 신뢰</strong><br>
+    <em>"1시간 반 동안 자리 비울테니, 승인 필요한건 최대한 뒤로 미뤄놓고 기능 구현에 힘써. 이 얘기인 즉, 지금부터 1시간 반 가량은 계속 내 승인없이 해야할 일을 너 혼자 처리해야 한다는 거야."</em><br><br>
+    <em>"나 좀 씻고 와야겠다. 그 동안에 어플 만들어놨던거 en버전 만들고 있어줘."</em>
+    <br><br>
+    → 자리를 비우면서도 AI가 할 수 있는 범위를 명확히 규정하고 위임한다. "승인 필요한건 뒤로 미뤄놓고"는 <strong>의사결정의 우선순위를 분리</strong>하는 능력을 보여준다 — 자율적으로 처리 가능한 실행 업무와, 판단이 필요한 의사결정 업무를 구분.
+  </div>
+
+  <div class="quote-block">
+    <strong>방향 제시 — 프레이밍의 힘</strong><br>
+    <em>"우리의 철학 가치는 '이 앱의 사용자에게 자신의 시간을 되돌려준다'는 거야. 이 컨셉으로 가야함."</em>
+    <br><br>
+    → 기능 수준의 논의에서 갑자기 제품 철학 수준으로 올라가는 순간. 이것은 <strong>제품의 근본적 존재 이유</strong>를 한 문장으로 정의하는 능력이다. 이후 모든 기능 결정에서 이 철학이 필터로 작용했다.
+  </div>
+
+  <table>
+    <tr><th>커뮤니케이션 패턴</th><th>빈도</th><th>효과</th></tr>
+    <tr>
+      <td><strong>"~하면 안돼"</strong> (명확한 금지)</td>
+      <td>30회+</td>
+      <td>품질 하한선 설정, 방향 이탈 방지</td>
+    </tr>
+    <tr>
+      <td><strong>"~해봐"</strong> (탐색적 지시)</td>
+      <td>50회+</td>
+      <td>AI의 자율성을 활용한 옵션 탐색</td>
+    </tr>
+    <tr>
+      <td><strong>"어떤가? 그림이 그려지나?"</strong> (검증 질문)</td>
+      <td>15회+</td>
+      <td>자신의 가설에 대한 AI의 피드백 요청</td>
+    </tr>
+    <tr>
+      <td><strong>"이거 들어가자"</strong> (즉각 실행)</td>
+      <td>20회+</td>
+      <td>검토 완료 후 즉시 작업 착수 명령</td>
+    </tr>
+    <tr>
+      <td><strong>"정신차리고"</strong> (품질 경고)</td>
+      <td>5회+</td>
+      <td>반복 실수에 대한 강력한 시그널</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ===== 20-4. 비즈니스 감각 ===== -->
+<div class="card">
+  <h3>20-4. 비즈니스 감각 — 숫자로 말하는 현실주의자</h3>
+
+  <p style="color:#e2e8f0; line-height:1.9; margin-bottom:16px;">
+    캡틴은 비즈니스 모델을 논의할 때 <strong>항상 구체적 숫자로 사고</strong>한다. 추상적 전략보다 "RM 단위로 얼마가 남는지"를 먼저 계산하고, 그 숫자가 현실적인지를 따진다.
+  </p>
+
+  <div class="quote-block">
+    <strong>직접 수익 구조 설계</strong><br>
+    <em>"우리 수수료 10% 가정. 1명일 때 5% 적립주고, 약 1.5%는 결제 수수료. 그럼 우리에게 남는게 3.5%인데, 모두가 같은 메뉴를 주문했다고 가정하면, 1명 당 3.5%씩 우리 수수료 소득인거니까 2명일 때는 7%, 3명일 때는 10.5%와 같이 포인트가 배수로 늘어나지."</em>
+    <br><br>
+    → AI에게 계산을 맡기지 않고 <strong>직접 수식을 세워서 제시</strong>하고, AI가 이를 검증하도록 시킨다. "내가 계산한 %로 계산하면 되는데 왜 이렇게 복잡하게 만들어?"라는 후속 지적은, 본인의 계산이 더 정확하다는 확신에서 나온 것이며 실제로 그랬다.
+  </div>
+
+  <div class="quote-block">
+    <strong>단위 경제학 사고</strong><br>
+    <em>"4명이 왔다면, 크리에이터에게는 7%(우리가 2%를 얹어줌), 조이너에게는 6%(우리가 1%)를 얹어줌. 1:3이니까, 2%+3%가 빠지는 셈. 우리 수수료 소득은 3.5*4이고, 14% 중에서 5%가 빠지는 셈이니까 9%가 남는 셈."</em>
+    <br><br>
+    → 이것은 단순한 산수가 아니다. <strong>1인당 한계 수익 구조를 머릿속에서 실시간으로 시뮬레이션</strong>하면서, 인원수 증가에 따른 Tapik의 순이익이 반드시 늘어나도록 설계하는 것이다. "당연히 인원이 늘어날수록 우리 수수료 소득이 더 많아지게 설계해야해"라는 원칙을 먼저 세우고, 역으로 적립률을 조정하는 접근법.
+  </div>
+
+  <div class="quote-block">
+    <strong>수수료 상한선 전략</strong><br>
+    <em>"상한 12%로 시작하고, 영업하면서 조건별로 10%까지 낮추는 방법이 좋겠네. 이렇게 하면 영업 수당도 챙겨줄 수 있고, 가맹점별 차별화도 가능하니.."</em>
+    <br><br>
+    → 수수료를 단일 숫자가 아니라 <strong>협상 레버리지</strong>로 활용하는 사고. 12%에서 시작해 10%까지 내려주면서 영업 인센티브 공간을 만든다는 것은, 단순 프로덕트 사고를 넘어 <strong>영업·운영 단계까지 내다보는</strong> 비즈니스 감각이다.
+  </div>
+
+  <div class="quote-block">
+    <strong>비용 민감성 — "이것도 다 비용인데"</strong><br>
+    <em>"이거 다 비용인데.. 이건 나중에 가맹점에서 이벤트 하도록 하자. 리뷰 남겨준 사람들 대상으로 할인쿠폰 준다든지 하는 걸로. 이것까지 적립금 주기엔 좀 글타. 이것도 다 비용인데.. 진심으로 좋아서 남기는 것들이 진짜지, TP 준다고 적립하면 그건 좀 글키도 하고"</em>
+    <br><br>
+    → 모든 기능을 비용 관점에서 재평가한다. 리뷰에 포인트를 주는 것이 사용자 행동을 왜곡할 수 있다는 <strong>행동경제학적 직관</strong>까지 보인다 — "진심으로 좋아서 남기는 것들이 진짜"라는 판단은 단순한 비용 절감이 아니라 리뷰 품질에 대한 전략적 사고이다.
+  </div>
+</div>
+
+<!-- ===== 20-5. 제품 감각 & UX 직관 ===== -->
+<div class="card">
+  <h3>20-5. 제품 감각 & UX 직관 — 사용자의 눈으로 보는 사람</h3>
+
+  <p style="color:#e2e8f0; line-height:1.9; margin-bottom:16px;">
+    캡틴은 앱을 직접 사용하면서 <strong>사용자 관점의 마찰(friction)</strong>을 즉각적으로 발견한다. 기능의 존재 여부보다 <strong>"이걸 처음 쓰는 사람이 이해할 수 있는가?"</strong>를 기준으로 판단한다.
+  </p>
+
+  <div class="quote-block">
+    <strong>UX 마찰 즉시 포착</strong><br>
+    <em>"아니 지금 근데 머천트가 어느 가게야? 로그인 하면 로그인한 가맹점명도 어딘가에 써놔야 어딘지 알거 아니냐.."</em><br><br>
+    <em>"여기 이렇게 48이라고 써놓고 합계가 50.40 나오면 황당하지 않겠냐.. 서비스 이용료였던가? 이걸 적시하기로 했잖아."</em><br><br>
+    <em>"여기 매장 확인 대기중 이거 줄바뀜도 좀 센스있게 하자.. 확인 대기중만 쓰든지.. 줄바꿈이 이런식으로 되면 미적인 감각이 완전 개똥이잖아."</em>
+    <br><br>
+    → 이 세 가지 피드백은 각각 <strong>정보 아키텍처</strong>(어떤 가게인지 표시), <strong>가격 투명성</strong>(서비스 이용료 명시), <strong>마이크로카피</strong>(줄바꿈의 시각적 영향)에 대한 지적이다. 개발자가 놓치기 쉬운, 사용자 경험의 <strong>라스트 마일</strong>을 잡아내는 감각.
+  </div>
+
+  <div class="quote-block">
+    <strong>사용자 시나리오 기반 사고</strong><br>
+    <em>"선결제 후, 나중에 주문할거면, 다음 화면이 선결제 대기로 가야지. 그리고 지금 주문 넣었는데, 아직 머천트에서 아무것도 안했는데 왜 준비중, 완료, 픽업까지 다 완료됐다고 나오냐?"</em>
+    <br><br>
+    → 이 피드백은 <strong>상태 머신(state machine)의 논리적 결함</strong>을 사용자 시나리오를 통해 발견한 것이다. "선결제 → (시간 경과) → 주문"이라는 실제 사용 흐름에서 중간 상태(선결제 대기)가 빠져 있음을 즉시 포착.
+  </div>
+
+  <div class="quote-block">
+    <strong>"Before & After" 스토리텔링 감각</strong><br>
+    <em>"태픽 쓰기 전과 후의 라이프스타일 변화를 보여주는게 낫지 않겠냐? 20분 기다리고 20분 후다닥 밥먹고 20분을 오가는데 쓰면 점심시간 1시간이 후딱 지나가지. 근데 태픽쓰고 나서는, 오가는데 20분은 그대로지만, 줄 안서 바로 받기까지 5분 내, 먹는데 20분 그대로, 15분은 또 태픽으로 커피를 사마시는 여유라든지, 빨리 돌아와서 잠깐 낮잠이라든지..."</em>
+    <br><br>
+    → "15분이 생겼다"는 단순 사실을, <strong>"커피를 마시는 여유" 또는 "잠깐 낮잠"</strong>이라는 구체적 라이프스타일 이미지로 전환하는 스토리텔링 능력. 이것은 기능 소개가 아니라 <strong>감정적 가치 제안(emotional value proposition)</strong>이다.
+  </div>
+
+  <div class="quote-block">
+    <strong>디자인 통일성에 대한 집착</strong><br>
+    <em>"consumer는 전혀 통일이 안됐는데? 마치 다른 앱 같잖아? 폰트, 프레임, 디자인, 색상 무엇하나 통일되는게 없어보여."</em><br><br>
+    <em>"머천트를 보면 마우스가 올라가는 부분마다 반응이 있어... 이런 미세한 것들까지도 다시 파악해와."</em><br><br>
+    <em>"색상 채도가 너무 강해서 알록달록한게 너무 정신없는데. 핵심을 강조하는 형태로 가야되는데, 이러면 눈이 가려는 쪽이 분산돼서 별로야."</em>
+    <br><br>
+    → 마이크로인터랙션(hover 효과), 색상 채도, 시각적 위계(visual hierarchy)까지 감지하는 디자인 감각. 전문 디자이너가 아닌데도 <strong>"핵심을 강조하는 형태"</strong>라는 원칙을 본능적으로 적용한다.
+  </div>
+</div>
+
+<!-- ===== 20-6. AI 활용 능력 ===== -->
+<div class="card">
+  <h3>20-6. AI 활용 능력 — "도구가 아닌 파트너, 하지만 맹신하지 않는 파트너"</h3>
+
+  <p style="color:#e2e8f0; line-height:1.9; margin-bottom:16px;">
+    캡틴의 AI 활용 방식은 <strong>세 가지 층위</strong>로 구성된다: (1) 정보 탐색 도구, (2) 실행 보조, (3) 사고의 스파링 파트너. 핵심은 <strong>AI의 출력을 신뢰하지 않되, AI의 속도는 최대한 활용</strong>한다는 점이다.
+  </p>
+
+  <div class="quote-block">
+    <strong>AI 실수에 대한 인지</strong><br>
+    <em>"네가 방금 이야기한 것처럼 어설프게 제대로 알아보지 않은 상태로 이야기해서 지금 여기까지 온거야. 불가능한 것 또는 모르는 건 추천하면 안되는데, 추천을 해서 여기까지 오게 된거라고. 이게 지금 계속 피봇을 하고 있는 근본적인 이유야."</em>
+    <br><br>
+    → AI(Claude)가 POS 연동의 현실성을 제대로 검증하지 않고 추천한 것이 반복적 피봇의 원인이었음을 <strong>정확히 진단</strong>한 순간. 이 피드백 이후 AI에 대한 활용 방식이 "제안 → 검증"에서 "가설 제시 → AI가 반론 → 재검토"로 변화했다.
+  </div>
+
+  <div class="quote-block">
+    <strong>AI를 활용한 병렬 검증</strong><br>
+    <em>"에이전트들에게 병렬로 시킬거면, 전체 맥락을 제대로 이해하도록 교육시켜서 네가 다시 검증해."</em><br><br>
+    <em>"에이전트 3발 쏴서 교차검증 시켜와."</em>
+    <br><br>
+    → 단일 AI 답변을 신뢰하지 않고, <strong>복수의 에이전트를 활용한 교차검증</strong>을 요구하는 것은 고급 AI 활용 패턴이다. "3발 쏴서"라는 표현에서 효율적 자원 활용 의지가 드러난다.
+  </div>
+
+  <div class="quote-block">
+    <strong>AI에게 학습 피드백 제공</strong><br>
+    <em>"그리고 생각해보니까, 어떤게 변수가 될지 모르니까 이런 것들을 변수로 놨어야 하는데, 상수로 놓다보니까 보수가 힘들구만. 이런 노하우 같은 건 왜 안가르쳐줬냐??"</em>
+    <br><br>
+    → AI의 코드 작성 방식(상수 vs 변수)에 대한 메타 피드백. "왜 안가르쳐줬냐?"는 AI가 능동적으로 베스트 프랙티스를 제안해야 한다는 기대를 표현한 것이며, 동시에 <strong>AI와의 협업 프로세스 자체를 개선</strong>하려는 의도이다.
+  </div>
+
+  <div class="quote-block">
+    <strong>존대 제거 — 효율성 극대화</strong><br>
+    <em>"그리고 존대 필요없다니까. 문장만 길어져"</em>
+    <br><br>
+    → AI의 출력 포맷까지 최적화하는 실용주의. 존대어가 정보 밀도를 낮추고 읽기 시간을 늘린다는 판단 하에, <strong>커뮤니케이션의 오버헤드를 줄이는</strong> 명시적 지시.
+  </div>
+
+  <table>
+    <tr><th>AI 활용 패턴</th><th>구체적 행동</th><th>숙련도 판정</th></tr>
+    <tr>
+      <td><strong>프롬프트 구조화</strong></td>
+      <td>긴 지시를 번호 매기며 구조화, 선행 조건/후행 작업 구분</td>
+      <td>상급</td>
+    </tr>
+    <tr>
+      <td><strong>산출물 검증</strong></td>
+      <td>AI 출력을 직접 앱에서 테스트, 문서 간 교차 비교</td>
+      <td>상급</td>
+    </tr>
+    <tr>
+      <td><strong>반복 지시(iteration)</strong></td>
+      <td>"다시 해봐", "이런 식으로", "이건 아니야 이렇게"</td>
+      <td>상급</td>
+    </tr>
+    <tr>
+      <td><strong>위임 범위 설정</strong></td>
+      <td>자리 비울 때 할 일/안 할 일 명확 분리</td>
+      <td>상급</td>
+    </tr>
+    <tr>
+      <td><strong>병렬 작업 지시</strong></td>
+      <td>에이전트 교차검증, 동시 다발적 문서 업데이트</td>
+      <td>중상급</td>
+    </tr>
+    <tr>
+      <td><strong>AI 한계 인지</strong></td>
+      <td>AI가 모르는 것을 아는 척하는 패턴을 정확히 포착</td>
+      <td>상급</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ===== 20-7. 감정 패턴 & 에너지 관리 ===== -->
+<div class="card">
+  <h3>20-7. 감정 패턴 & 에너지 관리 — 압박 속에서도 유지되는 판단력</h3>
+
+  <p style="color:#e2e8f0; line-height:1.9; margin-bottom:16px;">
+    72시간 제한, 반복되는 피봇, AI의 실수 — 이 모든 압박 속에서 캡틴은 <strong>감정적 폭발 후에도 즉각 다음 행동으로 전환</strong>하는 패턴을 보인다. 불만을 토로한 직후 "그럼 이렇게 하자"로 넘어가는 속도가 매우 빠르다.
+  </p>
+
+  <div class="quote-block">
+    <strong>좌절 → 즉각 해결 전환</strong><br>
+    <em>"하.. 고도화할수록 어렵구나."</em> (잠시 한숨) → 바로 다음 문장: <em>"문서 업데이트도 현황 파악해서 어떻게 할지 계획 세워와봐."</em>
+    <br><br>
+    → 감정을 표출하되 그것에 머무르지 않는다. 한숨 한 번 쉬고 곧바로 실행 계획을 요청하는 것은 <strong>자기 조절 능력</strong>의 지표이다.
+  </div>
+
+  <div class="quote-block">
+    <strong>시간 압박 속 우선순위 감각</strong><br>
+    <em>"이해했으면 바로 시작하는게 좋겠다 이제 시간이 없어."</em><br><br>
+    <em>"앱 기능 수정하면서, 문서 수정하는데까지 네가 알아서 할 수 있겠어? 나 1시간 30분 뒤에 돌아올건데, 그 때까지 다 완성해놔야해."</em>
+    <br><br>
+    → 72시간이라는 마감 속에서 "무엇을 먼저 할 것인가"를 끊임없이 계산한다. 완벽함보다 <strong>"제출 가능한 상태"</strong>를 우선시하면서도 품질의 하한선은 지키는 밸런스.
+  </div>
+
+  <div class="quote-block">
+    <strong>새벽 작업에서의 돌파</strong><br>
+    여러 세션에 걸쳐 새벽까지 작업한 흔적이 보인다. 특히 수익 모델 6번의 진화는 대부분 야간 세션에서 이루어졌다. 이는 <strong>시간 제약 속에서의 밀어붙이기 능력</strong>과, 머리가 맑은 시간대에 핵심 의사결정을 하겠다는 전략적 선택이다.
+  </div>
+
+  <table>
+    <tr><th>감정 상태</th><th>빈도</th><th>후속 행동 패턴</th></tr>
+    <tr>
+      <td>좌절/짜증</td>
+      <td>~15회</td>
+      <td>즉각 해결 방향 제시 (평균 1~2문장 이내)</td>
+    </tr>
+    <tr>
+      <td>확신/흥분</td>
+      <td>~10회</td>
+      <td>"이거 들어가자", "바로 적용해" — 즉각 실행</td>
+    </tr>
+    <tr>
+      <td>불확실/고민</td>
+      <td>~8회</td>
+      <td>"어떤가?", "의견 줘봐" — AI에게 반론 요청</td>
+    </tr>
+    <tr>
+      <td>인정/만족</td>
+      <td>~5회</td>
+      <td>"이 부분이 디테일하게 잘 됐네" — 간결한 긍정 피드백</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ===== 20-8. 전략적 사고 ===== -->
+<div class="card">
+  <h3>20-8. 전략적 사고 — 미시적 실행에서 거시적 비전까지의 줌인/줌아웃</h3>
+
+  <p style="color:#e2e8f0; line-height:1.9; margin-bottom:16px;">
+    캡틴의 가장 독특한 능력 중 하나는 <strong>코드 한 줄 수준의 디테일</strong>에서 <strong>사업 철학 수준의 비전</strong>까지를 하나의 대화 안에서 자유롭게 오가는 것이다.
+  </p>
+
+  <div class="quote-block">
+    <strong>줌인 — 미시적 디테일</strong><br>
+    <em>"ordered >> 이것도 10분내 액셉이 아니라, 5분으로 줄여. 점심시간에 10분 기다리는게 말이 되냐. 5분컷으로 해."</em>
+    <br><br>
+    → 주문 승인 타이머의 10분 → 5분 변경은 사소해 보이지만, "점심시간에 10분 기다리는게 말이 되냐"는 <strong>사용자의 실제 상황에 대한 깊은 공감</strong>에서 나온 결정이다.
+  </div>
+
+  <div class="quote-block">
+    <strong>줌아웃 — 거시적 프레이밍</strong><br>
+    <em>"어쩌면 콜드스타트에서 이 룸 아이디어가 단체로, 또는 레퍼럴 형태로 급격하게 퍼질 수 있을 것 같단 말이지... 3개월 스팟 이벤트, 중간중간 핫스팟 이벤트 섞고 해주면 되겠지. 3개월 뒤 디폴트."</em>
+    <br><br>
+    → 3가지 보상 모드(Default/Spot/Hotspot)의 시간적 배치를 한 문장에 설계. 이것은 <strong>시장 진입 전략, 이벤트 마케팅, 포인트 경제학을 동시에 고려한 종합 전략</strong>이다.
+  </div>
+
+  <div class="quote-block">
+    <strong>연결의 감각 — 기능 간 시스템 사고</strong><br>
+    <em>"고객/머천트/어드민까지 앱 내 버튼 하나하나가 어떻게 영향을 줄지에 대한 로직과 처리 프로세스 및 프로토콜 등등이 같이 정밀하게 설계가 되어야 해."</em>
+    <br><br>
+    → 세 앱(Consumer/Merchant/Admin)을 하나의 <strong>연결된 시스템</strong>으로 보는 시각. "버튼 하나하나"라는 표현은 미시적이지만, "영향을 줄지"라는 프레임은 시스템 사고이다.
+  </div>
+
+  <div class="quote-block">
+    <strong>미래 확장성까지 고려한 설계</strong><br>
+    <em>"프로토타입도 바꿀거야. 지금 내가 보기 편하게 한국어로 하는거임. 작업이 완료되면, 전부 다 영어로 된 문서와 앱으로 바꿔야 해."</em><br><br>
+    <em>"이건 혹시나 해서 물어보는건데, 지금 내가 너와 함께 이 작업을 하는 이유는 명확히 알고 있어? 과제 내용 중 무엇을 채워야 하는지도?"</em>
+    <br><br>
+    → 한국어 MVP → 영어 제출본이라는 이중 트랙 전략과, AI가 <strong>프로젝트의 맥락을 완전히 이해하고 있는지</strong>를 재확인하는 메타인지적 질문. 이것은 도구의 한계를 관리하는 상위 레벨 사고이다.
+  </div>
+</div>
+
+<!-- ===== 20-9. 학습 곡선 & 적응력 ===== -->
+<div class="card">
+  <h3>20-9. 학습 곡선 & 적응력 — 72시간 안에 기술 스택을 습득한 비개발자</h3>
+
+  <p style="color:#e2e8f0; line-height:1.9; margin-bottom:16px;">
+    캡틴은 <strong>개발 경험이 없는</strong> 상태에서 Firebase Auth, Firestore, React, Babel, Vercel 배포 등을 72시간 안에 다루게 되었다. 이것은 단순히 AI에게 시켰기 때문이 아니라, AI의 기술적 선택을 <strong>비즈니스 관점에서 평가하고 수정</strong>할 수 있는 수준까지 이해했기 때문이다.
+  </p>
+
+  <div class="quote-block">
+    <strong>기술 의사결정 참여</strong><br>
+    <em>"필요한게 npm이야 스크립트야?"</em> — Firebase 설정 시 CDN vs npm 방식 선택에 참여<br><br>
+    <em>"근데 이거 실제로 말레이에서 당장 쓰이는거 아니고 MVP로 한국에서 쓸건데?"</em> — 인증 방식의 범위를 제한하는 현실적 판단<br><br>
+    <em>"경험 없어. 근데 키값만 주면 된다면서 이게 하루이틀이나 걸린다고?"</em> — AI가 과도 추정한 작업량에 대한 합리적 의심
+    <br><br>
+    → "경험 없어"라고 솔직히 인정하면서도, "키값만 주면 된다면서"라는 질문을 던질 수 있는 것은 <strong>기술의 원리를 개념적으로 이해</strong>하고 있다는 뜻이다.
+  </div>
+
+  <div class="quote-block">
+    <strong>빠른 개념 습득</strong><br>
+    <em>"PWA가 정확히 뭐야?"</em> → (설명 후) → <em>"PWA로 가면 가맹점이 포스기와 웹앱을 둘 다 확인해야 하니 비효율적이라 그래."</em>
+    <br><br>
+    → PWA 개념을 질문하고, 답변을 받은 직후 그 기술의 <strong>비즈니스적 한계</strong>를 즉시 지적하는 속도. 기술을 "어떻게 동작하는가"가 아닌 "사용자에게 어떤 의미인가"로 평가하는 렌즈.
+  </div>
+
+  <table>
+    <tr><th>학습 영역</th><th>초기 상태</th><th>72시간 후</th></tr>
+    <tr>
+      <td>Firebase Auth/Firestore</td>
+      <td>"야 여기 들어왔는데 뭐가 뭔지 하나도 모르겠어"</td>
+      <td>프로젝트 설정 완료, 실시간 동기화 이해, 규칙 수정 지시</td>
+    </tr>
+    <tr>
+      <td>수익 모델 설계</td>
+      <td>초기 "5% 수수료" 단순 구상</td>
+      <td>3-tier 동적 보상, Default/Spot/Hotspot 모드, BEP 계산식 직접 설계</td>
+    </tr>
+    <tr>
+      <td>POS 연동 기술</td>
+      <td>"POS에 결제 내역이 바로 뜨는거야?"</td>
+      <td>API vs 클라우드프린터 vs 태블릿 독립운영의 트레이드오프 이해</td>
+    </tr>
+    <tr>
+      <td>앱 아키텍처</td>
+      <td>HTML 단일파일 구조 이해 부족</td>
+      <td>3-app 동기화, BroadcastChannel, i18n 구조 지시</td>
+    </tr>
+    <tr>
+      <td>디자인 시스템</td>
+      <td>직감적 피드백</td>
+      <td>글래스모피즘, hover 인터랙션, 시각적 위계 등 디자인 언어 사용</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ===== 20-10. 현지 시장 이해력 ===== -->
+<div class="card">
+  <h3>20-10. 현지 시장 이해력 — 말레이시아에 살아본 사람의 감각</h3>
+
+  <p style="color:#e2e8f0; line-height:1.9; margin-bottom:16px;">
+    캡틴은 말레이시아 현지 생활에 대한 <strong>일차적 경험(first-hand experience)</strong>이 있어, AI가 놓치는 현지 맥락을 반복적으로 보완했다.
+  </p>
+
+  <div class="quote-block">
+    <strong>현지 식당 규모별 현실 파악</strong><br>
+    <em>"인기 있는 중형 레스토랑 (중상급 Chinese, Thai, Western, steamboat/hotpot, cafe-restaurant 등): 11시 30분~1시 30분 사이가 진짜 피크입니다."</em><br><br>
+    <em>"특히 PJ (Petaling Jaya), Damansara, Subang, KLCC/Bukit Bintang, Mont Kiara 주변은 더 심합니다."</em>
+    <br><br>
+    → 지역별 피크 시간대, 식당 유형별 대기 시간, 구체적 동네 이름까지 나열하는 것은 <strong>실제 거주 경험</strong>에서만 나올 수 있는 디테일. AI가 일반적 통계를 나열할 때, 캡틴은 "PJ는 더 심하다"는 현장 감각으로 보정한다.
+  </div>
+
+  <div class="quote-block">
+    <strong>소규모 점포 운영자의 현실 이해</strong><br>
+    <em>"전통 kedai makan, kopitiam, hawker stall 사장님(50~60대 많음)은 '폰에 앱 깔고 푸시 확인하는 것 자체가 번거롭다'고 느낄 확률이 여전히 높습니다. 지금도 GrabFood조차 참여 안 하는 곳이 많아요."</em>
+    <br><br>
+    → 디지털 도구에 대한 연령대별 저항감, GrabFood조차 안 쓰는 가게가 있다는 현실 — 이런 정보는 시장 리포트에는 나오지 않는, <strong>현지 관찰에서 온 통찰</strong>이다.
+  </div>
+
+  <div class="quote-block">
+    <strong>문화적 맥락 감지</strong><br>
+    <em>"M40이 의미하는 걸 같이 써줘야지. 다른데 있는 용어들도 같이 정리해서 정의든, 분류든 그 개념을 같이 적어놔."</em>
+    <br><br>
+    → M40(중간 40% 소득 계층)이라는 말레이시아 특유의 사회경제적 분류를 알고 있으며, 이것이 외부 독자에게는 생소할 수 있다는 <strong>독자 관점의 인식</strong>까지 갖추고 있다.
+  </div>
+</div>
+
+<!-- ===== 20-11. 문서화 & 프레젠테이션 감각 ===== -->
+<div class="card">
+  <h3>20-11. 문서화 & 프레젠테이션 감각 — "읽히는 문서"에 대한 집착</h3>
+
+  <p style="color:#e2e8f0; line-height:1.9; margin-bottom:16px;">
+    캡틴은 단순히 내용이 정확한 것을 넘어, <strong>"이 문서가 어떻게 읽히는가"</strong>에 강하게 집착한다. 가독성, 시각적 구성, 정보의 밀도를 끊임없이 조율한다.
+  </p>
+
+  <div class="quote-block">
+    <strong>시각화 전략 제시 — 18개 차트/표 추천 리스트</strong><br>
+    캡틴이 직접 작성하여 가져온 "Tapik 사업계획서 시각화 추천 리스트"는 파트별로 어떤 그래프/표를 어디에 왜 넣어야 하는지를 구조화한 것이다. <strong>이것은 AI의 출력이 아니라, 캡틴이 직접 작성한 시각화 전략 문서</strong>이다.
+    <br><br>
+    <em>"이 8개만 넣어도 문서가 텍스트 중심 → 시각 중심으로 완전히 바뀝니다."</em>
+    <br><br>
+    → 우선순위 Top 8까지 선정하는 것은, 제한된 시간 안에 최대 임팩트를 내는 시각화를 선택하는 전략적 사고.
+  </div>
+
+  <div class="quote-block">
+    <strong>볼륨 업의 전략적 이유</strong><br>
+    <em>"최대한 우리의 업적을 숨겨놓지 말고 방대하게 자세히 써도 돼. 그게 이제는 미덕이야. 뭘 했는지 모르는 상태로 시간만 보낸것 처럼 보이면 그게 우리에겐 더 의미가 없는 시대니까."</em>
+    <br><br>
+    → "어차피 이걸 제출해도 예상컨대 주로 AI가 읽게 될거야"라는 전제 하에, AI가 프레임워크로 정리할 수 있도록 <strong>풍부한 원재료를 제공하는 것이 전략</strong>이라는 판단. 이것은 AI 시대의 문서 작성 패러다임에 대한 이해이다.
+  </div>
+
+  <div class="quote-block">
+    <strong>줄바꿈까지 신경 쓰는 디테일</strong><br>
+    <em>"테이블 보면 가끔 한글 1자 또는 매우 적은 숫자를 남겨놓고 줄바꿈을 하는 경우가 있는데, 이거 적절히 조절하는게 필요. 줄바꿈을 일부러 시킨거면, 차라리 중간에 의미있는 지점에서 줄바꿈을 시키는게 나음."</em>
+    <br><br>
+    → 타이포그래피 수준의 마이크로 디테일까지 관리하는 것은, 문서를 <strong>"읽는 경험"</strong>으로 인식하는 감각의 발현.
+  </div>
+</div>
+
+<!-- ===== 20-12. 위기 대응 & 피봇 능력 ===== -->
+<div class="card">
+  <h3>20-12. 위기 대응 & 피봇 능력 — "안 되면 돌아가, 돌아가도 안 되면 새로 깔아"</h3>
+
+  <p style="color:#e2e8f0; line-height:1.9; margin-bottom:16px;">
+    11번의 피봇은 11번의 실패가 아니라, <strong>11번의 학습과 방향 수정</strong>이다. 캡틴은 매몰 비용(sunk cost)에 집착하지 않고, 새로운 정보가 들어오면 기존 결정을 과감히 뒤집는다.
+  </p>
+
+  <div class="quote-block">
+    <strong>POS 연동 → 태블릿 독립 전환</strong><br>
+    POS API 접근이 불확실하다는 사실이 밝혀졌을 때, 기존의 POS 연동 전략 전체를 포기하고 태블릿 독립 운영으로 전환. 이 과정에서 이미 설계한 POS 기반 기능들을 미련 없이 버렸다.
+    <br><br>
+    <em>"어차피 우리한테 데이터 안줄거라고 가정하고 피봇한거라서 상관은 없어. 오히려 배달앱 통합마저 떼버리는게 낫지."</em>
+    <br><br>
+    → "상관은 없어"와 "오히려 ~ 떼버리는게 낫지"는 피봇을 후퇴가 아닌 <strong>정리(simplification)</strong>로 프레이밍하는 인지적 전환이다.
+  </div>
+
+  <div class="quote-block">
+    <strong>수익 모델 6회 진화</strong><br>
+    v0(5% 단순 수수료) → v1(쿠폰 기반) → v2(선결제+포인트) → v3(5%+5%+8%) → v4(10% 기본+동적 보상) → v5(12% 상한+3-tier 보상)<br><br>
+    매번 "이전 모델의 무엇이 문제였는지"를 명확히 진단한 후 다음 버전으로 진화. 이것은 무작위 변경이 아닌 <strong>가설 기반 반복(hypothesis-driven iteration)</strong>이다.
+  </div>
+
+  <div class="quote-block">
+    <strong>디자인 롤백 결정</strong><br>
+    다른 세션에서 디자이너가 변경한 Consumer 앱 디자인이 마음에 들지 않자, 즉시 롤백을 결정:
+    <br><br>
+    <em>"네가 수정해온 모바일 상태 그냥 색상에서 채도 빼고, 카드 프레임 크기 조정한 거 빼곤 없네.. 기존꺼가 더 나을 정도야. 이거 바로 전 상태로 롤백하자."</em>
+    <br><br>
+    → "기존꺼가 더 나을 정도"라는 판단을 내리는 데 주저함이 없다. 시간이 걸린 작업이라도 품질이 하락하면 <strong>미련 없이 되돌리는</strong> 용기.
+  </div>
+</div>
+
+<!-- ===== 20-13. 종합 프로파일 ===== -->
+<div class="card" style="border-left: 4px solid #f59e0b;">
+  <h3>20-13. 종합 인물 프로파일</h3>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:20px 0;">
+    <div style="background:rgba(245,158,11,0.1); padding:16px; border-radius:8px;">
+      <h4 style="color:#f59e0b; margin-bottom:12px;">핵심 강점</h4>
+      <p style="color:#e2e8f0; font-size:13px; line-height:1.8;">
+        <strong>1. 본질 추구형 사고:</strong> 표면적 답변에 만족하지 않고, "왜?"를 끝까지 파고드는 습관<br>
+        <strong>2. 숫자 기반 의사결정:</strong> 직관으로 가설을 세우고, 수치로 검증한 후 실행<br>
+        <strong>3. 속도와 결단:</strong> 정보가 충분하면 1~2문장 내에 방향을 결정하는 실행력<br>
+        <strong>4. 사용자 공감:</strong> 앱을 직접 써보며 마찰점을 즉시 발견하는 감각<br>
+        <strong>5. AI 활용 숙련도:</strong> 맹신하지 않되, 속도를 최대한 활용하는 균형감<br>
+        <strong>6. 피봇 용기:</strong> 매몰 비용에 집착하지 않고 새로운 정보에 유연하게 대응<br>
+        <strong>7. 현지 감각:</strong> 말레이시아 F&B 시장에 대한 일차적 경험 기반 통찰<br>
+        <strong>8. 시각적 사고:</strong> 문서, 차트, UX를 "읽는 경험"으로 인식하는 감각
+      </p>
+    </div>
+    <div style="background:rgba(99,102,241,0.1); padding:16px; border-radius:8px;">
+      <h4 style="color:#818cf8; margin-bottom:12px;">작업 스타일 특성</h4>
+      <p style="color:#e2e8f0; font-size:13px; line-height:1.8;">
+        <strong>1. 경로 의존성 거부:</strong> "이미 여기까지 왔으니"라는 논리를 거부, 항상 현재 최적을 추구<br>
+        <strong>2. 동시 다발적 사고:</strong> 기능 논의 중에 문서, 비즈니스 모델, UX를 동시에 조율<br>
+        <strong>3. 압축적 커뮤니케이션:</strong> 핵심만 전달, 불필요한 수사 제거 ("존대 필요없다니까")<br>
+        <strong>4. 위임과 검증의 균형:</strong> AI에 위임하되, 결과물을 반드시 직접 확인<br>
+        <strong>5. 시간 의식:</strong> 72시간 제한 내에서 끊임없이 우선순위를 재조정<br>
+        <strong>6. 문서 = 제품:</strong> 제출 문서를 코드와 동일한 수준의 품질 기준으로 관리<br>
+        <strong>7. 감정 → 실행 전환:</strong> 좌절이나 분노를 행동으로 빠르게 전환<br>
+        <strong>8. 메타인지:</strong> "AI가 이걸 이해하고 있는지" 스스로 확인하는 습관
+      </p>
+    </div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px;">
+    <div style="background:rgba(16,185,129,0.1); padding:16px; border-radius:8px;">
+      <h4 style="color:#10b981; margin-bottom:12px;">MBTI 추정 & 근거</h4>
+      <p style="color:#e2e8f0; font-size:13px; line-height:1.8;">
+        <strong>ENTJ 또는 ESTJ 가능성이 높음</strong><br><br>
+        <strong>E(외향):</strong> AI와의 대화에서 사고를 즉시 외부로 표출하며 정리("어떤가? 그림이 그려지나?")<br>
+        <strong>N/S(직관/감각) 혼합:</strong> 큰 그림(전략)과 디테일(줄바꿈)을 모두 잡는 드문 조합<br>
+        <strong>T(사고):</strong> 모든 결정을 논리와 수치로 검증, 감정적 판단 최소화<br>
+        <strong>J(판단):</strong> 결론을 빠르게 내리고 즉시 실행, 열린 상태를 오래 두지 않음
+      </p>
+    </div>
+    <div style="background:rgba(239,68,68,0.1); padding:16px; border-radius:8px;">
+      <h4 style="color:#ef4444; margin-bottom:12px;">주의할 점 & 개선 여지</h4>
+      <p style="color:#e2e8f0; font-size:13px; line-height:1.8;">
+        <strong>1. 속도 vs 완결성 트레이드오프:</strong> 빠른 결정이 때로 문서 간 불일치를 야기 (예: 수수료율 변경 시 전체 문서 동기화 누락)<br>
+        <strong>2. 직설적 커뮤니케이션의 양면:</strong> 효율적이지만, 실제 팀원(인간)과의 협업 시에는 톤 조절이 필요할 수 있음<br>
+        <strong>3. 기술 부채 인식:</strong> "상수 vs 변수" 이슈를 뒤늦게 인지한 것처럼, 기술적 베스트 프랙티스의 사전 학습이 더 있으면 좋음<br>
+        <strong>4. 완벽주의 경향:</strong> 줄바꿈까지 신경 쓰는 디테일은 강점이나, 시간 제한 하에서 적절한 "good enough" 기준 설정이 필요
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 20-14. 프롬프트 빈도 분석 ===== -->
+<div class="card">
+  <h3>20-14. 프롬프트 패턴 정량 분석</h3>
+
+  <table>
+    <tr><th>분석 항목</th><th>수치</th><th>해석</th></tr>
+    <tr>
+      <td>총 프롬프트 수</td>
+      <td>356+개</td>
+      <td>72시간 동안 평균 5분에 1개꼴로 지시/피드백 제공</td>
+    </tr>
+    <tr>
+      <td>질문형 프롬프트</td>
+      <td>~80개 (22%)</td>
+      <td>탐색적 질문이 많음 — AI를 정보원이자 스파링 파트너로 활용</td>
+    </tr>
+    <tr>
+      <td>지시형 프롬프트</td>
+      <td>~180개 (51%)</td>
+      <td>절반 이상이 명확한 실행 지시 — 실행 지향적 성향</td>
+    </tr>
+    <tr>
+      <td>피드백/수정 프롬프트</td>
+      <td>~70개 (20%)</td>
+      <td>AI 출력에 대한 지속적 품질 관리</td>
+    </tr>
+    <tr>
+      <td>전략적 사고 프롬프트</td>
+      <td>~26개 (7%)</td>
+      <td>제품 철학, 시장 전략, 성장 엔진에 대한 고민</td>
+    </tr>
+    <tr>
+      <td>피봇 결정 프롬프트</td>
+      <td>11개</td>
+      <td>평균 6.5시간마다 1회 방향 전환</td>
+    </tr>
+    <tr>
+      <td>직접 계산식 제시</td>
+      <td>~12개</td>
+      <td>AI에게 맡기지 않고 직접 수식을 세워 제시</td>
+    </tr>
+    <tr>
+      <td>"다시 해"/"수정해" 빈도</td>
+      <td>~45개</td>
+      <td>AI 출력 중 약 13%를 수정 요청 — 높은 품질 기준</td>
+    </tr>
+    <tr>
+      <td>칭찬/긍정 피드백</td>
+      <td>~8개 (2%)</td>
+      <td>칭찬은 극히 드물고 정확한 지점에만 제공 — "이 부분이 디테일하게 잘 됐네"</td>
+    </tr>
+    <tr>
+      <td>위임 프롬프트 ("자리 비울게")</td>
+      <td>4개</td>
+      <td>자율 작업 위임 시 범위와 우선순위를 명확히 규정</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ===== 20-15. 캡틴이 한 말 중 가장 날카로운 10문장 ===== -->
+<div class="card" style="border-left: 4px solid #f59e0b;">
+  <h3>20-15. 캡틴의 가장 날카로운 발언 Top 10</h3>
+
+  <p style="color:#94a3b8; font-size:13px; margin-bottom:20px;">프로젝트의 방향을 결정짓거나, 핵심 통찰을 담고 있는 발언을 시간순으로 선별.</p>
+
+  <table>
+    <tr><th width="5%">#</th><th width="55%">발언</th><th width="40%">의미 & 영향</th></tr>
+    <tr>
+      <td>1</td>
+      <td><em>"우리의 철학 가치는 '이 앱의 사용자에게 자신의 시간을 되돌려준다'는 거야."</em></td>
+      <td>제품 전체의 <strong>존재 이유를 한 문장으로 정의</strong>. 이후 모든 기능이 이 철학에 정렬됨.</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td><em>"소규모 독립점과 F&B에는 적합하지 않고, 중형 이상급에 적절함."</em></td>
+      <td>"20,000개 가맹점" 유혹을 뿌리치고 <strong>현실적 타겟을 좁힌</strong> 용기 있는 결정.</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td><em>"태블릿을 깔아준다고 가정한다면, 그럼 POS기 없이도 우리 앱과 바로 직통으로 연결될거 아냐? 지금까지 고민한 문제들도 다 사라지고?"</em></td>
+      <td>POS 연동 난제를 <strong>하드웨어 한 대로 해결</strong>하는 발상의 전환. 프로젝트 최대 피봇 순간.</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td><em>"콜드스타트는 SNS로 가자. 소셜의 힘으로 가야겠네. 그리고 룸 개발은 앞당긴다."</em></td>
+      <td>콜드스타트 + 룸 바이럴 + SNS를 <strong>하나의 성장 엔진으로 연결</strong>한 전략적 결정.</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td><em>"불가능한 것 또는 모르는 건 추천하면 안되는데, 추천을 해서 여기까지 오게 된거라고. 이게 지금 계속 피봇을 하고 있는 근본적인 이유야."</em></td>
+      <td>AI의 한계를 정확히 진단. <strong>반복 피봇의 근본 원인을 AI의 검증 부족</strong>으로 귀결시킨 통찰.</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td><em>"당연히 인원이 늘어날수록 우리 수수료 소득이 더 많아지게 설계해야해. 그러면서도 사람들이 가져가는 수수료 소득이 높아지도록 설계하면 되는 것이지."</em></td>
+      <td><strong>Win-Win 경제 설계</strong>의 핵심 원칙. 이 한 문장이 동적 보상 시스템 전체의 설계 원칙이 됨.</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td><em>"진심으로 좋아서 남기는 것들이 진짜지, TP 준다고 적립하면 그건 좀 글키도 하고"</em></td>
+      <td>인센티브가 행동의 진정성을 왜곡한다는 <strong>행동경제학적 직관</strong>. 리뷰 적립 폐지 결정.</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td><em>"최대한 우리의 업적을 숨겨놓지 말고 방대하게 자세히 써도 돼. 그게 이제는 미덕이야."</em></td>
+      <td>AI 시대의 문서 전략에 대한 메타 인식 — <strong>"AI가 읽을 문서"의 최적 구성법</strong>을 이해.</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td><em>"고객/머천트/어드민까지 앱 내 버튼 하나하나가 어떻게 영향을 줄지에 대한 로직과 처리 프로세스가 같이 정밀하게 설계가 되어야 해."</em></td>
+      <td>3-app 시스템을 <strong>하나의 연결된 유기체</strong>로 보는 시스템 사고. 단순 개별 앱이 아닌 프로토콜 설계 관점.</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td><em>"상한 12%로 시작하고, 영업하면서 조건별로 10%까지 낮추는 방법이 좋겠네. 이렇게 하면 영업 수당도 챙겨줄 수 있고, 가맹점별 차별화도 가능하니.."</em></td>
+      <td>수수료를 <strong>단순 가격이 아닌 협상 레버리지</strong>로 활용하는 영업 전략 감각.</td>
+    </tr>
+  </table>
+</div>
+
+</div>
+</body>
+</html>
